@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-PROJECT(CIM2Mod)
+project(CIM2Mod)
 
 set(CIM2Mod_MAJOR_VERSION 0)
 set(CIM2Mod_MINOR_VERSION 1)
@@ -14,28 +14,38 @@ include_directories( ${CIMParser_INCLUDE_DIR} )
 
 # Find Boost
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}")
-find_package(Boost REQUIRED)
+find_package(Boost 1.60 REQUIRED)
 include_directories( ${Boost_INCLUDE_DIR} )
 
-# Find CTemplate
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}")
-find_package(CTemplate REQUIRED)
-include_directories( ${CTemplate_INCLUDE_DIR} )
+# Find Ctemplate
+set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/Modules)
+find_package(Ctemplate REQUIRED)
+include_directories( ${CTEMPLATE_INCLUDE_DIR} )
 
 # Add link flags
 set(BOOST_LINKER_FLAGS "-lboost_filesystem -lboost_system")
-set(CTEMPLATE_LINKER_FLAGS "--lctemplate")
-set(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} ${BOOST_LINKER_FLAGS} ${CTEMPLATE_LINKER_FLAGS}" )
+set(CTEMPLATE_LINKER_FLAGS "-lctemplate")
+set(CMAKE_SHARED_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} ${BOOST_LINKER_FLAGS} ${CTEMPLATE_LINKER_FLAGS}" )
 
-# Add combile flag to aviod warnings with C++11
+# Add combined flag to aviod warnings with C++11
 set(CMAKE_CXX_FLAGS_RELEASE  "${CMAKE_CXX_FLAGS_RELEASE} -Wall -Wno-inconsistent-missing-override")
 
-#include_directories(src)
-file(GLOB_RECURSE SRC src/*.cpp)
+# copy directories
+file(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/bin/resource)
+file(COPY ${PROJECT_SOURCE_DIR}/modelica_templates/ DESTINATION ${PROJECT_BINARY_DIR}/bin/resource)
 
-add_library(${PROJECT_NAME} SHARED ${SRC})
-target_include_directories(${PROJECT_NAME} PRIVATE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>)
-target_include_directories(${PROJECT_NAME} PUBLIC ${CIMParser_INCLUDE_DIR} ${Boost_INCLUDE_DIR} ${CTemplate_INCLUDE_DIR})
+set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
 
-add_executable(CIM2Mod ${CMAKE_CURRENT_LIST_DIR}/../src/main.cpp)
-target_link_libraries(CIM2Mod CIMParser Boost CTemplate)
+# include_directories
+file(GLOB_RECURSE SRC_LIST ${PROJECT_SOURCE_DIR}/src/*.cpp)
+
+# compile and link
+add_executable(${PROJECT_NAME} ${SRC_LIST})
+target_link_libraries(CIM2Mod CIMParser ${Boost_LIBRARIES} ${CTEMPLATE_LIBRARIES})
+
+# Configure Doxyfile
+find_package(Doxygen)
+if(DOXYGEN_FOUND)
+  configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY)
+  add_custom_target(doc ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMENT "Generating API documentation with Doxygen" VERBATIM)
+endif(DOXYGEN_FOUND)

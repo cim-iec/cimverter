@@ -1,0 +1,5 @@
+######################################################
+# Folders to exclude for this project
+build
+documentation
+Doxyfile

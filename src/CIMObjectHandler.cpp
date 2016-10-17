@@ -38,7 +38,7 @@ bool CIMObjectHandler::generate_modelica_code(const std::string filename)
 			if(auto *tpNode = dynamic_cast<IEC61970::Base::Topology::TopologicalNode*>(Object))
 			{
 				ctemplate::TemplateDictionary* busBar_dict = dict->AddIncludeDictionary("BUSBAR_DICT");
-				busBar_dict->SetFilename("build/resource/BusBar.tpl");
+				busBar_dict->SetFilename("resource/BusBar.tpl");
 				this->handle_TopologicalNode(tpNode, busBar_dict);
 
 				std::list<IEC61970::Base::Core::Terminal*>::iterator terminal_itor;
@@ -47,28 +47,28 @@ bool CIMObjectHandler::generate_modelica_code(const std::string filename)
 					if(auto *externalNI = dynamic_cast<IEC61970::Base::Wires::ExternalNetworkInjection*>((*terminal_itor)->ConductingEquipment))
 					{
 						ctemplate::TemplateDictionary* slack_dict = dict->AddIncludeDictionary("SLACK_DICT");
-						slack_dict->SetFilename("build/resource/Slack.tpl");
+						slack_dict->SetFilename("resource/Slack.tpl");
 						this->handle_ExternalNI(tpNode, externalNI, slack_dict);
 					}
 
 					else if(auto *powerTrafo = dynamic_cast<IEC61970::Base::Wires::PowerTransformer*>((*terminal_itor)->ConductingEquipment))
 					{
 						ctemplate::TemplateDictionary* powerTrafo_dict = dict->AddIncludeDictionary("TRANSFORMER_DICT");
-						powerTrafo_dict->SetFilename("build/resource/Transformer.tpl");
+						powerTrafo_dict->SetFilename("resource/Transformer.tpl");
 						this->handle_PowerTransformer(powerTrafo, powerTrafo_dict);
 					}
 
 					else if(auto *acLine = dynamic_cast<IEC61970::Base::Wires::ACLineSegment*>((*terminal_itor)->ConductingEquipment))
 					{
 						ctemplate::TemplateDictionary* piLine_dict = dict->AddIncludeDictionary("PILINE_DICT");
-						piLine_dict->SetFilename("build/resource/PiLine.tpl");
+						piLine_dict->SetFilename("resource/PiLine.tpl");
 						this->handle_ACLineSegment(acLine,piLine_dict);
 					}
 
 					else if(auto *energyConsumer = dynamic_cast<IEC61970::Base::Wires::EnergyConsumer*>((*terminal_itor)->ConductingEquipment))
 					{
 						ctemplate::TemplateDictionary* pqLoad_dict = dict->AddIncludeDictionary("PQLOAD_DICT");
-						pqLoad_dict->SetFilename("build/resource/PQLoad.tpl");
+						pqLoad_dict->SetFilename("resource/PQLoad.tpl");
 						this->handle_EnergyConsumer(tpNode, (*terminal_itor), energyConsumer, pqLoad_dict);
 					}
 				}
@@ -77,7 +77,7 @@ bool CIMObjectHandler::generate_modelica_code(const std::string filename)
 		}
 
 		std::string modelica_output;
-		ctemplate::ExpandTemplate("build/resource/modelica.tpl", ctemplate::STRIP_BLANK_LINES, dict, &modelica_output);
+		ctemplate::ExpandTemplate("resource/modelica.tpl", ctemplate::STRIP_BLANK_LINES, dict, &modelica_output);
 		std::cout << modelica_output;
 		// Write to file
 		std::ofstream file;
