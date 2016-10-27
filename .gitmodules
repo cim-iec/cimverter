@@ -1,0 +1,3 @@
+[submodule "GridData"]
+	path = samples/GridData
+	url = https://git.rwth-aachen.de/acs/GridData.git
