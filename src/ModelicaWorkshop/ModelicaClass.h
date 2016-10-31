@@ -1,4 +1,5 @@
-#include "ModPowerSystems/VirtualElements/TopCoordinate.h"
+#include "ModPowerSystems/System.h"
+#include "ModPowerSystems/VirtualElements/Connection.h"
 #include "ModPowerSystems/SinglePhase/Connections/BusBar.h"
 #include "ModPowerSystems/SinglePhase/Connections/ConnectivityNode.h"
 #include "ModPowerSystems/SinglePhase/Transformers/Transformer.h"

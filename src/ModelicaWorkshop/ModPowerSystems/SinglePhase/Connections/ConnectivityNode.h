@@ -18,6 +18,7 @@ namespace ModPowerSystems {
 
 				class ConnectivityNode:public ModelicaWorkshop::ModBaseClass
 				{
+
 				public:
 					ConnectivityNode();
 					virtual ~ConnectivityNode();

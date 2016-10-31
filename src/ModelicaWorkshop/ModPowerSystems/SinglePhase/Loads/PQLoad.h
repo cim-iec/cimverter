@@ -47,8 +47,6 @@ namespace ModPowerSystems {
 
 					private:
 						static int _count;
-						static std::map<const kPQLoadEnum, const std::string> tplKeys;
-						static std::map<const kPQLoadEnum, const std::string> initial_tplKeys();
 
 						//Parameters
 						double _Pnom = 110000; //active power per phase

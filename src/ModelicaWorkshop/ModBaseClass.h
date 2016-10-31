@@ -25,8 +25,8 @@ namespace ModelicaWorkshop {
 
 	typedef struct Extent
 	{
-		Point first = {-5,-5};
-		Point second = {5,5};
+		Point first;
+		Point second;
 
 	} Extent;
 
@@ -51,8 +51,8 @@ namespace ModelicaWorkshop {
 
 	typedef struct Transformation
 	{
-		Extent extent;
-		int rotation = 0;
+		Extent extent = {{-5,-5},{5,5}};
+		int rotation = {0};
 		Point origin = {0,0};
 
 	} Transformation;

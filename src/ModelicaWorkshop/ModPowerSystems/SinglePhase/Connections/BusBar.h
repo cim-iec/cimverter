@@ -17,24 +17,18 @@ namespace ModPowerSystems
 
 			class BusBar:public ModelicaWorkshop::ModBaseClass
 			{
-
 			public:
 				BusBar();
+				BusBar(const BusBar &);
 				virtual ~BusBar();
 
 				void set_Vnom(double Vnom){ this->_Vnom = Vnom; };
 				double Vnom() const { return _Vnom; };
 
 				bool set_template_values(ctemplate::TemplateDictionary *dictionary) override;
-				static int count() { return BusBar::_count; };
 
 			private:
-				static int _count;
 				double _Vnom;
-
-				static std::map<const kBusBarEnum, const std::string> tplKeys;
-				static std::map<const kBusBarEnum, const std::string> initial_tplKeys();
-
 			};
 
 		}/* namespace Connections */

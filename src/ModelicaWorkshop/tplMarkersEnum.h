@@ -9,46 +9,75 @@
 #ifndef SRC_MODELICAWORKSHOP_TPLMARKERSENUM_H_
 #define SRC_MODELICAWORKSHOP_TPLMARKERSENUM_H_
 
-/*
- * all corresponding Markers of Global Template
- */
-enum class kGlobalEnum {
-	GRID_NAME, HEADER_FOOTER_SECTION, DIAGRAM_EXTENT_X1, DIAGRAM_EXTENT_Y1, DIAGRAM_EXTENT_X2,DIAGRAM_EXTENT_Y2, ROTATION, PAR,
-	ICON_EXTENT_X1, ICON_EXTENT_Y1, ICON_EXTENT_X2, ICON_EXTENT_Y2
-};
+RegisterTemplateFilename(CONNECTIONS_DICT, "CONNECTIONS_DICT");   // defines template
 
-/*
- * corresponding Markers of the Slack Section in Template
- */
-enum class kSlackEnum {
-	NAME, VNOM, VNOM_DISPLAYUNIT, FREQUENCY, FREQUENCY_DISPLAYUNIT, PHIV_DISPLAYUNIT, PHIV,
-	VISIBLE, TRANS_EXTENT_X1, TRANS_EXTENT_Y1, TRANS_EXTENT_X2, TRANS_EXTENT_Y2, ORIGIN_X, ORIGIN_Y,
-	ROTATION
+// Global Setting
+RegisterTemplateFilename(FNOM, "FNOM");
+RegisterTemplateFilename(FNOM_DISPLAYUNIT, "FNOM_DISPLAYUNIT");
+RegisterTemplateFilename(INIT, "INIT");
+RegisterTemplateFilename(SIMMODE, "SIMMODE");
 
-};
+RegisterTemplateFilename(PAR, "PAR");
+RegisterTemplateFilename(GRID_NAME, "GRID_NAME");
+RegisterTemplateFilename(HEADER_FOOTER_SECTION, "HEADER_FOOTER_SECTION");
+RegisterTemplateFilename(DIAGRAM_EXTENT_X1, "DIAGRAM_EXTENT_X1");
+RegisterTemplateFilename(DIAGRAM_EXTENT_Y1, "DIAGRAM_EXTENT_Y1");
+RegisterTemplateFilename(DIAGRAM_EXTENT_X2, "DIAGRAM_EXTENT_X2");
+RegisterTemplateFilename(DIAGRAM_EXTENT_Y2, "DIAGRAM_EXTENT_Y2");
+RegisterTemplateFilename(ROTATION, "ROTATION");
+RegisterTemplateFilename(ICON_EXTENT_X1, "ICON_EXTENT_X1");
+RegisterTemplateFilename(ICON_EXTENT_Y1, "ICON_EXTENT_Y1");
+RegisterTemplateFilename(ICON_EXTENT_X2, "ICON_EXTENT_X2");
+RegisterTemplateFilename(ICON_EXTENT_Y2, "ICON_EXTENT_Y2");
 
-/*
- * corresponding Markers of the BusBar Section in Template
- */
-enum class kBusBarEnum {
-	NAME, VNOM, VPP_FIXED,VPP_START,FREQUENCY,
-	VISIBLE, TRANS_EXTENT_X1, TRANS_EXTENT_Y1, TRANS_EXTENT_X2, TRANS_EXTENT_Y2, ORIGIN_X, ORIGIN_Y,
-	ROTATION
-};
+// Corresponding Markers of the Slack Section in Template
+RegisterTemplateFilename(NAME, "NAME");
+RegisterTemplateFilename(VNOM, "VNOM");
+RegisterTemplateFilename(VNOM_DISPLAYUNIT, "VNOM_DISPLAYUNIT");
+RegisterTemplateFilename(FREQUENCY, "FREQUENCY");
+RegisterTemplateFilename(FREQUENCY_DISPLAYUNIT, "FREQUENCY_DISPLAYUNIT");
+RegisterTemplateFilename(PHIV_DISPLAYUNIT, "PHIV_DISPLAYUNIT");
+RegisterTemplateFilename(PHIV, "PHIV");
+
+//BusBar
+RegisterTemplateFilename(VPP_FIXED, "VPP_FIXED");
+RegisterTemplateFilename(PNOM, "PNOM");
+RegisterTemplateFilename(QNOM, "QNOM");
+RegisterTemplateFilename(PNOM_DISPLAYUNIT, "PNOM_DISPLAYUNIT");
+RegisterTemplateFilename(QNOM_DISPLAYUNIT, "QNOM_DISPLAYUNIT");
+
+//PiLine
+RegisterTemplateFilename(LENGTH, "LENGTH");
+RegisterTemplateFilename(R, "R");
+RegisterTemplateFilename(X, "X");
+RegisterTemplateFilename(B, "B");
+RegisterTemplateFilename(G, "G");
+RegisterTemplateFilename(IMAX, "IMAX");
+RegisterTemplateFilename(IMAX_DISPLAYUNIT, "IMAX_DISPLAYUNIT");
+RegisterTemplateFilename(SR, "SR");
+RegisterTemplateFilename(SR_DISPLAYUNIT, "SR_DISPLAYUNIT");
+
+//Transformer
+RegisterTemplateFilename(VNOM1, "VNOM1");
+RegisterTemplateFilename(VNOM2, "VNOM2");
+RegisterTemplateFilename(VNOM1_DISPLAYUNIT, "VNOM1_DISPLAYUNIT");
+RegisterTemplateFilename(VNOM2_DISPLAYUNIT, "VNOM2_DISPLAYUNIT");
+RegisterTemplateFilename(URR, "UKR");
+RegisterTemplateFilename(UKR, "URR");
+
+
+RegisterTemplateFilename(VISIBLE, "VISIBLE");
+RegisterTemplateFilename(TRANS_EXTENT_X1, "TRANS_EXTENT_X1");
+RegisterTemplateFilename(TRANS_EXTENT_Y1, "TRANS_EXTENT_Y1");
+RegisterTemplateFilename(TRANS_EXTENT_X2, "TRANS_EXTENT_X2");
+RegisterTemplateFilename(TRANS_EXTENT_Y2, "TRANS_EXTENT_Y2");
+RegisterTemplateFilename(ORIGIN_X, "ORIGIN_X");
+RegisterTemplateFilename(ORIGIN_Y, "ORIGIN_Y");
 
 /*
  * corresponding Markers of the ConnectivityNode Section in Template
  */
 enum class kConnectivityNodeEnum {
-	NAME, VNOM, VPP_FIXED,VPP_START,FREQUENCY,
-	VISIBLE, TRANS_EXTENT_X1, TRANS_EXTENT_Y1, TRANS_EXTENT_X2, TRANS_EXTENT_Y2, ORIGIN_X, ORIGIN_Y,
-	ROTATION
-};
-
-/*
- * corresponding Markers of the PiLine Section in Template
- */
-enum class kPiLineEnum {
 	NAME, VNOM, VPP_FIXED,VPP_START,FREQUENCY,
 	VISIBLE, TRANS_EXTENT_X1, TRANS_EXTENT_Y1, TRANS_EXTENT_X2, TRANS_EXTENT_Y2, ORIGIN_X, ORIGIN_Y,
 	ROTATION
@@ -64,15 +93,6 @@ enum class kRxLineEnum {
 };
 
 /*
- * corresponding Markers of the PQLoad Section in Template
- */
-enum class kPQLoadEnum {
-	NAME, PNOM, QNOM, VNOM, PNOM_DISPLAYUNIT, QNOM_DISPLAYUNIT, VNOM_DISPLAYUNIT,
-	VISIBLE, TRANS_EXTENT_X1, TRANS_EXTENT_Y1, TRANS_EXTENT_X2, TRANS_EXTENT_Y2, ORIGIN_X, ORIGIN_Y,
-	ROTATION
-};
-
-/*
  * corresponding Markers of the ZLoad Section in Template
  */
 enum class kZLoadEnum {
@@ -80,22 +100,5 @@ enum class kZLoadEnum {
 	VISIBLE, TRANS_EXTENT_X1, TRANS_EXTENT_Y1, TRANS_EXTENT_X2, TRANS_EXTENT_Y2, ORIGIN_X, ORIGIN_Y,
 	ROTATION
 };
-
-/*
- * corresponding Markers of the Transformer Section in Template
- */
-enum class kTransformerEnum {
-	NAME, VNOM, VPP_FIXED,VPP_START,FREQUENCY,
-	VISIBLE, TRANS_EXTENT_X1, TRANS_EXTENT_Y1, TRANS_EXTENT_X2, TRANS_EXTENT_Y2, ORIGIN_X, ORIGIN_Y,
-	ROTATION
-};
-
-//static std::map<const kGlobalEnum, const std::string> tplKeys = {{kGlobalEnum::ROTATION,"ROTATION"},{kGlobalEnum::PAR,"PAR"},
-//		{kGlobalEnum::DIAGRAM_EXTENT_X1,"DIAGRAM_EXTENT_X1"},{kGlobalEnum::DIAGRAM_EXTENT_Y1,"DIAGRAM_EXTENT_Y1"},
-//		{kGlobalEnum::DIAGRAM_EXTENT_X2,"DIAGRAM_EXTENT_X2"},{kGlobalEnum::DIAGRAM_EXTENT_Y2,"DIAGRAM_EXTENT_Y2"},
-//		{kGlobalEnum::DIAGRAM_EXTENT_X1,"DIAGRAM_EXTENT_X1"},{kGlobalEnum::DIAGRAM_EXTENT_Y1,"DIAGRAM_EXTENT_Y1"},
-//		{kGlobalEnum::DIAGRAM_EXTENT_X2,"DIAGRAM_EXTENT_X2"},{kGlobalEnum::DIAGRAM_EXTENT_Y2,"DIAGRAM_EXTENT_Y2"},
-//};
-
 
 #endif /* SRC_MODELICAWORKSHOP_TPLMARKERSENUM_H_ */

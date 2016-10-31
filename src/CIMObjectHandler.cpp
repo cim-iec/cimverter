@@ -22,62 +22,74 @@ CIMObjectHandler::~CIMObjectHandler()
 	// TODO Auto-generated destructor stub
 }
 
-int CIMObjectHandler::terminal_count = 0;
-
 bool CIMObjectHandler::generate_modelica_code(const std::string filename)
 {
-		std::map<IEC61970::Base::Core::ConductingEquipment*, IEC61970::Base::Core::Terminal*> tpmap;
-
 		ctemplate::TemplateDictionary* dict = new ctemplate::TemplateDictionary("MODELICA");
 
-		this->handle_GlobalSettings(filename, dict);
+		this->handle_SystemSettings(filename, dict);
 
 		for (BaseClass* Object : this->_CIMObjects)
 		{
 			//TopologicalNode, convert to BusBar
 			if(auto *tpNode = dynamic_cast<IEC61970::Base::Topology::TopologicalNode*>(Object))
 			{
-				ctemplate::TemplateDictionary* busBar_dict = dict->AddIncludeDictionary("BUSBAR_DICT");
-				busBar_dict->SetFilename("resource/BusBar.tpl");
-				this->handle_TopologicalNode(tpNode, busBar_dict);
+				BusBarObj busBar = this->handle_TopologicalNode(tpNode, dict);
 
 				std::list<IEC61970::Base::Core::Terminal*>::iterator terminal_itor;
 				for(terminal_itor = tpNode->Terminal.begin();terminal_itor != tpNode->Terminal.end(); ++terminal_itor)
 				{
 					if(auto *externalNI = dynamic_cast<IEC61970::Base::Wires::ExternalNetworkInjection*>((*terminal_itor)->ConductingEquipment))
 					{
-						ctemplate::TemplateDictionary* slack_dict = dict->AddIncludeDictionary("SLACK_DICT");
-						slack_dict->SetFilename("resource/Slack.tpl");
-						this->handle_ExternalNI(tpNode, externalNI, slack_dict);
-					}
 
-					else if(auto *powerTrafo = dynamic_cast<IEC61970::Base::Wires::PowerTransformer*>((*terminal_itor)->ConductingEquipment))
-					{
-						ctemplate::TemplateDictionary* powerTrafo_dict = dict->AddIncludeDictionary("TRANSFORMER_DICT");
-						powerTrafo_dict->SetFilename("resource/Transformer.tpl");
-						this->handle_PowerTransformer(powerTrafo, powerTrafo_dict);
-					}
+						SlackObj slack = this->handle_ExternalNI(tpNode, (*terminal_itor), externalNI, dict);
 
-					else if(auto *acLine = dynamic_cast<IEC61970::Base::Wires::ACLineSegment*>((*terminal_itor)->ConductingEquipment))
-					{
-						ctemplate::TemplateDictionary* piLine_dict = dict->AddIncludeDictionary("PILINE_DICT");
-						piLine_dict->SetFilename("resource/PiLine.tpl");
-						this->handle_ACLineSegment(acLine,piLine_dict);
-					}
+						if((*terminal_itor)->connected == true)
+						{
+							Connection conn(&busBar, &slack, (*terminal_itor)->sequenceNumber);
+							connectionQueue.push(conn);
+						}
 
-					else if(auto *energyConsumer = dynamic_cast<IEC61970::Base::Wires::EnergyConsumer*>((*terminal_itor)->ConductingEquipment))
-					{
-						ctemplate::TemplateDictionary* pqLoad_dict = dict->AddIncludeDictionary("PQLOAD_DICT");
-						pqLoad_dict->SetFilename("resource/PQLoad.tpl");
-						this->handle_EnergyConsumer(tpNode, (*terminal_itor), energyConsumer, pqLoad_dict);
+					} else if(auto *powerTrafo = dynamic_cast<IEC61970::Base::Wires::PowerTransformer*>((*terminal_itor)->ConductingEquipment)) {
+
+						auto trafo = this->handle_PowerTransformer(tpNode, (*terminal_itor), powerTrafo, dict);
+
+						if((*terminal_itor)->connected == true)
+						{
+							Connection conn(&busBar, &trafo, (*terminal_itor)->sequenceNumber);
+							connectionQueue.push(conn);
+						}
+
+					} else if(auto *acLine = dynamic_cast<IEC61970::Base::Wires::ACLineSegment*>((*terminal_itor)->ConductingEquipment)){
+
+							auto piLine = this->handle_ACLineSegment(tpNode, (*terminal_itor), acLine, dict);
+
+							if((*terminal_itor)->connected == true)
+							{
+								Connection conn(&busBar, &piLine, (*terminal_itor)->sequenceNumber);
+								connectionQueue.push(conn);
+							}
+
+
+					} else if(auto *energyConsumer = dynamic_cast<IEC61970::Base::Wires::EnergyConsumer*>((*terminal_itor)->ConductingEquipment)) {
+
+						PQLoadObj pqLoad = this->handle_EnergyConsumer(tpNode, (*terminal_itor), energyConsumer, dict);
+
+						if((*terminal_itor)->connected == true)
+						{
+							Connection conn(&busBar, &pqLoad, (*terminal_itor)->sequenceNumber);
+							connectionQueue.push(conn);
+						}
+
 					}
 				}
 			}
 
 		}
 
+		this->handle_Connection(dict);
+
 		std::string modelica_output;
-		ctemplate::ExpandTemplate("resource/modelica.tpl", ctemplate::STRIP_BLANK_LINES, dict, &modelica_output);
+		ctemplate::ExpandTemplate("build/resource/modelica.tpl", ctemplate::STRIP_BLANK_LINES, dict, &modelica_output);
 		std::cout << modelica_output;
 		// Write to file
 		std::ofstream file;
@@ -95,16 +107,19 @@ bool CIMObjectHandler::generate_modelica_code(const std::string filename)
 * TopologicalNode
 * Convert to BusBar in Modelica
 */
-bool CIMObjectHandler::handle_GlobalSettings(const std::string filename, ctemplate::TemplateDictionary* dict)
+bool CIMObjectHandler::handle_SystemSettings(const std::string filename, ctemplate::TemplateDictionary* dict)
 {
 	//Modelica_Header
 	dict->AddSectionDictionary("HEADER_FOOTER_SECTION");
 	dict->SetValue("GRID_NAME", filename);
 
 	//Global Settings
-	dict->AddSectionDictionary("GLOBAL_SETTINGS_SECTION");
-	ModPowerSystems::VirtualElements::TopCoordinate GlobalSetting(1,1,300,-300);
-	GlobalSetting.set_template_values(dict);
+	dict->AddSectionDictionary("SYSTEM_SETTINGS_SECTION");
+
+	auto *System = new ModPowerSystems::System(0,0,300,-300);
+	System->set_template_values(dict);
+
+	delete System;
 
 	return true;
 }
@@ -114,49 +129,47 @@ bool CIMObjectHandler::handle_GlobalSettings(const std::string filename, ctempla
 * TopologicalNode
 * Convert to BusBar in Modelica
 */
-bool CIMObjectHandler::handle_TopologicalNode(IEC61970::Base::Topology::TopologicalNode* tpNode, ctemplate::TemplateDictionary* sub_dict)
+BusBarObj CIMObjectHandler::handle_TopologicalNode(const tpNodePtr tpNode, ctemplate::TemplateDictionary* dict)
 {
-	auto *BusBar = new ModPowerSystems::SinglePhase::Connections::BusBar();
+	BusBarObj BusBar;
 
-	double trans_para[4] = {1,0,-1,0};
-	IEC61970::Base::DiagramLayout::DiagramObjectPoint tmp_points;
-
-	if(tpNode->BaseVoltage->name.find("LV")){
-		BusBar->set_Vnom(tpNode->BaseVoltage->nominalVoltage.value);
-	} else if (tpNode->BaseVoltage->name.find("HV")){
-		BusBar->set_Vnom(tpNode->BaseVoltage->nominalVoltage.value*1000);
+	if(tpNode->BaseVoltage->name.find("LV") != std::string::npos){
+		BusBar.set_Vnom(tpNode->BaseVoltage->nominalVoltage.value);
+	} else if(tpNode->BaseVoltage->name.find("V") != std::string::npos){
+		BusBar.set_Vnom(tpNode->BaseVoltage->nominalVoltage.value*1000);
+	} else {
+		BusBar.set_Vnom(tpNode->BaseVoltage->nominalVoltage.value*1000);
 	}
 
-	BusBar->set_name(Tools::name_in_modelica(tpNode->name));
-	BusBar->annotation.placement.visible = true;
+
+	BusBar.set_name(name_in_modelica(tpNode->name));
+	BusBar.annotation.placement.visible = true;
 
 	std::list<IEC61970::Base::DiagramLayout::DiagramObject*>::iterator diagram_itor;
 	std::list<IEC61970::Base::DiagramLayout::DiagramObjectPoint*>::iterator points_itor;
+	IEC61970::Base::DiagramLayout::DiagramObjectPoint tmp_points;
 
 	for(diagram_itor = tpNode->DiagramObjects.begin(); diagram_itor != tpNode->DiagramObjects.end(); ++diagram_itor)
 	{
-		BusBar->annotation.placement.transfomation.rotation = (*diagram_itor)->rotation.value;
+		BusBar.annotation.placement.transfomation.rotation = (*diagram_itor)->rotation.value;
 
 		for(points_itor=(*diagram_itor)->DiagramObjectPoints.begin(); points_itor != (*diagram_itor)->DiagramObjectPoints.end(); ++points_itor)
 		{
-			tmp_points = Tools::convert_coordinate((*points_itor)->xPosition,(*points_itor)->yPosition,trans_para[0],trans_para[1],trans_para[2],trans_para[3]);
-			BusBar->annotation.placement.transfomation.origin.x = tmp_points.xPosition;
-			BusBar->annotation.placement.transfomation.origin.y = tmp_points.yPosition;
-
-			BusBar->set_template_values(sub_dict);
+			tmp_points.xPosition += (*points_itor)->xPosition;
+			tmp_points.yPosition += (*points_itor)->yPosition;
 		}
+
+		std::size_t size = (*diagram_itor)->DiagramObjectPoints.size();
+		tmp_points = convert_coordinate(tmp_points.xPosition/size,tmp_points.yPosition/size);//Get the average middle position of Graph
+		BusBar.annotation.placement.transfomation.origin.x = tmp_points.xPosition;
+		BusBar.annotation.placement.transfomation.origin.y = tmp_points.yPosition;
+
+		ctemplate::TemplateDictionary* busBar_dict = dict->AddIncludeDictionary("BUSBAR_DICT");
+		busBar_dict->SetFilename("build/resource/BusBar.tpl");
+		BusBar.set_template_values(busBar_dict);
 	}
 
-	delete BusBar;
-
-	return true;
-}
-
-
-
-bool CIMObjectHandler::handle_Terminal(IEC61970::Base::Core::Terminal* terminal, ctemplate::TemplateDictionary* sub_dict)
-{
-	return true;
+	return BusBar;
 }
 
 /**
@@ -164,37 +177,44 @@ bool CIMObjectHandler::handle_Terminal(IEC61970::Base::Core::Terminal* terminal,
 * ConductingEquipment cast to ExternalNetworkInjection
 * Convert to Slack in Modelica
 */
-bool CIMObjectHandler::handle_ExternalNI(IEC61970::Base::Topology::TopologicalNode* tpNode, IEC61970::Base::Wires::ExternalNetworkInjection* externalNI, ctemplate::TemplateDictionary* sub_dict)
+SlackObj CIMObjectHandler::handle_ExternalNI(const tpNodePtr tpNode, const terminalPtr terminal, const ExNIPtr externalNI, ctemplate::TemplateDictionary* dict)
 {
-	auto * Slack = new ModPowerSystems::SinglePhase::Sources::Slack();
+	SlackObj Slack;
 
-	double trans_para[4] = {1,0,-1,0};
-	IEC61970::Base::DiagramLayout::DiagramObjectPoint tmp_points;
-
-	Slack->set_Vnom(tpNode->BaseVoltage->nominalVoltage.value);
-	Slack->set_name(Tools::name_in_modelica(externalNI->name));
-	Slack->set_Vnom_displayUnit(cast_unit(tpNode->BaseVoltage->nominalVoltage.multiplier, tpNode->BaseVoltage->nominalVoltage.unit));
-	Slack->annotation.placement.visible = true;
+	Slack.set_Vnom(tpNode->BaseVoltage->nominalVoltage.value);
+	Slack.set_name(name_in_modelica(externalNI->name));
+	Slack.set_Vnom_displayUnit(cast_unit(tpNode->BaseVoltage->nominalVoltage.multiplier, tpNode->BaseVoltage->nominalVoltage.unit));
+	Slack.annotation.placement.visible = true;
 
 	std::list<IEC61970::Base::DiagramLayout::DiagramObject*>::iterator diagram_itor;
 	std::list<IEC61970::Base::DiagramLayout::DiagramObjectPoint*>::iterator points_itor;
+	IEC61970::Base::DiagramLayout::DiagramObjectPoint tmp_points;
+	tmp_points.xPosition = 0;
+	tmp_points.yPosition = 0;
 
 	for(diagram_itor = externalNI->DiagramObjects.begin(); diagram_itor != externalNI->DiagramObjects.end(); ++diagram_itor)
 	{
-		Slack->annotation.placement.transfomation.rotation = (*diagram_itor)->rotation.value - 90;
+		Slack.annotation.placement.transfomation.rotation = (*diagram_itor)->rotation.value - 90;
 
 		for(points_itor=(*diagram_itor)->DiagramObjectPoints.begin(); points_itor != (*diagram_itor)->DiagramObjectPoints.end(); ++points_itor)
 		{
-			tmp_points = Tools::convert_coordinate((*points_itor)->xPosition,(*points_itor)->yPosition,trans_para[0],trans_para[1],trans_para[2],trans_para[3]);
-			Slack->annotation.placement.transfomation.origin.x = tmp_points.xPosition;
-			Slack->annotation.placement.transfomation.origin.y = tmp_points.yPosition;
-			Slack->set_template_values(sub_dict);
+			tmp_points.xPosition += (*points_itor)->xPosition;
+			tmp_points.yPosition += (*points_itor)->yPosition;
+		}
+
+		std::size_t size = (*diagram_itor)->DiagramObjectPoints.size();
+		tmp_points = convert_coordinate(tmp_points.xPosition/size,tmp_points.yPosition/size);
+		Slack.annotation.placement.transfomation.origin.x = tmp_points.xPosition;
+		Slack.annotation.placement.transfomation.origin.y = tmp_points.yPosition;
+
+		if(terminal->sequenceNumber == 0 || terminal->sequenceNumber == 1){
+			ctemplate::TemplateDictionary* slack_dict = dict->AddIncludeDictionary("SLACK_DICT");
+			slack_dict->SetFilename("build/resource/Slack.tpl");
+			Slack.set_template_values(slack_dict);
 		}
 	}
 
-	delete Slack;
-
-	return true;
+	return Slack;
 }
 
 /**
@@ -202,16 +222,45 @@ bool CIMObjectHandler::handle_ExternalNI(IEC61970::Base::Topology::TopologicalNo
 * ConductingEquipment cast to ACLineSegment
 * Convert to PiLine in Modelica
 */
-bool CIMObjectHandler::handle_ACLineSegment(IEC61970::Base::Wires::ACLineSegment* acLine, ctemplate::TemplateDictionary* sub_dict)
+PiLineObj CIMObjectHandler::handle_ACLineSegment(const tpNodePtr tpNode, const terminalPtr terminal, const acLinePtr acLine, ctemplate::TemplateDictionary* dict)
 {
-	auto *Piline = new IEC61970::Base::Wires::ACLineSegment();
+	PiLineObj Piline;
 
-	double trans_para[4] = {1,0,-1,0};
+	Piline.set_name(name_in_modelica(acLine->name));
+	Piline.set_r(acLine->r.value);
+	Piline.set_x(acLine->x.value);
+
+	Piline.annotation.placement.visible = true;
+
+	std::list<IEC61970::Base::DiagramLayout::DiagramObject*>::iterator diagram_itor;
+	std::list<IEC61970::Base::DiagramLayout::DiagramObjectPoint*>::iterator points_itor;
 	IEC61970::Base::DiagramLayout::DiagramObjectPoint tmp_points;
+	tmp_points.xPosition = 0;
+	tmp_points.yPosition = 0;
 
-	delete Piline;
+	for(diagram_itor=acLine->DiagramObjects.begin();diagram_itor != acLine->DiagramObjects.end(); ++diagram_itor){
 
-	return true;
+		Piline.annotation.placement.transfomation.rotation = (*diagram_itor)->rotation.value - 90;
+
+		for(points_itor=(*diagram_itor)->DiagramObjectPoints.begin(); points_itor != (*diagram_itor)->DiagramObjectPoints.end(); ++points_itor) {
+
+			tmp_points.xPosition += (*points_itor)->xPosition;
+			tmp_points.yPosition += (*points_itor)->yPosition;
+		}
+
+		std::size_t size = (*diagram_itor)->DiagramObjectPoints.size();
+		tmp_points = convert_coordinate(tmp_points.xPosition/size,tmp_points.yPosition/size);
+		Piline.annotation.placement.transfomation.origin.x = tmp_points.xPosition;
+		Piline.annotation.placement.transfomation.origin.y = tmp_points.yPosition;
+
+		if(terminal->sequenceNumber == 0 || terminal->sequenceNumber == 1){
+			ctemplate::TemplateDictionary* piLine_dict = dict->AddIncludeDictionary("PILINE_DICT");
+			piLine_dict->SetFilename("build/resource/PiLine.tpl");
+			Piline.set_template_values(piLine_dict);
+		}
+	}
+
+	return Piline;
 }
 
 
@@ -220,9 +269,46 @@ bool CIMObjectHandler::handle_ACLineSegment(IEC61970::Base::Wires::ACLineSegment
 * ConductingEquipment cast to PowerTransformer
 * Convert to Transformer in Modelica
 */
-bool CIMObjectHandler::handle_PowerTransformer(IEC61970::Base::Wires::PowerTransformer* powerTrafo, ctemplate::TemplateDictionary* sub_dict)
+TransformerObj CIMObjectHandler::handle_PowerTransformer(const tpNodePtr tpNode, const terminalPtr terminal, const trafoPtr powerTrafo, ctemplate::TemplateDictionary* dict)
 {
-	return true;
+
+	TransformerObj Trafo;
+
+	Trafo.set_name(name_in_modelica(powerTrafo->name));
+	Trafo.set_Vnom1(tpNode->BaseVoltage->nominalVoltage.value);
+	Trafo.set_Vnom1(tpNode->BaseVoltage->nominalVoltage.value);
+	Trafo.annotation.placement.visible = true;
+
+	std::list<IEC61970::Base::DiagramLayout::DiagramObject*>::iterator diagram_itor;
+	std::list<IEC61970::Base::DiagramLayout::DiagramObjectPoint*>::iterator points_itor;
+	IEC61970::Base::DiagramLayout::DiagramObjectPoint tmp_points;
+	tmp_points.xPosition = 0;
+	tmp_points.yPosition = 0;
+
+	for(diagram_itor=powerTrafo->DiagramObjects.begin(); diagram_itor != powerTrafo->DiagramObjects.end(); ++diagram_itor){
+
+		Trafo.annotation.placement.transfomation.rotation = (*diagram_itor)->rotation.value - 90;
+
+		//calculate the middle points of the position.
+		for(points_itor=(*diagram_itor)->DiagramObjectPoints.begin(); points_itor != (*diagram_itor)->DiagramObjectPoints.end(); ++points_itor) {
+
+			tmp_points.xPosition += (*points_itor)->xPosition;
+			tmp_points.yPosition += (*points_itor)->yPosition;
+		}
+
+		std::size_t size = (*diagram_itor)->DiagramObjectPoints.size();
+		tmp_points = convert_coordinate(tmp_points.xPosition/size,tmp_points.yPosition/size);
+		Trafo.annotation.placement.transfomation.origin.x = tmp_points.xPosition;
+		Trafo.annotation.placement.transfomation.origin.y = tmp_points.yPosition;
+
+		if(terminal->sequenceNumber == 0 || terminal->sequenceNumber == 1){
+			ctemplate::TemplateDictionary* powerTrafo_dict = dict->AddIncludeDictionary("TRANSFORMER_DICT");
+			powerTrafo_dict->SetFilename("build/resource/Transformer.tpl");
+			Trafo.set_template_values(powerTrafo_dict);
+		}
+	}
+
+	return Trafo;
 }
 
 
@@ -231,42 +317,93 @@ bool CIMObjectHandler::handle_PowerTransformer(IEC61970::Base::Wires::PowerTrans
 * ConductingEquipment cast to EnergyConsumer
 * Convert to PQLoad in Modelica
 */
-bool CIMObjectHandler::handle_EnergyConsumer(IEC61970::Base::Topology::TopologicalNode* tpNode, IEC61970::Base::Core::Terminal* terminal, IEC61970::Base::Wires::EnergyConsumer* energyConsumer, ctemplate::TemplateDictionary* sub_dict)
+PQLoadObj  CIMObjectHandler::handle_EnergyConsumer(const tpNodePtr tpNode, const terminalPtr terminal, const energyConsumerPtr energyConsumer, ctemplate::TemplateDictionary* dict)
 {
-	auto *PQLoad = new ModPowerSystems::SinglePhase::Loads::PQLoad();
+	PQLoadObj PQLoad;
 
-	std::cout << "hello "<<std::endl;
-	double trans_para[4] = {1,0,-1,0};
-	IEC61970::Base::DiagramLayout::DiagramObjectPoint tmp_points;
-
-	PQLoad->set_name(Tools::name_in_modelica(energyConsumer->name));
-	PQLoad->set_Pnom(energyConsumer->p.value);
-	PQLoad->set_Pnom_displayUnit(cast_unit(energyConsumer->p.multiplier, energyConsumer->p.unit));
-	PQLoad->set_Qnom(energyConsumer->q.value);
-	PQLoad->set_Qnom_displayUnit(cast_unit(energyConsumer->q.multiplier, energyConsumer->q.unit));
-	PQLoad->set_Vnom(tpNode->BaseVoltage->nominalVoltage.value);
-	PQLoad->set_Vnom_displayUnit(cast_unit(tpNode->BaseVoltage->nominalVoltage.multiplier, tpNode->BaseVoltage->nominalVoltage.unit));
-	PQLoad->annotation.placement.visible = true;
+	PQLoad.set_name(name_in_modelica(energyConsumer->name));
+	PQLoad.set_Pnom(energyConsumer->p.value);
+	PQLoad.set_Pnom_displayUnit(cast_unit(energyConsumer->p.multiplier, energyConsumer->p.unit));
+	PQLoad.set_Qnom(energyConsumer->q.value);
+	PQLoad.set_Qnom_displayUnit(cast_unit(energyConsumer->q.multiplier, energyConsumer->q.unit));
+	PQLoad.set_Vnom(tpNode->BaseVoltage->nominalVoltage.value);
+	PQLoad.set_Vnom_displayUnit(cast_unit(tpNode->BaseVoltage->nominalVoltage.multiplier, tpNode->BaseVoltage->nominalVoltage.unit));
+	PQLoad.annotation.placement.visible = true;
 
 	std::list<IEC61970::Base::DiagramLayout::DiagramObject*>::iterator diagram_itor;
 	std::list<IEC61970::Base::DiagramLayout::DiagramObjectPoint*>::iterator points_itor;
 
-	if(terminal->sequenceNumber == 0 || terminal->sequenceNumber == 1 ){
-		for(diagram_itor=energyConsumer->DiagramObjects.begin();diagram_itor != energyConsumer->DiagramObjects.end(); ++diagram_itor){
+	IEC61970::Base::DiagramLayout::DiagramObjectPoint tmp_points;
+	tmp_points.xPosition = 0;
+	tmp_points.yPosition = 0;
 
-			for(points_itor=(*diagram_itor)->DiagramObjectPoints.begin(); points_itor != (*diagram_itor)->DiagramObjectPoints.end(); ++points_itor) {
+	for(diagram_itor=energyConsumer->DiagramObjects.begin();diagram_itor != energyConsumer->DiagramObjects.end(); ++diagram_itor){
 
-				tmp_points = Tools::convert_coordinate((*points_itor)->xPosition,(*points_itor)->yPosition,trans_para[0],trans_para[1],trans_para[2],trans_para[3]);
-				PQLoad->annotation.placement.transfomation.origin.x = tmp_points.xPosition;
-				PQLoad->annotation.placement.transfomation.origin.y = tmp_points.yPosition;
+		for(points_itor=(*diagram_itor)->DiagramObjectPoints.begin(); points_itor != (*diagram_itor)->DiagramObjectPoints.end(); ++points_itor) {
 
-				PQLoad->set_template_values(sub_dict);
-
-			}
+			tmp_points.xPosition += (*points_itor)->xPosition;
+			tmp_points.yPosition += (*points_itor)->yPosition;
 		}
-	} else if (terminal->sequenceNumber == 2){
+
+		std::size_t size = (*diagram_itor)->DiagramObjectPoints.size();
+		tmp_points = convert_coordinate(tmp_points.xPosition/size,tmp_points.yPosition/size);
+		PQLoad.annotation.placement.transfomation.origin.x = tmp_points.xPosition;
+		PQLoad.annotation.placement.transfomation.origin.y = tmp_points.yPosition;
+
+		if(terminal->sequenceNumber == 0 || terminal->sequenceNumber == 1){
+			ctemplate::TemplateDictionary* pqLoad_dict = dict->AddIncludeDictionary("PQLOAD_DICT");
+			pqLoad_dict->SetFilename("build/resource/PQLoad.tpl");
+			PQLoad.set_template_values(pqLoad_dict);
+		}
 
 	}
 
+	return PQLoad;
+}
+
+/**
+* Create Connection
+*/
+bool CIMObjectHandler::handle_Connection(ctemplate::TemplateDictionary* dict){
+
+	unsigned int size;
+	size = connectionQueue.size();
+	std::cout << "connectionQueue size: " << size << std::endl;
+	while(!connectionQueue.empty())
+	{
+		ctemplate::TemplateDictionary* connection_dict = dict->AddIncludeDictionary(CONNECTIONS_DICT);
+		connection_dict->SetFilename("build/resource/Connections.tpl");
+		connectionQueue.front().draw_connection(connection_dict);
+		connectionQueue.pop();
+	}
+
 	return true;
+}
+
+/**
+* convert the coordinate system between different software
+*/
+IEC61970::Base::DiagramLayout::DiagramObjectPoint CIMObjectHandler::convert_coordinate(IEC61970::Base::Domain::Float x, IEC61970::Base::Domain::Float y)
+{
+	double trans_para[4] = {1,0,-1,0};
+	IEC61970::Base::DiagramLayout::DiagramObjectPoint new_point;
+
+	new_point.xPosition= trans_para[0]*x+trans_para[1];
+	new_point.yPosition = trans_para[2]*y+trans_para[3];
+	return new_point;
+}
+
+/**
+* convert name adapt to the format in modelica
+*/
+std::string CIMObjectHandler::name_in_modelica(std::string original_name)
+{
+	std::string new_name = original_name;
+	std::size_t i = new_name.find("-");
+	std::size_t j = new_name.find(".");
+	if (i < new_name.size())
+		new_name = "CIM_" + new_name.replace(i,1,"_");
+	if (j < new_name.size())
+		new_name = "CIM_" + new_name.replace(j,1,"_");
+	return new_name;
 }

@@ -39,6 +39,16 @@ namespace ModelicaWorkshop {
 			* Current Unit
 			*/
 			A, kA, mA,
+
+			/*
+			* Load Unit
+			*/
+			Ohm,
+
+			/*
+			* Shunt Conductance Unit
+			*/
+			S
 		};
 
 
@@ -47,7 +57,8 @@ namespace ModelicaWorkshop {
 			{modelicaUnit::rad,"rad"},{modelicaUnit::sr,"sr"},
 			{modelicaUnit::Hz,"Hz"},{modelicaUnit::Bq,"Bq"},{modelicaUnit::W,"W"},{modelicaUnit::MW,"MW"},{modelicaUnit::kW,"kW"},{modelicaUnit::mW,"mW"},{modelicaUnit::var,"var"},
 			{modelicaUnit::A,"A"},{modelicaUnit::kA,"kA"},{modelicaUnit::mA,"mA"},
-			{modelicaUnit::V,"V"},{modelicaUnit::MV,"MV"},{modelicaUnit::kV,"kV"},{modelicaUnit::mV,"mV"}
+			{modelicaUnit::V,"V"},{modelicaUnit::MV,"MV"},{modelicaUnit::kV,"kV"},{modelicaUnit::mV,"mV"},
+			{modelicaUnit::S,"S"},{modelicaUnit::Ohm,"Ohm"}
 		};
 
 		static std::map<const IEC61970::Base::Domain::UnitSymbol, const modelicaUnit> unit_in_modelica
@@ -78,7 +89,7 @@ namespace ModelicaWorkshop {
 						std::cout << "M" << std::endl;
 						break;
 				case IEC61970::Base::Domain::UnitMultiplier::none:
-						std::cout << "none" << std::endl;
+//						std::cout << "none" << std::endl;
 				break;
 
 			}
