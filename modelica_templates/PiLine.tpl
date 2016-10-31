@@ -1,2 +1,2 @@
-ModPowerSystems.SinglePhase.Lines.PiLine {{NAME}} (Vnom={{VNOM}})
+ModPowerSystems.SinglePhase.Lines.PiLine {{NAME}}(Imax(displayUnit = "{{IMAX_DISPLAYUNIT}}") = {{IMAX}}, Sr(displayUnit = "{{SR_DISPLAYUNIT}}") = {{SR}}, g = {{G}}, length={{LENGTH}}, r={{R}}, x={{X}}, b={{B}})
 annotation (Placement(visible = {{VISIBLE}}, transformation(extent = {{{{TRANS_EXTENT_X1}},{{TRANS_EXTENT_Y1}}}, {{{TRANS_EXTENT_X2}},{{TRANS_EXTENT_Y2}}}}, rotation = {{ROTATION}}, origin = {{{ORIGIN_X}},{{ORIGIN_Y}}})));

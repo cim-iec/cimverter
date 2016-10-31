@@ -12,36 +12,41 @@
 #include <iostream>
 #include <fstream>
 #include "IEC61970.h"
-#include "tools.h"
 #include "CIMParser.h"
 #include <ctemplate/template.h>
 #include "ModelicaWorkshop/ModelicaClass.h"
 
+typedef IEC61970::Base::Topology::TopologicalNode*  tpNodePtr;
+typedef IEC61970::Base::Core::Terminal* terminalPtr;
+typedef IEC61970::Base::Wires::ExternalNetworkInjection* ExNIPtr;
+typedef IEC61970::Base::Wires::ACLineSegment* acLinePtr;
+typedef IEC61970::Base::Wires::PowerTransformer* trafoPtr;
+typedef IEC61970::Base::Wires::EnergyConsumer* energyConsumerPtr;
 
 class CIMObjectHandler {
 
 public:
-
-	static int terminal_count;
 
 	CIMObjectHandler();
 	CIMObjectHandler(std::vector<BaseClass*>&& CIMObjects);
 	virtual ~CIMObjectHandler();
 
 	bool generate_modelica_code(const std::string filename);
-	bool handle_GlobalSettings(const std::string filename, ctemplate::TemplateDictionary* dict);
+	bool handle_SystemSettings(const std::string filename, ctemplate::TemplateDictionary* dict);
+	SlackObj handle_ExternalNI(const tpNodePtr tpNode, const terminalPtr terminal, const ExNIPtr externalNI, ctemplate::TemplateDictionary* dict);
+	BusBarObj handle_TopologicalNode(const tpNodePtr tpNode, ctemplate::TemplateDictionary* dict);
+	PiLineObj handle_ACLineSegment(const tpNodePtr tpNode,  const terminalPtr terminal, const acLinePtr acLine, ctemplate::TemplateDictionary* dict);
+	TransformerObj handle_PowerTransformer(const tpNodePtr tpNode, const terminalPtr terminal, const trafoPtr powerTrafo, ctemplate::TemplateDictionary* dict);
+	PQLoadObj handle_EnergyConsumer(const tpNodePtr tpNode, const terminalPtr terminal, const energyConsumerPtr energyConsumer, ctemplate::TemplateDictionary* dict);
+	bool handle_Connection(ctemplate::TemplateDictionary* dict);
 
-	bool handle_ExternalNI(IEC61970::Base::Topology::TopologicalNode* tpNode, IEC61970::Base::Wires::ExternalNetworkInjection* externalNI, ctemplate::TemplateDictionary* sub_dict);
-	bool handle_TopologicalNode(IEC61970::Base::Topology::TopologicalNode* tpNode, ctemplate::TemplateDictionary* sub_dict);
-	bool handle_Terminal(IEC61970::Base::Core::Terminal* terminal, ctemplate::TemplateDictionary* sub_dict);
-	bool handle_ACLineSegment(IEC61970::Base::Wires::ACLineSegment* acLine, ctemplate::TemplateDictionary* sub_dict);
-	bool handle_PowerTransformer(IEC61970::Base::Wires::PowerTransformer* powerTrafo, ctemplate::TemplateDictionary* sub_dict);
-	bool handle_EnergyConsumer(IEC61970::Base::Topology::TopologicalNode* tpNode, IEC61970::Base::Core::Terminal* terminal, IEC61970::Base::Wires::EnergyConsumer* energyConsumer, ctemplate::TemplateDictionary* sub_dict);
+	static std::string name_in_modelica(std::string orginal_name);
+
 
 private:
 	std::vector<BaseClass*> _CIMObjects;
+	std::queue<Connection> connectionQueue;
+	static::IEC61970::Base::DiagramLayout::DiagramObjectPoint convert_coordinate(IEC61970::Base::Domain::Float x, IEC61970::Base::Domain::Float y);
 };
-
-
 
 #endif /* SRC_CIMOBJECTHANDLER_H_ */

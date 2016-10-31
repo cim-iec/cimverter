@@ -43,12 +43,7 @@ namespace ModPowerSystems {
 
 					bool set_template_values(ctemplate::TemplateDictionary *dictionary) override;
 
-					static int count() { return Slack::_count; };
-
 				private:
-					static int _count;
-					static std::map<const kSlackEnum, const std::string> tplKeys;
-					static std::map<const kSlackEnum, const std::string> initial_tplKeys();
 
 					double _Vnom;
 					double _frequency = 50; //Frequency
