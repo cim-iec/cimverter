@@ -14,10 +14,7 @@ namespace ModPowerSystems
 
 			BusBar::BusBar() :_Vnom(110000)
 			{
-				this->annotation.placement.transfomation.extent.first.x = -10;
-				this->annotation.placement.transfomation.extent.first.y = -10;
-				this->annotation.placement.transfomation.extent.second.x = 10;
-				this->annotation.placement.transfomation.extent.second.y = 10;
+
 			}
 
 			BusBar::BusBar(const BusBar &rhs)

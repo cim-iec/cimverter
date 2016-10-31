@@ -8,6 +8,8 @@
 
 #include "../../../ModBaseClass.h"
 
+using namespace ModelicaWorkshop;
+
 namespace ModPowerSystems
 {
 	namespace SinglePhase
@@ -15,7 +17,7 @@ namespace ModPowerSystems
 		namespace Connections
 		{
 
-			class BusBar:public ModelicaWorkshop::ModBaseClass
+			class BusBar:public ModBaseClass
 			{
 			public:
 				BusBar();

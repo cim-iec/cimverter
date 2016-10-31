@@ -30,7 +30,7 @@ RegisterTemplateFilename(ICON_EXTENT_Y1, "ICON_EXTENT_Y1");
 RegisterTemplateFilename(ICON_EXTENT_X2, "ICON_EXTENT_X2");
 RegisterTemplateFilename(ICON_EXTENT_Y2, "ICON_EXTENT_Y2");
 
-// Corresponding Markers of the Slack Section in Template
+//Slack
 RegisterTemplateFilename(NAME, "NAME");
 RegisterTemplateFilename(VNOM, "VNOM");
 RegisterTemplateFilename(VNOM_DISPLAYUNIT, "VNOM_DISPLAYUNIT");
@@ -65,7 +65,7 @@ RegisterTemplateFilename(VNOM2_DISPLAYUNIT, "VNOM2_DISPLAYUNIT");
 RegisterTemplateFilename(URR, "UKR");
 RegisterTemplateFilename(UKR, "URR");
 
-
+//Annotation
 RegisterTemplateFilename(VISIBLE, "VISIBLE");
 RegisterTemplateFilename(TRANS_EXTENT_X1, "TRANS_EXTENT_X1");
 RegisterTemplateFilename(TRANS_EXTENT_Y1, "TRANS_EXTENT_Y1");
@@ -74,31 +74,11 @@ RegisterTemplateFilename(TRANS_EXTENT_Y2, "TRANS_EXTENT_Y2");
 RegisterTemplateFilename(ORIGIN_X, "ORIGIN_X");
 RegisterTemplateFilename(ORIGIN_Y, "ORIGIN_Y");
 
-/*
- * corresponding Markers of the ConnectivityNode Section in Template
- */
-enum class kConnectivityNodeEnum {
-	NAME, VNOM, VPP_FIXED,VPP_START,FREQUENCY,
-	VISIBLE, TRANS_EXTENT_X1, TRANS_EXTENT_Y1, TRANS_EXTENT_X2, TRANS_EXTENT_Y2, ORIGIN_X, ORIGIN_Y,
-	ROTATION
-};
-
-/*
- * corresponding Markers of the RxLine Section in  Template
- */
-enum class kRxLineEnum {
-	NAME, VNOM, VPP_FIXED,VPP_START,FREQUENCY,
-	VISIBLE, TRANS_EXTENT_X1, TRANS_EXTENT_Y1, TRANS_EXTENT_X2, TRANS_EXTENT_Y2, ORIGIN_X, ORIGIN_Y,
-	ROTATION
-};
-
-/*
- * corresponding Markers of the ZLoad Section in Template
- */
-enum class kZLoadEnum {
-	NAME, VNOM, VPP_FIXED,VPP_START,FREQUENCY,
-	VISIBLE, TRANS_EXTENT_X1, TRANS_EXTENT_Y1, TRANS_EXTENT_X2, TRANS_EXTENT_Y2, ORIGIN_X, ORIGIN_Y,
-	ROTATION
-};
+//Connection
+RegisterTemplateFilename(CONNECTION_TYPE, "CONNECTION_TYPE");
+RegisterTemplateFilename(PORT1, "PORT1");
+RegisterTemplateFilename(PORT2, "PORT2");
+RegisterTemplateFilename(COLOR, "COLOR");
+RegisterTemplateFilename(POINTS, "POINTS");
 
 #endif /* SRC_MODELICAWORKSHOP_TPLMARKERSENUM_H_ */
