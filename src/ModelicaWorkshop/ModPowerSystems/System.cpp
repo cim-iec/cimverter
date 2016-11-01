@@ -21,8 +21,8 @@ namespace ModPowerSystems {
 		//initialize System Label
 		this->set_name("system");
 		this->annotation.placement.transfomation.extent.first.x = 0;
-		this->annotation.placement.transfomation.extent.first.y = -20;
-		this->annotation.placement.transfomation.extent.second.x = 20;
+		this->annotation.placement.transfomation.extent.first.y = -30;
+		this->annotation.placement.transfomation.extent.second.x = 30;
 		this->annotation.placement.transfomation.extent.second.y = 0;
 		this->annotation.placement.visible = true;
 

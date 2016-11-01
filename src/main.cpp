@@ -4,6 +4,9 @@
 #include "CIMParser.h"
 #include "IEC61970.h"
 #include "CIMObjectHandler.h"
+#include <libconfig.h++>
+
+using namespace libconfig;
 
 unsigned int filesize(const char* filename)
 {

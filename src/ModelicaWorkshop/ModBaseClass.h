@@ -13,7 +13,6 @@
 #include "ModelicaUnit.h"
 #include "tplMarkersEnum.h"
 
-
 namespace ModelicaWorkshop {
 
 	typedef struct Point

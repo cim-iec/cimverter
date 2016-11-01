@@ -31,20 +31,17 @@ bool CIMObjectHandler::generate_modelica_code(const std::string filename)
 		for (BaseClass* Object : this->_CIMObjects)
 		{
 			//TopologicalNode, convert to BusBar
-			if(auto *tpNode = dynamic_cast<IEC61970::Base::Topology::TopologicalNode*>(Object))
-			{
+			if(auto *tpNode = dynamic_cast<IEC61970::Base::Topology::TopologicalNode*>(Object)){
 				BusBarObj busBar = this->handle_TopologicalNode(tpNode, dict);
 
 				std::list<IEC61970::Base::Core::Terminal*>::iterator terminal_itor;
-				for(terminal_itor = tpNode->Terminal.begin();terminal_itor != tpNode->Terminal.end(); ++terminal_itor)
-				{
-					if(auto *externalNI = dynamic_cast<IEC61970::Base::Wires::ExternalNetworkInjection*>((*terminal_itor)->ConductingEquipment))
-					{
+				for(terminal_itor = tpNode->Terminal.begin();terminal_itor != tpNode->Terminal.end(); ++terminal_itor){
+
+					if(auto *externalNI = dynamic_cast<IEC61970::Base::Wires::ExternalNetworkInjection*>((*terminal_itor)->ConductingEquipment)){
 
 						SlackObj slack = this->handle_ExternalNI(tpNode, (*terminal_itor), externalNI, dict);
 
-						if((*terminal_itor)->connected == true)
-						{
+						if((*terminal_itor)->connected == true){
 							Connection conn(&busBar, &slack, (*terminal_itor)->sequenceNumber);
 							connectionQueue.push(conn);
 						}
@@ -53,30 +50,35 @@ bool CIMObjectHandler::generate_modelica_code(const std::string filename)
 
 						auto trafo = this->handle_PowerTransformer(tpNode, (*terminal_itor), powerTrafo, dict);
 
-						if((*terminal_itor)->connected == true)
-						{
+						if((*terminal_itor)->connected == true){
 							Connection conn(&busBar, &trafo, (*terminal_itor)->sequenceNumber);
 							connectionQueue.push(conn);
 						}
 
 					} else if(auto *acLine = dynamic_cast<IEC61970::Base::Wires::ACLineSegment*>((*terminal_itor)->ConductingEquipment)){
 
-							auto piLine = this->handle_ACLineSegment(tpNode, (*terminal_itor), acLine, dict);
+						auto piLine = this->handle_ACLineSegment(tpNode, (*terminal_itor), acLine, dict);
 
-							if((*terminal_itor)->connected == true)
-							{
-								Connection conn(&busBar, &piLine, (*terminal_itor)->sequenceNumber);
-								connectionQueue.push(conn);
-							}
-
+						if((*terminal_itor)->connected == true){
+							Connection conn(&busBar, &piLine, (*terminal_itor)->sequenceNumber);
+							connectionQueue.push(conn);
+						}
 
 					} else if(auto *energyConsumer = dynamic_cast<IEC61970::Base::Wires::EnergyConsumer*>((*terminal_itor)->ConductingEquipment)) {
 
-						PQLoadObj pqLoad = this->handle_EnergyConsumer(tpNode, (*terminal_itor), energyConsumer, dict);
+						auto pqLoad = this->handle_EnergyConsumer(tpNode, (*terminal_itor), energyConsumer, dict);
 
-						if((*terminal_itor)->connected == true)
-						{
+						if((*terminal_itor)->connected == true){
 							Connection conn(&busBar, &pqLoad, (*terminal_itor)->sequenceNumber);
+							connectionQueue.push(conn);
+						}
+
+					} else if(auto *synMachine = dynamic_cast<IEC61970::Base::Wires::SynchronousMachine*>((*terminal_itor)->ConductingEquipment)) {
+
+						auto genericGenerator = this->handle_SynchronousMachine(tpNode, (*terminal_itor), synMachine, dict);
+
+						if((*terminal_itor)->connected == true){
+							Connection conn(&busBar, &genericGenerator, (*terminal_itor)->sequenceNumber);
 							connectionQueue.push(conn);
 						}
 
@@ -116,7 +118,7 @@ bool CIMObjectHandler::handle_SystemSettings(const std::string filename, ctempla
 	//Global Settings
 	dict->AddSectionDictionary("SYSTEM_SETTINGS_SECTION");
 
-	auto *System = new ModPowerSystems::System(0,0,300,-300);
+	auto *System = new ModPowerSystems::System(0,0,400,-400);
 	System->set_template_values(dict);
 
 	delete System;
@@ -129,7 +131,7 @@ bool CIMObjectHandler::handle_SystemSettings(const std::string filename, ctempla
 * TopologicalNode
 * Convert to BusBar in Modelica
 */
-BusBarObj CIMObjectHandler::handle_TopologicalNode(const tpNodePtr tpNode, ctemplate::TemplateDictionary* dict)
+BusBarObj CIMObjectHandler::handle_TopologicalNode(const TPNodePtr tpNode, ctemplate::TemplateDictionary* dict)
 {
 	BusBarObj BusBar;
 
@@ -177,13 +179,13 @@ BusBarObj CIMObjectHandler::handle_TopologicalNode(const tpNodePtr tpNode, ctemp
 * ConductingEquipment cast to ExternalNetworkInjection
 * Convert to Slack in Modelica
 */
-SlackObj CIMObjectHandler::handle_ExternalNI(const tpNodePtr tpNode, const terminalPtr terminal, const ExNIPtr externalNI, ctemplate::TemplateDictionary* dict)
+
+SlackObj CIMObjectHandler::handle_ExternalNI(const TPNodePtr tpNode, const TerminalPtr terminal, const ExNIPtr externalNI, ctemplate::TemplateDictionary* dict)
 {
 	SlackObj Slack;
 
 	Slack.set_Vnom(tpNode->BaseVoltage->nominalVoltage.value);
 	Slack.set_name(name_in_modelica(externalNI->name));
-	Slack.set_Vnom_displayUnit(cast_unit(tpNode->BaseVoltage->nominalVoltage.multiplier, tpNode->BaseVoltage->nominalVoltage.unit));
 	Slack.annotation.placement.visible = true;
 
 	std::list<IEC61970::Base::DiagramLayout::DiagramObject*>::iterator diagram_itor;
@@ -222,7 +224,7 @@ SlackObj CIMObjectHandler::handle_ExternalNI(const tpNodePtr tpNode, const termi
 * ConductingEquipment cast to ACLineSegment
 * Convert to PiLine in Modelica
 */
-PiLineObj CIMObjectHandler::handle_ACLineSegment(const tpNodePtr tpNode, const terminalPtr terminal, const acLinePtr acLine, ctemplate::TemplateDictionary* dict)
+PiLineObj CIMObjectHandler::handle_ACLineSegment(const TPNodePtr tpNode, const TerminalPtr terminal, const AcLinePtr acLine, ctemplate::TemplateDictionary* dict)
 {
 	PiLineObj Piline;
 
@@ -269,7 +271,8 @@ PiLineObj CIMObjectHandler::handle_ACLineSegment(const tpNodePtr tpNode, const t
 * ConductingEquipment cast to PowerTransformer
 * Convert to Transformer in Modelica
 */
-TransformerObj CIMObjectHandler::handle_PowerTransformer(const tpNodePtr tpNode, const terminalPtr terminal, const trafoPtr powerTrafo, ctemplate::TemplateDictionary* dict)
+
+TransformerObj CIMObjectHandler::handle_PowerTransformer(const TPNodePtr tpNode, const TerminalPtr terminal, const TrafoPtr powerTrafo, ctemplate::TemplateDictionary* dict)
 {
 
 	TransformerObj Trafo;
@@ -311,13 +314,12 @@ TransformerObj CIMObjectHandler::handle_PowerTransformer(const tpNodePtr tpNode,
 	return Trafo;
 }
 
-
 /**
 * ConductingEquipment of Terminal
 * ConductingEquipment cast to EnergyConsumer
 * Convert to PQLoad in Modelica
 */
-PQLoadObj  CIMObjectHandler::handle_EnergyConsumer(const tpNodePtr tpNode, const terminalPtr terminal, const energyConsumerPtr energyConsumer, ctemplate::TemplateDictionary* dict)
+PQLoadObj  CIMObjectHandler::handle_EnergyConsumer(const TPNodePtr tpNode, const TerminalPtr terminal, const EnergyConsumerPtr energyConsumer, ctemplate::TemplateDictionary* dict)
 {
 	PQLoadObj PQLoad;
 
@@ -338,6 +340,8 @@ PQLoadObj  CIMObjectHandler::handle_EnergyConsumer(const tpNodePtr tpNode, const
 	tmp_points.yPosition = 0;
 
 	for(diagram_itor=energyConsumer->DiagramObjects.begin();diagram_itor != energyConsumer->DiagramObjects.end(); ++diagram_itor){
+
+		PQLoad.annotation.placement.transfomation.rotation = (*diagram_itor)->rotation.value;
 
 		for(points_itor=(*diagram_itor)->DiagramObjectPoints.begin(); points_itor != (*diagram_itor)->DiagramObjectPoints.end(); ++points_itor) {
 
@@ -360,6 +364,51 @@ PQLoadObj  CIMObjectHandler::handle_EnergyConsumer(const tpNodePtr tpNode, const
 
 	return PQLoad;
 }
+
+/**
+* ConductingEquipment of Terminal
+* ConductingEquipment cast to SynchronousMachine
+* Convert to GenericGenerator in Modelica
+*/
+GenericGeneratorObj CIMObjectHandler::handle_SynchronousMachine(const TPNodePtr tpNode, const TerminalPtr terminal, const SynMachinePtr synMachine, ctemplate::TemplateDictionary* dict)
+{
+	GenericGeneratorObj GenericGenerator;
+
+	GenericGenerator.set_name(name_in_modelica(synMachine->name));
+	GenericGenerator.annotation.placement.visible = true;
+
+	std::list<IEC61970::Base::DiagramLayout::DiagramObject*>::iterator diagram_itor;
+	std::list<IEC61970::Base::DiagramLayout::DiagramObjectPoint*>::iterator points_itor;
+	IEC61970::Base::DiagramLayout::DiagramObjectPoint tmp_points;
+	tmp_points.xPosition = 0;
+	tmp_points.yPosition = 0;
+
+	for(diagram_itor = synMachine->DiagramObjects.begin(); diagram_itor != synMachine->DiagramObjects.end(); ++diagram_itor)
+	{
+		GenericGenerator.annotation.placement.transfomation.rotation = (*diagram_itor)->rotation.value;
+
+		for(points_itor=(*diagram_itor)->DiagramObjectPoints.begin(); points_itor != (*diagram_itor)->DiagramObjectPoints.end(); ++points_itor)
+			{
+			tmp_points.xPosition += (*points_itor)->xPosition;
+			tmp_points.yPosition += (*points_itor)->yPosition;
+		}
+
+		std::size_t size = (*diagram_itor)->DiagramObjectPoints.size();
+		tmp_points = convert_coordinate(tmp_points.xPosition/size,tmp_points.yPosition/size);
+		GenericGenerator.annotation.placement.transfomation.origin.x = tmp_points.xPosition;
+		GenericGenerator.annotation.placement.transfomation.origin.y = tmp_points.yPosition;
+
+		if(terminal->sequenceNumber == 0 || terminal->sequenceNumber == 1){
+			ctemplate::TemplateDictionary* genericGenerator_dict = dict->AddIncludeDictionary("GENERICGENERATOR_DICT");
+			genericGenerator_dict->SetFilename("build/resource/GenericGenerator.tpl");
+			GenericGenerator.set_template_values(genericGenerator_dict);
+		}
+	}
+
+	return GenericGenerator;
+
+}
+
 
 /**
 * Create Connection

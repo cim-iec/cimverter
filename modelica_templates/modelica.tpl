@@ -28,6 +28,8 @@ annotation(Placement(visible = {{VISIBLE}}, transformation(extent = {{{{TRANS_EX
 
 {{>TRANSFORMER_DICT}}
 
+{{>GENERICGENERATOR_DICT}}
+
 equation
 
 {{!----Connections-------}}

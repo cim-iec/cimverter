@@ -5,7 +5,9 @@ This tool is used to convert CIM-XML-RDF files into Modelica code.
 ### Dependencies:
 * Boost >= 1.60.0
 * ctemplate >= 2.3
+* libconifg++
 * CIMParser
+
 
 #### To build the CIM2Mod using cmake by following steps:
 

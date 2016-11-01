@@ -2,12 +2,10 @@
 <module type="CPP_MODULE" version="4">
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
-      <sourceFolder url="file://$MODULE_DIR$/src/tools.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/CIMObjectHandler.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/main.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/CIMObjectHandler.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/ModelicaWorkshop/ModPowerSystems/VirtualElements/TopCoordinate.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/ModelicaWorkshop/ModPowerSystems/VirtualElements/TopCoordinate.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/ModelicaWorkshop/ModPowerSystems/Connection.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/ModelicaWorkshop/ModPowerSystems/System.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/ModelicaWorkshop/ModPowerSystems/Connection.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/ModelicaWorkshop/ModPowerSystems/System.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/ModelicaWorkshop/ModPowerSystems/SinglePhase/Connections/ConnectivityNode.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/ModelicaWorkshop/ModPowerSystems/SinglePhase/Connections/BusBar.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/ModelicaWorkshop/ModPowerSystems/SinglePhase/Connections/ConnectivityNode.h" isTestSource="false" />
@@ -25,12 +23,17 @@
       <sourceFolder url="file://$MODULE_DIR$/src/ModelicaWorkshop/ModPowerSystems/SinglePhase/Loads/PQLoad.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/ModelicaWorkshop/ModPowerSystems/SinglePhase/Loads/ZLoad.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/ModelicaWorkshop/ModPowerSystems/SinglePhase/Generations/WindGenerator.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/ModelicaWorkshop/ModPowerSystems/SinglePhase/Generations/GenericGenerator.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/ModelicaWorkshop/ModPowerSystems/SinglePhase/Generations/WindGenerator.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/ModelicaWorkshop/ModPowerSystems/SinglePhase/Generations/GenericGenerator.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/ModelicaWorkshop/ModBaseClass.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/ModelicaWorkshop/ModBaseClass.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/tools.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/CIMObjectHandler.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/main.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/CIMObjectHandler.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Doxyfile.in" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CMakeLists.txt" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cmake/Modules/FindConfig++.cmake" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/cmake/Modules/FindCtemplate.cmake" isTestSource="false" />
     </content>
     <orderEntry type="sourceFolder" forTests="false" />

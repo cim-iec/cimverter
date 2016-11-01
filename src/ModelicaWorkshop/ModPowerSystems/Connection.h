@@ -1,21 +1,23 @@
 /*
  * Connection.h
- *
+ *	Manager Connections in Modelica
  */
 
-#ifndef SRC_MODELICAWORKSHOP_MODPOWERSYSTEMS_VIRTUALELEMENTS_CONNECTION_H_
-#define SRC_MODELICAWORKSHOP_MODPOWERSYSTEMS_VIRTUALELEMENTS_CONNECTION_H_
+#ifndef SRC_MODELICAWORKSHOP_MODPOWERSYSTEMS_CONNECTION_H_
+#define SRC_MODELICAWORKSHOP_MODPOWERSYSTEMS_CONNECTION_H_
 
+#include "../ModBaseClass.h"
+#include "../ModelicaClass.h"
 #include <iomanip>
 #include <sstream>
-#include "../../ModBaseClass.h"
-#include "../../ModelicaClass.h"
 
 typedef ModPowerSystems::SinglePhase::Connections::BusBar BusBarObj;
 typedef ModPowerSystems::SinglePhase::Sources::Slack SlackObj;
 typedef ModPowerSystems::SinglePhase::Loads::PQLoad PQLoadObj;
 typedef ModPowerSystems::SinglePhase::Lines::PiLine PiLineObj;
 typedef ModPowerSystems::SinglePhase::Transformers::Transformer TransformerObj;
+typedef ModPowerSystems::SinglePhase::Generations::GenericGenerator GenericGeneratorObj;
+typedef ModPowerSystems::SinglePhase::Generations::WindGenerator WindGeneratorObj;
 
 namespace ModelicaWorkshop {
 
@@ -26,10 +28,11 @@ namespace ModelicaWorkshop {
 	class Connection: public ModBaseClass {
 	public:
 		Connection();
-		Connection(BusBarObj* BusBar, SlackObj* Slack, int sn);
-		Connection(BusBarObj* BusBar, PQLoadObj* PQLoad, int sn);
-		Connection(BusBarObj* BusBar, PiLineObj* PiLine, int sn);
-		Connection(BusBarObj* BusBar, TransformerObj* Transformer, int sn);
+		Connection(const BusBarObj* BusBar, const SlackObj* Slack, int sn);
+		Connection(const BusBarObj* BusBar, const PQLoadObj* PQLoad, int sn);
+		Connection(const BusBarObj* BusBar, const PiLineObj* PiLine, int sn);
+		Connection(const BusBarObj* BusBar, const TransformerObj* Transformer, int sn);
+		Connection(const BusBarObj* BusBar, const GenericGeneratorObj* GenericGenerator, int sn);
 		virtual ~Connection();
 	public:
 		std::string lineColor(){return "(" + std::to_string(_lineColor.R)+ "," + std::to_string(_lineColor.G) + "," + std::to_string(_lineColor.B) + ")";};
@@ -41,7 +44,7 @@ namespace ModelicaWorkshop {
 
 	private:
 
-		std::string _node1, _node2;//node
+		std::string _port1, _port2;//port
 		std::string _terminalId1, _terminalId2;//terminal
 		int _sequenceNumber;
 		Point _p1, _p2;
@@ -56,4 +59,4 @@ namespace ModelicaWorkshop {
 
 } /* namespace ModelicaWorkshop */
 
-#endif /* SRC_MODELICAWORKSHOP_MODPOWERSYSTEMS_VIRTUALELEMENTS_CONNECTION_H_ */
+#endif /* SRC_MODELICAWORKSHOP_MODPOWERSYSTEMS_CONNECTION_H_ */
