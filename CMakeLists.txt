@@ -22,10 +22,16 @@ set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/Modules)
 find_package(Ctemplate REQUIRED)
 include_directories( ${CTEMPLATE_INCLUDE_DIR} )
 
+# Find libconfig++
+set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/Modules)
+find_package(Config++ REQUIRED)
+include_directories( ${CONFIG++_INCLUDE_DIR} )
+
 # Add link flags
 set(BOOST_LINKER_FLAGS "-lboost_filesystem -lboost_system")
 set(CTEMPLATE_LINKER_FLAGS "-lctemplate")
-set(CMAKE_SHARED_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} ${BOOST_LINKER_FLAGS} ${CTEMPLATE_LINKER_FLAGS}" )
+set(CONFIG++_LINKER_FLAGS "-lconfig++")
+set(CMAKE_SHARED_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} ${BOOST_LINKER_FLAGS} ${CTEMPLATE_LINKER_FLAGS} ${CONFIG++_LINKER_FLAGS} " )
 
 # Add combined flag to aviod warnings with C++11
 set(CMAKE_CXX_FLAGS_RELEASE  "${CMAKE_CXX_FLAGS_RELEASE} -Wall -Wno-inconsistent-missing-override")
@@ -41,7 +47,7 @@ file(GLOB_RECURSE SRC_LIST ${PROJECT_SOURCE_DIR}/src/*.cpp)
 
 # compile and link
 add_executable(${PROJECT_NAME} ${SRC_LIST})
-target_link_libraries(CIM2Mod CIMParser ${Boost_LIBRARIES} ${CTEMPLATE_LIBRARIES})
+target_link_libraries(CIM2Mod CIMParser ${Boost_LIBRARIES} ${CTEMPLATE_LIBRARIES} ${CONFIG++_LIBRARY})
 
 # Configure Doxyfile
 find_package(Doxygen)

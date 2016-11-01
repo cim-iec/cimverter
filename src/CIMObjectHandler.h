@@ -48,7 +48,7 @@ public:
 private:
 	std::vector<BaseClass*> _CIMObjects;
 	std::queue<Connection> connectionQueue;
-	static::IEC61970::Base::DiagramLayout::DiagramObjectPoint convert_coordinate(IEC61970::Base::Domain::Float x, IEC61970::Base::Domain::Float y);
+	static IEC61970::Base::DiagramLayout::DiagramObjectPoint convert_coordinate(IEC61970::Base::Domain::Float x, IEC61970::Base::Domain::Float y);
 };
 
 #endif /* SRC_CIMOBJECTHANDLER_H_ */
