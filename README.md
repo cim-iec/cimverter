@@ -9,7 +9,7 @@ This tool is used to convert CIM-XML-RDF files into Modelica code.
 * CIMParser
 
 
-#### To build the CIM2Mod using cmake by following steps:
+### To build the CIM2Mod using cmake by following steps:
 
 ##### 1. Create build directory
 
@@ -37,10 +37,11 @@ This tool is used to convert CIM-XML-RDF files into Modelica code.
   The tool generates the file: `example.mo`
   
   
-
-## Solve Eclipse CDT indexer unresolve inclusion problem:
-
-#### Right click Project-> Properties-> Paths and Symbols -> Includes in GNU c++:
+### Install libconfig++ on Ubuntu:
+  * sudo apt-get install libconfig++-dev
+  
+### Solve Eclipse CDT indexer unresolve inclusion problem:
+* Right click Project-> Properties-> Paths and Symbols -> Includes in GNU c++:
 
   * add GeneratedCode Path ../GeneratedCode and ../GeneratedCode/IEC61970
   * add glib-2.0 Path /usr/include/glib-2.0
@@ -48,5 +49,5 @@ This tool is used to convert CIM-XML-RDF files into Modelica code.
   * add libxml++ Path /usr/local/include/libxml++-2.6/libxml++, /usr/local/include/libxml++-2.6/,
   * in CIMParser.h: add #include \<libxml++/parsers/parser.h\>
 
-    If Eclipse CDT indexer does not know c++11 containers, try:
+* If Eclipse CDT indexer does not know c++11 containers, try:
   * http://stackoverflow.com/questions/17131745/eclipse-cdt-indexer-does-not-know-c12-containers

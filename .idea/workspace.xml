@@ -35,17 +35,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="aba0f362-4972-4310-bdaf-562af900a69f" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/cmake/Modules/FindConfig++.cmake" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/ModelicaWorkshop/ModPowerSystems/VirtualElements/Connection.cpp" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/ModelicaWorkshop/ModPowerSystems/VirtualElements/Connection.h" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/ModelicaWorkshop/ModPowerSystems/VirtualElements/TopCoordinate.cpp" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/ModelicaWorkshop/ModPowerSystems/VirtualElements/TopCoordinate.h" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/CIM2Mod.iml" afterPath="$PROJECT_DIR$/.idea/CIM2Mod.iml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CMakeLists.txt" afterPath="$PROJECT_DIR$/CMakeLists.txt" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/README.md" afterPath="$PROJECT_DIR$/README.md" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/CIMObjectHandler.h" afterPath="$PROJECT_DIR$/src/CIMObjectHandler.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main.cpp" afterPath="$PROJECT_DIR$/src/main.cpp" />
     </list>
     <ignored path="CIM2Mod.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -91,8 +82,8 @@
         <entry file="file://$PROJECT_DIR$/README.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
             <state split_layout="SPLIT">
-              <first_editor relative-caret-position="140">
-                <caret line="7" column="10" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="13" />
+              <first_editor relative-caret-position="640">
+                <caret line="32" column="0" selection-start-line="32" selection-start-column="0" selection-end-line="32" selection-end-column="0" />
                 <folding />
               </first_editor>
               <second_editor />
@@ -409,12 +400,12 @@
       <workItem from="1477577561730" duration="135000" />
       <workItem from="1477995400233" duration="28000" />
       <workItem from="1477995809830" duration="659000" />
-      <workItem from="1478027760799" duration="1177000" />
+      <workItem from="1478027760799" duration="1734000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="2038000" />
+    <option name="totallyTimeSpent" value="2595000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="1489" y="52" width="1871" height="1028" extended-state="0" />
@@ -427,7 +418,7 @@
       <window_info id="TeamCity" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.12340426" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.40695068" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.049327355" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32942432" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
@@ -817,8 +808,8 @@
     <entry file="file://$PROJECT_DIR$/README.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="SPLIT">
-          <first_editor relative-caret-position="140">
-            <caret line="7" column="10" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="13" />
+          <first_editor relative-caret-position="640">
+            <caret line="32" column="0" selection-start-line="32" selection-start-column="0" selection-end-line="32" selection-end-column="0" />
             <folding />
           </first_editor>
           <second_editor />
