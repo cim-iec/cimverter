@@ -38,23 +38,55 @@ namespace ModPowerSystems {
 		// TODO Auto-generated destructor stub
 	}
 
+	/*
+	 * Output the formatted transformation extent point of modelica
+	 */
+	std::string System::output_diagram_extent_points() const
+	{
+	  std::stringstream stream[4];
+	  stream[0] << std::fixed << std::setprecision(2) << this->_lx;
+	  stream[1] << std::fixed << std::setprecision(2) << this->_ly;
+	  stream[2] << std::fixed << std::setprecision(2) << this->_rx;
+	  stream[3] << std::fixed << std::setprecision(2) << this->_ry;
+
+	  std::string p1 = "{" + stream[0].str() + "," + stream[1].str() + "}";
+	  std::string p2 = "{" + stream[2].str() + "," + stream[3].str() + "}";
+
+	  return "{" + p1 + "," + p2 + "}";
+	}
+
+  /*
+   * Output the formatted transformation origin point of modelica
+   */
+  std::string System::output_icon_extent_points() const
+  {
+    std::stringstream stream[4];
+    stream[0] << std::fixed << std::setprecision(1) << this->annotation.icon.coordinate.extent.first.x;
+    stream[1] << std::fixed << std::setprecision(1) << this->annotation.icon.coordinate.extent.first.y;
+    stream[2] << std::fixed << std::setprecision(1) << this->annotation.icon.coordinate.extent.second.x;
+    stream[3] << std::fixed << std::setprecision(1) << this->annotation.icon.coordinate.extent.second.y;
+
+    std::string p1 = "{" + stream[0].str() + "," + stream[1].str() + "}";
+    std::string p2 = "{" + stream[2].str() + "," + stream[3].str() + "}";
+
+    return "{" + p1 + "," + p2 + "}";
+  }
+
+  /*
+   * Fill the system setting part of modelica template
+   */
 	bool System::set_system_setting(ctemplate::TemplateDictionary *dictionary)
 	{
-
 		dictionary->SetValue(NAME,this->name());
-		dictionary->SetFormattedValue(ICON_EXTENT_X1, "%.2f", this->annotation.icon.coordinate.extent.first.x);
-		dictionary->SetFormattedValue(ICON_EXTENT_Y1, "%.2f", this->annotation.icon.coordinate.extent.first.y);
-		dictionary->SetFormattedValue(ICON_EXTENT_X2, "%.2f", this->annotation.icon.coordinate.extent.second.x);
-		dictionary->SetFormattedValue(ICON_EXTENT_Y2, "%.2f", this->annotation.icon.coordinate.extent.second.y);
-
-		dictionary->SetFormattedValue(DIAGRAM_EXTENT_X1, "%.2f", this->_lx);
-		dictionary->SetFormattedValue(DIAGRAM_EXTENT_Y1, "%.2f", this->_ly);
-		dictionary->SetFormattedValue(DIAGRAM_EXTENT_X2, "%.2f", this->_rx);
-		dictionary->SetFormattedValue(DIAGRAM_EXTENT_Y2, "%.2f", this->_ry);
+    dictionary->SetValue(DIAGRAM_EXTENT_POINTS,this->output_diagram_extent_points());
+    dictionary->SetValue(ICON_EXTENT_POINTS,this->output_icon_extent_points());
 
 		return true;
 	}
 
+  /*
+   * Fill the system label part of modelica template
+   */
 	bool System::set_system_label(ctemplate::TemplateDictionary *dictionary)
 	{
 		dictionary->SetFormattedValue(FNOM,"%.1f",this->f_nom());
@@ -63,21 +95,18 @@ namespace ModPowerSystems {
 		dictionary->SetValue(SIMMODE,this->simMode());
 		dictionary->SetValue(INIT,this->init());
 
-		dictionary->SetFormattedValue(TRANS_EXTENT_X1,"%.1f",this->annotation.placement.transfomation.extent.first.x);
-		dictionary->SetFormattedValue(TRANS_EXTENT_Y1,"%.1f",this->annotation.placement.transfomation.extent.first.y);
-		dictionary->SetFormattedValue(TRANS_EXTENT_X2,"%.1f",this->annotation.placement.transfomation.extent.second.x);
-		dictionary->SetFormattedValue(TRANS_EXTENT_Y2,"%.1f",this->annotation.placement.transfomation.extent.second.y);
-		dictionary->SetIntValue(ROTATION,this->annotation.placement.transfomation.rotation);
-		dictionary->SetFormattedValue(VISIBLE,"%s",this->annotation.placement.visible ? "true":"false");
-
 		return true;
 	}
 
+  /*
+   * Fill the modelica template for system
+   */
 	bool System::set_template_values(ctemplate::TemplateDictionary *dictionary)
 	{
-
 		this->set_system_setting(dictionary);
 		this->set_system_label(dictionary);
+    this->set_template_annotation_values(dictionary);
+
 		return true;
 	}
 

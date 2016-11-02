@@ -9,6 +9,8 @@
 
 #include <stdlib.h>
 #include <iostream>
+#include <iomanip>
+#include <sstream>
 #include <ctemplate/template.h>
 #include "ModelicaUnit.h"
 #include "tplMarkersEnum.h"
@@ -83,8 +85,14 @@ namespace ModelicaWorkshop {
 
 		virtual bool set_template_values(ctemplate::TemplateDictionary *dictionary);
 
+	protected:
+    bool set_template_annotation_values(ctemplate::TemplateDictionary *dictionary);
+
 	private:
 		std::string _name;
+    std::string output_trans_extent_points() const;
+    std::string output_trans_origin_points() const;
+
 	};
 
 } /* namespace ModelicaWorkshop */

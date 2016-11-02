@@ -20,15 +20,14 @@ RegisterTemplateFilename(SIMMODE, "SIMMODE");
 RegisterTemplateFilename(PAR, "PAR");
 RegisterTemplateFilename(GRID_NAME, "GRID_NAME");
 RegisterTemplateFilename(HEADER_FOOTER_SECTION, "HEADER_FOOTER_SECTION");
-RegisterTemplateFilename(DIAGRAM_EXTENT_X1, "DIAGRAM_EXTENT_X1");
-RegisterTemplateFilename(DIAGRAM_EXTENT_Y1, "DIAGRAM_EXTENT_Y1");
-RegisterTemplateFilename(DIAGRAM_EXTENT_X2, "DIAGRAM_EXTENT_X2");
-RegisterTemplateFilename(DIAGRAM_EXTENT_Y2, "DIAGRAM_EXTENT_Y2");
+RegisterTemplateFilename(DIAGRAM_EXTENT_POINTS, "DIAGRAM_EXTENT_POINTS");
+RegisterTemplateFilename(ICON_EXTENT_POINTS, "ICON_EXTENT_POINTS");
+
+//Annotation
+RegisterTemplateFilename(VISIBLE, "VISIBLE");
+RegisterTemplateFilename(ORIGIN_POINT, "ORIGIN_POINT");
+RegisterTemplateFilename(TRANS_EXTENT_POINTS, "TRANS_EXTENT_POINTS");
 RegisterTemplateFilename(ROTATION, "ROTATION");
-RegisterTemplateFilename(ICON_EXTENT_X1, "ICON_EXTENT_X1");
-RegisterTemplateFilename(ICON_EXTENT_Y1, "ICON_EXTENT_Y1");
-RegisterTemplateFilename(ICON_EXTENT_X2, "ICON_EXTENT_X2");
-RegisterTemplateFilename(ICON_EXTENT_Y2, "ICON_EXTENT_Y2");
 
 //Slack
 RegisterTemplateFilename(NAME, "NAME");
@@ -64,15 +63,6 @@ RegisterTemplateFilename(VNOM1_DISPLAYUNIT, "VNOM1_DISPLAYUNIT");
 RegisterTemplateFilename(VNOM2_DISPLAYUNIT, "VNOM2_DISPLAYUNIT");
 RegisterTemplateFilename(URR, "UKR");
 RegisterTemplateFilename(UKR, "URR");
-
-//Annotation
-RegisterTemplateFilename(VISIBLE, "VISIBLE");
-RegisterTemplateFilename(TRANS_EXTENT_X1, "TRANS_EXTENT_X1");
-RegisterTemplateFilename(TRANS_EXTENT_Y1, "TRANS_EXTENT_Y1");
-RegisterTemplateFilename(TRANS_EXTENT_X2, "TRANS_EXTENT_X2");
-RegisterTemplateFilename(TRANS_EXTENT_Y2, "TRANS_EXTENT_Y2");
-RegisterTemplateFilename(ORIGIN_X, "ORIGIN_X");
-RegisterTemplateFilename(ORIGIN_Y, "ORIGIN_Y");
 
 //Connection
 RegisterTemplateFilename(CONNECTION_TYPE, "CONNECTION_TYPE");

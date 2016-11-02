@@ -1,7 +1,8 @@
 /*
  * Slack.h
  *
- * infinite power source
+ * The slack node represents the rest of the grid with higher voltage levels. It is
+    assumed that the slack node is an infinite source of power.
  */
 
 #ifndef SRC_MODELICAWORKSHOP_MODPOWERSYSTEMS_SINGLEPHASE_SOURCES_SLACK_H_

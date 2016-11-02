@@ -21,6 +21,35 @@ std::string modelica_filename("modelica_example.mo");
 
 int main(int argc, const char **argv)
 {
+  Config cfg;
+
+  try
+    {
+      cfg.readFile("src/config.cfg");
+    }
+    catch(const FileIOException &fioex)
+    {
+      std::cerr << "I/O error while reading file." << std::endl;
+      return(EXIT_FAILURE);
+    }
+    catch(const ParseException &pex)
+    {
+      std::cerr << "Parse error at " << pex.getFile() << ":" << pex.getLine()
+                << " - " << pex.getError() << std::endl;
+      return(EXIT_FAILURE);
+    }
+
+    // Get the store name.
+    try
+    {
+      std::string version = cfg.lookup("version");
+      std::cout << "version: "<< version << std::endl;
+    }
+    catch(const SettingNotFoundException &nfex)
+    {
+      std::cerr << "No 'name' setting in configuration file." << std::endl;
+    }
+
 	// Check for arguments
 	if(argc <= 1)
 	{
@@ -47,7 +76,7 @@ int main(int argc, const char **argv)
 
 	parser.parse_file(xml_filepath.c_str());
 	CIMObjectHandler ObjectHandler(std::move(parser.Objects));
-	ObjectHandler.generate_modelica_code(modelica_filename);
+	ObjectHandler.ModelicaCodeGenerator(modelica_filename);
 
 	// Timer stop
 	stop = std::chrono::high_resolution_clock::now();

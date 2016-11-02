@@ -35,11 +35,14 @@ This tool is used to convert CIM-XML-RDF files into Modelica code.
     ./CIM2Mod example.xml example.mo
 
   The tool generates the file: `example.mo`
-  
-  
+
+
 ### Install libconfig++ on Ubuntu:
-  * sudo apt-get install libconfig++-dev
-  
+     sudo apt-get install libconfig++-dev
+
+### get GridData submodule
+     git submodule update --init
+
 ### Solve Eclipse CDT indexer unresolve inclusion problem:
 * Right click Project-> Properties-> Paths and Symbols -> Includes in GNU c++:
 
@@ -51,3 +54,6 @@ This tool is used to convert CIM-XML-RDF files into Modelica code.
 
 * If Eclipse CDT indexer does not know c++11 containers, try:
   * http://stackoverflow.com/questions/17131745/eclipse-cdt-indexer-does-not-know-c12-containers
+
+### TODO:
+  [List is here](TODO.md)

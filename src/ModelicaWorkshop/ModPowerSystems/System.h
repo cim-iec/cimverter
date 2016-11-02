@@ -47,6 +47,9 @@ namespace ModPowerSystems {
 		double _rx = 0;
 		double _ry = 0;
 
+    std::string output_diagram_extent_points() const;
+    std::string output_icon_extent_points() const;
+
 	};
 
 } /* namespace ModPowerSystems */

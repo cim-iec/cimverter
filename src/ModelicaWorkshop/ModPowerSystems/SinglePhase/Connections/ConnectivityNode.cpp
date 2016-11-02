@@ -1,8 +1,6 @@
 /*
  * ConnectivityNode.cpp
  *
- *  Created on: Sep 14, 2016
- *      Author: root
  */
 
 #include "ConnectivityNode.h"
@@ -13,14 +11,30 @@ namespace ModPowerSystems {
 
 			namespace Connections {
 
-				ConnectivityNode::ConnectivityNode() {
+				ConnectivityNode::ConnectivityNode():_Vnom(110000)
+				{
 					// TODO Auto-generated constructor stub
 
 				}
 
-				ConnectivityNode::~ConnectivityNode() {
-					// TODO Auto-generated destructor stub
+        ConnectivityNode::ConnectivityNode(const ConnectivityNode &rhs)
+        {
+          this->_Vnom = rhs._Vnom;
+        }
+
+				ConnectivityNode::~ConnectivityNode()
+				{
+
 				}
+
+	      bool ConnectivityNode::set_template_values(ctemplate::TemplateDictionary *dictionary){
+
+	        dictionary->SetFormattedValue(VNOM,"%.f",this->Vnom());
+	        dictionary->SetValue(NAME,this->name());
+	        this->set_template_annotation_values(dictionary);
+
+	        return true;
+	      }
 
 			} /* namespace Connections */
 
