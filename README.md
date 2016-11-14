@@ -2,11 +2,17 @@
 
 This tool is used to convert CIM-XML-RDF files into Modelica code.
 
-### Dependencies:
+## Dependencies:
 * Boost >= 1.60.0
 * ctemplate >= 2.3
 * libconifg++
 * CIMParser
+
+### Install Boost on Ubuntu:
+...
+
+### Install libconfig++ on Ubuntu:
+     sudo apt-get install libconfig++-dev
 
 
 ### To build the CIM2Mod using cmake by following steps:
@@ -69,9 +75,6 @@ This tool is used to convert CIM-XML-RDF files into Modelica code.
 ### Install ctemplate on Ubuntu:
 ##### see https://github.com/OlafvdSpek/ctemplate/blob/master/INSTALL
 
-### Install libconfig++ on Ubuntu:
-
-     sudo apt-get install libconfig++-dev
 
 ### Install CIMParser on Ubuntu:
 ##### see https://git.rwth-aachen.de/CIM-XML-Interface/CIM-XML-Parser
