@@ -32,17 +32,51 @@ This tool is used to convert CIM-XML-RDF files into Modelica code.
 
 
 #### Usage:
+
     ./CIM2Mod example.xml example.mo
 
   The tool generates the file: `example.mo`
 
 
-### Install libconfig++ on Ubuntu:
-     sudo apt-get install libconfig++-dev
+### Get GridData submodule:
 
-### get GridData submodule
      git submodule update --init
 
+***
+### Install Boost 1.6 on Ubuntu:
+##### 1. Get the required libraries:
+
+     sudo apt-get update
+     sudo apt-get install build-essential g++ python-dev autotools-dev libicu-dev build-essential libbz2-dev libboost-all-dev
+
+##### 2. Download boost 1.60 https://sourceforge.net/projects/boost/?source=typ_redirect
+
+     tar xzvf boost_1_60_0.tar.gz
+     cd boost_1_60_0/
+
+##### 3. Boost's bootstrap setup:
+
+     ./bootstrap.sh --prefix=/usr/local
+
+##### 4. Then build it with:
+
+     ./b2
+
+##### 5. and eventually install it:
+
+     sudo ./b2 install
+
+### Install ctemplate on Ubuntu:
+##### see https://github.com/OlafvdSpek/ctemplate/blob/master/INSTALL
+
+### Install libconfig++ on Ubuntu:
+
+     sudo apt-get install libconfig++-dev
+
+### Install CIMParser on Ubuntu:
+##### see https://git.rwth-aachen.de/CIM-XML-Interface/CIM-XML-Parser
+
+***
 ### Solve Eclipse CDT indexer unresolve inclusion problem:
 * Right click Project-> Properties-> Paths and Symbols -> Includes in GNU c++:
 
