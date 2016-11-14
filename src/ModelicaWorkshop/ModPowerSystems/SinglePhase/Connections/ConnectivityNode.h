@@ -12,29 +12,32 @@ using namespace ModelicaWorkshop;
 
 namespace ModPowerSystems {
 
-		namespace SinglePhase {
+namespace SinglePhase {
 
-			namespace Connections {
+namespace Connections {
 
-				class ConnectivityNode:public ModBaseClass
-				{
-				public:
-					ConnectivityNode();
-          ConnectivityNode(const ConnectivityNode &rhs);
-					virtual ~ConnectivityNode();
+class ConnectivityNode : public ModBaseClass {
+ public:
+  ConnectivityNode();
+  ConnectivityNode(const ConnectivityNode &rhs);
+  virtual ~ConnectivityNode();
 
-	        void set_Vnom(double Vnom){ this->_Vnom = Vnom; };
-					double Vnom() const { return _Vnom; };
+  void set_Vnom(double Vnom) {
+    this->_Vnom = Vnom;
+  };
+  double Vnom() const {
+    return _Vnom;
+  };
 
-					bool set_template_values(ctemplate::TemplateDictionary *dictionary) override;
+  bool set_template_values(ctemplate::TemplateDictionary *dictionary) override;
 
-				private:
-					 double _Vnom;
-				};
+ private:
+  double _Vnom;
+};
 
-			} /* namespace Connections */
+} /* namespace Connections */
 
-		} /* namespace SinglePhase */
+} /* namespace SinglePhase */
 
 } /* namespace ModPowerSystems */
 

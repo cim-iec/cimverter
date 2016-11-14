@@ -10,32 +10,32 @@
 
 using namespace ModelicaWorkshop;
 
-namespace ModPowerSystems
-{
-	namespace SinglePhase
-	{
-		namespace Connections
-		{
+namespace ModPowerSystems {
+namespace SinglePhase {
+namespace Connections {
 
-			class BusBar:public ModBaseClass
-			{
-			public:
-				BusBar();
-				BusBar(const BusBar &);
-				virtual ~BusBar();
+class BusBar : public ModBaseClass {
+ public:
+  BusBar();
+  BusBar(const BusBar &);
+  virtual ~BusBar();
 
-				void set_Vnom(double Vnom){ this->_Vnom = Vnom; };
-				double Vnom() const { return _Vnom; };
+  void set_Vnom(double Vnom) {
+    this->_Vnom = Vnom;
+  };
+  double Vnom() const {
+    return _Vnom;
+  };
 
-				bool set_template_values(ctemplate::TemplateDictionary *dictionary) override;
+  bool set_template_values(ctemplate::TemplateDictionary *dictionary) override;
 
-			private:
-				double _Vnom;
-			};
+ private:
+  double _Vnom;
+};
 
-		}/* namespace Connections */
+}/* namespace Connections */
 
-	}/* namespace SinglePhase */
+}/* namespace SinglePhase */
 
 } /* namespace ModPowersystems */
 

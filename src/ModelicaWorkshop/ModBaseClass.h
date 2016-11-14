@@ -17,83 +17,87 @@
 
 namespace ModelicaWorkshop {
 
-	typedef struct Point
-	{
-		double x;
-		double y;
+typedef struct Point {
 
-	} Point;
+  double x;
+  double y;
 
-	typedef struct Extent
-	{
-		Point first;
-		Point second;
+} Point;
 
-	} Extent;
+typedef struct Extent {
 
-	typedef struct CoordinateSystem
-	{
-		Extent extent;
-		bool preserveAspectRatio = false;
+  Point first;
+  Point second;
 
-	} CoordinateSystem;
+} Extent;
 
-	typedef struct Diagram
-	{
-		CoordinateSystem coordinate;
+typedef struct CoordinateSystem {
 
-	} Diagramm;
+  Extent extent;
+  bool preserveAspectRatio = false;
 
-	typedef struct Icon
-	{
-		CoordinateSystem coordinate;
+} CoordinateSystem;
 
-	} Icon;
+typedef struct Diagram {
 
-	typedef struct Transformation
-	{
-		Extent extent = {{-5,-5},{5,5}};
-		int rotation = {0};
-		Point origin = {0,0};
+  CoordinateSystem coordinate;
 
-	} Transformation;
+} Diagramm;
 
-	typedef struct Placement
-	{
-		bool visible = true;
-		Transformation transfomation;
+typedef struct Icon {
 
-	} Placement;
+  CoordinateSystem coordinate;
 
-	typedef struct Annotation {
+} Icon;
 
-		Placement placement;
-		Diagram diagram;
-		Icon icon;
+typedef struct Transformation {
 
-	} Annotation;
+  Extent extent = { { -5, -5 }, { 5, 5 } };
+  int rotation = { 0 };
+  Point origin = { 0, 0 };
 
-	class ModBaseClass {
-	public:
-		ModBaseClass();
-		virtual ~ModBaseClass();
+} Transformation;
 
-		void set_name(std::string name){ this->_name = name; };
-		std::string name() const { return this->_name; };
-		std::map<const std::string, const std::string> ready_to_fill_templates;
-		Annotation annotation;
+typedef struct Placement {
 
-		virtual bool set_template_values(ctemplate::TemplateDictionary *dictionary);
+  bool visible = true;
+  Transformation transfomation;
 
-	protected:
-    bool set_template_annotation_values(ctemplate::TemplateDictionary *dictionary);
+} Placement;
 
-	private:
-		std::string _name;
-    std::string output_trans_extent_points() const;
-    std::string output_trans_origin_points() const;
+typedef struct Annotation {
 
-	};
+  Placement placement;
+  Diagram diagram;
+  Icon icon;
+
+} Annotation;
+
+class ModBaseClass {
+ public:
+  ModBaseClass();
+  ModBaseClass(const ModBaseClass &rhs);
+  virtual ~ModBaseClass();
+
+  void set_name(std::string name) {
+    this->_name = name;
+  };
+  std::string name() const {
+    return this->_name;
+  };
+
+  Annotation annotation;
+  virtual bool set_template_values(ctemplate::TemplateDictionary *dictionary);
+
+ protected:
+  bool set_template_annotation_values(ctemplate::TemplateDictionary *dictionary);
+
+ private:
+  std::string _name;
+  std::string output_trans_extent_points() const;
+  std::string output_trans_origin_points() const;
+
+};
 
 } /* namespace ModelicaWorkshop */
 

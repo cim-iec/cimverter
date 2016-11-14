@@ -39,6 +39,7 @@ set(CMAKE_CXX_FLAGS_RELEASE  "${CMAKE_CXX_FLAGS_RELEASE} -Wall -Wno-inconsistent
 # copy directories
 file(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/bin/resource)
 file(COPY ${PROJECT_SOURCE_DIR}/modelica_templates/ DESTINATION ${PROJECT_BINARY_DIR}/bin/resource)
+file(COPY ${PROJECT_SOURCE_DIR}/src/config.cfg DESTINATION ${PROJECT_BINARY_DIR}/bin)
 
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
 

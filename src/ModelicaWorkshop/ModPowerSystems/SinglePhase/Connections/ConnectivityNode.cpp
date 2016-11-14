@@ -7,37 +7,35 @@
 
 namespace ModPowerSystems {
 
-		namespace SinglePhase {
+namespace SinglePhase {
 
-			namespace Connections {
+namespace Connections {
 
-				ConnectivityNode::ConnectivityNode():_Vnom(110000)
-				{
-					// TODO Auto-generated constructor stub
+ConnectivityNode::ConnectivityNode()
+    : _Vnom(110000) {
+  // TODO Auto-generated constructor stub
 
-				}
+}
 
-        ConnectivityNode::ConnectivityNode(const ConnectivityNode &rhs)
-        {
-          this->_Vnom = rhs._Vnom;
-        }
+ConnectivityNode::ConnectivityNode(const ConnectivityNode &rhs) {
+  this->_Vnom = rhs._Vnom;
+}
 
-				ConnectivityNode::~ConnectivityNode()
-				{
+ConnectivityNode::~ConnectivityNode() {
 
-				}
+}
 
-	      bool ConnectivityNode::set_template_values(ctemplate::TemplateDictionary *dictionary){
+bool ConnectivityNode::set_template_values(ctemplate::TemplateDictionary *dictionary) {
 
-	        dictionary->SetFormattedValue(VNOM,"%.f",this->Vnom());
-	        dictionary->SetValue(NAME,this->name());
-	        this->set_template_annotation_values(dictionary);
+  dictionary->SetFormattedValue(VNOM, "%.f", this->Vnom());
+  dictionary->SetValue(NAME, this->name());
+  this->set_template_annotation_values(dictionary);
 
-	        return true;
-	      }
+  return true;
+}
 
-			} /* namespace Connections */
+} /* namespace Connections */
 
-		} /* namespace SinglePhase */
+} /* namespace SinglePhase */
 
 } /* namespace ModPowerSystems */

@@ -12,23 +12,21 @@ using namespace ModelicaWorkshop;
 
 namespace ModPowerSystems {
 
-		namespace SinglePhase {
+namespace SinglePhase {
 
-			namespace Generations {
+namespace Generations {
 
-				class GenericGenerator: public ModBaseClass {
-				public:
-					GenericGenerator();
-					virtual ~GenericGenerator();
+class GenericGenerator : public ModBaseClass {
+ public:
+  GenericGenerator();
+  virtual ~GenericGenerator();
 
-					bool set_template_values(ctemplate::TemplateDictionary *dictionary) override;
-				};
+  bool set_template_values(ctemplate::TemplateDictionary *dictionary) override;
+};
 
+} /* namespace Generations */
 
-
-			} /* namespace Generations */
-
-		} /* namespace SinglePhase */
+} /* namespace SinglePhase */
 
 } /* namespace ModPowerSystems */
 

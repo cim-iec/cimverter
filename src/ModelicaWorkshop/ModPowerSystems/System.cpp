@@ -7,107 +7,104 @@
 
 namespace ModPowerSystems {
 
-	System::System()
-	{
-		// TODO Auto-generated constructor stub
+System::System() {
+  // TODO Auto-generated constructor stub
 
-	}
-	/*initialize System Label and Coordinate
-	 *
-	 */
+}
+/*initialize System Label and Coordinate
+ *
+ */
 
-	System::System(double lx, double ly, double rx, double ry):_lx(lx),_ly(ly),_rx(rx),_ry(ry) {
+System::System(double lx, double ly, double rx, double ry)
+    : _lx(lx),
+      _ly(ly),
+      _rx(rx),
+      _ry(ry) {
 
-		//initialize System Label
-		this->set_name("system");
-		this->annotation.placement.transfomation.extent.first.x = 0;
-		this->annotation.placement.transfomation.extent.first.y = -30;
-		this->annotation.placement.transfomation.extent.second.x = 30;
-		this->annotation.placement.transfomation.extent.second.y = 0;
-		this->annotation.placement.visible = true;
+  //initialize System Label
+  this->set_name("system");
+  this->annotation.placement.transfomation.extent.first.x = 0;
+  this->annotation.placement.transfomation.extent.first.y = -30;
+  this->annotation.placement.transfomation.extent.second.x = 30;
+  this->annotation.placement.transfomation.extent.second.y = 0;
+  this->annotation.placement.visible = true;
 
-		//initialize System
-		this->annotation.icon.coordinate.extent.first.x = 160;
-		this->annotation.icon.coordinate.extent.first.y = -160;
-		this->annotation.icon.coordinate.extent.second.x = 180;
-		this->annotation.icon.coordinate.extent.second.y = 260;
-	}
+  //initialize System
+  this->annotation.icon.coordinate.extent.first.x = 160;
+  this->annotation.icon.coordinate.extent.first.y = -160;
+  this->annotation.icon.coordinate.extent.second.x = 180;
+  this->annotation.icon.coordinate.extent.second.y = 260;
+}
 
-	System::~System()
-	{
-		// TODO Auto-generated destructor stub
-	}
+System::~System() {
+  // TODO Auto-generated destructor stub
+}
 
-	/*
-	 * Output the formatted transformation extent point of modelica
-	 */
-	std::string System::output_diagram_extent_points() const
-	{
-	  std::stringstream stream[4];
-	  stream[0] << std::fixed << std::setprecision(2) << this->_lx;
-	  stream[1] << std::fixed << std::setprecision(2) << this->_ly;
-	  stream[2] << std::fixed << std::setprecision(2) << this->_rx;
-	  stream[3] << std::fixed << std::setprecision(2) << this->_ry;
+/*
+ * Output the formatted transformation extent point of modelica
+ */
+std::string System::output_diagram_extent_points() const {
+  std::stringstream stream[4];
+  stream[0] << std::fixed << std::setprecision(2) << this->_lx;
+  stream[1] << std::fixed << std::setprecision(2) << this->_ly;
+  stream[2] << std::fixed << std::setprecision(2) << this->_rx;
+  stream[3] << std::fixed << std::setprecision(2) << this->_ry;
 
-	  std::string p1 = "{" + stream[0].str() + "," + stream[1].str() + "}";
-	  std::string p2 = "{" + stream[2].str() + "," + stream[3].str() + "}";
+  std::string p1 = "{" + stream[0].str() + "," + stream[1].str() + "}";
+  std::string p2 = "{" + stream[2].str() + "," + stream[3].str() + "}";
 
-	  return "{" + p1 + "," + p2 + "}";
-	}
+  return "{" + p1 + "," + p2 + "}";
+}
 
-  /*
-   * Output the formatted transformation origin point of modelica
-   */
-  std::string System::output_icon_extent_points() const
-  {
-    std::stringstream stream[4];
-    stream[0] << std::fixed << std::setprecision(1) << this->annotation.icon.coordinate.extent.first.x;
-    stream[1] << std::fixed << std::setprecision(1) << this->annotation.icon.coordinate.extent.first.y;
-    stream[2] << std::fixed << std::setprecision(1) << this->annotation.icon.coordinate.extent.second.x;
-    stream[3] << std::fixed << std::setprecision(1) << this->annotation.icon.coordinate.extent.second.y;
+/*
+ * Output the formatted transformation origin point of modelica
+ */
+std::string System::output_icon_extent_points() const {
+  std::stringstream stream[4];
+  stream[0] << std::fixed << std::setprecision(1) << this->annotation.icon.coordinate.extent.first.x;
+  stream[1] << std::fixed << std::setprecision(1) << this->annotation.icon.coordinate.extent.first.y;
+  stream[2] << std::fixed << std::setprecision(1) << this->annotation.icon.coordinate.extent.second.x;
+  stream[3] << std::fixed << std::setprecision(1) << this->annotation.icon.coordinate.extent.second.y;
 
-    std::string p1 = "{" + stream[0].str() + "," + stream[1].str() + "}";
-    std::string p2 = "{" + stream[2].str() + "," + stream[3].str() + "}";
+  std::string p1 = "{" + stream[0].str() + "," + stream[1].str() + "}";
+  std::string p2 = "{" + stream[2].str() + "," + stream[3].str() + "}";
 
-    return "{" + p1 + "," + p2 + "}";
-  }
+  return "{" + p1 + "," + p2 + "}";
+}
 
-  /*
-   * Fill the system setting part of modelica template
-   */
-	bool System::set_system_setting(ctemplate::TemplateDictionary *dictionary)
-	{
-		dictionary->SetValue(NAME,this->name());
-    dictionary->SetValue(DIAGRAM_EXTENT_POINTS,this->output_diagram_extent_points());
-    dictionary->SetValue(ICON_EXTENT_POINTS,this->output_icon_extent_points());
+/*
+ * Fill the system setting part of modelica template
+ */
+bool System::set_system_setting(ctemplate::TemplateDictionary *dictionary) {
+  dictionary->SetValue(NAME, this->name());
+  dictionary->SetValue(DIAGRAM_EXTENT_POINTS, this->output_diagram_extent_points());
+  dictionary->SetValue(ICON_EXTENT_POINTS, this->output_icon_extent_points());
 
-		return true;
-	}
+  return true;
+}
 
-  /*
-   * Fill the system label part of modelica template
-   */
-	bool System::set_system_label(ctemplate::TemplateDictionary *dictionary)
-	{
-		dictionary->SetFormattedValue(FNOM,"%.1f",this->f_nom());
-		dictionary->SetValue(NAME,this->name());
-		dictionary->SetValue(FNOM_DISPLAYUNIT,(ModelicaUnit[this->f_nom_displayUnit()]));
-		dictionary->SetValue(SIMMODE,this->simMode());
-		dictionary->SetValue(INIT,this->init());
+/*
+ * Fill the system label part of modelica template
+ */
+bool System::set_system_label(ctemplate::TemplateDictionary *dictionary) {
+  dictionary->SetFormattedValue(FNOM, "%.1f", this->f_nom());
+  dictionary->SetValue(NAME, this->name());
+  dictionary->SetValue(FNOM_DISPLAYUNIT, (ModelicaUnit[this->f_nom_displayUnit()]));
+  dictionary->SetValue(SIMMODE, this->simMode());
+  dictionary->SetValue(INIT, this->init());
 
-		return true;
-	}
+  return true;
+}
 
-  /*
-   * Fill the modelica template for system
-   */
-	bool System::set_template_values(ctemplate::TemplateDictionary *dictionary)
-	{
-		this->set_system_setting(dictionary);
-		this->set_system_label(dictionary);
-    this->set_template_annotation_values(dictionary);
+/*
+ * Fill the modelica template for system
+ */
+bool System::set_template_values(ctemplate::TemplateDictionary *dictionary) {
+  this->set_system_setting(dictionary);
+  this->set_system_label(dictionary);
+  this->set_template_annotation_values(dictionary);
 
-		return true;
-	}
+  return true;
+}
 
 } /* namespace ModPowerSystems */

@@ -5,37 +5,32 @@
 
 #include "BusBar.h"
 
-namespace ModPowerSystems
-{
-	namespace SinglePhase
-	{
-		namespace Connections
-		{
-			BusBar::BusBar() :_Vnom(110000)
-			{
+namespace ModPowerSystems {
+namespace SinglePhase {
+namespace Connections {
+BusBar::BusBar()
+    : _Vnom(110000) {
 
-			}
+}
 
-			BusBar::BusBar(const BusBar &rhs)
-			{
-				this->_Vnom = rhs._Vnom;
-			}
+BusBar::BusBar(const BusBar &rhs):ModBaseClass(rhs) {
+  this->_Vnom = rhs._Vnom;
+}
 
-			BusBar::~BusBar()
-			{
-			}
+BusBar::~BusBar() {
+}
 
-			bool BusBar::set_template_values(ctemplate::TemplateDictionary *dictionary){
+bool BusBar::set_template_values(ctemplate::TemplateDictionary *dictionary) {
 
-				dictionary->SetFormattedValue(VNOM,"%.f",this->Vnom());
-				dictionary->SetValue(NAME,this->name());
-				this->set_template_annotation_values(dictionary);
+  dictionary->SetFormattedValue(VNOM, "%.f", this->Vnom());
+  dictionary->SetValue(NAME, this->name());
+  this->set_template_annotation_values(dictionary);
 
-				return true;
-			}
+  return true;
+}
 
-		} /* namespace Connections */
+} /* namespace Connections */
 
-	} /* namespace SinglePhase */
+} /* namespace SinglePhase */
 
 } /* namespace ModPowerSystems */

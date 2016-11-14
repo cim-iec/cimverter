@@ -9,35 +9,34 @@
 
 namespace ModPowerSystems {
 
-		namespace SinglePhase {
+namespace SinglePhase {
 
-				namespace Sources {
+namespace Sources {
 
-					Slack::Slack() : _Vnom(110000)
-					{
-					}
+Slack::Slack()
+    : _Vnom(110000) {
+}
 
-					Slack::~Slack() {
-					}
+Slack::~Slack() {
+}
 
-					bool Slack::set_template_values(ctemplate::TemplateDictionary *dictionary)
-					{
+bool Slack::set_template_values(ctemplate::TemplateDictionary *dictionary) {
 
-						dictionary->SetFormattedValue(VNOM,"%.2f",this->Vnom());
-						dictionary->SetValue(NAME,this->name());
-						dictionary->SetValue(VNOM_DISPLAYUNIT,(ModelicaUnit[this->Vnom_displayUnit()]));
-						dictionary->SetFormattedValue(FREQUENCY,"%.1f",this->frequency());
-						dictionary->SetValue(FREQUENCY_DISPLAYUNIT,(ModelicaUnit[this->frequency_displayUnit()]));
-						dictionary->SetFormattedValue(PHIV,"%.2f",this->phiV());
-						dictionary->SetValue(PHIV_DISPLAYUNIT,(ModelicaUnit[this->phiV_displayUnit()]));
+  dictionary->SetFormattedValue(VNOM, "%.2f", this->Vnom());
+  dictionary->SetValue(NAME, this->name());
+  dictionary->SetValue(VNOM_DISPLAYUNIT, (ModelicaUnit[this->Vnom_displayUnit()]));
+  dictionary->SetFormattedValue(FREQUENCY, "%.1f", this->frequency());
+  dictionary->SetValue(FREQUENCY_DISPLAYUNIT, (ModelicaUnit[this->frequency_displayUnit()]));
+  dictionary->SetFormattedValue(PHIV, "%.2f", this->phiV());
+  dictionary->SetValue(PHIV_DISPLAYUNIT, (ModelicaUnit[this->phiV_displayUnit()]));
 
-		        this->set_template_annotation_values(dictionary);
+  this->set_template_annotation_values(dictionary);
 
-						return true;
-					}
+  return true;
+}
 
-				} /* namespace Sources */
+} /* namespace Sources */
 
-		} /* namespace SinglePhase */
+} /* namespace SinglePhase */
 
 } /* namespace ModPowerSystems */

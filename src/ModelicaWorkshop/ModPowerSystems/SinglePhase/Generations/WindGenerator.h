@@ -10,19 +10,19 @@
 
 namespace ModPowerSystems {
 
-		namespace SinglePhase {
+namespace SinglePhase {
 
-			namespace Generations {
+namespace Generations {
 
-				class WindGenerator: public ModelicaWorkshop::ModBaseClass {
-				public:
-					WindGenerator();
-					virtual ~WindGenerator();
-				};
+class WindGenerator : public ModelicaWorkshop::ModBaseClass {
+ public:
+  WindGenerator();
+  virtual ~WindGenerator();
+};
 
-			} /* namespace Generations */
+} /* namespace Generations */
 
-		} /* namespace SinglePhase */
+} /* namespace SinglePhase */
 
 } /* namespace ModPowerSystems */
 

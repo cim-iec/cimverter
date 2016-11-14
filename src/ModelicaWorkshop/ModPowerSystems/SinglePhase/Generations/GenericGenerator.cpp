@@ -7,31 +7,29 @@
 
 namespace ModPowerSystems {
 
-		namespace SinglePhase {
+namespace SinglePhase {
 
-			namespace Generations {
+namespace Generations {
 
-				GenericGenerator::GenericGenerator()
-				{
-						// TODO Auto-generated constructor stub
+GenericGenerator::GenericGenerator() {
+  // TODO Auto-generated constructor stub
 
-				}
+}
 
-				GenericGenerator::~GenericGenerator()
-				{
-						// TODO Auto-generated destructor stub
-				}
+GenericGenerator::~GenericGenerator() {
+  // TODO Auto-generated destructor stub
+}
 
-				bool GenericGenerator::set_template_values(ctemplate::TemplateDictionary *dictionary){
+bool GenericGenerator::set_template_values(ctemplate::TemplateDictionary *dictionary) {
 
-					dictionary->SetValue(NAME,this->name());
-	        this->set_template_annotation_values(dictionary);
+  dictionary->SetValue(NAME, this->name());
+  this->set_template_annotation_values(dictionary);
 
-					return true;
-				}
+  return true;
+}
 
-			} /* namespace Generations */
+} /* namespace Generations */
 
-		} /* namespace SinglePhase */
+} /* namespace SinglePhase */
 
 } /* namespace ModPowerSystems */

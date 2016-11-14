@@ -7,21 +7,21 @@
 
 namespace ModPowerSystems {
 
-		namespace SinglePhase {
+namespace SinglePhase {
 
-			namespace Generations {
+namespace Generations {
 
-				WindGenerator::WindGenerator() {
-					// TODO Auto-generated constructor stub
+WindGenerator::WindGenerator() {
+  // TODO Auto-generated constructor stub
 
-				}
+}
 
-				WindGenerator::~WindGenerator() {
-					// TODO Auto-generated destructor stub
-				}
+WindGenerator::~WindGenerator() {
+  // TODO Auto-generated destructor stub
+}
 
-			} /* namespace Generations */
+} /* namespace Generations */
 
-		} /* namespace SinglePhase */
+} /* namespace SinglePhase */
 
 } /* namespace ModPowerSystems */
