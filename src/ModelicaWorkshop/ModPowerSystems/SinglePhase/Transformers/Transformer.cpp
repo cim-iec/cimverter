@@ -10,10 +10,31 @@ namespace ModPowerSystems {
 
 			namespace Transformers {
 
-				Transformer::Transformer() {
+				Transformer::Transformer(){
 					// TODO Auto-generated constructor stub
 
 				}
+
+				Transformer::Transformer(const Transformer &rhs):ModBaseClass(rhs) {
+
+				  this->_Vnom1 = rhs._Vnom1;
+				  this->_Vnom2 = rhs._Vnom2;
+				  this->_Sr = rhs._Sr;
+				  this->_URr = rhs._URr ;
+				  this->_Ukr = rhs._Ukr;
+				  this->_z = rhs._z;
+				  this->_r = rhs._r;
+				  this->_x = rhs._x;
+				  this->_b = rhs._b;
+				  this->_g = rhs._g;
+				  this->_Sr = rhs._Sr;
+
+          this->_Vnom1_displayUnit = rhs._Vnom1_displayUnit;
+          this->_Vnom2_displayUnit = rhs._Vnom2_displayUnit;
+				  this->_Sr_displayUnit = rhs._Sr_displayUnit;
+
+				}
+
 
 				Transformer::~Transformer() {
 					// TODO Auto-generated destructor stub

@@ -19,7 +19,7 @@ namespace Connections {
 class ConnectivityNode : public ModBaseClass {
  public:
   ConnectivityNode();
-  ConnectivityNode(const ConnectivityNode &rhs);
+  ConnectivityNode(const ConnectivityNode &);
   virtual ~ConnectivityNode();
 
   void set_Vnom(double Vnom) {

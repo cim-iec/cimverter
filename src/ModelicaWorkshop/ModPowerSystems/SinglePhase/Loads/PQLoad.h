@@ -19,6 +19,7 @@ namespace Loads {
 class PQLoad : public ModBaseClass {
  public:
   PQLoad();
+  PQLoad(const PQLoad &);
   virtual ~PQLoad();
 
   void set_Pnom(double Pnom) {
@@ -63,9 +64,9 @@ class PQLoad : public ModBaseClass {
 
  private:
   //Parameters
-  double _Pnom = 110000;  //active power per phase
-  double _Qnom;  //reactive power per phase
-  double _Vnom;  //nominal voltage level
+  double _Pnom = 0;  //active power per phase
+  double _Qnom = 0;  //reactive power per phase
+  double _Vnom = 110000;  //nominal voltage level
 
   modelicaUnit _Pnom_displayUnit = modelicaUnit::W;
   modelicaUnit _Qnom_displayUnit = modelicaUnit::var;

@@ -16,6 +16,7 @@
 #include "CIMParser.h"
 #include <ctemplate/template.h>
 
+typedef IEC61970::Base::Wires::BusbarSection* BusBarSectionPtr;
 typedef IEC61970::Base::Topology::TopologicalNode* TPNodePtr;
 typedef IEC61970::Base::Core::ConnectivityNode* ConnectivityNodePtr;
 typedef IEC61970::Base::Core::Terminal* TerminalPtr;
@@ -43,6 +44,7 @@ class CIMObjectHandler {
   bool ModelicaCodeGenerator(const std::string filename);
   bool SystemSettingsHandler(const std::string filename, ctemplate::TemplateDictionary* dict);
   BusBar TopologicalNodeHandler(const TPNodePtr tp_node, ctemplate::TemplateDictionary* dict);
+  bool BusBarSectionHandler(const BusBarSectionPtr busbar_section, BusBar &busbar, ctemplate::TemplateDictionary* dict);
   ConnectivityNode ConnectiviyNodeHandler(const TPNodePtr tp_node, const TerminalPtr terminal, const ConnectivityNodePtr connectivity_node, ctemplate::TemplateDictionary* dict);
   Slack ExternalNIHandler(const TPNodePtr tp_node, const TerminalPtr terminal, const ExNIPtr externalNI, ctemplate::TemplateDictionary* dict);
   PiLine ACLineSegmentHandler(const TPNodePtr tp_node, const TerminalPtr terminal, const AcLinePtr ac_line, ctemplate::TemplateDictionary* dict);
@@ -62,6 +64,7 @@ class CIMObjectHandler {
   std::list<TerminalPtr>::iterator terminal_it;
   std::list<DiagramObjectPtr>::iterator diagram_it;
   std::list<DiagramObjectPointPtr>::iterator points_it;
+  std::list<IEC61970::Base::Wires::PowerTransformerEnd*>::iterator transformer_end_it;
 
   DiagramObjectPoint calculate_average_position();
 

@@ -6,7 +6,7 @@
 #include "CIMObjectHandler.h"
 #include <libconfig.h++>
 
-using namespace libconfig;
+//using namespace libconfig;
 
 unsigned int filesize(const char* filename) {
   std::ifstream in(filename, std::ifstream::ate | std::ifstream::binary);
@@ -19,26 +19,26 @@ std::string xml_filepath;
 std::string modelica_filename("modelica_example.mo");
 
 int main(int argc, const char **argv) {
-  Config cfg;
-
-  try {
-    cfg.readFile("./config.cfg");
-  } catch (const FileIOException &fioex) {
-    std::cerr << "I/O error while reading file." << std::endl;
-    return (EXIT_FAILURE);
-  } catch (const ParseException &pex) {
-    std::cerr << "Parse error at " << pex.getFile() << ":" << pex.getLine()
-              << " - " << pex.getError() << std::endl;
-    return (EXIT_FAILURE);
-  }
-
-  // Get the store name.
-  try {
-    std::string version = cfg.lookup("version");
-    std::cout << "version: " << version << std::endl;
-  } catch (const SettingNotFoundException &nfex) {
-    std::cerr << "No 'name' setting in configuration file." << std::endl;
-  }
+//  Config cfg;
+//
+//  try {
+//    cfg.readFile("src/config.cfg");
+//  } catch (const FileIOException &fioex) {
+//    std::cerr << "I/O error while reading file." << std::endl;
+//    return (EXIT_FAILURE);
+//  } catch (const ParseException &pex) {
+//    std::cerr << "Parse error at " << pex.getFile() << ":" << pex.getLine()
+//              << " - " << pex.getError() << std::endl;
+//    return (EXIT_FAILURE);
+//  }
+//
+//  // Get the store name.
+//  try {
+//    std::string version = cfg.lookup("version");
+//    std::cout << "version: " << version << std::endl;
+//  } catch (const SettingNotFoundException &nfex) {
+//    std::cerr << "No 'name' setting in configuration file." << std::endl;
+//  }
 
   // Check for arguments
   if (argc <= 1) {

@@ -16,6 +16,17 @@ namespace Loads {
 PQLoad::PQLoad() {
 }
 
+PQLoad::PQLoad(const PQLoad &rhs):ModBaseClass(rhs) {
+
+  this->_Pnom = rhs._Pnom;
+  this->_Qnom = rhs._Qnom;
+  this->_Vnom = rhs._Vnom;
+
+  this->_Pnom_displayUnit = rhs._Pnom_displayUnit;
+  this->_Qnom_displayUnit = rhs._Qnom_displayUnit;
+  this->_Vnom_displayUnit = rhs._Vnom_displayUnit;
+}
+
 PQLoad::~PQLoad() {
 }
 

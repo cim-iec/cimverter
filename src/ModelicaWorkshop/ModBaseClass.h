@@ -13,7 +13,7 @@
 #include <sstream>
 #include <ctemplate/template.h>
 #include "ModelicaUnit.h"
-#include "tplMarkersEnum.h"
+#include "tplMarkers.h"
 
 namespace ModelicaWorkshop {
 

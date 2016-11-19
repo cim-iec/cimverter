@@ -28,11 +28,14 @@ bool CIMObjectHandler::ModelicaCodeGenerator(const std::string filename) {
   this->SystemSettingsHandler(filename, dict);
 
   for (BaseClass* Object : this->_CIMObjects) {
+
     //TopologicalNode, convert to BusBar
     if (auto *tp_node = dynamic_cast<TPNodePtr>(Object)) {
-      BusBar busbar = this->TopologicalNodeHandler(tp_node, dict);
+
+        BusBar busbar = this->TopologicalNodeHandler(tp_node, dict);
 
       for (terminal_it = tp_node->Terminal.begin(); terminal_it != tp_node->Terminal.end(); ++terminal_it) {
+
         if (auto *connectivity_node = dynamic_cast<ConnectivityNodePtr>((*terminal_it)->ConnectivityNode)) {
 
           ConnectivityNode connectivity_Node = this->ConnectiviyNodeHandler(tp_node, (*terminal_it), connectivity_node, dict);
@@ -40,8 +43,9 @@ bool CIMObjectHandler::ModelicaCodeGenerator(const std::string filename) {
             Connection conn(&busbar, &connectivity_Node, (*terminal_it)->sequenceNumber);
             connectionQueue.push(conn);
           }
+        }
 
-        } else if (auto *externalNI = dynamic_cast<ExNIPtr>((*terminal_it)->ConductingEquipment)) {
+        if (auto *externalNI = dynamic_cast<ExNIPtr>((*terminal_it)->ConductingEquipment)) {
 
           Slack slack = this->ExternalNIHandler(tp_node, (*terminal_it), externalNI, dict);
           if ((*terminal_it)->connected == true) {
@@ -50,7 +54,6 @@ bool CIMObjectHandler::ModelicaCodeGenerator(const std::string filename) {
           }
 
         } else if (auto *power_trafo = dynamic_cast<PowerTrafoPtr>((*terminal_it)->ConductingEquipment)) {
-
           Transformer trafo = this->PowerTransformerHandler(tp_node, (*terminal_it), power_trafo, dict);
           if ((*terminal_it)->connected == true) {
             Connection conn(&busbar, &trafo, (*terminal_it)->sequenceNumber);
@@ -58,7 +61,6 @@ bool CIMObjectHandler::ModelicaCodeGenerator(const std::string filename) {
           }
 
         } else if (auto *ac_line = dynamic_cast<AcLinePtr>((*terminal_it)->ConductingEquipment)) {
-
           PiLine pi_line = this->ACLineSegmentHandler(tp_node, (*terminal_it), ac_line, dict);
           if ((*terminal_it)->connected == true) {
             Connection conn(&busbar, &pi_line, (*terminal_it)->sequenceNumber);
@@ -66,7 +68,6 @@ bool CIMObjectHandler::ModelicaCodeGenerator(const std::string filename) {
           }
 
         } else if (auto *energy_consumer = dynamic_cast<EnergyConsumerPtr>((*terminal_it)->ConductingEquipment)) {
-
           PQLoad pqload = this->EnergyConsumerHandler(tp_node, (*terminal_it), energy_consumer, dict);
           if ((*terminal_it)->connected == true) {
             Connection conn(&busbar, &pqload, (*terminal_it)->sequenceNumber);
@@ -92,7 +93,7 @@ bool CIMObjectHandler::ModelicaCodeGenerator(const std::string filename) {
   std::cout << modelica_output;
   // Write to file
   std::ofstream file;
-  file.open(filename + ".mo", std::fstream::trunc);
+  file.open("./" + filename + ".mo", std::fstream::trunc);
   if (file.good())
     file << modelica_output;
   file.close();
@@ -149,8 +150,36 @@ BusBar CIMObjectHandler::TopologicalNodeHandler(const TPNodePtr tp_node, ctempla
     busbar.set_template_values(busbar_dict);
   }
 
+  //BusBarSection used in Cimphony
+  for (terminal_it = tp_node->Terminal.begin(); terminal_it != tp_node->Terminal.end(); ++terminal_it) {
+     if (auto *busbar_section = dynamic_cast<BusBarSectionPtr>((*terminal_it)->ConductingEquipment)) {
+       this->BusBarSectionHandler(busbar_section, busbar, dict);
+     }
+  }
+
   return busbar;
 }
+
+/**
+ * compensate for busbar in Modelica
+ * used in Cimphony
+ */
+bool CIMObjectHandler::BusBarSectionHandler(const BusBarSectionPtr busbar_section, BusBar &busbar, ctemplate::TemplateDictionary* dict) {
+
+    for (diagram_it = busbar_section->DiagramObjects.begin(); diagram_it != busbar_section->DiagramObjects.end(); ++diagram_it) {
+      _t_points = this->calculate_average_position();
+
+      busbar.annotation.placement.transfomation.origin.x = _t_points.xPosition;
+      busbar.annotation.placement.transfomation.origin.y = _t_points.yPosition;
+      busbar.annotation.placement.transfomation.rotation = (*diagram_it)->rotation.value;
+
+      ctemplate::TemplateDictionary* busbar_dict = dict->AddIncludeDictionary("BUSBAR_DICT");
+      busbar_dict->SetFilename("./resource/BusBar.tpl");
+      busbar.set_template_values(busbar_dict);
+    }
+    return true;
+}
+
 
 /**
  * ConnectiviyNode
@@ -218,6 +247,9 @@ PiLine CIMObjectHandler::ACLineSegmentHandler(const TPNodePtr tp_node, const Ter
   Pi_line.set_name(name_in_modelica(ac_line->name));
   Pi_line.set_r(ac_line->r.value);
   Pi_line.set_x(ac_line->x.value);
+  Pi_line.set_b(ac_line->bch.value);
+  Pi_line.set_g(ac_line->gch.value);
+  Pi_line.set_length(ac_line->length.value);
   Pi_line.annotation.placement.visible = true;
 
   for (diagram_it = ac_line->DiagramObjects.begin(); diagram_it != ac_line->DiagramObjects.end(); ++diagram_it) {
@@ -247,9 +279,22 @@ Transformer CIMObjectHandler::PowerTransformerHandler(const TPNodePtr tp_node, c
 
   Transformer Trafo;
   Trafo.set_name(name_in_modelica(power_trafo->name));
-  Trafo.set_Vnom1(tp_node->BaseVoltage->nominalVoltage.value);
-  Trafo.set_Vnom1(tp_node->BaseVoltage->nominalVoltage.value);
+
   Trafo.annotation.placement.visible = true;
+
+  for(transformer_end_it = power_trafo->PowerTransformerEnd.begin();transformer_end_it != power_trafo->PowerTransformerEnd.end(); ++transformer_end_it){
+    if((*transformer_end_it)->endNumber == 1){
+      Trafo.set_Vnom1((*transformer_end_it)->BaseVoltage->nominalVoltage.value*1000);
+      Trafo.set_Sr((*transformer_end_it)->ratedS.value * 1000000);
+      Trafo.set_r((*transformer_end_it)->r.value);
+      Trafo.set_x((*transformer_end_it)->x.value);
+      Trafo.set_b((*transformer_end_it)->b.value);
+      Trafo.calc_URr();
+      Trafo.calc_Ukr();
+    } else if ((*transformer_end_it)->endNumber == 2){
+      Trafo.set_Vnom2((*transformer_end_it)->BaseVoltage->nominalVoltage.value*1000);
+    }
+  }
 
   for (diagram_it = power_trafo->DiagramObjects.begin(); diagram_it != power_trafo->DiagramObjects.end(); ++diagram_it) {
 
@@ -278,11 +323,8 @@ PQLoad CIMObjectHandler::EnergyConsumerHandler(const TPNodePtr tp_node, const Te
 
   pqload.set_name(name_in_modelica(energy_consumer->name));
   pqload.set_Pnom(energy_consumer->p.value);
-  pqload.set_Pnom_displayUnit(cast_unit(energy_consumer->p.multiplier, energy_consumer->p.unit));
   pqload.set_Qnom(energy_consumer->q.value);
-  pqload.set_Qnom_displayUnit(cast_unit(energy_consumer->q.multiplier, energy_consumer->q.unit));
   pqload.set_Vnom(tp_node->BaseVoltage->nominalVoltage.value);
-  pqload.set_Vnom_displayUnit(cast_unit(tp_node->BaseVoltage->nominalVoltage.multiplier, tp_node->BaseVoltage->nominalVoltage.unit));
   pqload.annotation.placement.visible = true;
 
   for (diagram_it = energy_consumer->DiagramObjects.begin(); diagram_it != energy_consumer->DiagramObjects.end();
@@ -392,13 +434,12 @@ DiagramObjectPoint CIMObjectHandler::convert_coordinate(double x, double y) {
  * convert name adapt to the format in modelica
  */
 std::string CIMObjectHandler::name_in_modelica(std::string original_name) {
-  std::string t_name = original_name;
-  std::size_t i = t_name.find("-");
-  std::size_t j = t_name.find(".");
-  if (i < t_name.size())
-    t_name = "CIM_" + t_name.replace(i, 1, "_");
-  if (j < t_name.size())
-    t_name = "CIM_" + t_name.replace(j, 1, "_");
+  std::string t_name = "CIM_" + original_name;
+  for(std::string::iterator it = t_name.begin(); it != t_name.end(); ++it) {
+    if((*it == ' ') || (*it == '-') || (*it == '.') ) {
+        *it = '_';
+    }
+  }
 
   return t_name;
 }

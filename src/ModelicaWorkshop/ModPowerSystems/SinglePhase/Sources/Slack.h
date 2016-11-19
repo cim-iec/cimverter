@@ -22,6 +22,7 @@ class Slack : public ModBaseClass {
  public:
 
   Slack();
+  Slack(const Slack &);
   virtual ~Slack();
 
   void set_Vnom(double Vnom) {

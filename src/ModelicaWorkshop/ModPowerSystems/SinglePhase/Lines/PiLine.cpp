@@ -44,9 +44,9 @@ bool PiLine::set_template_values(ctemplate::TemplateDictionary *dictionary) {
   dictionary->SetValue(NAME, this->name());
   dictionary->SetFormattedValue(LENGTH, "%.2f", this->length());
   dictionary->SetFormattedValue(IMAX, "%.2f", this->Imax());
-  dictionary->SetFormattedValue(R, "%.2f", this->r());
-  dictionary->SetFormattedValue(X, "%.2f", this->x());
-  dictionary->SetFormattedValue(B, "%.2f", this->b());
+  dictionary->SetFormattedValue(R, "%.3f", this->r());
+  dictionary->SetFormattedValue(X, "%.3f", this->x());
+  dictionary->SetFormattedValue(B, "%.10f", this->b());
   dictionary->SetFormattedValue(G, "%.f", this->g());
   dictionary->SetFormattedValue(SR, "%.f", this->Sr());
   dictionary->SetValue(IMAX_DISPLAYUNIT, (ModelicaUnit[this->Imax_displayUnit()]));

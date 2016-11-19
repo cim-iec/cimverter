@@ -19,6 +19,7 @@ namespace Loads {
 class ZLoad : public ModelicaWorkshop::ModBaseClass {
  public:
   ZLoad();
+  ZLoad(const ZLoad &);
   virtual ~ZLoad();
   void set_Pnom(double Pnom) {
       this->_Pnom = Pnom;

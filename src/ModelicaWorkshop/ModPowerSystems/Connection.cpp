@@ -84,6 +84,8 @@ Connection::Connection(const BusBar* busbar, const PiLine* pi_line, int sn): Con
       _p2.x = pi_line->annotation.placement.transfomation.origin.x + pi_line->annotation.placement.transfomation.extent.second.x;
       _p2.y = pi_line->annotation.placement.transfomation.origin.y;
     }
+  } else {
+    _terminalId2 = "T1";
   }
   _port2 = pi_line->name();
   _port2.append(".");
@@ -112,6 +114,8 @@ Connection::Connection(const BusBar* busbar, const Transformer* transformer, int
       _p2.x = transformer->annotation.placement.transfomation.origin.x + transformer->annotation.placement.transfomation.extent.second.x;
       _p2.y = transformer->annotation.placement.transfomation.origin.y;
     }
+  } else {
+    _terminalId2 = "T1";
   }
   _port2 = transformer->name();
   _port2.append(".");

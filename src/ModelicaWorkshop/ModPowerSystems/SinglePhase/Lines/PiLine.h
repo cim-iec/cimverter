@@ -119,7 +119,7 @@ class PiLine : public ModelicaWorkshop::ModBaseClass {
  private:
 
   //Parameters
-  double _length;  //Length of line in km
+  double _length = 20;  //Length of line in km
   double _r;  //Series Resistance per km
   double _x;  //Series Reactance per km
   double _b = 0.000172411;  //Shunt Susceptance per km

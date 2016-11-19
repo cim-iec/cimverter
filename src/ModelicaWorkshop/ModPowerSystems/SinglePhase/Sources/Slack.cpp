@@ -17,6 +17,15 @@ Slack::Slack()
     : _Vnom(110000) {
 }
 
+Slack::Slack(const Slack &rhs):ModBaseClass(rhs) {
+
+  this->_Vnom = rhs._Vnom;
+  this->_frequency = rhs._frequency;
+  this->_phiV = rhs._phiV;
+  this->_Vnom_displayUnit = rhs._Vnom_displayUnit;
+  this->_frequency_displayUnit = rhs._frequency_displayUnit;
+}
+
 Slack::~Slack() {
 }
 
