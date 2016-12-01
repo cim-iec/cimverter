@@ -60,11 +60,10 @@ bool CIMObjectHandler::ModelicaCodeGenerator(const std::string filename) {
         }
 
         if (auto *externalNI = dynamic_cast<ExNIPtr>((*terminal_it)->ConductingEquipment)) {
-
           Slack slack = this->ExternalNIHandler(tp_node, (*terminal_it), externalNI, dict);
           Connection conn(&busbar, &slack);
           connectionQueue.push(conn);
-          }
+
 
         } else if (auto *power_trafo = dynamic_cast<PowerTrafoPtr>((*terminal_it)->ConductingEquipment)) {
           Transformer trafo = this->PowerTransformerHandler(tp_node, (*terminal_it), power_trafo, dict);
