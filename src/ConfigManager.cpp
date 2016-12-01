@@ -33,7 +33,7 @@ void ConfigManager::getAllSettings() {
 void ConfigManager::getConfigFiles() {
   //find config file
   try {
-    this->cfg.readFile("src/config.cfg");
+    this->cfg.readFile("./config.cfg");
   } catch (const FileIOException &fioex) {
     std::cerr << "I/O error while reading config file." << std::endl;
   } catch (const ParseException &pex) {

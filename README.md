@@ -3,6 +3,7 @@
 This tool is used to convert CIM-XML-RDF files into Modelica code.
 
 ## Dependencies:
+* clang++
 * Boost >= 1.60.0
 * ctemplate >= 2.3
 * libconifg++
@@ -24,8 +25,7 @@ This tool is used to convert CIM-XML-RDF files into Modelica code.
 ##### 2. Change into build directory and run cmake (with -DCMAKE_INSTALL_PREFIX=<PREFIX> for installation under <PREFIX> directory instead of the default '/usr/local')
 
     cd build/
-    cmake .. -DCMAKE_INSTALL_PREFIX=<PREFIX>
-
+    cmake -DCMAKE_C_COMPILER=/usr/bin/clang -DCMAKE_CXX_COMPILER=/usr/bin/clang++ ../
 
 ##### 3. Compile CIM2Mod library
 

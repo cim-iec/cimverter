@@ -4,7 +4,7 @@
 PROJECT_NAME = CIM2Mod
 
 # Set compiler
-CXX = g++
+CXX = clang++
 
 # Set BOOST and CTEMPLATE installation directory
 CTEMPLATE_INSTALL_DIR=/usr/local
