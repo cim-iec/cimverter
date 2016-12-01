@@ -20,6 +20,7 @@ class PiLine : public ModelicaWorkshop::ModBaseClass {
  public:
   PiLine();
   PiLine(const PiLine &);
+  PiLine& operator=(const PiLine &);
   virtual ~PiLine();
 
   void set_length(double length) {

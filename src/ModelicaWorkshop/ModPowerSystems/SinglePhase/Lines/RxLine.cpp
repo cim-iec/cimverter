@@ -27,6 +27,20 @@ RxLine::RxLine(const RxLine &rhs):ModBaseClass(rhs) {
   this->_x_displayUnit = rhs._x_displayUnit;
 }
 
+RxLine& RxLine::operator=(const RxLine &rhs) {
+
+  if(this == &rhs) return *this;
+  ModBaseClass::operator=(rhs);
+  this->_length = rhs._length;
+  this->_r = rhs._r;
+  this->_x = rhs._x;
+  this->_r_displayUnit = rhs._r_displayUnit;
+  this->_x_displayUnit = rhs._x_displayUnit;
+
+  return *this;
+}
+
+
 RxLine::~RxLine() {
   // TODO Auto-generated destructor stub
 }

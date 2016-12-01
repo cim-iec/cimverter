@@ -17,10 +17,11 @@ namespace SinglePhase {
 
 namespace Transformers {
 
-class Transformer : public ModelicaWorkshop::ModBaseClass {
+class Transformer : public ModBaseClass {
  public:
   Transformer();
   Transformer(const Transformer &);
+  Transformer& operator=(const Transformer &);
   virtual ~Transformer();
 
   void set_Vnom1(double Vnom1) {

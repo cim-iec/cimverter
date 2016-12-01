@@ -20,6 +20,8 @@ class ConnectivityNode : public ModBaseClass {
  public:
   ConnectivityNode();
   ConnectivityNode(const ConnectivityNode &);
+  ConnectivityNode& operator=(const ConnectivityNode &);
+
   virtual ~ConnectivityNode();
 
   void set_Vnom(double Vnom) {

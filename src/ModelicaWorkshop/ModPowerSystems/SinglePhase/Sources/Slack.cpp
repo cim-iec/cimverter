@@ -26,6 +26,18 @@ Slack::Slack(const Slack &rhs):ModBaseClass(rhs) {
   this->_frequency_displayUnit = rhs._frequency_displayUnit;
 }
 
+Slack& Slack::operator=(const Slack &rhs) {
+
+  if(this == &rhs) return *this;
+  ModBaseClass::operator=(rhs);
+  this->_Vnom = rhs._Vnom;
+  this->_frequency = rhs._frequency;
+  this->_phiV = rhs._phiV;
+  this->_Vnom_displayUnit = rhs._Vnom_displayUnit;
+  this->_frequency_displayUnit = rhs._frequency_displayUnit;
+  return *this;
+}
+
 Slack::~Slack() {
 }
 

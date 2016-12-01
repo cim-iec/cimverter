@@ -52,6 +52,13 @@ enum class modelicaUnit {
   mA,
 
   /*
+   * Energy Unit
+   */
+  Wh,
+  kWh,
+  J,
+
+  /*
    * Load Unit
    */
   Ohm,
@@ -64,10 +71,13 @@ enum class modelicaUnit {
 
 static std::map<const modelicaUnit, const std::string> ModelicaUnit { { modelicaUnit::rad, "rad" }, { modelicaUnit::sr,
     "sr" }, { modelicaUnit::Hz, "Hz" }, { modelicaUnit::Bq, "Bq" }, { modelicaUnit::W, "W" },
-    { modelicaUnit::MW, "MW" }, { modelicaUnit::kW, "kW" }, { modelicaUnit::mW, "mW" }, { modelicaUnit::var, "var" }, {
-        modelicaUnit::A, "A" }, { modelicaUnit::kA, "kA" }, { modelicaUnit::mA, "mA" }, { modelicaUnit::V, "V" }, {
-        modelicaUnit::MV, "MV" }, { modelicaUnit::kV, "kV" }, { modelicaUnit::mV, "mV" }, { modelicaUnit::S, "S" }, {
-        modelicaUnit::Ohm, "Ohm" } };
+    { modelicaUnit::MW, "MW" }, { modelicaUnit::kW, "kW" }, { modelicaUnit::mW, "mW" }, { modelicaUnit::var, "var" },
+    { modelicaUnit::Wh, "Wh" }, { modelicaUnit::kWh, "kWh" }, { modelicaUnit::J, "J" },
+    { modelicaUnit::A, "A" }, { modelicaUnit::kA, "kA" }, { modelicaUnit::mA, "mA" },
+    { modelicaUnit::V, "V" }, { modelicaUnit::MV, "MV" }, { modelicaUnit::kV, "kV" }, { modelicaUnit::mV, "mV" },
+    { modelicaUnit::S, "S" }, { modelicaUnit::Ohm, "Ohm" }
+};
 
 }
+
 #endif /* SRC_MODELICAWORKSHOP_MODELICAUNIT_H_ */

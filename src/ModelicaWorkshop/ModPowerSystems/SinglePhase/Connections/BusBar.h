@@ -18,6 +18,7 @@ class BusBar : public ModBaseClass {
  public:
   BusBar();
   BusBar(const BusBar &);
+  BusBar& operator=(const BusBar &);
   virtual ~BusBar();
 
   void set_Vnom(double Vnom) {

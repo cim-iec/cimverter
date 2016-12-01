@@ -10,4 +10,6 @@
 #include "ModPowerSystems/SinglePhase/Loads/ZLoad.h"
 #include "ModPowerSystems/SinglePhase/Generations/WindGenerator.h"
 #include "ModPowerSystems/SinglePhase/Generations/GenericGenerator.h"
-
+#include "ModPowerSystems/SinglePhase/Generations/SolarGenerator.h"
+#include "ModPowerSystems/SinglePhase/Households/Household.h"
+#include "ModPowerSystems/SinglePhase/Storage/Battery.h"

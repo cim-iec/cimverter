@@ -7,8 +7,7 @@
 
 namespace ModelicaWorkshop {
 
-Connection::Connection(const BusBar* busbar, int sn)
-    : _sequenceNumber(sn) {
+Connection::Connection(const BusBar* busbar) {
   _port1 = busbar->name();
   _terminalId1 = "T";
   _port1.append(".");
@@ -18,7 +17,10 @@ Connection::Connection(const BusBar* busbar, int sn)
 
 }
 
-Connection::Connection(const BusBar* busbar, const Slack* slack, int sn): Connection(busbar, sn) {
+Connection::Connection(const BusBar* busbar, const Slack* slack): Connection(busbar) {
+
+  this->set_connected(slack->is_connected());
+
   _port2 = slack->name();
   _terminalId2 = "T";
   _port2.append(".");
@@ -28,33 +30,93 @@ Connection::Connection(const BusBar* busbar, const Slack* slack, int sn): Connec
   this->cal_middle_points(slack);
 }
 
-Connection::Connection(const BusBar* busbar, const PQLoad* pq_load, int sn): Connection(busbar, sn) {
+Connection::Connection(const BusBar* busbar, const PQLoad* pq_load): Connection(busbar) {
+
+  this->set_connected(pq_load->is_connected());
+
+  if(pq_load->PQLoadType() == PQLoadType::Standard){
+    //connection point's position auto adjust.
+    if (pq_load->annotation.placement.transfomation.rotation == 0 || pq_load->annotation.placement.transfomation.rotation == 359
+        || pq_load->annotation.placement.transfomation.rotation == 360) {
+      _p2.x = pq_load->annotation.placement.transfomation.origin.x;
+      _p2.y = pq_load->annotation.placement.transfomation.origin.y + pq_load->annotation.placement.transfomation.extent.second.y;
+    } else if (pq_load->annotation.placement.transfomation.rotation == 90 || pq_load->annotation.placement.transfomation.rotation == -270) {
+      _p2.x = pq_load->annotation.placement.transfomation.origin.x + pq_load->annotation.placement.transfomation.extent.second.x;
+      _p2.y = pq_load->annotation.placement.transfomation.origin.y;
+    } else if (pq_load->annotation.placement.transfomation.rotation == 180 || pq_load->annotation.placement.transfomation.rotation == -180) {
+      _p2.x = pq_load->annotation.placement.transfomation.origin.x;
+      _p2.y = pq_load->annotation.placement.transfomation.origin.y + pq_load->annotation.placement.transfomation.extent.first.y;
+    } else if (pq_load->annotation.placement.transfomation.rotation == -90 || pq_load->annotation.placement.transfomation.rotation == 270) {
+      _p2.x = pq_load->annotation.placement.transfomation.origin.x + pq_load->annotation.placement.transfomation.extent.first.x;
+      _p2.y = pq_load->annotation.placement.transfomation.origin.y;
+    }
+
+    _port2 = pq_load->name();
+    _terminalId2 = "T";
+    _port2.append(".");
+    _port2.append(_terminalId2);
+
+    this->cal_middle_points(pq_load);
+
+  } else if(pq_load->PQLoadType() == PQLoadType::Profile){
+    //connection point's position auto adjust.
+    if (pq_load->annotation.placement.transfomation.rotation == 0 || pq_load->annotation.placement.transfomation.rotation == 359
+        || pq_load->annotation.placement.transfomation.rotation == 360) {
+      _p2.x = pq_load->annotation.placement.transfomation.origin.x;
+      _p2.y = pq_load->annotation.placement.transfomation.origin.y + pq_load->annotation.placement.transfomation.extent.second.y;
+    } else if (pq_load->annotation.placement.transfomation.rotation == 90 || pq_load->annotation.placement.transfomation.rotation == -270) {
+      _p2.x = pq_load->annotation.placement.transfomation.origin.x + pq_load->annotation.placement.transfomation.extent.second.x;
+      _p2.y = pq_load->annotation.placement.transfomation.origin.y;
+    } else if (pq_load->annotation.placement.transfomation.rotation == 180 || pq_load->annotation.placement.transfomation.rotation == -180) {
+      _p2.x = pq_load->annotation.placement.transfomation.origin.x;
+      _p2.y = pq_load->annotation.placement.transfomation.origin.y + pq_load->annotation.placement.transfomation.extent.first.y;
+    } else if (pq_load->annotation.placement.transfomation.rotation == -90 || pq_load->annotation.placement.transfomation.rotation == 270) {
+      _p2.x = pq_load->annotation.placement.transfomation.origin.x + pq_load->annotation.placement.transfomation.extent.first.x;
+      _p2.y = pq_load->annotation.placement.transfomation.origin.y;
+    }
+
+    _port2 = pq_load->name();
+    _terminalId2 = "T";
+    _port2.append(".");
+    _port2.append(_terminalId2);
+
+    this->cal_middle_points(pq_load);
+  }
+}
+
+Connection::Connection(const BusBar* busbar, const Household* household): Connection(busbar) {
+
+  this->set_connected(household->is_connected());
 
   //connection point's position auto adjust.
-  if (pq_load->annotation.placement.transfomation.rotation == 0 || pq_load->annotation.placement.transfomation.rotation == 359
-      || pq_load->annotation.placement.transfomation.rotation == 360) {
-    _p2.x = pq_load->annotation.placement.transfomation.origin.x;
-    _p2.y = pq_load->annotation.placement.transfomation.origin.y + pq_load->annotation.placement.transfomation.extent.second.y;
-  } else if (pq_load->annotation.placement.transfomation.rotation == 90 || pq_load->annotation.placement.transfomation.rotation == -270) {
-    _p2.x = pq_load->annotation.placement.transfomation.origin.x + pq_load->annotation.placement.transfomation.extent.second.x;
-    _p2.y = pq_load->annotation.placement.transfomation.origin.y;
-  } else if (pq_load->annotation.placement.transfomation.rotation == 180 || pq_load->annotation.placement.transfomation.rotation == -180) {
-    _p2.x = pq_load->annotation.placement.transfomation.origin.x;
-    _p2.y = pq_load->annotation.placement.transfomation.origin.y + pq_load->annotation.placement.transfomation.extent.first.y;
-  } else if (pq_load->annotation.placement.transfomation.rotation == -90 || pq_load->annotation.placement.transfomation.rotation == 270) {
-    _p2.x = pq_load->annotation.placement.transfomation.origin.x + pq_load->annotation.placement.transfomation.extent.first.x;
-    _p2.y = pq_load->annotation.placement.transfomation.origin.y;
+  if (household->annotation.placement.transfomation.rotation == 0 || household->annotation.placement.transfomation.rotation == 359
+          || household->annotation.placement.transfomation.rotation == 360) {
+    _p2.x = household->annotation.placement.transfomation.origin.x;
+    _p2.y = household->annotation.placement.transfomation.origin.y + household->annotation.placement.transfomation.extent.second.y;
+  } else if (household->annotation.placement.transfomation.rotation == 90 || household->annotation.placement.transfomation.rotation == -270) {
+    _p2.x = household->annotation.placement.transfomation.origin.x + household->annotation.placement.transfomation.extent.second.x;
+    _p2.y = household->annotation.placement.transfomation.origin.y;
+  } else if (household->annotation.placement.transfomation.rotation == 180 || household->annotation.placement.transfomation.rotation == -180) {
+    _p2.x = household->annotation.placement.transfomation.origin.x;
+    _p2.y = household->annotation.placement.transfomation.origin.y + household->annotation.placement.transfomation.extent.first.y;
+  } else if (household->annotation.placement.transfomation.rotation == -90 || household->annotation.placement.transfomation.rotation == 270) {
+    _p2.x = household->annotation.placement.transfomation.origin.x + household->annotation.placement.transfomation.extent.first.x;
+    _p2.y = household->annotation.placement.transfomation.origin.y;
   }
 
-  _port2 = pq_load->name();
-  _terminalId2 = "T";
+  _port2 = household->name();
+  _terminalId2 = "PCC";
   _port2.append(".");
   _port2.append(_terminalId2);
 
-  this->cal_middle_points(pq_load);
+  this->cal_middle_points(household);
+
 }
 
-Connection::Connection(const BusBar* busbar, const ConnectivityNode* connectivity_node, int sn): Connection(busbar, sn) {
+Connection::Connection(const BusBar* busbar, const ConnectivityNode* connectivity_node): Connection(busbar) {
+
+  this->set_connected(connectivity_node->is_connected());
+
   _port2 = connectivity_node->name();
   _terminalId2 = "T";
   _port2.append(".");
@@ -64,9 +126,11 @@ Connection::Connection(const BusBar* busbar, const ConnectivityNode* connectivit
   this->cal_middle_points(connectivity_node);
 }
 
-Connection::Connection(const BusBar* busbar, const PiLine* pi_line, int sn): Connection(busbar, sn) {
+Connection::Connection(const BusBar* busbar, const PiLine* pi_line): Connection(busbar) {
 
-  if (_sequenceNumber == 0 || _sequenceNumber == 1) {
+  this->set_connected(pi_line->is_connected());
+
+  if (pi_line->sequenceNumber() == 0 || pi_line->sequenceNumber() == 1) {
     _terminalId2 = "T1";
     if (pi_line->annotation.placement.transfomation.rotation == 90 || pi_line->annotation.placement.transfomation.rotation == -90) {
       _p2.x = pi_line->annotation.placement.transfomation.origin.x;
@@ -75,7 +139,7 @@ Connection::Connection(const BusBar* busbar, const PiLine* pi_line, int sn): Con
       _p2.x = pi_line->annotation.placement.transfomation.origin.x + pi_line->annotation.placement.transfomation.extent.first.x;
       _p2.y = pi_line->annotation.placement.transfomation.origin.y;
     }
-  } else if (_sequenceNumber == 2) {
+  } else if (pi_line->sequenceNumber() == 2) {
     _terminalId2 = "T2";
     if (busbar->annotation.placement.transfomation.rotation == 90 || pi_line->annotation.placement.transfomation.rotation == -90) {
       _p2.x = pi_line->annotation.placement.transfomation.origin.x;
@@ -94,9 +158,10 @@ Connection::Connection(const BusBar* busbar, const PiLine* pi_line, int sn): Con
   this->cal_middle_points(pi_line);
 }
 
-Connection::Connection(const BusBar* busbar, const Transformer* transformer, int sn): Connection(busbar, sn) {
+Connection::Connection(const BusBar* busbar, const Transformer* transformer): Connection(busbar) {
 
-  if (_sequenceNumber == 0 || _sequenceNumber == 1) {
+  this->set_connected(transformer->is_connected());
+  if (transformer->sequenceNumber() == 0 || transformer->sequenceNumber() == 1) {
     _terminalId2 = "T1";
     if (transformer->annotation.placement.transfomation.rotation == 90 || transformer->annotation.placement.transfomation.rotation == -90) {
       _p2.x = transformer->annotation.placement.transfomation.origin.x;
@@ -105,7 +170,7 @@ Connection::Connection(const BusBar* busbar, const Transformer* transformer, int
       _p2.x = transformer->annotation.placement.transfomation.origin.x + transformer->annotation.placement.transfomation.extent.first.x;
       _p2.y = transformer->annotation.placement.transfomation.origin.y;
     }
-  } else if (_sequenceNumber == 2) {
+  } else if (transformer->sequenceNumber() == 2) {
     _terminalId2 = "T2";
     if (transformer->annotation.placement.transfomation.rotation == 90 || transformer->annotation.placement.transfomation.rotation == -90) {
       _p2.x = transformer->annotation.placement.transfomation.origin.x;
@@ -124,16 +189,49 @@ Connection::Connection(const BusBar* busbar, const Transformer* transformer, int
   this->cal_middle_points(transformer);
 }
 
-Connection::Connection(const BusBar* busbar, const GenericGenerator* generic_generator, int sn): Connection(busbar, sn) {
-  _port2 = generic_generator->name();
+Connection::Connection(const BusBar* busbar, const WindGenerator* wind_generator): Connection(busbar) {
+
+  this->set_connected(wind_generator->is_connected());
+
+  _port2 = wind_generator->name();
   _terminalId2 = "T";
   _port2.append(".");
   _port2.append(_terminalId2);
-  _p2.x = generic_generator->annotation.placement.transfomation.origin.x;
-  _p2.y = generic_generator->annotation.placement.transfomation.origin.y;
-  this->cal_middle_points(generic_generator);
+  _p2.x = wind_generator->annotation.placement.transfomation.origin.x;
+  _p2.y = wind_generator->annotation.placement.transfomation.origin.y;
+  this->cal_middle_points(wind_generator);
 
 }
+
+Connection::Connection(const BusBar* busbar, const SolarGenerator* solar_generator): Connection(busbar) {
+
+  this->set_connected(solar_generator->is_connected());
+
+  _port2 = solar_generator->name();
+  _terminalId2 = "T";
+  _port2.append(".");
+  _port2.append(_terminalId2);
+  _p2.x = solar_generator->annotation.placement.transfomation.origin.x;
+  _p2.y = solar_generator->annotation.placement.transfomation.origin.y;
+  this->cal_middle_points(solar_generator);
+
+}
+
+Connection::Connection(const BusBar* busbar, const Battery* battery): Connection(busbar) {
+
+  this->set_connected(battery->is_connected());
+
+  _port2 = battery->name();
+  _terminalId2 = "T";
+  _port2.append(".");
+  _port2.append(_terminalId2);
+  _p2.x = battery->annotation.placement.transfomation.origin.x;
+  _p2.y = battery->annotation.placement.transfomation.origin.y;
+  this->cal_middle_points(battery);
+
+}
+
+
 
 Connection::~Connection() {
   // TODO Auto-generated destructor stub
@@ -226,14 +324,20 @@ std::string Connection::output_points() const {
 
     return "{" + p1 + "," + p2 + "," + p3 + "," + p4 + "}";
   }
+
+  return "{}";
 }
 
 void Connection::draw_connection(ctemplate::TemplateDictionary *dictionary) {
-  dictionary->SetValue(CONNECTION_TYPE, _connection_type);
+
   dictionary->SetValue(PORT1, _port1);
   dictionary->SetValue(PORT2, _port2);
-  dictionary->SetValue(COLOR, this->lineColor());
-  dictionary->SetValue(POINTS, this->output_points());
+
+  if(this->is_connected()) {
+    dictionary->SetValue(CONNECTION_TYPE, _connection_type);
+    dictionary->SetValue(COLOR, this->lineColor());
+    dictionary->SetValue(POINTS, this->output_points());
+  }
 
 }
 

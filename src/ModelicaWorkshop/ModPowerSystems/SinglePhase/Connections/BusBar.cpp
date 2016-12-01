@@ -17,6 +17,14 @@ BusBar::BusBar(const BusBar &rhs):ModBaseClass(rhs) {
   this->_Vnom = rhs._Vnom;
 }
 
+BusBar& BusBar::operator=(const BusBar &rhs) {
+
+  if(this == &rhs) return *this;
+  ModBaseClass::operator=(rhs);
+  this->_Vnom = rhs._Vnom;
+  return *this;
+}
+
 BusBar::~BusBar() {
 }
 

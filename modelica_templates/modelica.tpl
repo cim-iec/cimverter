@@ -18,9 +18,15 @@ annotation(Placement(visible = {{VISIBLE}}, transformation(extent = {{TRANS_EXTE
 
 {{>SLACK_DICT}}
 
+{{>GENERICGENERATOR_DICT}}
+
 {{>WINDGENERATOR_DICT}}
 
+{{>SOLARGENERATOR_DICT}}
+
 {{>PQLOAD_DICT}}
+
+{{>PQLOADPROFILE_DICT}}
 
 {{>ZLOAD_DICT}}
 
@@ -30,7 +36,15 @@ annotation(Placement(visible = {{VISIBLE}}, transformation(extent = {{TRANS_EXTE
 
 {{>TRANSFORMER_DICT}}
 
-{{>GENERICGENERATOR_DICT}}
+{{>BATTERY_TYPE0_DICT}}
+
+{{>BATTERY_TYPE1_DICT}}
+
+{{>HOUSEHOLD_TYPE0_DICT}}
+
+{{>HOUSEHOLD_TYPE1_DICT}}
+
+{{>HOUSEHOLD_TYPE2_DICT}}
 
 equation
 

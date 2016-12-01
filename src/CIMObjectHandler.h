@@ -6,15 +6,12 @@
 #ifndef SRC_CIMOBJECTHANDLER_H_
 #define SRC_CIMOBJECTHANDLER_H_
 
-#include "ModelicaWorkshop/ModelicaClass.h"
-#include <stdlib.h>
 #include <boost/lexical_cast.hpp>
-#include <string>
-#include <iostream>
-#include <fstream>
 #include "IEC61970.h"
 #include "CIMParser.h"
+#include "ConfigManager.h"
 #include <ctemplate/template.h>
+#include "ModelicaWorkshop/ModelicaClass.h"
 
 typedef IEC61970::Base::Wires::BusbarSection* BusBarSectionPtr;
 typedef IEC61970::Base::Topology::TopologicalNode* TPNodePtr;
@@ -29,7 +26,13 @@ typedef IEC61970::Base::DiagramLayout::DiagramObject* DiagramObjectPtr;
 typedef IEC61970::Base::DiagramLayout::DiagramObjectPoint* DiagramObjectPointPtr;
 typedef IEC61970::Base::DiagramLayout::DiagramObjectPoint DiagramObjectPoint;
 
+void static print_separator() {
+  std::string prefix_ddeco(200,'-');
+  std::cout <<  prefix_ddeco << std::endl;
+}
+
 using namespace ModelicaWorkshop;
+using namespace libconfig;
 
 /*
  * Handle the CIMObject
@@ -39,6 +42,8 @@ class CIMObjectHandler {
  public:
   CIMObjectHandler() = delete;
   CIMObjectHandler(std::vector<BaseClass*>&& CIMObjects);
+  CIMObjectHandler(const CIMObjectHandler&) = delete;
+  CIMObjectHandler& operator=(const CIMObjectHandler&) = delete;
   virtual ~CIMObjectHandler();
 
   bool ModelicaCodeGenerator(const std::string filename);
@@ -50,15 +55,24 @@ class CIMObjectHandler {
   PiLine ACLineSegmentHandler(const TPNodePtr tp_node, const TerminalPtr terminal, const AcLinePtr ac_line, ctemplate::TemplateDictionary* dict);
   Transformer PowerTransformerHandler(const TPNodePtr tp_node, const TerminalPtr terminal, const PowerTrafoPtr power_trafo, ctemplate::TemplateDictionary* dict);
   PQLoad EnergyConsumerHandler(const TPNodePtr tp_node, const TerminalPtr terminal, const EnergyConsumerPtr energy_consumer, ctemplate::TemplateDictionary* dict);
-  GenericGenerator SynchronousMachineHandler( const TPNodePtr tp_node, const TerminalPtr terminal, const SynMachinePtr syn_machine, ctemplate::TemplateDictionary* dict);
+  WindGenerator SynchronousMachineHandlerType1( const TPNodePtr tp_node, const TerminalPtr terminal, const SynMachinePtr syn_machine, ctemplate::TemplateDictionary* dict);
+  SolarGenerator SynchronousMachineHandlerType2( const TPNodePtr tp_node, const TerminalPtr terminal, const SynMachinePtr syn_machine, ctemplate::TemplateDictionary* dict);
+  bool HouseholdComponetsHandler(const TPNodePtr tp_node, ctemplate::TemplateDictionary* dict);//to find household Componets
   bool ConnectionHandler(ctemplate::TemplateDictionary* dict);
 
+  void get_config();
   static std::string name_in_modelica(std::string orginal_name);
-  static DiagramObjectPoint convert_coordinate(double x,double y);
+  static DiagramObjectPoint convert_coordinate(double x,double y, const ConfigManager & configManager);
+
 
  private:
+  ConfigManager configManager;
   DiagramObjectPoint _t_points;
   std::vector<BaseClass*> _CIMObjects;
+  std::queue<PQLoad> pqloadQueue;
+  std::queue<Battery> batteryQueue;
+  std::queue<SolarGenerator> solarGeneratorQueue;
+  std::queue<Household> householdQueue;
   std::queue<Connection> connectionQueue;
 
   std::list<TerminalPtr>::iterator terminal_it;

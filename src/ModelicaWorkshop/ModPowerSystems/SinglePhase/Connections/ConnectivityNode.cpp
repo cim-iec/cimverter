@@ -21,6 +21,14 @@ ConnectivityNode::ConnectivityNode(const ConnectivityNode &rhs) {
   this->_Vnom = rhs._Vnom;
 }
 
+ConnectivityNode& ConnectivityNode::operator=(const ConnectivityNode &rhs) {
+
+  if(this == &rhs) return *this;
+  ModBaseClass::operator=(rhs);
+  this->_Vnom = rhs._Vnom;
+  return *this;
+}
+
 ConnectivityNode::~ConnectivityNode() {
 
 }

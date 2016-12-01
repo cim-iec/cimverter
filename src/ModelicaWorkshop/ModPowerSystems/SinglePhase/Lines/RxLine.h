@@ -20,6 +20,7 @@ class RxLine : public ModelicaWorkshop::ModBaseClass {
  public:
   RxLine();
   RxLine(const RxLine &);
+  RxLine& operator=(const RxLine &);
   virtual ~RxLine();
 
   void set_length(double length) {

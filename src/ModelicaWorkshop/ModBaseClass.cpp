@@ -13,8 +13,20 @@ ModBaseClass::ModBaseClass() {
 
 ModBaseClass::ModBaseClass(const ModBaseClass &rhs) {
   this->_name = rhs._name;
+  this->_connected = rhs._connected;
   this->annotation = rhs.annotation;
 }
+
+ModBaseClass & ModBaseClass::operator=(const ModBaseClass &rhs) {
+
+  if(this == &rhs) return *this;
+  this->_name = rhs._name;
+  this->_connected = rhs._connected;
+  this->annotation = rhs.annotation;
+  return *this;
+}
+
+
 ModBaseClass::~ModBaseClass() {
   // TODO Auto-generated destructor stub
 }

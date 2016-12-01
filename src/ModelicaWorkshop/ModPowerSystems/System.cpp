@@ -11,10 +11,10 @@ System::System() {
   // TODO Auto-generated constructor stub
 
 }
-/*initialize System Label and Coordinate
- *
- */
 
+/*
+ *Initialize System Label and Coordinate
+ */
 System::System(double lx, double ly, double rx, double ry)
     : _lx(lx),
       _ly(ly),
@@ -34,6 +34,31 @@ System::System(double lx, double ly, double rx, double ry)
   this->annotation.icon.coordinate.extent.first.y = -160;
   this->annotation.icon.coordinate.extent.second.x = 180;
   this->annotation.icon.coordinate.extent.second.y = 260;
+}
+
+/*
+ *  Using SystemSetting parameters from configuration
+ */
+System::System(const ConfigManager & configManager){
+
+  this->_lx = configManager.ss.coordinate[0];
+  this->_ly = configManager.ss.coordinate[1];
+  this->_rx = configManager.ss.coordinate[2];
+  this->_ry = configManager.ss.coordinate[3];
+
+  //initialize System Label
+  this->_name = configManager.ss.label_name;
+  this->annotation.placement.transfomation.extent.first.x = configManager.ss.label_extent[0];
+  this->annotation.placement.transfomation.extent.first.y = configManager.ss.label_extent[1];
+  this->annotation.placement.transfomation.extent.second.x = configManager.ss.label_extent[2];
+  this->annotation.placement.transfomation.extent.second.y = configManager.ss.label_extent[3];
+  this->annotation.placement.visible = true;
+
+  //initialize System
+  this->annotation.icon.coordinate.extent.first.x = configManager.ss.annotation_extent[0];
+  this->annotation.icon.coordinate.extent.first.y = configManager.ss.annotation_extent[1];
+  this->annotation.icon.coordinate.extent.second.x = configManager.ss.annotation_extent[2];
+  this->annotation.icon.coordinate.extent.second.y = configManager.ss.annotation_extent[3];
 }
 
 System::~System() {
@@ -76,7 +101,6 @@ std::string System::output_icon_extent_points() const {
  * Fill the system setting part of modelica template
  */
 bool System::set_system_setting(ctemplate::TemplateDictionary *dictionary) {
-  dictionary->SetValue(NAME, this->name());
   dictionary->SetValue(DIAGRAM_EXTENT_POINTS, this->output_diagram_extent_points());
   dictionary->SetValue(ICON_EXTENT_POINTS, this->output_icon_extent_points());
 

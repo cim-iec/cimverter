@@ -7,6 +7,7 @@
 #define SRC_MODELICAWORKSHOP_MODPOWERSYSTEMS_SYSTEM_H_
 
 #include "../ModBaseClass.h"
+#include "../../ConfigManager.h"
 
 using namespace ModelicaWorkshop;
 
@@ -15,6 +16,7 @@ namespace ModPowerSystems {
 class System : public ModBaseClass {
  public:
   System();
+  System(const ConfigManager & configManager);//using SystemSetting parameters from config
   System(double lx, double ly, double rx, double ry);
 
   virtual ~System();

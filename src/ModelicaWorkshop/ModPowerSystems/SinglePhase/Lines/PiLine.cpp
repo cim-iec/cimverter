@@ -35,6 +35,28 @@ PiLine::PiLine(const PiLine &rhs):ModBaseClass(rhs) {
   this->_x_displayUnit = rhs._x_displayUnit;
 }
 
+PiLine & PiLine::operator=(const PiLine &rhs) {
+
+  if(this == &rhs) return *this;
+  ModBaseClass::operator=(rhs);
+  this->_length = rhs._length;
+  this->_r = rhs._r;
+  this->_x = rhs._x;
+  this->_b = rhs._b;
+  this->_g = rhs._g;
+  this->_Sr = rhs._Sr;
+  this->_Imax = rhs._Imax;
+  this->_Imax_displayUnit = rhs._Imax_displayUnit;
+  this->_Sr_displayUnit = rhs._Sr_displayUnit;
+  this->_g_displayUnit = rhs._g_displayUnit;
+  this->_b_displayUnit = rhs._b_displayUnit;
+  this->_r_displayUnit = rhs._r_displayUnit;
+  this->_x_displayUnit = rhs._x_displayUnit;
+
+  return *this;
+}
+
+
 PiLine::~PiLine() {
   // TODO Auto-generated destructor stub
 }

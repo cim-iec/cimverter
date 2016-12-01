@@ -35,24 +35,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="aba0f362-4972-4310-bdaf-562af900a69f" name="Default" comment="">
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/ModelicaWorkshop/tplMarkersEnum.h" afterPath="$PROJECT_DIR$/src/ModelicaWorkshop/tplMarkers.h" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/CIMObjectHandler.cpp" afterPath="$PROJECT_DIR$/src/CIMObjectHandler.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/CIMObjectHandler.h" afterPath="$PROJECT_DIR$/src/CIMObjectHandler.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/ModelicaWorkshop/ModBaseClass.h" afterPath="$PROJECT_DIR$/src/ModelicaWorkshop/ModBaseClass.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/ModelicaWorkshop/ModPowerSystems/Connection.cpp" afterPath="$PROJECT_DIR$/src/ModelicaWorkshop/ModPowerSystems/Connection.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/ModelicaWorkshop/ModPowerSystems/SinglePhase/Connections/ConnectivityNode.h" afterPath="$PROJECT_DIR$/src/ModelicaWorkshop/ModPowerSystems/SinglePhase/Connections/ConnectivityNode.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/ModelicaWorkshop/ModPowerSystems/SinglePhase/Lines/PiLine.cpp" afterPath="$PROJECT_DIR$/src/ModelicaWorkshop/ModPowerSystems/SinglePhase/Lines/PiLine.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/ModelicaWorkshop/ModPowerSystems/SinglePhase/Lines/PiLine.h" afterPath="$PROJECT_DIR$/src/ModelicaWorkshop/ModPowerSystems/SinglePhase/Lines/PiLine.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/ModelicaWorkshop/ModPowerSystems/SinglePhase/Loads/PQLoad.cpp" afterPath="$PROJECT_DIR$/src/ModelicaWorkshop/ModPowerSystems/SinglePhase/Loads/PQLoad.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/ModelicaWorkshop/ModPowerSystems/SinglePhase/Loads/PQLoad.h" afterPath="$PROJECT_DIR$/src/ModelicaWorkshop/ModPowerSystems/SinglePhase/Loads/PQLoad.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/ModelicaWorkshop/ModPowerSystems/SinglePhase/Loads/ZLoad.cpp" afterPath="$PROJECT_DIR$/src/ModelicaWorkshop/ModPowerSystems/SinglePhase/Loads/ZLoad.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/ModelicaWorkshop/ModPowerSystems/SinglePhase/Loads/ZLoad.h" afterPath="$PROJECT_DIR$/src/ModelicaWorkshop/ModPowerSystems/SinglePhase/Loads/ZLoad.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/ModelicaWorkshop/ModPowerSystems/SinglePhase/Sources/Slack.cpp" afterPath="$PROJECT_DIR$/src/ModelicaWorkshop/ModPowerSystems/SinglePhase/Sources/Slack.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/ModelicaWorkshop/ModPowerSystems/SinglePhase/Sources/Slack.h" afterPath="$PROJECT_DIR$/src/ModelicaWorkshop/ModPowerSystems/SinglePhase/Sources/Slack.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/ModelicaWorkshop/ModPowerSystems/SinglePhase/Transformers/Transformer.cpp" afterPath="$PROJECT_DIR$/src/ModelicaWorkshop/ModPowerSystems/SinglePhase/Transformers/Transformer.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/ModelicaWorkshop/ModPowerSystems/SinglePhase/Transformers/Transformer.h" afterPath="$PROJECT_DIR$/src/ModelicaWorkshop/ModPowerSystems/SinglePhase/Transformers/Transformer.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/ModelicaWorkshop/ModelicaUnit.h" afterPath="$PROJECT_DIR$/src/ModelicaWorkshop/ModelicaUnit.h" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main.cpp" afterPath="$PROJECT_DIR$/src/main.cpp" />
     </list>
     <ignored path="CIM2Mod.iws" />
@@ -76,7 +59,7 @@
       <file leaf-file-name="CMakeLists.txt" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="780">
+            <state relative-caret-position="0">
               <caret line="51" column="0" selection-start-line="51" selection-start-column="0" selection-end-line="51" selection-end-column="0" />
               <folding />
             </state>
@@ -86,7 +69,7 @@
       <file leaf-file-name="main.cpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="200">
+            <state relative-caret-position="460">
               <caret line="23" column="7" selection-start-line="23" selection-start-column="7" selection-end-line="23" selection-end-column="7" />
               <folding>
                 <element signature="e#0#19#0" expanded="true" />
@@ -98,7 +81,7 @@
       <file leaf-file-name="ModelicaUnit.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/ModelicaWorkshop/ModelicaUnit.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-923">
+            <state relative-caret-position="0">
               <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
               <folding />
             </state>
@@ -108,14 +91,14 @@
       <file leaf-file-name="tplMarkers.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/ModelicaWorkshop/tplMarkers.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="115">
+            <state relative-caret-position="480">
               <caret line="24" column="0" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="README.md" pinned="false" current-in-tab="false">
+      <file leaf-file-name="README.md" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/README.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
             <state split_layout="SPLIT">
@@ -124,26 +107,6 @@
                 <folding />
               </first_editor>
               <second_editor />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Doxyfile.in" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Doxyfile.in">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="100">
-              <caret line="5" column="0" selection-start-line="5" selection-start-column="0" selection-end-line="5" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="CIMObjectHandler.cpp" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/CIMObjectHandler.cpp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="443">
-              <caret line="95" column="14" selection-start-line="95" selection-start-column="14" selection-end-line="95" selection-end-column="14" />
-              <folding />
             </state>
           </provider>
         </entry>
@@ -174,10 +137,10 @@
     <sorting>DEFINITION_ORDER</sorting>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="1665" />
-    <option name="y" value="24" />
-    <option name="width" value="1855" />
-    <option name="height" value="1056" />
+    <option name="x" value="121" />
+    <option name="y" value="229" />
+    <option name="width" value="1535" />
+    <option name="height" value="872" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <OptionsSetting value="true" id="Add" />
@@ -233,20 +196,6 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="cmake" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="CIM2Mod" />
-              <option name="myItemType" value="com.jetbrains.cidr.projectView.CidrFilesViewHelper$MyProjectTreeStructure$1" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="CIM2Mod" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="build" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -480,36 +429,37 @@
       <workItem from="1477995809830" duration="659000" />
       <workItem from="1478027760799" duration="2563000" />
       <workItem from="1479154675843" duration="3765000" />
-      <workItem from="1479554772179" duration="815000" />
+      <workItem from="1479554772179" duration="979000" />
+      <workItem from="1480359631856" duration="2345000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="8004000" />
+    <option name="totallyTimeSpent" value="10513000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="1665" y="24" width="1855" height="1056" extended-state="6" />
+    <frame x="121" y="229" width="1535" height="872" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.15245901" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.13774835" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.34130436" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="CMake" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32847533" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TeamCity" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.12331839" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32942432" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.65905386" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.34130436" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.49568966" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.65905386" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="Vcs.Log.UiProperties">
@@ -537,6 +487,25 @@
     </watches-manager>
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/README.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="320">
+            <caret line="16" column="0" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
+            <folding />
+          </first_editor>
+          <second_editor />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Doxyfile.in">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="100">
+          <caret line="5" column="0" selection-start-line="5" selection-start-column="0" selection-end-line="5" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -799,7 +768,7 @@
         <state relative-caret-position="-420">
           <caret line="20" column="0" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
           <folding>
-            <element signature="e#178#206#0" expanded="true" />
+            <element signature="e#178#206#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -862,14 +831,45 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/.project" />
-    <entry file="file://$PROJECT_DIR$/README.md">
-      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-        <state split_layout="SPLIT">
-          <first_editor relative-caret-position="320">
-            <caret line="16" column="0" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
-            <folding />
-          </first_editor>
-          <second_editor />
+    <entry file="file://$PROJECT_DIR$/src/main.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="460">
+          <caret line="23" column="7" selection-start-line="23" selection-start-column="7" selection-end-line="23" selection-end-column="7" />
+          <folding>
+            <element signature="e#0#19#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/ModelicaWorkshop/tplMarkers.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="480">
+          <caret line="24" column="0" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/ModelicaWorkshop/ModelicaUnit.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="51" column="0" selection-start-line="51" selection-start-column="0" selection-end-line="51" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/CIMObjectHandler.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-5420">
+          <caret line="50" column="40" selection-start-line="50" selection-start-column="40" selection-end-line="50" selection-end-column="40" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -881,45 +881,14 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="200">
-          <caret line="23" column="7" selection-start-line="23" selection-start-column="7" selection-end-line="23" selection-end-column="7" />
-          <folding>
-            <element signature="e#0#19#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/ModelicaWorkshop/tplMarkers.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="115">
-          <caret line="24" column="0" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/ModelicaWorkshop/ModelicaUnit.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-923">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="780">
-          <caret line="51" column="0" selection-start-line="51" selection-start-column="0" selection-end-line="51" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/CIMObjectHandler.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="443">
-          <caret line="95" column="14" selection-start-line="95" selection-start-column="14" selection-end-line="95" selection-end-column="14" />
-          <folding />
+    <entry file="file://$PROJECT_DIR$/README.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="320">
+            <caret line="16" column="0" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
+            <folding />
+          </first_editor>
+          <second_editor />
         </state>
       </provider>
     </entry>

@@ -77,6 +77,8 @@ class ModBaseClass {
  public:
   ModBaseClass();
   ModBaseClass(const ModBaseClass &rhs);
+  ModBaseClass & operator=(const ModBaseClass &);
+
   virtual ~ModBaseClass();
 
   void set_name(std::string name) {
@@ -85,6 +87,18 @@ class ModBaseClass {
   std::string name() const {
     return this->_name;
   };
+  void set_sequenceNumber(int sequenceNumber) {
+    this->_sequenceNumber = sequenceNumber;
+  };
+  int sequenceNumber() const {
+    return this->_sequenceNumber;
+  };
+  void set_connected(bool connected) {
+    this->_connected = connected;
+  };
+  bool is_connected() const {
+    return this->_connected;
+  };
 
   Annotation annotation;
   virtual bool set_template_values(ctemplate::TemplateDictionary *dictionary);
@@ -92,8 +106,10 @@ class ModBaseClass {
  protected:
   bool set_template_annotation_values(ctemplate::TemplateDictionary *dictionary);
 
- private:
+ protected:
   std::string _name;
+  int _sequenceNumber = 0;
+  bool _connected = true;
   std::string output_trans_extent_points() const;
   std::string output_trans_origin_points() const;
 
