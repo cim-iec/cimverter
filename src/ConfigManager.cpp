@@ -38,8 +38,8 @@ void ConfigManager::getAllSettings() {
 ///
 void ConfigManager::getConfigFiles() {
   try {
-    this->cfg.readFile("config.cfg");         ///for release using CMake
-    //this->cfg.readFile("build/bin/config.cfg"); ///for developing using makefile
+    //this->cfg.readFile("config.cfg");         ///for release using CMake
+    this->cfg.readFile("build/bin/config.cfg"); ///for developing using makefile
   } catch (const FileIOException &fioex) {
     std::cerr << "I/O error while reading config file." << std::endl;
   } catch (const ParseException &pex) {
