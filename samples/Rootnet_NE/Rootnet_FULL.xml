@@ -2963,7 +2963,7 @@
     <cim:TopologicalNode.ConnectivityNodeContainer rdf:resource="#_d0b232c3-0a56-4916-9471-66f49036ddc8"/>
   </cim:TopologicalNode>
   <cim:TopologicalNode rdf:ID="N0">
-    <cim:IdentifiedObject.name>N0</cim:IdentifiedObject.name>
+    <cim:IdentifiedObject.name>N0 BUS 13.8</cim:IdentifiedObject.name>
     <cim:TopologicalNode.BaseVoltage rdf:resource="#_a55f97f1-c485-414c-a845-678fe1eb19cf"/>
     <cim:TopologicalNode.ConnectivityNodeContainer rdf:resource="#_2a7c745b-de30-4863-88ba-dcbe73f806df"/>
   </cim:TopologicalNode>

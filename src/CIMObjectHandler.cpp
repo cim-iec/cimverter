@@ -20,9 +20,9 @@ CIMObjectHandler::~CIMObjectHandler() {
   // TODO Auto-generated destructor stub
 }
 
-/*
- * Get all settings from config.cfg.
- */
+///
+/// Get all settings from config.cfg.
+///
 void CIMObjectHandler::get_config() {
 
   print_separator();
@@ -63,7 +63,6 @@ bool CIMObjectHandler::ModelicaCodeGenerator(const std::string filename) {
           Slack slack = this->ExternalNIHandler(tp_node, (*terminal_it), externalNI, dict);
           Connection conn(&busbar, &slack);
           connectionQueue.push(conn);
-
 
         } else if (auto *power_trafo = dynamic_cast<PowerTrafoPtr>((*terminal_it)->ConductingEquipment)) {
           Transformer trafo = this->PowerTransformerHandler(tp_node, (*terminal_it), power_trafo, dict);
@@ -158,7 +157,10 @@ bool CIMObjectHandler::ModelicaCodeGenerator(const std::string filename) {
 
   std::string modelica_output;
   ctemplate::ExpandTemplate(this->configManager.ts.directory_path + "resource/modelica.tpl", ctemplate::STRIP_BLANK_LINES, dict, &modelica_output);
+#ifdef DEBUG
+#pragma message("DEBUG model activated!")
   std::cout << modelica_output;
+#endif
   std::cout << this->configManager.fs.output_path << std::endl;
   // Write to file
   std::ofstream file;
@@ -720,10 +722,6 @@ DiagramObjectPoint CIMObjectHandler::calculate_average_position() {
 
   std::size_t size = (*diagram_it)->DiagramObjectPoints.size();
 
-#ifdef DEBUG
-#pragma message("DEBUG macro activated!")
-  //std::cout << "the size of DiagramObjectPoints is: " << size << std::endl;
-#endif
   t_points = convert_coordinate(t_points.xPosition / size, t_points.yPosition / size, this->configManager);
 
   return t_points;
@@ -751,7 +749,7 @@ DiagramObjectPoint CIMObjectHandler::convert_coordinate(double x, double y, cons
  * convert name adapt to the format in modelica
  */
 std::string CIMObjectHandler::name_in_modelica(std::string original_name) {
-  std::string t_name = "CIM_" + original_name;
+  std::string t_name = "CIM_" + original_name; ///some names illegal in modelica!
   for (std::string::iterator it = t_name.begin(); it != t_name.end(); ++it) {
     if ((*it == ' ') || (*it == '-') || (*it == '.')) {
       *it = '_';

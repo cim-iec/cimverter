@@ -11,18 +11,22 @@ CTEMPLATE_INSTALL_DIR=/usr/local
 BOOST_INSTALL_DIR=/usr/local
 LIBCONFIG_INSTALL_DIR=/usr/local
 
-# CIM++
-CIM++ = ../GeneratedCode
+# CIMParser
+CIMPARSER_DIR = /usr/local
+
+# CIM Generated Code
+GENERATED_CODE_DIR = /usr/local/include/CIMParser
 
 # Include directories
 INCDIR = \
-	-I$(CIM++) \
+	-I$(GENERATED_CODE_DIR) \
 	-I$(BOOST_INSTALL_DIR)/include \
 	-I$(CTEMPLATE_INSTALL_DIR)/include \
 	-I$(LIBCONFIG_INSTALL_DIR)/include
 
 # Libraries directories
 LIBDIR = \
+				-L$(CIMPARSER_DIR)/lib \
 				-L$(BOOST_INSTALL_DIR)/lib \
                 -L$(CTEMPLATE_INSTALL_DIR)/lib \
                 -L$(LIBCONFIG_INSTALL_DIR)/lib
@@ -30,7 +34,8 @@ LIBDIR = \
 LIBS = \
                 $(CLANG_LIBS) \
 				-lboost_filesystem -lboost_system -lctemplate
-				
+								
+# Conifg flags				
 LIBCONFIGS = \
 				-lconfig++
 
@@ -40,19 +45,19 @@ CFLAGS = -Wall -Wno-inconsistent-missing-override -g -DDEBUG -std=c++11 \
 
 LDFLAGS = \
 		$(LIBDIR) $(LIBS) $(LIBCONFIGS) \
-	-L$(CIM++)/build -lcim++ \
+		-L$(CIMPARSER_DIR)/lib -lCIMParser \
 	$(shell pkg-config --libs libxml++-2.6)
 
 # Directories
 PROJDIR = .
 SRCDIR = $(PROJDIR)/src
 OBJDIR = $(PROJDIR)/obj
-BINDIR = $(PROJDIR)/build
+BINDIR = $(PROJDIR)/build/bin
 DOCDIR = $(PROJDIR)/documentation
 TEMPDIR = $(PROJDIR)/modelica_templates
 
 # Objects
-OBJ = $(OBJDIR)/main.o $(OBJDIR)/task.o $(OBJDIR)/CIMParser.o $(OBJDIR)/CIMFactory.o $(OBJDIR)/assignments.o $(OBJDIR)/CIMObjectHandler.o $(OBJDIR)/ConfigManager.o \
+OBJ = $(OBJDIR)/main.o $(OBJDIR)/CIMObjectHandler.o $(OBJDIR)/ConfigManager.o \
 	  $(OBJDIR)/ModBaseClass.o $(OBJDIR)/Connection.o $(OBJDIR)/System.o $(OBJDIR)/Slack.o \
 	  $(OBJDIR)/Battery.o \
 	  $(OBJDIR)/Transformer.o $(OBJDIR)/BusBar.o $(OBJDIR)/ConnectivityNode.o $(OBJDIR)/PQLoad.o \
@@ -152,5 +157,5 @@ $(BIN): $(OBJ)
 # Resource
 resource:
 	@mkdir -p $(BINDIR)/resource
-	@cp -f $(SRCDIR)/*.csv $(BINDIR)
 	@cp -f $(TEMPDIR)/*.tpl $(BINDIR)/resource
+	@cp -f $(SRCDIR)/*.cfg $(BINDIR)

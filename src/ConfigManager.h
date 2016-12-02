@@ -1,7 +1,7 @@
-/*
- * ConfigManager.h
- * Manage the Config.cfg
- */
+///
+/// ConfigManager.h
+/// Manage the Config.cfg
+///
 
 #ifndef SRC_CONFIGMANAGER_H_
 #define SRC_CONFIGMANAGER_H_
@@ -13,69 +13,79 @@
 
 using namespace libconfig;
 
+/// template settings in Config.cfg
 typedef struct TemplateSettings {
+  /// template tpl file path
   std::string directory_path;
 
 } TemplateSettings;
 
+/// files path settings in Config.cfg
 typedef struct FilesSettings {
-  std::string input_path;
-  std::string output_path;
+  std::string input_path;             /// input file path
+  std::string output_path;            /// input file path
 
 } FilesSettings;
 
+/// Modelica system settings in Config.cfg
 typedef struct SystemSettings {
-  bool enable;
-  double topology_trans_parameter[4];
-  double coordinate[4];
-  std::string label_name;  //Set name of modelica label
-  std::string label_simMode;  //steady or transit
-  std::string label_init;  //initial mode
-  double label_extent[4];
-  bool label_visible;
-  double annotation_extent[4];
-  bool annotation_visible;
+  bool enable;                          /// enable system settings
+  double topology_trans_parameter[4];   /// coordinate system transformer parameters in Modelica
+  double coordinate[4];                 /// coordinate system range Parameters in Modelica
+  std::string label_name;               /// set name of modelica label
+  std::string label_simMode;            /// steady or transit
+  std::string label_init;               /// initial mode
+  double label_extent[4];               /// label size
+  bool label_visible;                   /// label visible
+  double annotation_extent[4];          /// system size
 } SystemSettings;
 
+/// base annotation settings in Config.cfg
 typedef struct AnnotationSettings {
-  bool visible;
-  double transformation_extent[4];
+  bool visible;                     /// Icon visible
+  double transformation_extent[4];  /// Icon size
 } AnnotationSettings;
 
+/// slack settings in Config.cfg
 typedef struct SlackSettings {
-  bool enable;
-  AnnotationSettings annotation;
+  bool enable;                      /// enable slack settings
+  AnnotationSettings annotation;    /// annotation settings
 } SlackSettings;
 
+/// BusBar settings in Config.cfg
 typedef struct BusBarSettings {
-  bool enable;
+  bool enable;                      /// enable BusBar settings
   AnnotationSettings annotation;
 
 } BusBarSettings;
 
+/// Piline settings in Config.cfg
 typedef struct PiLineSettings {
-  bool enable;
+  bool enable;                      /// enable PiLine settings
   AnnotationSettings annotation;
 
 } PiLineSettings;
 
+/// Rxline settings in Config.cfg
 typedef struct RxLineSettings {
-  bool enable;
+  bool enable;                      /// enable Rxline settings
   AnnotationSettings annotation;
 
 } RxLineSettings;
 
+/// PQLoad settings in Config.cfg
 typedef struct PQLoadSettings {
-  bool enable;
-  bool use_profiles;
+  bool enable;                      /// enable PQLoad settings
+  bool use_profiles;                /// use PQLoadProfile instead of PQLoad
   std::string profile_name;
   std::string profile_filename;
   AnnotationSettings annotation;
 
 } PQLoadSettings;
 
+/// ZLoad settings in Config.cfg
 typedef struct ZLoadSettings {
-  bool enable;
+  bool enable;                      /// enable ZLoad settings
   bool use_profiles;
   std::string profile_name;
   std::string profile_filename;
@@ -83,34 +93,47 @@ typedef struct ZLoadSettings {
 
 } ZLoadSettings;
 
+/// Transformer settings in Config.cfg
 typedef struct TransformerSettings {
-  bool enable;
+  bool enable;                      /// enable Transformer settings
   AnnotationSettings annotation;
 
 } TransformerSettings;
 
+/// WindGenerator settings in Config.cfg
 typedef struct WindGeneratorSettings {
-  bool enable;
+  bool enable;                      /// enable WindGenerator settings
   AnnotationSettings annotation;
 
 } WindGeneratorSettings;
 
+/// SolarGenerator settings in Config.cfg
 typedef struct SolarGeneratorSettings {
-  bool enable;
+  bool enable;                      /// enable SolarGenerator settings
   AnnotationSettings annotation;
 
 } SolarGeneratorSettings;
 
+/// Battery settings in Config.cfg
+typedef struct BatterySettings {
+  bool enable;                      /// enable Battery settings
+  std::string type;                 /// Battery type: type0, type1
+  AnnotationSettings annotation;
+
+} BatterySettings;
+
+/// Household settings in Config.cfg
 typedef struct HouseholdSettings {
-  bool enable;
-  bool use_households;
+  bool enable;                      /// enable Household settings
+  std::string type;                 /// Household type: type0, type1, type2
+  bool use_households;              /// use Household instead of PQLoad, SolarGenerator and Battery
   AnnotationSettings annotation;
 
 } HouseholdSettings;
 
-/*
- * Manage Settings from config.cfg
- */
+/// \brief Manage Settings from config.cfg
+///
+///
 class ConfigManager {
 
  public:
@@ -130,6 +153,7 @@ class ConfigManager {
   ZLoadSettings zload_parameters;
   SolarGeneratorSettings solar_gen_parameters;
   WindGeneratorSettings wind_gen_parameters;
+  BatterySettings battery_parameters;
   HouseholdSettings household_parameters;
 
  public:
@@ -147,6 +171,7 @@ class ConfigManager {
   void getZLoadSettings();
   void getWindGeneratorSettings();
   void getSolarGeneratorSettings();
+  void getBatterySettings();
   void getHouseholdSettings();
 
  private:

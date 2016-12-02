@@ -27,16 +27,16 @@ typedef IEC61970::Base::DiagramLayout::DiagramObjectPoint* DiagramObjectPointPtr
 typedef IEC61970::Base::DiagramLayout::DiagramObjectPoint DiagramObjectPoint;
 
 void static print_separator() {
-  std::string prefix_ddeco(200,'-');
-  std::cout <<  prefix_ddeco << std::endl;
+  std::string prefix_deco(200, '-');
+  std::cout << prefix_deco << std::endl;
 }
 
 using namespace ModelicaWorkshop;
 using namespace libconfig;
 
-/*
- * Handle the CIMObject
- */
+/// \brief Handle the CIMObject
+///
+///
 class CIMObjectHandler {
 
  public:
@@ -55,15 +55,14 @@ class CIMObjectHandler {
   PiLine ACLineSegmentHandler(const TPNodePtr tp_node, const TerminalPtr terminal, const AcLinePtr ac_line, ctemplate::TemplateDictionary* dict);
   Transformer PowerTransformerHandler(const TPNodePtr tp_node, const TerminalPtr terminal, const PowerTrafoPtr power_trafo, ctemplate::TemplateDictionary* dict);
   PQLoad EnergyConsumerHandler(const TPNodePtr tp_node, const TerminalPtr terminal, const EnergyConsumerPtr energy_consumer, ctemplate::TemplateDictionary* dict);
-  WindGenerator SynchronousMachineHandlerType1( const TPNodePtr tp_node, const TerminalPtr terminal, const SynMachinePtr syn_machine, ctemplate::TemplateDictionary* dict);
-  SolarGenerator SynchronousMachineHandlerType2( const TPNodePtr tp_node, const TerminalPtr terminal, const SynMachinePtr syn_machine, ctemplate::TemplateDictionary* dict);
-  bool HouseholdComponetsHandler(const TPNodePtr tp_node, ctemplate::TemplateDictionary* dict);//to find household Componets
+  WindGenerator SynchronousMachineHandlerType1(const TPNodePtr tp_node, const TerminalPtr terminal, const SynMachinePtr syn_machine, ctemplate::TemplateDictionary* dict);
+  SolarGenerator SynchronousMachineHandlerType2(const TPNodePtr tp_node, const TerminalPtr terminal, const SynMachinePtr syn_machine,ctemplate::TemplateDictionary* dict);
+  bool HouseholdComponetsHandler(const TPNodePtr tp_node, ctemplate::TemplateDictionary* dict);  ///to find household Componets
   bool ConnectionHandler(ctemplate::TemplateDictionary* dict);
 
-  void get_config();
+  void get_config();  ///get congiuration from config.cfg
   static std::string name_in_modelica(std::string orginal_name);
-  static DiagramObjectPoint convert_coordinate(double x,double y, const ConfigManager & configManager);
-
+  static DiagramObjectPoint convert_coordinate(double x, double y, const ConfigManager & configManager);
 
  private:
   ConfigManager configManager;

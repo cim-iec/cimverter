@@ -13,6 +13,9 @@ ConfigManager::~ConfigManager() {
   // TODO Auto-generated destructor stub
 }
 
+/// \brief get all settings
+///
+///
 void ConfigManager::getAllSettings() {
 
   this->getFilesSettings();
@@ -26,14 +29,17 @@ void ConfigManager::getAllSettings() {
   this->getZLoadSettings();
   this->getWindGeneratorSettings();
   this->getSolarGeneratorSettings();
+  this->getBatterySettings();
   this->getHouseholdSettings();
 }
-;
 
+/// \brief find config file.
+///
+///
 void ConfigManager::getConfigFiles() {
-  //find config file
   try {
-    this->cfg.readFile("./config.cfg");
+    this->cfg.readFile("config.cfg");         ///for release using CMake
+    //this->cfg.readFile("build/bin/config.cfg"); ///for developing using makefile
   } catch (const FileIOException &fioex) {
     std::cerr << "I/O error while reading config file." << std::endl;
   } catch (const ParseException &pex) {
@@ -41,9 +47,9 @@ void ConfigManager::getConfigFiles() {
   }
 }
 
-/*
- * Get files' path from config.cfg
- */
+///
+/// Get files' path from config.cfg
+///
 void ConfigManager::getFilesSettings() {
   std::cout << "----------------FilesSettings-------------------" << std::endl;
   try {
@@ -66,9 +72,9 @@ void ConfigManager::getFilesSettings() {
   }
 }
 
-/*
- * Get Modelica SystemSettings from config.cfg
- */
+///
+/// Get Modelica SystemSettings from config.cfg
+///
 void ConfigManager::getSystemSettings() {
   std::cout << "----------------SystemSettings-------------------" << std::endl;
   try {
@@ -88,12 +94,6 @@ void ConfigManager::getSystemSettings() {
     std::cout << "label_visible: " << this->ss.label_visible << std::endl;
   } catch (const SettingNotFoundException &nfex) {
     std::cerr << "No label_visible settings in configuration file." << std::endl;
-  }
-  try {
-    this->ss.annotation_visible = this->cfg.lookup("system.annotation.visible");
-    std::cout << "annotation_visible: " << this->ss.annotation_visible << std::endl;
-  } catch (const SettingNotFoundException &nfex) {
-    std::cerr << "No anotation_visible settings in configuration file." << std::endl;
   }
   try {
     this->ss.label_simMode = this->cfg.lookup("system.label.simMode").c_str();
@@ -146,9 +146,9 @@ void ConfigManager::getSystemSettings() {
   }
 }
 
-/*
- * Get Modelica Slack Settings from config.cfg
- */
+///
+/// Get Modelica Slack Settings from config.cfg
+///
 void ConfigManager::getSlackSettings() {
   std::cout << "----------------SlackSettings-------------------" << std::endl;
   try {
@@ -174,9 +174,9 @@ void ConfigManager::getSlackSettings() {
   }
 }
 
-/*
- * Get Modelica BusBar Settings from config.cfg
- */
+///
+/// Get Modelica BusBar Settings from config.cfg
+///
 void ConfigManager::getBusBarSettings() {
   std::cout << "----------------BusBarSettings-------------------" << std::endl;
   try {
@@ -202,11 +202,11 @@ void ConfigManager::getBusBarSettings() {
   }
 }
 
-/*
- * Get Modelica Transformer Settings from config.cfg
- */
+///
+/// Get Modelica Transformer Settings from config.cfg
+///
 void ConfigManager::getTransformerSettings() {
-  std::cout << "----------------TransformerSettingsSettings-------------------" << std::endl;
+  std::cout << "-----------TransformerSettingsSettings-----------" << std::endl;
   try {
     this->trafo_parameters.enable = this->cfg.lookup("single_phase.transformer.enable");
     std::cout << "get enable successfully!" << std::endl;
@@ -230,11 +230,11 @@ void ConfigManager::getTransformerSettings() {
   }
 }
 
-/*
- * Get Modelica PiLine Settings from config.cfg
- */
+///
+/// Get Modelica PiLine Settings from config.cfg
+///
 void ConfigManager::getPiLineSettings() {
-  std::cout << "----------------PiLineSettings-------------------" << std::endl;
+  std::cout << "----------------PiLineSettings-----------------" << std::endl;
   try {
     this->piline_parameters.enable = this->cfg.lookup("single_phase.piline.enable");
     std::cout << "get piline_parameters enable successfully!" << std::endl;
@@ -258,11 +258,11 @@ void ConfigManager::getPiLineSettings() {
   }
 }
 
-/*
- * Get Modelica RxLine Settings from config.cfg
- */
+///
+/// Get Modelica RxLine Settings from config.cfg
+///
 void ConfigManager::getRxLineSettings() {
-  std::cout << "----------------RxLineSettings-------------------" << std::endl;
+  std::cout << "--------------RxLineSettings----------------" << std::endl;
   try {
     this->rxline_parameters.enable = this->cfg.lookup("single_phase.rxline.enable");
     std::cout << "get enable successfully!" << std::endl;
@@ -286,11 +286,11 @@ void ConfigManager::getRxLineSettings() {
   }
 }
 
-/*
- * Get PQLoad Settings from config.cfg
- */
+/// \brief Get PQLoad Settings from config.cfg.
+///
+///
 void ConfigManager::getPQLoadSettings() {
-  std::cout << "----------------PQLoadSettings-------------------" << std::endl;
+  std::cout << "----------------PQLoadSettings-----------------" << std::endl;
   try {
     this->pqload_parameters.enable = this->cfg.lookup("single_phase.pqload.enable");
     std::cout << "get enable successfully!" << std::endl;
@@ -325,7 +325,7 @@ void ConfigManager::getPQLoadSettings() {
     std::cerr << "No transformation_extent settings in configuration file." << std::endl;
   }
   try {
-    // Get the UseProfiles.
+    /// Get the UseProfiles.
     this->pqload_parameters.use_profiles = this->cfg.lookup("single_phase.pqload.use_profiles");
     if (this->pqload_parameters.use_profiles)
       std::cout << "Using UseProfiles" << std::endl;
@@ -334,11 +334,11 @@ void ConfigManager::getPQLoadSettings() {
   }
 }
 
-/*
- * Get ZLoad Settings from config.cfg
- */
+///
+/// Get ZLoad Settings from config.cfg
+///
 void ConfigManager::getZLoadSettings() {
-  std::cout << "----------------ZLoadSettings-------------------" << std::endl;
+  std::cout << "----------------ZLoadSettings-----------------" << std::endl;
   try {
     this->zload_parameters.enable = this->cfg.lookup("single_phase.zload.enable");
     std::cout << "get enable successfully!" << std::endl;
@@ -370,11 +370,11 @@ void ConfigManager::getZLoadSettings() {
   }
 }
 
-/*
- * Get Modelica SolarGenerator Settings Settings from config.cfg
- */
+///
+/// Get Modelica SolarGenerator Settings Settings from config.cfg
+///
 void ConfigManager::getSolarGeneratorSettings() {
-  std::cout << "----------------SolarGeneratorSettings-------------------" << std::endl;
+  std::cout << "---------SolarGeneratorSettings---------------" << std::endl;
   try {
     this->solar_gen_parameters.enable = this->cfg.lookup("single_phase.solar_generator.enable");
     std::cout << "get enable successfully!" << std::endl;
@@ -398,11 +398,11 @@ void ConfigManager::getSolarGeneratorSettings() {
   }
 }
 
-/*
- * Get Modelica WindGenerator Settings Settings from config.cfg
- */
+///
+/// Get Modelica WindGenerator Settings Settings from config.cfg
+///
 void ConfigManager::getWindGeneratorSettings() {
-  std::cout << "----------------WindGeneratorSettings-------------------" << std::endl;
+  std::cout << "-----------WindGeneratorSettings-------------" << std::endl;
   try {
     this->wind_gen_parameters.enable = this->cfg.lookup("single_phase.wind_generator.enable");
     std::cout << "get enable successfully!" << std::endl;
@@ -426,11 +426,45 @@ void ConfigManager::getWindGeneratorSettings() {
   }
 }
 
-/*
- * Get Household Setting from config.cfg
- */
+///
+/// Get Battery Setting from config.cfg
+///
+void ConfigManager::getBatterySettings() {
+  std::cout << "-------------BatterySettings-------------" << std::endl;
+  try {
+    this->battery_parameters.enable = this->cfg.lookup("single_phase.battery.enable");
+    std::cout << "get enable successfully!" << std::endl;
+  } catch (const SettingNotFoundException &nfex) {
+    std::cerr << "No enable settings in configuration file." << std::endl;
+  }
+  try {
+    this->battery_parameters.annotation.visible = this->cfg.lookup("single_phase.battery.annotation.visible");
+    std::cout << "visible: " << this->battery_parameters.annotation.visible << std::endl;
+  } catch (const SettingNotFoundException &nfex) {
+    std::cerr << "No visible settings in configuration file." << std::endl;
+  }
+  try {
+    this->battery_parameters.type = this->cfg.lookup("single_phase.battery.type").c_str();
+    std::cout << "type: " << battery_parameters.type << std::endl;
+  } catch (const SettingNotFoundException &nfex) {
+    std::cerr << "No type settings in configuration file." << std::endl;
+  }
+  try {
+    const Setting& transformation_extent = this->cfg.lookup("single_phase.battery.annotation.transformation.extent");
+    for (int i = 0; i < 4; i++) {
+      this->battery_parameters.annotation.transformation_extent[i] = transformation_extent[i];
+    }
+    std::cout << "get transformation_extent successfully!" << std::endl;
+  } catch (const SettingNotFoundException &nfex) {
+    std::cerr << "No transformation_extent settings in configuration file." << std::endl;
+  }
+}
+
+///
+///Get Household Setting from config.cfg
+///
 void ConfigManager::getHouseholdSettings() {
-  std::cout << "----------------HouseholdSettings-------------------" << std::endl;
+  std::cout << "-------------HouseholdSettings-------------" << std::endl;
   try {
     this->household_parameters.enable = this->cfg.lookup("single_phase.household.enable");
     std::cout << "get enable successfully!" << std::endl;
@@ -451,6 +485,12 @@ void ConfigManager::getHouseholdSettings() {
     std::cout << "get transformation_extent successfully!" << std::endl;
   } catch (const SettingNotFoundException &nfex) {
     std::cerr << "No transformation_extent settings in configuration file." << std::endl;
+  }
+  try {
+    this->household_parameters.type = this->cfg.lookup("single_phase.household.type").c_str();
+    std::cout << "type: " << household_parameters.type << std::endl;
+  } catch (const SettingNotFoundException &nfex) {
+    std::cerr << "No type settings in configuration file." << std::endl;
   }
   try {
     // Get the UseHouseholds.

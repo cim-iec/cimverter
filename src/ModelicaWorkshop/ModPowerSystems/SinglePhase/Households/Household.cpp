@@ -28,7 +28,7 @@ Household::Household(const Loads::PQLoad pq_load,const Generations::SolarGenerat
   this->annotation.placement.visible = true;
   this->annotation.placement.transfomation.origin.x = pq_load.annotation.placement.transfomation.origin.x;
   this->annotation.placement.transfomation.origin.y = pq_load.annotation.placement.transfomation.origin.y;
-  this->annotation.placement.transfomation.rotation = pq_load.annotation.placement.transfomation.rotation;
+  this->annotation.placement.transfomation.rotation = 0;
 }
 
 Household::Household(enum HouseholdType Type, std::string load_profileFileName, std::string load_profileName): _Type(Type),
