@@ -8,6 +8,7 @@ This tool is used to convert CIM-XML-RDF files into Modelica code.
 * ctemplate >= 2.3
 * libconifg++
 * CIMParser
+* Doxygen
 
 ### Install Boost on Ubuntu:
 ...
@@ -78,6 +79,9 @@ This tool is used to convert CIM-XML-RDF files into Modelica code.
 
 ### Install CIMParser on Ubuntu:
 ##### see https://git.rwth-aachen.de/CIM-XML-Interface/CIM-XML-Parser
+
+### Install Doxygen on Ubuntu:
+	sudo apt-get install doxygen
 
 ***
 ### Solve Eclipse CDT indexer unresolve inclusion problem:

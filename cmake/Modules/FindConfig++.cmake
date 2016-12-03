@@ -1,6 +1,6 @@
 # - Try to find the libconfig++
 
-FIND_PATH(CONFIG++_INCLUDE_DIR libconfig.h++ /usr/include /usr/local/include)
+FIND_PATH(CONFIG++_INCLUDE_DIR libconfig.h++ /usr/include/Cellar /usr/local/include/Cellar /usr/include/ /usr/local/include/) 
 
 FIND_LIBRARY(CONFIG++_LIBRARY NAMES config++ PATH /usr/lib /usr/local/lib)
 

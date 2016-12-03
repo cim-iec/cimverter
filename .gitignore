@@ -6,3 +6,5 @@ Doxyfile
 obj
 .cproject
 .project
+.settings
+.idea
