@@ -10,8 +10,6 @@ This tool is used to convert CIM-XML-RDF files into Modelica code.
 * CIMParser
 * Doxygen
 
-### Install Boost on Ubuntu:
-...
 
 ### Install libconfig++ on Ubuntu:
      sudo apt-get install libconfig++-dev
@@ -74,8 +72,11 @@ This tool is used to convert CIM-XML-RDF files into Modelica code.
      sudo ./b2 install
 
 ### Install ctemplate on Ubuntu:
-##### see https://github.com/OlafvdSpek/ctemplate/blob/master/INSTALL
 
+##### 1. Install automake
+      sudo apt-get install automake
+
+##### 2. see https://github.com/OlafvdSpek/ctemplate
 
 ### Install CIMParser on Ubuntu:
 ##### see https://git.rwth-aachen.de/CIM-XML-Interface/CIM-XML-Parser
