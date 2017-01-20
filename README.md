@@ -10,6 +10,41 @@ This tool is used to convert CIM-XML-RDF files into Modelica code.
 * CIMParser
 * Doxygen
 
+### Install Boost 1.6 on Ubuntu:
+##### 1. Get the required libraries:
+
+     sudo apt-get update
+     sudo apt-get install build-essential g++ python-dev autotools-dev libicu-dev build-essential libbz2-dev libboost-all-dev
+
+##### 2. Download boost 1.60 https://sourceforge.net/projects/boost/?source=typ_redirect
+
+     tar xzvf boost_1_60_0.tar.gz
+     cd boost_1_60_0/
+
+##### 3. Boost's bootstrap setup:
+
+     ./bootstrap.sh --prefix=/usr/local
+
+##### 4. Then build it with:
+
+     ./b2
+
+##### 5. and eventually install it:
+
+     sudo ./b2 install
+
+### Install ctemplate on Ubuntu:
+
+##### 1. Install automake
+      sudo apt-get install automake
+
+##### 2. see https://github.com/OlafvdSpek/ctemplate
+
+### Install CIMParser on Ubuntu:
+##### see https://git.rwth-aachen.de/CIM-XML-Interface/CIM-XML-Parser
+
+### Install Doxygen on Ubuntu:
+	sudo apt-get install doxygen
 
 ### Install libconfig++ on Ubuntu:
      sudo apt-get install libconfig++-dev
@@ -48,41 +83,6 @@ This tool is used to convert CIM-XML-RDF files into Modelica code.
      git submodule update --init
 
 ***
-### Install Boost 1.6 on Ubuntu:
-##### 1. Get the required libraries:
-
-     sudo apt-get update
-     sudo apt-get install build-essential g++ python-dev autotools-dev libicu-dev build-essential libbz2-dev libboost-all-dev
-
-##### 2. Download boost 1.60 https://sourceforge.net/projects/boost/?source=typ_redirect
-
-     tar xzvf boost_1_60_0.tar.gz
-     cd boost_1_60_0/
-
-##### 3. Boost's bootstrap setup:
-
-     ./bootstrap.sh --prefix=/usr/local
-
-##### 4. Then build it with:
-
-     ./b2
-
-##### 5. and eventually install it:
-
-     sudo ./b2 install
-
-### Install ctemplate on Ubuntu:
-
-##### 1. Install automake
-      sudo apt-get install automake
-
-##### 2. see https://github.com/OlafvdSpek/ctemplate
-
-### Install CIMParser on Ubuntu:
-##### see https://git.rwth-aachen.de/CIM-XML-Interface/CIM-XML-Parser
-
-### Install Doxygen on Ubuntu:
-	sudo apt-get install doxygen
 
 ***
 ### Solve Eclipse CDT indexer unresolve inclusion problem:
