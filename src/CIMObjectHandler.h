@@ -8,10 +8,11 @@
 
 #include <boost/lexical_cast.hpp>
 #include "IEC61970.h"
-#include "CIMParser.h"
+#include "CIMParser.hpp"
 #include "ConfigManager.h"
 #include <ctemplate/template.h>
 #include "ModelicaWorkshop/ModelicaClass.h"
+#include <queue>
 
 typedef IEC61970::Base::Wires::BusbarSection* BusBarSectionPtr;
 typedef IEC61970::Base::Topology::TopologicalNode* TPNodePtr;

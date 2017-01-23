@@ -1,3 +1,6 @@
 [submodule "GridData"]
 	path = samples/GridData
 	url = https://git.rwth-aachen.de/acs/GridData.git
+[submodule "CIM-XML-Parser"]
+	path = CIM-XML-Parser
+	url = https://git.rwth-aachen.de/CIM-XML-Interface/CIM-XML-Parser.git

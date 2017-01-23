@@ -34,8 +34,8 @@ LIBDIR = \
 LIBS = \
                 $(CLANG_LIBS) \
 				-lboost_filesystem -lboost_system -lctemplate
-								
-# Conifg flags				
+
+# Conifg flags
 LIBCONFIGS = \
 				-lconfig++
 
@@ -64,8 +64,8 @@ OBJ = $(OBJDIR)/main.o $(OBJDIR)/CIMObjectHandler.o $(OBJDIR)/ConfigManager.o \
 	  $(OBJDIR)/PiLine.o $(OBJDIR)/RxLine.o $(OBJDIR)/ZLoad.o \
 	  $(OBJDIR)/GenericGenerator.o $(OBJDIR)/SolarGenerator.o $(OBJDIR)/WindGenerator.o \
 	  $(OBJDIR)/Household.o
-	  
-	  
+
+
 BIN = $(BINDIR)/$(PROJECT_NAME)
 DOXYFILE = $(PROJDIR)/Doxyfile
 
@@ -105,50 +105,50 @@ $(DOXYFILE):
 	@echo Generated Doxyfile
 
 # Pattern rule for source
-$(OBJDIR)/%.o: $(SRCDIR)/%.cpp 
-	@$(CXX) $(CFLAGS) $(INCDIR) -c -o $@ $<
-	@echo "Compiled $@"
-	
-$(OBJDIR)/%.o: $(SRCDIR)/ModelicaWorkshop/%.cpp 
-	@$(CXX) $(CFLAGS) $(INCDIR) -c -o $@ $<
-	@echo "Compiled $@"
-	
-$(OBJDIR)/%.o: $(SRCDIR)/ModelicaWorkshop/ModPowerSystems/%.cpp 
-	@$(CXX) $(CFLAGS) $(INCDIR) -c -o $@ $<
-	@echo "Compiled $@"
-	
-$(OBJDIR)/%.o: $(SRCDIR)/ModelicaWorkshop/ModPowerSystems/SinglePhase/Connections/%.cpp 
+$(OBJDIR)/%.o: $(SRCDIR)/%.cpp
 	@$(CXX) $(CFLAGS) $(INCDIR) -c -o $@ $<
 	@echo "Compiled $@"
 
-$(OBJDIR)/%.o: $(SRCDIR)/ModelicaWorkshop/ModPowerSystems/SinglePhase/Lines/%.cpp 
+$(OBJDIR)/%.o: $(SRCDIR)/ModelicaWorkshop/%.cpp
 	@$(CXX) $(CFLAGS) $(INCDIR) -c -o $@ $<
 	@echo "Compiled $@"
-	
-$(OBJDIR)/%.o: $(SRCDIR)/ModelicaWorkshop/ModPowerSystems/SinglePhase/Loads/%.cpp 
+
+$(OBJDIR)/%.o: $(SRCDIR)/ModelicaWorkshop/ModPowerSystems/%.cpp
 	@$(CXX) $(CFLAGS) $(INCDIR) -c -o $@ $<
 	@echo "Compiled $@"
-	
-$(OBJDIR)/%.o: $(SRCDIR)/ModelicaWorkshop/ModPowerSystems/SinglePhase/Sources/%.cpp 
+
+$(OBJDIR)/%.o: $(SRCDIR)/ModelicaWorkshop/ModPowerSystems/SinglePhase/Connections/%.cpp
 	@$(CXX) $(CFLAGS) $(INCDIR) -c -o $@ $<
 	@echo "Compiled $@"
-	
-$(OBJDIR)/%.o: $(SRCDIR)/ModelicaWorkshop/ModPowerSystems/SinglePhase/Generations/%.cpp 
+
+$(OBJDIR)/%.o: $(SRCDIR)/ModelicaWorkshop/ModPowerSystems/SinglePhase/Lines/%.cpp
 	@$(CXX) $(CFLAGS) $(INCDIR) -c -o $@ $<
 	@echo "Compiled $@"
-	
-$(OBJDIR)/%.o: $(SRCDIR)/ModelicaWorkshop/ModPowerSystems/SinglePhase/Transformers/%.cpp 
+
+$(OBJDIR)/%.o: $(SRCDIR)/ModelicaWorkshop/ModPowerSystems/SinglePhase/Loads/%.cpp
 	@$(CXX) $(CFLAGS) $(INCDIR) -c -o $@ $<
 	@echo "Compiled $@"
-	
-$(OBJDIR)/%.o: $(SRCDIR)/ModelicaWorkshop/ModPowerSystems/SinglePhase/Storage/%.cpp 
+
+$(OBJDIR)/%.o: $(SRCDIR)/ModelicaWorkshop/ModPowerSystems/SinglePhase/Sources/%.cpp
 	@$(CXX) $(CFLAGS) $(INCDIR) -c -o $@ $<
 	@echo "Compiled $@"
-	
-$(OBJDIR)/%.o: $(SRCDIR)/ModelicaWorkshop/ModPowerSystems/SinglePhase/Households/%.cpp 
+
+$(OBJDIR)/%.o: $(SRCDIR)/ModelicaWorkshop/ModPowerSystems/SinglePhase/Generations/%.cpp
 	@$(CXX) $(CFLAGS) $(INCDIR) -c -o $@ $<
 	@echo "Compiled $@"
-	
+
+$(OBJDIR)/%.o: $(SRCDIR)/ModelicaWorkshop/ModPowerSystems/SinglePhase/Transformers/%.cpp
+	@$(CXX) $(CFLAGS) $(INCDIR) -c -o $@ $<
+	@echo "Compiled $@"
+
+$(OBJDIR)/%.o: $(SRCDIR)/ModelicaWorkshop/ModPowerSystems/SinglePhase/Storage/%.cpp
+	@$(CXX) $(CFLAGS) $(INCDIR) -c -o $@ $<
+	@echo "Compiled $@"
+
+$(OBJDIR)/%.o: $(SRCDIR)/ModelicaWorkshop/ModPowerSystems/SinglePhase/Households/%.cpp
+	@$(CXX) $(CFLAGS) $(INCDIR) -c -o $@ $<
+	@echo "Compiled $@"
+
 # Linking pattern
 $(BIN): $(OBJ)
 	@$(CXX) $(OBJ) $(LDFLAGS) -o $(BIN)

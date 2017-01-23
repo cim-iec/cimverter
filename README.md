@@ -23,10 +23,16 @@ This tool is used to convert CIM-XML-RDF files into Modelica code.
 	sudo apt-get install doxygen
 
 ### Install libconfig++ on Ubuntu:
-    sudo apt-get install libconfig++-dev
+  sudo apt-get install libconfig++-dev
 
 
 ### To build the CIM2Mod using cmake by following steps:
+
+#### Get CIM-XML-Parser submodule:
+
+    git submodule update --init --recursive
+
+#### Build CIM-XML-Parser and CIM2Mod
 
 ##### 1. Create build directory
 
@@ -49,7 +55,7 @@ This tool is used to convert CIM-XML-RDF files into Modelica code.
 
 #### Usage:
 
-    ./CIM2Mod example.xml example.mo
+    ./CIM2Mod example.xml example
 
   The tool generates the file: `example.mo`
 
