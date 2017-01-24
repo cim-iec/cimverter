@@ -31,7 +31,7 @@ This tool is used to convert CIM-XML-RDF files into Modelica code.
     git submodule update --init --recursive 
 ##### if it doesn't work
     git submodule add https://git.rwth-aachen.de/CIM-XML-Interface/CIM-XML-Parser.git 
-#####  or just copy CIM-XML-Parser project into the CIM2MOd folder
+#####  or just copy CIM-XML-Parser project into the CIM2Mod folder
     see https://git.rwth-aachen.de/CIM-XML-Interface/CIM-XML-Parser
  
 #### Build CIM-XML-Parser and CIM2Mod
@@ -45,7 +45,7 @@ This tool is used to convert CIM-XML-RDF files into Modelica code.
     cd build/
     cmake -DCMAKE_BUILD_TYPE=Release ..
 
-##### 3. Compile CIM2Mod library
+##### 3. Compile CIM2Mod and CIMParser
 
     make -j4
 
