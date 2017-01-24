@@ -75,8 +75,6 @@ This tool is used to convert CIM-XML-RDF files into Modelica code.
   * add GeneratedCode Path ../GeneratedCode and ../GeneratedCode/IEC61970
   * add glib-2.0 Path /usr/include/glib-2.0
   * add glibmm-2.4 Path /usr/include/glibmm-2.4
-  * add libxml++ Path /usr/local/include/libxml++-2.6/libxml++, /usr/local/include/libxml++-2.6/,
-  * in CIMParser.h: add #include \<libxml++/parsers/parser.h\>
 
 * If Eclipse CDT indexer does not know c++11 containers, try:
   * http://stackoverflow.com/questions/17131745/eclipse-cdt-indexer-does-not-know-c12-containers
