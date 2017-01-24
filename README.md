@@ -3,11 +3,12 @@
 This tool is used to convert CIM-XML-RDF files into Modelica code.
 
 ## Dependencies:
+* cmake >=3.5
 * clang
 * Boost >= 1.60.0
 * ctemplate >= 2.3
 * libconifg++
-* CIMParser
+* CIMParser-arabica
 * Doxygen
 
 ### Get the required libraries:
@@ -16,22 +17,23 @@ This tool is used to convert CIM-XML-RDF files into Modelica code.
     sudo apt-get install build-essential g++ python-dev autotools-dev libicu-dev build-essential libbz2-dev libboost-all-dev
     sudo apt-get install libctemplate-dev
 
-### Install CIMParser on Ubuntu:
-#### see https://git.rwth-aachen.de/CIM-XML-Interface/CIM-XML-Parser
-
 ### Install Doxygen on Ubuntu:
 	sudo apt-get install doxygen
 
 ### Install libconfig++ on Ubuntu:
-  sudo apt-get install libconfig++-dev
+    sudo apt-get install libconfig++-dev
 
 
 ### To build the CIM2Mod using cmake by following steps:
 
 #### Get CIM-XML-Parser submodule:
 
-    git submodule update --init --recursive
-
+    git submodule update --init --recursive 
+##### if it doesn't work
+    git submodule add https://git.rwth-aachen.de/CIM-XML-Interface/CIM-XML-Parser.git 
+#####  or just copy CIM-XML-Parser project into the CIM2MOd folder
+    see https://git.rwth-aachen.de/CIM-XML-Interface/CIM-XML-Parser
+ 
 #### Build CIM-XML-Parser and CIM2Mod
 
 ##### 1. Create build directory
