@@ -16,6 +16,7 @@ This tool is used to convert CIM-XML-RDF files into Modelica code.
     sudo apt-get update
     sudo apt-get install build-essential g++ python-dev autotools-dev libicu-dev build-essential libbz2-dev libboost-all-dev
     sudo apt-get install libctemplate-dev
+    
 ### Install ctemplate:
     sudo apt-get install libctemplate-dev
 ### Install Doxygen on Ubuntu:
@@ -77,7 +78,8 @@ This tool is used to convert CIM-XML-RDF files into Modelica code.
 
 ***
 ## For developer:
-### Recommand using clion IDE with cmake build system, makefile will not be used any more because arabica xml parser
+### Recommand using clion IDE with cmake build system: 
+* Makefile will not be used any more because arabica xml parser
 
 ### Solve Eclipse CDT indexer unresolve inclusion problem:
 * Right click Project-> Properties-> Paths and Symbols -> Includes in GNU c++:
