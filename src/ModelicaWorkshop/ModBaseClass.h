@@ -52,9 +52,9 @@ typedef struct Icon {
 
 typedef struct Transformation {
 
-  Extent extent = { { -5, -5 }, { 5, 5 } };
-  int rotation = { 0 };
-  Point origin = { 0, 0 };
+  Extent extent = {{-5, -5}, {5, 5}};
+  int rotation = {0};
+  Point origin = {0, 0};
 
 } Transformation;
 
@@ -77,7 +77,7 @@ class ModBaseClass {
  public:
   ModBaseClass();
   ModBaseClass(const ModBaseClass &rhs);
-  ModBaseClass & operator=(const ModBaseClass &);
+  ModBaseClass &operator=(const ModBaseClass &);
 
   virtual ~ModBaseClass();
 

@@ -139,6 +139,7 @@ class ConfigManager {
  public:
 
   ConfigManager();
+
   virtual ~ConfigManager();
 
   TemplateSettings ts;
@@ -159,19 +160,33 @@ class ConfigManager {
  public:
 
   void getAllSettings();
+
   void getConfigFiles();
+
   void getFilesSettings();
+
   void getSystemSettings();
+
   void getSlackSettings();
+
   void getBusBarSettings();
+
   void getPiLineSettings();
+
   void getRxLineSettings();
+
   void getTransformerSettings();
+
   void getPQLoadSettings();
+
   void getZLoadSettings();
+
   void getWindGeneratorSettings();
+
   void getSolarGeneratorSettings();
+
   void getBatterySettings();
+
   void getHouseholdSettings();
 
  private:
