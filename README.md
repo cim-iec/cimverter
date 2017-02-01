@@ -69,11 +69,11 @@ This tool is used to convert CIM-XML-RDF files into Modelica code.
 
 ##### To parse separate xml files:
 
-    ./CIM2Mod -f file2.xml file2.xml... output_file_name 
+    ./CIM2Mod -f <file2.xml> <file2.xml>... [output_file_name] 
 
 ##### to parse all xml files in a folder:
 
-    ./CIM2Mod -a xml_directory/ output_file_name
+    ./CIM2Mod -a <xml_directory/> [output_file_name]
     
   The tool generates the modelica document: `output_file_name.mo`
 
