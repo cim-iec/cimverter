@@ -3,6 +3,7 @@
 build
 documentation
 Doxyfile
+cmake-build-debug
 obj
 .cproject
 .project

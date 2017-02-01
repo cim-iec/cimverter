@@ -27,12 +27,16 @@ This tool is used to convert CIM-XML-RDF files into Modelica code.
 
 ### To build the CIM2Mod using cmake by following steps:
 
-#### Get CIM-XML-Parser submodule:
+#### Get CIM-XML-Parser and GridData submodule:
 
     git submodule update --init --recursive
+    
 ##### if it doesn't work
+    
     git submodule add https://git.rwth-aachen.de/CIM-XML-Interface/CIM-XML-Parser.git
+
 #####  or just copy CIM-XML-Parser project into the CIM2Mod folder
+    
     see https://git.rwth-aachen.de/CIM-XML-Interface/CIM-XML-Parser
 
 #### Build CIM-XML-Parser and CIM2Mod
@@ -50,26 +54,31 @@ This tool is used to convert CIM-XML-RDF files into Modelica code.
 
     make -j4
 
-
 ##### 4. [optional] Generate doxygen documentation
 
     make doc
 
-
 #### Usage:
+##### Command help:
 
-    ./CIM2Mod example.xml example
+    ./CIM2Mod --help
 
-  The tool generates the modelica document: `example.mo`
+##### To parse separate xml files:
 
+    ./CIM2Mod -f file2.xml file2.xml... output_file_name 
 
-### Get GridData submodule:
+##### to parse all xml files in a folder:
 
-     git submodule update --init
+    ./CIM2Mod -a xml_directory/ output_file_name
+    
+  The tool generates the modelica document: `output_file_name.mo`
 
 ***
 
 ***
+## For developer:
+### Recommand using clion IDE with cmake build system, makefile will not be used any more because arabica xml parser
+
 ### Solve Eclipse CDT indexer unresolve inclusion problem:
 * Right click Project-> Properties-> Paths and Symbols -> Includes in GNU c++:
 
