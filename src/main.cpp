@@ -15,14 +15,17 @@ std::vector<std::string> search_folder(const char *path) {
   DIR *pDir;
   pDir = opendir(path);
   std::vector<std::string> files;
-
-  while (NULL!=(ent = readdir(pDir))) {
+  
+  while (NULL != (ent = readdir(pDir))) {
 
     std::string _path(path);
     std::string _dirName(ent->d_name);
+    if(strcmp(ent->d_name,".") == 0 || strcmp(ent->d_name,"..") == 0 )
+      continue;
     std::string file_path = _path + _dirName;
     files.push_back(file_path);
   }
+
   return files;
 
 }
@@ -36,16 +39,16 @@ int main(int argc, const char **argv) {
 
   // Check for arguments
   if (argc <= 2) {
-    if (strcmp(argv[1], "--help")==0) {
+    if (strcmp(argv[1], "--help") == 0) {
       std::cout << "usage:" << std::endl;
-      std::cout << "./CIM2Mod -f file2.xml file2.xml... modelica_output_file_name" << std::endl;
-      std::cout << "./CIM2Mod -a xml_directory/ modelica_output_file_name" << std::endl;
+      std::cout << "./CIM2Mod -f <file2.xml> <file2.xml>... [modelica_output_file_name]" << std::endl;
+      std::cout << "./CIM2Mod -a <xml_directory/> [modelica_output_file_name]" << std::endl;
       exit(1);
     } else {
       std::cerr << "Too few arguments:" << std::endl;
       std::cout << "usage:" << std::endl;
-      std::cout << "./CIM2Mod -f file2.xml file2.xml... modelica_output_file_name" << std::endl;
-      std::cout << "./CIM2Mod -a xml_directory/ modelica_output_file_name" << std::endl;
+      std::cout << "./CIM2Mod -f <file2.xml> <file2.xml>... [modelica_output_file_name]" << std::endl;
+      std::cout << "./CIM2Mod -a <xml_directory/> [modelica_output_file_name]" << std::endl;
       exit(1);
     }
   }
@@ -76,8 +79,8 @@ int main(int argc, const char **argv) {
       modelica_filename = argv[argc - 1];
     } else {
       std::cout << "usage:" << std::endl;
-      std::cout << "./CIM2Mod -f file2.xml file2.xml... modelica_output_file_name" << std::endl;
-      std::cout << "./CIM2Mod -a xml_directory/ modelica_output_file_name" << std::endl;
+      std::cout << "./CIM2Mod -f <file2.xml> <file2.xml>... [modelica_output_file_name]" << std::endl;
+      std::cout << "./CIM2Mod -a <xml_directory/> [modelica_output_file_name]" << std::endl;
       exit(1);
     }
   }
