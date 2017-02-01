@@ -11,21 +11,42 @@ This tool is used to convert CIM-XML-RDF files into Modelica code.
 * CIMParser-arabica
 * Doxygen
 
+## Linux/Ubuntu:
+
+### Install cmake:
+
+##### From Ubuntu package:
+    sudo apt-get install cmake 
+    
+##### Install lastest cmake version:
+    wget https://cmake.org/files/v3.7/cmake-3.7.2.tar.gz
+    tar xzvf cmake-3.7.2.tar.gz
+    cd cmake-3.7.2/
+    Install it by running:
+    ./bootstrap
+    make -j4
+    sudo make install
+
+### Install clang:
+
+    sudo apt-get install clang
+    
 ### Get the required libraries:
 
     sudo apt-get update
     sudo apt-get install build-essential g++ python-dev autotools-dev libicu-dev build-essential libbz2-dev libboost-all-dev
+
     
-### Install clang:
-    sudo apt-get install clang
-    
-### Install ctemplate:
+#### Install ctemplate:
+
     sudo apt-get install libctemplate-dev
     
-### Install Doxygen on Ubuntu:
+#### Install Doxygen on Ubuntu:
+
 	sudo apt-get install doxygen
 
-### Install libconfig++ on Ubuntu:
+#### Install libconfig++ on Ubuntu:
+
     sudo apt-get install libconfig++-dev
 
 
@@ -49,7 +70,7 @@ This tool is used to convert CIM-XML-RDF files into Modelica code.
 
     mkdir build
 
-##### 2. Change into build directory and run cmake (with -DCMAKE_INSTALL_PREFIX=<PREFIX> for installation under <PREFIX> directory instead of the default '/usr/local')
+##### 2. Change into build directory and run cmake
 
     cd build/
     cmake -DCMAKE_BUILD_TYPE=Release ..
@@ -63,9 +84,8 @@ This tool is used to convert CIM-XML-RDF files into Modelica code.
     make doc
 
 #### Usage:
-##### Command help:
 
-    ./CIM2Mod --help
+    cd build/bin
 
 ##### To parse separate xml files:
 
@@ -76,6 +96,10 @@ This tool is used to convert CIM-XML-RDF files into Modelica code.
     ./CIM2Mod -a <xml_directory/> [output_file_name]
     
   The tool generates the modelica document: `output_file_name.mo`
+  
+##### Command help:
+
+    ./CIM2Mod --help
 
 ***
 
