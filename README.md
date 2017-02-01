@@ -15,10 +15,13 @@ This tool is used to convert CIM-XML-RDF files into Modelica code.
 
     sudo apt-get update
     sudo apt-get install build-essential g++ python-dev autotools-dev libicu-dev build-essential libbz2-dev libboost-all-dev
-    sudo apt-get install libctemplate-dev
+    
+### Install clang:
+    sudo apt-get install clang
     
 ### Install ctemplate:
     sudo apt-get install libctemplate-dev
+    
 ### Install Doxygen on Ubuntu:
 	sudo apt-get install doxygen
 
