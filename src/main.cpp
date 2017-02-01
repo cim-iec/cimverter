@@ -27,7 +27,6 @@ std::vector<std::string> search_folder(const char *path) {
 
 }
 
-//std::string search_path;
 std::string modelica_filename("modelica_example");
 
 int main(int argc, const char **argv) {
@@ -38,12 +37,15 @@ int main(int argc, const char **argv) {
   // Check for arguments
   if (argc <= 2) {
       if (strcmp(argv[1], "--help") == 0) {
-        std::cout << "./CIM2Mod -f file2.xml file2.xml... modelica_output_file_name or" << std::endl;
-        std::cout << "./CIM2Mod -a xml_directory/ modelica_output_file_name" << std::endl;
-        exit(1);
+          std::cout << "usage:" << std::endl;
+          std::cout << "./CIM2Mod -f file2.xml file2.xml... modelica_output_file_name" << std::endl;
+          std::cout << "./CIM2Mod -a xml_directory/ modelica_output_file_name" << std::endl;
+          exit(1);
       } else {
           std::cerr << "Too few arguments:" << std::endl;
-          std::cerr << "Using ./CIM2MOd --help to see the command" << std::endl;
+          std::cout << "usage:" << std::endl;
+          std::cout << "./CIM2Mod -f file2.xml file2.xml... modelica_output_file_name" << std::endl;
+          std::cout << "./CIM2Mod -a xml_directory/ modelica_output_file_name" << std::endl;
           exit(1);
       }
   }
@@ -74,7 +76,9 @@ int main(int argc, const char **argv) {
             }
             modelica_filename = argv[argc-1];
         } else {
-            std::cerr << "Using ./CIM2MOd --help to see the command" << std::endl;
+            std::cout << "usage:" << std::endl;
+            std::cout << "./CIM2Mod -f file2.xml file2.xml... modelica_output_file_name" << std::endl;
+            std::cout << "./CIM2Mod -a xml_directory/ modelica_output_file_name" << std::endl;
             exit(1);
         }
     }
