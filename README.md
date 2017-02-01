@@ -77,7 +77,7 @@ This tool is used to convert CIM-XML-RDF files into Modelica code.
 ***
 
 ***
-## For developer:
+## For developers:
 ### Recommand using clion IDE with cmake build system: 
 * Makefile will not be used any more because arabica xml parser
 
@@ -90,6 +90,3 @@ This tool is used to convert CIM-XML-RDF files into Modelica code.
 
 * If Eclipse CDT indexer does not know c++11 containers, try:
   * http://stackoverflow.com/questions/17131745/eclipse-cdt-indexer-does-not-know-c12-containers
-
-### TODO:
-  [List is here](TODO.md)
