@@ -106,7 +106,7 @@ This tool is used to convert CIM-XML-RDF files into Modelica code.
 ***
 ## For developers:
 
-### update submodule:
+### How to update the lastest submodule:
     1. cd suibmodule directory
     2. git checkout master or git checkout release
     3. git pull
