@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.6)
+cmake_minimum_required(VERSION 3.5)
 project(CIM2Mod CXX)
 
 set(CIM2Mod_MAJOR_VERSION 1)
