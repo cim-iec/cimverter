@@ -220,13 +220,13 @@ bool CIMObjectHandler::SystemSettingsHandler(const std::string filename, ctempla
 BusBar CIMObjectHandler::TopologicalNodeHandler(const TPNodePtr tp_node, ctemplate::TemplateDictionary *dict) {
   BusBar busbar;
 
-  if (tp_node->BaseVoltage->name.find("LV")!=std::string::npos) {
-    busbar.set_Vnom(tp_node->BaseVoltage->nominalVoltage.value);
-  } else if (tp_node->BaseVoltage->name.find("V")!=std::string::npos) {
+//  if (tp_node->BaseVoltage->name.find("LV")!=std::string::npos) {
+//    busbar.set_Vnom(tp_node->BaseVoltage->nominalVoltage.value);
+//  } else if (tp_node->BaseVoltage->name.find("V")!=std::string::npos) {
+//    busbar.set_Vnom(tp_node->BaseVoltage->nominalVoltage.value*1000);
+//  } else {
     busbar.set_Vnom(tp_node->BaseVoltage->nominalVoltage.value*1000);
-  } else {
-    busbar.set_Vnom(tp_node->BaseVoltage->nominalVoltage.value*1000);
-  }
+//  }
 
   busbar.set_name(name_in_modelica(tp_node->name));
   busbar.annotation.placement.visible = true;
