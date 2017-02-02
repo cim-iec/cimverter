@@ -3,7 +3,7 @@
 This tool is used to convert CIM-XML-RDF files into Modelica code.
 
 ## Dependencies:
-* cmake >=3.6
+* cmake >=3.5
 * clang
 * Boost >= 1.60.0
 * ctemplate >= 2.3
