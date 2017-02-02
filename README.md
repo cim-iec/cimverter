@@ -15,18 +15,8 @@ This tool is used to convert CIM-XML-RDF files into Modelica code.
 
 ### Install cmake:
 
-##### From Ubuntu package:
     sudo apt-get install cmake 
     
-##### Install lastest cmake version:
-    wget https://cmake.org/files/v3.7/cmake-3.7.2.tar.gz
-    tar xzvf cmake-3.7.2.tar.gz
-    cd cmake-3.7.2/
-    Install it by running:
-    ./bootstrap
-    make -j4
-    sudo make install
-
 ### Install clang:
 
     sudo apt-get install clang
@@ -104,7 +94,7 @@ This tool is used to convert CIM-XML-RDF files into Modelica code.
 ***
 
 ***
-## For developers:
+## For developer:
 
 ### How to update the lastest submodule:
     1. cd submodule directory
