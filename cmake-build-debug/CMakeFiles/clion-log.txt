@@ -1,7 +1,0 @@
-/home/thomas/clion-2016.3.2/bin/cmake/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /home/thomas/Gitlab/CIM2Mod
--- Building arabica with USE_EXPAT compile flag library only
--- Boost version: 1.61.0
--- Found Config++: /usr/lib/x86_64-linux-gnu/libconfig++.so
--- Configuring done
--- Generating done
--- Build files have been written to: /home/thomas/Gitlab/CIM2Mod/cmake-build-debug

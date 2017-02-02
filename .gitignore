@@ -5,7 +5,7 @@ documentation
 Doxyfile
 cmake-build-debug
 obj
-#.cproject
+.cproject
 .project
 .settings
 .idea
