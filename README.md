@@ -105,10 +105,19 @@ This tool is used to convert CIM-XML-RDF files into Modelica code.
 
 ***
 ## For developers:
+
+### update submodule:
+    1. cd suibmodule directory
+    2. git checkout master or git checkout release
+    3. git pull
+    4. git submodule update
+
 ### Recommand using clion IDE with cmake build system: 
+
 * Makefile will not be used any more because arabica xml parser
 
 ### Solve Eclipse CDT indexer unresolve inclusion problem:
+
 * Right click Project-> Properties-> Paths and Symbols -> Includes in GNU c++:
 
   * add GeneratedCode Path ../GeneratedCode and ../GeneratedCode/IEC61970
