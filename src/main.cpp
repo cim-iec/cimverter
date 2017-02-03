@@ -65,7 +65,6 @@ int main(int argc, const char **argv) {
         file_size += filesize(argv[i]);
         cimModel.addCIMFile(argv[i]);
       }
-      modelica_filename = argv[argc - 1];
 
     } else if (strcmp(argv[1], "-a")==0) {
       // Find all relevant files
@@ -76,13 +75,16 @@ int main(int argc, const char **argv) {
         file_size += filesize(f.c_str());
         cimModel.addCIMFile(f);
       }
-      modelica_filename = argv[argc - 1];
+
     } else {
       std::cout << "usage:" << std::endl;
       std::cout << "./CIM2Mod -f <file2.xml> <file2.xml>... [modelica_output_file_name]" << std::endl;
       std::cout << "./CIM2Mod -a <xml_directory/> [modelica_output_file_name]" << std::endl;
       exit(1);
     }
+
+    modelica_filename = argv[argc - 1];
+
   }
 
   // Timer start
