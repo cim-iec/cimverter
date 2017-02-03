@@ -55,7 +55,7 @@ int main(int argc, const char **argv) {
 
   print_separator();
 
-  CIMParser parser;
+  CIMModel cimModel;
 
   if (argc > 2) {
     file_size = 0;
@@ -63,7 +63,7 @@ int main(int argc, const char **argv) {
       for (int i = 2; i < argc - 1; i++) {
         std::cout << "CIM-XML file is:" << argv[i] << std::endl;
         file_size += filesize(argv[i]);
-        parser.parse_file(argv[i]);
+        cimModel.addCIMFile(argv[i]);
       }
       modelica_filename = argv[argc - 1];
 
@@ -74,7 +74,7 @@ int main(int argc, const char **argv) {
       for (auto f : files) {
         std::cout << "CIM-XML file is:" << f << std::endl;
         file_size += filesize(f.c_str());
-        parser.parse_file(f);
+        cimModel.addCIMFile(f);
       }
       modelica_filename = argv[argc - 1];
     } else {
@@ -89,7 +89,8 @@ int main(int argc, const char **argv) {
   std::chrono::time_point<std::chrono::high_resolution_clock> start, stop;
   start = std::chrono::high_resolution_clock::now();
 
-  CIMObjectHandler ObjectHandler(std::move(parser.Objects));
+  cimModel.parseFiles();
+  CIMObjectHandler ObjectHandler(std::move(cimModel.Objects));
   ObjectHandler.get_config();
   ObjectHandler.ModelicaCodeGenerator(modelica_filename);
 

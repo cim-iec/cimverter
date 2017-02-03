@@ -9,7 +9,7 @@
 #ifndef SRC_MODELICAWORKSHOP_MODELICAUNIT_H_
 #define SRC_MODELICAWORKSHOP_MODELICAUNIT_H_
 
-#include "IEC61970.h"
+#include "IEC61970.hpp"
 
 namespace ModelicaWorkshop {
 
