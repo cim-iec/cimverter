@@ -7,9 +7,9 @@
 #define SRC_CIMOBJECTHANDLER_H_
 
 #include <boost/lexical_cast.hpp>
-#include "IEC61970.h"
-#include "CIMParser.hpp"
+#include "IEC61970.hpp"
 #include "ConfigManager.h"
+#include "CIMModel.hpp"
 #include <ctemplate/template.h>
 #include "ModelicaWorkshop/ModelicaClass.h"
 #include <queue>
