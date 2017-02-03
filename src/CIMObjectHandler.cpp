@@ -50,6 +50,8 @@ bool CIMObjectHandler::ModelicaCodeGenerator(const std::string filename) {
         this->HouseholdComponetsHandler(tp_node, dict);
       }
 
+      std::list<TerminalPtr>::iterator terminal_it;
+
       for (terminal_it = tp_node->Terminal.begin(); terminal_it!=tp_node->Terminal.end(); ++terminal_it) {
 
         if (auto *connectivity_node = dynamic_cast<ConnectivityNodePtr>((*terminal_it)->ConnectivityNode)) {
@@ -244,6 +246,7 @@ BusBar CIMObjectHandler::TopologicalNodeHandler(const TPNodePtr tp_node, ctempla
     busbar.annotation.placement.visible = configManager.busbar_parameters.annotation.visible;
   }
 
+  // std::list<DiagramObjectPtr>::iterator diagram_it is class member!
   for (diagram_it = tp_node->DiagramObjects.begin(); diagram_it!=tp_node->DiagramObjects.end(); ++diagram_it) {
     _t_points = this->calculate_average_position();
     busbar.annotation.placement.transfomation.origin.x = _t_points.xPosition;
@@ -256,6 +259,7 @@ BusBar CIMObjectHandler::TopologicalNodeHandler(const TPNodePtr tp_node, ctempla
   }
 
   //BusBarSection used in Cimphony
+  std::list<TerminalPtr>::iterator terminal_it;
   for (terminal_it = tp_node->Terminal.begin(); terminal_it!=tp_node->Terminal.end(); ++terminal_it) {
     if (auto *busbar_section = dynamic_cast<BusBarSectionPtr>((*terminal_it)->ConductingEquipment)) {
       this->BusBarSectionHandler(busbar_section, busbar, dict);
@@ -271,7 +275,8 @@ BusBar CIMObjectHandler::TopologicalNodeHandler(const TPNodePtr tp_node, ctempla
  */
 bool CIMObjectHandler::HouseholdComponetsHandler(const TPNodePtr tp_node, ctemplate::TemplateDictionary *dict) {
 
-  for (terminal_it = tp_node->Terminal.begin(); terminal_it!=tp_node->Terminal.end(); ++terminal_it) {
+  std::list<TerminalPtr>::iterator terminal_it;
+  for (terminal_it = tp_node->Terminal.begin(); terminal_it != tp_node->Terminal.end(); ++terminal_it) {
 
     if (auto *energy_consumer = dynamic_cast<EnergyConsumerPtr>((*terminal_it)->ConductingEquipment)) {
       PQLoad pqload = this->EnergyConsumerHandler(tp_node, (*terminal_it), energy_consumer, dict);
@@ -470,6 +475,7 @@ Transformer CIMObjectHandler::PowerTransformerHandler(const TPNodePtr tp_node, c
   Trafo.set_connected(terminal->connected);
   Trafo.annotation.placement.visible = true;
 
+  std::list<PowerTransformerEndPtr>::iterator transformer_end_it;
   for (transformer_end_it = power_trafo->PowerTransformerEnd.begin();
        transformer_end_it!=power_trafo->PowerTransformerEnd.end();
        ++transformer_end_it) {
@@ -783,14 +789,16 @@ bool CIMObjectHandler::ConnectionHandler(ctemplate::TemplateDictionary *dict) {
 }
 
 /**
- * every component from NEPLAN has two position
+ *  every component from NEPLAN has two position
  *  calculate the average position
+ *  td::list<DiagramObjectPtr>::iterator diagram_it is class member!
  */
 DiagramObjectPoint CIMObjectHandler::calculate_average_position() {
   DiagramObjectPoint t_points;
   t_points.xPosition = 0;
   t_points.yPosition = 0;
 
+  std::list<DiagramObjectPointPtr>::iterator points_it;
   for (points_it = (*diagram_it)->DiagramObjectPoints.begin();
        points_it!=(*diagram_it)->DiagramObjectPoints.end();
        ++points_it) {

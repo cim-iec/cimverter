@@ -21,6 +21,7 @@ typedef IEC61970::Base::Core::Terminal* TerminalPtr;
 typedef IEC61970::Base::Wires::ExternalNetworkInjection* ExNIPtr;
 typedef IEC61970::Base::Wires::ACLineSegment* AcLinePtr;
 typedef IEC61970::Base::Wires::PowerTransformer* PowerTrafoPtr;
+typedef IEC61970::Base::Wires::PowerTransformerEnd* PowerTransformerEndPtr;
 typedef IEC61970::Base::Wires::EnergyConsumer* EnergyConsumerPtr;
 typedef IEC61970::Base::Wires::SynchronousMachine* SynMachinePtr;
 typedef IEC61970::Base::DiagramLayout::DiagramObject* DiagramObjectPtr;
@@ -75,12 +76,8 @@ class CIMObjectHandler {
   std::queue<Household> householdQueue;
   std::queue<Connection> connectionQueue;
 
-  std::list<TerminalPtr>::iterator terminal_it;
   std::list<DiagramObjectPtr>::iterator diagram_it;
-  std::list<DiagramObjectPointPtr>::iterator points_it;
-  std::list<IEC61970::Base::Wires::PowerTransformerEnd*>::iterator transformer_end_it;
-
-  DiagramObjectPoint calculate_average_position();
+  DiagramObjectPoint calculate_average_position();// using this->diagram_it
 
 };
 
