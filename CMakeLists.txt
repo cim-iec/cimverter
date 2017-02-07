@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 3.5)
 project(CIM2Mod CXX)
 
-set(CIM2Mod_MAJOR_VERSION 1)
+set(CIM2Mod_MAJOR_VERSION 2)
 set(CIM2Mod_MINOR_VERSION 0)
-set(CIM2Mod_PATCH_VERSION 0)
+set(CIM2Mod_PATCH_VERSION 1)
 set(CIM2Mod_VERSION ${CIM2Mod_MAJOR_VERSION}.${CIM2Mod_MINOR_VERSION}.${CIM2Mod_PATCH_VERSION})
 
 # Find CIMParser
@@ -13,7 +13,7 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/CIM-XML-Parser ${PROJECT_SOURCE_DIR}/buil
 
 # Find Boost
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}")
-find_package(Boost 1.60 REQUIRED)
+find_package(Boost 1.58 REQUIRED)
 include_directories( ${Boost_INCLUDE_DIR} )
 
 # Find Ctemplate
