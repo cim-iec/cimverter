@@ -35,6 +35,10 @@ This tool is used to convert CIM-XML-RDF files into Modelica code.
 
 	sudo apt-get install doxygen
 
+#### Install Graphviz for document Graph generation
+
+    sudo apt-get install graphviz
+
 #### Install libconfig++ on Ubuntu:
 
     sudo apt-get install libconfig++-dev
@@ -71,7 +75,7 @@ This tool is used to convert CIM-XML-RDF files into Modelica code.
 
 ##### 4. [optional] Generate doxygen documentation
 
-    make doc
+    make document
 
 #### Usage:
 
