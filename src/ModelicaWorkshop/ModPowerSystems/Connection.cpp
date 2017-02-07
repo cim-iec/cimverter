@@ -7,6 +7,10 @@
 
 namespace ModelicaWorkshop {
 
+/** \brief Connection to BusBar
+ *
+ * All model components connect BusBar(TopologyNode)!
+*/
 Connection::Connection(const BusBar* busbar):_port1(busbar->name()),_terminalId1("T"),_p1(Point{busbar->annotation.placement.transfomation.origin.x,
                                                                                            busbar->annotation.placement.transfomation.origin.y}) {
   _port1.append(".");
@@ -14,9 +18,13 @@ Connection::Connection(const BusBar* busbar):_port1(busbar->name()),_terminalId1
 
 }
 
+/** \brief Connection between BusBar and Slack
+ *
+ * Delegate BusBar constructors
+*/
 Connection::Connection(const BusBar* busbar, const Slack* slack): Connection(busbar) {
 
-  this->set_connected(slack->is_connected());
+  this->set_connected(slack->is_connected());//electrical connected?
 
   _port2 = slack->name();
   _terminalId2 = "T";
@@ -27,9 +35,13 @@ Connection::Connection(const BusBar* busbar, const Slack* slack): Connection(bus
   this->cal_middle_points(slack);
 }
 
+/** \brief Connection between BusBar and PQLoad
+ *
+ * Delegate BusBar constructors
+*/
 Connection::Connection(const BusBar* busbar, const PQLoad* pq_load): Connection(busbar) {
 
-  this->set_connected(pq_load->is_connected());
+  this->set_connected(pq_load->is_connected());//electrical connected?
 
   if(pq_load->PQLoadType() == PQLoadType::Standard){
     //connection point's position auto adjust.
@@ -81,11 +93,15 @@ Connection::Connection(const BusBar* busbar, const PQLoad* pq_load): Connection(
   }
 }
 
+/** \brief Connection between BusBar and Household
+ *
+ * Delegate BusBar constructors
+*/
 Connection::Connection(const BusBar* busbar, const Household* household): Connection(busbar) {
 
-  this->set_connected(household->is_connected());
+  this->set_connected(household->is_connected());//electrical connected?
 
-  //connection point's position auto adjust.
+  //connection point's position could be automatically adjusted.
   if (household->annotation.placement.transfomation.rotation == 0 || household->annotation.placement.transfomation.rotation == 359
           || household->annotation.placement.transfomation.rotation == 360) {
     _p2.x = household->annotation.placement.transfomation.origin.x;
@@ -110,9 +126,13 @@ Connection::Connection(const BusBar* busbar, const Household* household): Connec
 
 }
 
+/** \brief Connection between BusBar and ConnectivityNode
+ *
+ * Delegate BusBar constructors
+*/
 Connection::Connection(const BusBar* busbar, const ConnectivityNode* connectivity_node): Connection(busbar) {
 
-  this->set_connected(connectivity_node->is_connected());
+  this->set_connected(connectivity_node->is_connected());//electrical connected?
 
   _port2 = connectivity_node->name();
   _terminalId2 = "T";
@@ -123,9 +143,13 @@ Connection::Connection(const BusBar* busbar, const ConnectivityNode* connectivit
   this->cal_middle_points(connectivity_node);
 }
 
+/** \brief Connection between BusBar and PiLine
+ *
+ * Delegate BusBar constructors
+*/
 Connection::Connection(const BusBar* busbar, const PiLine* pi_line): Connection(busbar) {
 
-  this->set_connected(pi_line->is_connected());
+  this->set_connected(pi_line->is_connected());//electrical connected?
 
   if (pi_line->sequenceNumber() == 0 || pi_line->sequenceNumber() == 1) {
     _terminalId2 = "T1";
@@ -155,9 +179,13 @@ Connection::Connection(const BusBar* busbar, const PiLine* pi_line): Connection(
   this->cal_middle_points(pi_line);
 }
 
+/** \brief Connection between BusBar and Transformer
+ *
+ * Delegate BusBar constructors
+*/
 Connection::Connection(const BusBar* busbar, const Transformer* transformer): Connection(busbar) {
 
-  this->set_connected(transformer->is_connected());
+  this->set_connected(transformer->is_connected());//electrical connected?
   if (transformer->sequenceNumber() == 0 || transformer->sequenceNumber() == 1) {
     _terminalId2 = "T1";
     if (transformer->annotation.placement.transfomation.rotation == 90 || transformer->annotation.placement.transfomation.rotation == -90) {
@@ -186,9 +214,13 @@ Connection::Connection(const BusBar* busbar, const Transformer* transformer): Co
   this->cal_middle_points(transformer);
 }
 
+/** \brief Connection between BusBar and WindGenerator
+ *
+ * Delegate BusBar constructors
+*/
 Connection::Connection(const BusBar* busbar, const WindGenerator* wind_generator): Connection(busbar) {
 
-  this->set_connected(wind_generator->is_connected());
+  this->set_connected(wind_generator->is_connected());//electrical connected?
 
   _port2 = wind_generator->name();
   _terminalId2 = "T";
@@ -200,9 +232,13 @@ Connection::Connection(const BusBar* busbar, const WindGenerator* wind_generator
 
 }
 
+/** \brief Connection between BusBar and SolarGenerator
+ *
+ * Delegate BusBar constructors
+*/
 Connection::Connection(const BusBar* busbar, const SolarGenerator* solar_generator): Connection(busbar) {
 
-  this->set_connected(solar_generator->is_connected());
+  this->set_connected(solar_generator->is_connected());//electrical connected?
 
   _port2 = solar_generator->name();
   _terminalId2 = "T";
@@ -214,9 +250,13 @@ Connection::Connection(const BusBar* busbar, const SolarGenerator* solar_generat
 
 }
 
+/** \brief Connection between BusBar and Battery
+ *
+ * Delegate BusBar constructors
+*/
 Connection::Connection(const BusBar* busbar, const Battery* battery): Connection(busbar) {
 
-  this->set_connected(battery->is_connected());
+  this->set_connected(battery->is_connected());//electrical connected?
 
   _port2 = battery->name();
   _terminalId2 = "T";
@@ -228,12 +268,13 @@ Connection::Connection(const BusBar* busbar, const Battery* battery): Connection
 
 }
 
-
-
 Connection::~Connection() {
   // TODO Auto-generated destructor stub
 }
 
+/** \brief Calculate the middle points
+ *  4 position cases
+*/
 template<typename T>
 void Connection::cal_middle_points(T *Componet) {
   if (_p1.x == _p2.x || _p1.y == _p2.y) {
@@ -268,9 +309,9 @@ void Connection::cal_middle_points(T *Componet) {
   }
 }
 
-/*
- * Output the formatted points of modelica
- */
+/** \brief Output the formatted points of modelica
+ *
+*/
 std::string Connection::output_points() const {
 
   if (_points.size() == 2) {
@@ -339,7 +380,7 @@ void Connection::draw_connection(ctemplate::TemplateDictionary *dictionary) {
 }
 
 void Connection::error_log() {
-  std::cerr << "Connection cannot create! ";
+  std::cerr << "Connection cannot be created! ";
 
 }
 
