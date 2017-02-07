@@ -14,7 +14,7 @@ namespace SinglePhase {
 namespace Sources {
 
 Slack::Slack()
-    : _Vnom(110000) {
+    : _Vnom(110000),_frequency(50),_phiV(0) {
 }
 
 Slack::Slack(const Slack &rhs):ModBaseClass(rhs) {
