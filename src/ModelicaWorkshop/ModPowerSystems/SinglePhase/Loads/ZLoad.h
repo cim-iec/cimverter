@@ -121,9 +121,9 @@ class ZLoad : public ModBaseClass {
   enum ZLoadType _Type = ZLoadType::Standard;
 
   //Parameters
-  double _Pnom = 110000;  //active power per phase
-  double _Qnom;  //reactive power per phase
-  double _Vnom;  //nominal voltage level
+  double _Pnom = 0;  //active power per phase
+  double _Qnom = 0;  //reactive power per phase
+  double _Vnom = 110000;  //nominal voltage level
 
   //ZLoadProfile Parameters
   std::string _profileFileName = "NoName"; //File where matrix is stored

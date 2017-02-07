@@ -72,9 +72,10 @@ class Slack : public ModBaseClass {
 
  private:
 
-  double _Vnom;
+  double _Vnom = 110000;// Voltage level
   double _frequency = 50;  //Frequency
   double _phiV = 0;  //Initial Voltage Angle
+
   modelicaUnit _Vnom_displayUnit = modelicaUnit::V;
   modelicaUnit _frequency_displayUnit = modelicaUnit::Hz;
   modelicaUnit _phiV_displayUnit = modelicaUnit::rad;

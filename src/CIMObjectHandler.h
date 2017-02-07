@@ -36,9 +36,9 @@ void static print_separator() {
 using namespace ModelicaWorkshop;
 using namespace libconfig;
 
-/// \brief Handle the CIMObject
-///
-///
+/** \brief Handle the CIMObject
+*
+*/
 class CIMObjectHandler {
 
  public:
@@ -59,10 +59,10 @@ class CIMObjectHandler {
   PQLoad EnergyConsumerHandler(const TPNodePtr tp_node, const TerminalPtr terminal, const EnergyConsumerPtr energy_consumer, ctemplate::TemplateDictionary* dict);
   WindGenerator SynchronousMachineHandlerType1(const TPNodePtr tp_node, const TerminalPtr terminal, const SynMachinePtr syn_machine, ctemplate::TemplateDictionary* dict);
   SolarGenerator SynchronousMachineHandlerType2(const TPNodePtr tp_node, const TerminalPtr terminal, const SynMachinePtr syn_machine,ctemplate::TemplateDictionary* dict);
-  bool HouseholdComponetsHandler(const TPNodePtr tp_node, ctemplate::TemplateDictionary* dict);  ///to find household Componets
+  bool HouseholdComponetsHandler(const TPNodePtr tp_node, ctemplate::TemplateDictionary* dict);  //to find household Componets
   bool ConnectionHandler(ctemplate::TemplateDictionary* dict);
 
-  void get_config();  ///get congiuration from config.cfg
+  void get_config();  //get congiuration from config.cfg
   static std::string name_in_modelica(std::string orginal_name);
   static DiagramObjectPoint convert_coordinate(double x, double y, const ConfigManager & configManager);
 

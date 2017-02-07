@@ -34,7 +34,7 @@ class ConnectivityNode : public ModBaseClass {
   bool set_template_values(ctemplate::TemplateDictionary *dictionary) override;
 
  private:
-  double _Vnom;
+  double _Vnom = 110000;
 };
 
 } /* namespace Connections */

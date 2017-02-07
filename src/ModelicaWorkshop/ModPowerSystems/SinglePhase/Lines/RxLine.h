@@ -63,9 +63,9 @@ class RxLine : public ModelicaWorkshop::ModBaseClass {
    private:
 
     //Parameters
-    double _length;  //Length of line in km
-    double _r;  //Series Resistance per km
-    double _x;  //Series Reactance per km
+    double _length = 0;  //Length of line in km
+    double _r = 0;  //Series Resistance per km
+    double _x = 0;  //Series Reactance per km
 
     modelicaUnit _r_displayUnit = modelicaUnit::Ohm;
     modelicaUnit _x_displayUnit = modelicaUnit::Ohm;
