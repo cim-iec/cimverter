@@ -15,22 +15,22 @@ This tool is used to convert CIM-XML-RDF files into Modelica code.
 
 ### Install cmake:
 
-    sudo apt-get install cmake 
-    
+    sudo apt-get install cmake
+
 ### Install clang:
 
     sudo apt-get install clang
-    
+
 ### Get the required libraries:
 
     sudo apt-get update
     sudo apt-get install build-essential g++ python-dev autotools-dev libicu-dev build-essential libbz2-dev libboost-all-dev
 
-    
+
 #### Install ctemplate:
 
     sudo apt-get install libctemplate-dev
-    
+
 #### Install Doxygen on Ubuntu:
 
 	sudo apt-get install doxygen
@@ -45,13 +45,13 @@ This tool is used to convert CIM-XML-RDF files into Modelica code.
 #### Get CIM-XML-Parser and GridData submodule:
 
     git submodule update --init --recursive
-    
-##### if it doesn't work
-    
+
+##### if it doesn't work (Release Branch Default)
+
     git submodule add https://git.rwth-aachen.de/CIM-XML-Interface/CIM-XML-Parser.git
 
 #####  or just copy CIM-XML-Parser project into the CIM2Mod folder
-    
+
     see https://git.rwth-aachen.de/CIM-XML-Interface/CIM-XML-Parser
 
 #### Build CIM-XML-Parser and CIM2Mod
@@ -79,14 +79,14 @@ This tool is used to convert CIM-XML-RDF files into Modelica code.
 
 ##### To parse separate xml files:
 
-    ./CIM2Mod -f <file2.xml> <file2.xml>... [output_file_name] 
+    ./CIM2Mod -f <file2.xml> <file2.xml>... [output_file_name]
 
 ##### to parse all xml files in a folder:
 
     ./CIM2Mod -a <xml_directory/> [output_file_name]
-    
+
   The tool generates the modelica document: `output_file_name.mo`
-  
+
 ##### Command help:
 
     ./CIM2Mod --help
@@ -97,14 +97,24 @@ This tool is used to convert CIM-XML-RDF files into Modelica code.
 ## For developer:
 
 ### How to update the lastest submodule:
+
     1. cd submodule directory
     2. git checkout master or git checkout release
     3. git pull
     4. git submodule update
 
-### Recommand using clion IDE with cmake build system: 
+### Build in Debug Module:
+
+    cd build/
+    cmake -DCMAKE_BUILD_TYPE=Debug ..
+
+### Recommand using clion IDE with cmake build system:
 
 * Makefile will not be used any more because arabica xml parser
+
+### Prject Folder may has authority problem on Linux:
+
+* sudo chown -R [your account username] CIM2Mod/
 
 ### Solve Eclipse CDT indexer unresolve inclusion problem:
 
