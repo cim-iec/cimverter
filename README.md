@@ -112,7 +112,7 @@ This tool is used to convert CIM-XML-RDF files into Modelica code.
 
 * Makefile will not be used any more because arabica xml parser
 
-### Prject Folder may has authority problem on Linux:
+### Project Folder may has authority problem on Linux:
 
     sudo chown -R [your account username] CIM2Mod/
 
