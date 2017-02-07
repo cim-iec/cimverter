@@ -12,10 +12,9 @@ namespace ModelicaWorkshop {
  * All model components connect BusBar(TopologyNode)!
 */
 Connection::Connection(const BusBar* busbar):_port1(busbar->name()),_terminalId1("T"),_p1(Point{busbar->annotation.placement.transfomation.origin.x,
-                                                                                           busbar->annotation.placement.transfomation.origin.y}) {
+                                                                                           busbar->annotation.placement.transfomation.origin.y}) ,_p2(Point{0,0}){
   _port1.append(".");
   _port1.append(_terminalId1);
-
 }
 
 /** \brief Connection between BusBar and Slack

@@ -33,7 +33,7 @@ typedef struct Extent {
 
 typedef struct CoordinateSystem {
 
-  Extent extent;
+  Extent extent = {{0, 0}, {0, 0}};
   bool preserveAspectRatio = false;
 
 } CoordinateSystem;
