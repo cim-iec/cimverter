@@ -114,7 +114,7 @@ This tool is used to convert CIM-XML-RDF files into Modelica code.
 
 ### Prject Folder may has authority problem on Linux:
 
-* sudo chown -R [your account username] CIM2Mod/
+    sudo chown -R [your account username] CIM2Mod/
 
 ### Solve Eclipse CDT indexer unresolve inclusion problem:
 
