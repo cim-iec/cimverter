@@ -105,8 +105,8 @@ class Battery : public ModBaseClass {
   //Type0
   double _Cnom = 5000; //usable battery capacity in Wh;
   bool _enableOutputWbat = false;
-  double _Vnom;//battery charging power;
-  double _SOC_start;//state of charge
+  double _Vnom = 0;//battery charging power;
+  double _SOC_start = 0;//state of charge
 
   //Type1
   double _eta_ch = 0.9;//charging efficiency
