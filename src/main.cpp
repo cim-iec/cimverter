@@ -9,7 +9,7 @@
  */
 unsigned int filesize(const char *filename) {
   std::ifstream in(filename, std::ifstream::ate | std::ifstream::binary);
-  unsigned int size = in.tellg();
+  long size = in.tellg();
   in.close();
   return size;
 }
@@ -43,8 +43,8 @@ std::string modelica_filename("modelica_example");
 
 int main(int argc, const char **argv) {
 
-  unsigned long file_size;
-  unsigned long secs;
+  long file_size;// File size
+  long secs;// Time in seconds
 
   // Check for arguments
   if (argc <= 2) {
