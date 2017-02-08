@@ -36,8 +36,9 @@ void static print_separator() {
 using namespace ModelicaWorkshop;
 using namespace libconfig;
 
-/** \brief Handle the CIMObject
-*
+/** \brief Handle the CIMObject,
+ * every model component has its handle function,
+ * esing mappling rules
 */
 class CIMObjectHandler {
 
@@ -62,9 +63,9 @@ class CIMObjectHandler {
   bool HouseholdComponetsHandler(const TPNodePtr tp_node, ctemplate::TemplateDictionary* dict);  //to find household Componets
   bool ConnectionHandler(ctemplate::TemplateDictionary* dict);
 
-  void get_config();  //get congiuration from config.cfg
-  static std::string name_in_modelica(std::string orginal_name);
-  static DiagramObjectPoint convert_coordinate(double x, double y, const ConfigManager & configManager);
+  void get_config();  /// Get congiurations from config.cfg
+  static std::string name_in_modelica(std::string orginal_name);/// Modify illega modelica name
+  static DiagramObjectPoint convert_coordinate(double x, double y, const ConfigManager & configManager);/// Tranfer the modelica components' coordinate
 
  private:
   ConfigManager configManager;

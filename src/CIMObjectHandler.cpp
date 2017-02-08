@@ -20,9 +20,9 @@ CIMObjectHandler::~CIMObjectHandler() {
   // TODO Auto-generated destructor stub
 }
 
-///
-/// Get all settings from config.cfg.
-///
+/**
+ * Get all settings from config.cfg.
+ */
 void CIMObjectHandler::get_config() {
 
   print_separator();

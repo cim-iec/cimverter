@@ -2,13 +2,22 @@
 #include "CIMObjectHandler.h"
 #include <dirent.h>
 
+/**
+ * Get File size
+ * @param filename
+ * @return
+ */
 unsigned int filesize(const char *filename) {
   std::ifstream in(filename, std::ifstream::ate | std::ifstream::binary);
   unsigned int size = in.tellg();
   in.close();
   return size;
 }
-
+/**
+ * Find all files in the folder
+ * @param path
+ * @return files
+ */
 std::vector<std::string> search_folder(const char *path) {
 
   struct dirent *ent = NULL;
@@ -91,9 +100,9 @@ int main(int argc, const char **argv) {
   std::chrono::time_point<std::chrono::high_resolution_clock> start, stop;
   start = std::chrono::high_resolution_clock::now();
 
-  cimModel.parseFiles();
-  CIMObjectHandler ObjectHandler(std::move(cimModel.Objects));
-  ObjectHandler.get_config();
+  cimModel.parseFiles();// Parser begin!
+  CIMObjectHandler ObjectHandler(std::move(cimModel.Objects));// r-value
+  ObjectHandler.get_config();// Get configuration files
   ObjectHandler.ModelicaCodeGenerator(modelica_filename);
 
   // Timer stop
