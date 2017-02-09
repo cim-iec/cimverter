@@ -85,6 +85,14 @@ This tool is used to convert CIM-XML-RDF files into Modelica code.
 
     ./CIM2Mod -f <file2.xml> <file2.xml>... [output_file_name]
 
+##### To parse separate xml files using verbose option:
+
+    ./CIM2Mod -f --verbose <file2.xml> <file2.xml>... [output_file_name]
+
+##### to parse all xml files in a folder:
+
+    ./CIM2Mod -a --verbose <xml_directory/> [output_file_name]
+
 ##### to parse all xml files in a folder:
 
     ./CIM2Mod -a <xml_directory/> [output_file_name]

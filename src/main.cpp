@@ -36,29 +36,44 @@ std::vector<std::string> search_folder(const char *path) {
   }
 
   return files;
-
 }
 
-std::string modelica_filename("modelica_example");
+/**
+ * Show the help information
+ *
+ */
+void print_argument_help(){
+  std::cout << "usage:" << std::endl;
+  std::cout << "Parse the separated files:" << std::endl;
+  std::cout << "./CIM2Mod -f <file2.xml> <file2.xml>... [modelica_output_file_name]" << std::endl;
+  std::cout << std::endl;
+  std::cout << "Parse the separated files using verbose option:" << std::endl;
+  std::cout << "./CIM2Mod -f --verbose <file2.xml> <file2.xml>... [modelica_output_file_name]" << std::endl;
+  std::cout << std::endl;
+  std::cout << "Parse all files in a folder:" << std::endl;
+  std::cout << "./CIM2Mod -a <xml_directory/> [modelica_output_file_name]" << std::endl;
+  std::cout << std::endl;
+  std::cout << "Parse all files in a folder using verbose option" << std::endl;
+  std::cout << "./CIM2Mod -a --verbose <xml_directory/> [modelica_output_file_name]" << std::endl;
+  exit(1);
+}
 
 int main(int argc, const char **argv) {
+  std::vector<std::string> args;// Arguments for the ObjectHandler
 
   long file_size;// File size
   long secs;// Time in seconds
 
   // Check for arguments
   if (argc <= 2) {
-    if (strcmp(argv[1], "--help") == 0) {
-      std::cout << "usage:" << std::endl;
-      std::cout << "./CIM2Mod -f <file2.xml> <file2.xml>... [modelica_output_file_name]" << std::endl;
-      std::cout << "./CIM2Mod -a <xml_directory/> [modelica_output_file_name]" << std::endl;
-      exit(1);
+    if(argc == 1){
+      std::cerr << "Too few arguments:" << std::endl;
+      print_argument_help();
+    } else if (strcmp(argv[1], "--help") == 0) {
+      print_argument_help();
     } else {
       std::cerr << "Too few arguments:" << std::endl;
-      std::cout << "usage:" << std::endl;
-      std::cout << "./CIM2Mod -f <file2.xml> <file2.xml>... [modelica_output_file_name]" << std::endl;
-      std::cout << "./CIM2Mod -a <xml_directory/> [modelica_output_file_name]" << std::endl;
-      exit(1);
+      print_argument_help();
     }
   }
 
@@ -67,34 +82,48 @@ int main(int argc, const char **argv) {
   CIMModel cimModel;
 
   if (argc > 2) {
+
+    args.push_back(std::string(argv[argc - 1]));// Push output modelica filesname
+
     file_size = 0;
-    if (strcmp(argv[1], "-f")==0) {
-      for (int i = 2; i < argc - 1; i++) {
-        std::cout << "CIM-XML file is:" << argv[i] << std::endl;
-        file_size += filesize(argv[i]);
-        cimModel.addCIMFile(argv[i]);
+    if (strcmp(argv[1], "-f") == 0) {
+
+      if(strcmp(argv[2], "--verbose") == 0){
+        args.push_back("--verbose");
+        for (int i = 3; i < argc - 1; i++) {
+          std::cout << "CIM-XML file is:" << argv[i] << std::endl;
+          file_size += filesize(argv[i]);
+          cimModel.addCIMFile(argv[i]);
+        }
+      } else {
+        for (int i = 2; i < argc - 1; i++) {
+          std::cout << "CIM-XML file is:" << argv[i] << std::endl;
+          file_size += filesize(argv[i]);
+          cimModel.addCIMFile(argv[i]);
+        }
       }
+    } else if (strcmp(argv[1], "-a") == 0) {
+        std::vector<std::string> files;
+        if(strcmp(argv[2], "--verbose") == 0) {
+          files = search_folder(argv[3]);// Find all relevant files
+          args.push_back("--verbose");
+        } else {
+          files = search_folder(argv[2]);
+        }
 
-    } else if (strcmp(argv[1], "-a")==0) {
-      // Find all relevant files
-      auto files = search_folder(argv[2]);
-
-      for (auto f : files) {
-        std::cout << "CIM-XML file is:" << f << std::endl;
-        file_size += filesize(f.c_str());
-        cimModel.addCIMFile(f);
+        for (auto f : files) {
+          std::cout << "CIM-XML file is:" << f << std::endl;
+          file_size += filesize(f.c_str());
+          cimModel.addCIMFile(f);
+        }
+      } else {
+        std::cerr << "Wrong arguments:" << std::endl;
+        print_argument_help();
       }
-
     } else {
-      std::cout << "usage:" << std::endl;
-      std::cout << "./CIM2Mod -f <file2.xml> <file2.xml>... [modelica_output_file_name]" << std::endl;
-      std::cout << "./CIM2Mod -a <xml_directory/> [modelica_output_file_name]" << std::endl;
-      exit(1);
+      std::cerr << "Wrong arguments:" << std::endl;
+      print_argument_help();
     }
-
-    modelica_filename = argv[argc - 1];
-
-  }
 
   // Timer start
   std::chrono::time_point<std::chrono::high_resolution_clock> start, stop;
@@ -103,7 +132,7 @@ int main(int argc, const char **argv) {
   cimModel.parseFiles();// Parser begin!
   CIMObjectHandler ObjectHandler(std::move(cimModel.Objects));// r-value
   ObjectHandler.get_config();// Get configuration files
-  ObjectHandler.ModelicaCodeGenerator(modelica_filename);
+  ObjectHandler.ModelicaCodeGenerator(args);
 
   // Timer stop
   stop = std::chrono::high_resolution_clock::now();

@@ -32,10 +32,25 @@ void CIMObjectHandler::get_config() {
 }
 
 /**
+ * Print the object name or RTTI name
+ */
+void CIMObjectHandler::print_RTTI(BaseClass *Object) {
+
+  std::cout << "The following CIM model is not used:" << std::endl;
+  if (auto *io = dynamic_cast<IdentifiedObjectPtr>(Object)) {
+    std::cout << "IdentifiedObject.name: " << io->name << std::endl;
+  }
+  const std::type_info &info = typeid(*Object);
+  std::cout << "RTTI name: " << info.name() << std::endl;
+  std::cout << std::endl;
+}
+
+/**
  * Generate the modelica code
  * by parsering the _CIMObjects
  */
-bool CIMObjectHandler::ModelicaCodeGenerator(const std::string filename) {
+bool CIMObjectHandler::ModelicaCodeGenerator(std::vector<std::string> args) {
+  const std::string filename = args[0];
   ctemplate::TemplateDictionary *dict = new ctemplate::TemplateDictionary("MODELICA");
   this->SystemSettingsHandler(filename, dict);
 
@@ -91,6 +106,10 @@ bool CIMObjectHandler::ModelicaCodeGenerator(const std::string filename) {
                                                                                   syn_machine, dict);
             Connection conn(&busbar, &solar_generator);
             connectionQueue.push(conn);
+          }
+        } else {
+          if(args.size() == 2 && strcmp(args[1].c_str(), "--verbose") == 0) {
+            print_RTTI((*terminal_it)->ConductingEquipment); /// In verbose module to show the no used object information
           }
         }
       }
@@ -162,7 +181,6 @@ bool CIMObjectHandler::ModelicaCodeGenerator(const std::string filename) {
           connectionQueue.push(conn);
           solarGeneratorQueue.pop();
         }
-
       }
     }
   }

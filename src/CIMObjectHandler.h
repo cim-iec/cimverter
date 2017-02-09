@@ -6,14 +6,15 @@
 #ifndef SRC_CIMOBJECTHANDLER_H_
 #define SRC_CIMOBJECTHANDLER_H_
 
+#include <queue>
 #include <boost/lexical_cast.hpp>
 #include "IEC61970.hpp"
 #include "ConfigManager.h"
 #include "CIMModel.hpp"
 #include <ctemplate/template.h>
 #include "ModelicaWorkshop/ModelicaClass.h"
-#include <queue>
 
+typedef IEC61970::Base::Core::IdentifiedObject* IdentifiedObjectPtr;
 typedef IEC61970::Base::Wires::BusbarSection* BusBarSectionPtr;
 typedef IEC61970::Base::Topology::TopologicalNode* TPNodePtr;
 typedef IEC61970::Base::Core::ConnectivityNode* ConnectivityNodePtr;
@@ -49,7 +50,7 @@ class CIMObjectHandler {
   CIMObjectHandler& operator=(const CIMObjectHandler&) = delete;
   virtual ~CIMObjectHandler();
 
-  bool ModelicaCodeGenerator(const std::string filename);
+  bool ModelicaCodeGenerator(std::vector<std::string> args);
   bool SystemSettingsHandler(const std::string filename, ctemplate::TemplateDictionary* dict);
   BusBar TopologicalNodeHandler(const TPNodePtr tp_node, ctemplate::TemplateDictionary* dict);
   bool BusBarSectionHandler(const BusBarSectionPtr busbar_section, BusBar &busbar, ctemplate::TemplateDictionary* dict);
@@ -64,6 +65,7 @@ class CIMObjectHandler {
   bool ConnectionHandler(ctemplate::TemplateDictionary* dict);
 
   void get_config();  /// Get congiurations from config.cfg
+  void print_RTTI(BaseClass *Object);  /// Print component information
   static std::string name_in_modelica(std::string orginal_name);/// Modify illega modelica name
   static DiagramObjectPoint convert_coordinate(double x, double y, const ConfigManager & configManager);/// Tranfer the modelica components' coordinate
 
