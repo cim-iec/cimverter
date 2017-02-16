@@ -240,10 +240,10 @@ bool CIMObjectHandler::SystemSettingsHandler(const std::string filename, ctempla
 BusBar CIMObjectHandler::TopologicalNodeHandler(const TPNodePtr tp_node, ctemplate::TemplateDictionary *dict) {
   BusBar busbar;
 
-  if (tp_node->BaseVoltage->name.find("LV")!=std::string::npos) {
-    busbar.set_Vnom(tp_node->BaseVoltage->nominalVoltage.value);
-  } else if (tp_node->BaseVoltage->name.find("V")!=std::string::npos) {
+  if (tp_node->BaseVoltage->name.find("LV")!=std::string::npos || tp_node->BaseVoltage->name.find("V")!=std::string::npos ) {
     busbar.set_Vnom(tp_node->BaseVoltage->nominalVoltage.value*1000);
+  } else if (tp_node->BaseVoltage->name.find("HV")!=std::string::npos || tp_node->BaseVoltage->name.find("kV")!=std::string::npos || tp_node->BaseVoltage->name.find("KV")!=std::string::npos) {
+    busbar.set_Vnom(tp_node->BaseVoltage->nominalVoltage.value);
   } else {
     busbar.set_Vnom(tp_node->BaseVoltage->nominalVoltage.value*1000);
   }
@@ -361,7 +361,13 @@ ConnectivityNode CIMObjectHandler::ConnectiviyNodeHandler(const TPNodePtr tp_nod
                                                           const ConnectivityNodePtr connectivity_node,
                                                           ctemplate::TemplateDictionary *dict) {
   ConnectivityNode conn_node;
-  conn_node.set_Vnom(tp_node->BaseVoltage->nominalVoltage.value);
+  if (tp_node->BaseVoltage->name.find("LV")!=std::string::npos || tp_node->BaseVoltage->name.find("V")!=std::string::npos ) {
+    conn_node.set_Vnom(tp_node->BaseVoltage->nominalVoltage.value*1000);
+  } else if (tp_node->BaseVoltage->name.find("HV")!=std::string::npos || tp_node->BaseVoltage->name.find("kV")!=std::string::npos || tp_node->BaseVoltage->name.find("KV")!=std::string::npos) {
+    conn_node.set_Vnom(tp_node->BaseVoltage->nominalVoltage.value);
+  } else {
+    conn_node.set_Vnom(tp_node->BaseVoltage->nominalVoltage.value*1000);
+  }
   conn_node.set_name(name_in_modelica(connectivity_node->name));
   conn_node.annotation.placement.visible = true;
   conn_node.set_sequenceNumber(terminal->sequenceNumber);
@@ -393,7 +399,14 @@ ConnectivityNode CIMObjectHandler::ConnectiviyNodeHandler(const TPNodePtr tp_nod
 Slack CIMObjectHandler::ExternalNIHandler(const TPNodePtr tp_node, const TerminalPtr terminal, const ExNIPtr externalNI,
                                           ctemplate::TemplateDictionary *dict) {
   Slack slack;
-  slack.set_Vnom(tp_node->BaseVoltage->nominalVoltage.value);
+  if (tp_node->BaseVoltage->name.find("LV")!=std::string::npos || tp_node->BaseVoltage->name.find("V")!=std::string::npos ) {
+    slack.set_Vnom(tp_node->BaseVoltage->nominalVoltage.value*1000);
+  } else if (tp_node->BaseVoltage->name.find("HV")!=std::string::npos || tp_node->BaseVoltage->name.find("kV")!=std::string::npos || tp_node->BaseVoltage->name.find("KV")!=std::string::npos) {
+    slack.set_Vnom(tp_node->BaseVoltage->nominalVoltage.value);
+  } else {
+    slack.set_Vnom(tp_node->BaseVoltage->nominalVoltage.value*1000);
+  }
+
   slack.set_name(name_in_modelica(externalNI->name));
   slack.set_sequenceNumber(terminal->sequenceNumber);
   slack.set_connected(terminal->connected);
@@ -498,7 +511,13 @@ Transformer CIMObjectHandler::PowerTransformerHandler(const TPNodePtr tp_node, c
        transformer_end_it!=power_trafo->PowerTransformerEnd.end();
        ++transformer_end_it) {
     if ((*transformer_end_it)->endNumber==1) {
-      Trafo.set_Vnom1((*transformer_end_it)->BaseVoltage->nominalVoltage.value*1000);
+      if ((*transformer_end_it)->BaseVoltage->name.find("LV")!=std::string::npos || (*transformer_end_it)->BaseVoltage->name.find("V")!=std::string::npos ) {
+        Trafo.set_Vnom1((*transformer_end_it)->BaseVoltage->nominalVoltage.value*1000);
+      } else if (tp_node->BaseVoltage->name.find("HV")!=std::string::npos || (*transformer_end_it)->BaseVoltage->name.find("kV")!=std::string::npos || (*transformer_end_it)->BaseVoltage->name.find("KV")!=std::string::npos) {
+        Trafo.set_Vnom1((*transformer_end_it)->BaseVoltage->nominalVoltage.value);
+      } else {
+        Trafo.set_Vnom1((*transformer_end_it)->BaseVoltage->nominalVoltage.value*1000);
+      }
       Trafo.set_Sr((*transformer_end_it)->ratedS.value*1000000);
       Trafo.set_r((*transformer_end_it)->r.value);
       Trafo.set_x((*transformer_end_it)->x.value);
@@ -506,7 +525,14 @@ Transformer CIMObjectHandler::PowerTransformerHandler(const TPNodePtr tp_node, c
       Trafo.calc_URr();
       Trafo.calc_Ukr();
     } else if ((*transformer_end_it)->endNumber==2) {
-      Trafo.set_Vnom2((*transformer_end_it)->BaseVoltage->nominalVoltage.value*1000);
+
+      if ((*transformer_end_it)->BaseVoltage->name.find("LV")!=std::string::npos || (*transformer_end_it)->BaseVoltage->name.find("V")!=std::string::npos ) {
+        Trafo.set_Vnom2((*transformer_end_it)->BaseVoltage->nominalVoltage.value*1000);
+      } else if (tp_node->BaseVoltage->name.find("HV")!=std::string::npos || (*transformer_end_it)->BaseVoltage->name.find("kV")!=std::string::npos || (*transformer_end_it)->BaseVoltage->name.find("KV")!=std::string::npos) {
+        Trafo.set_Vnom2((*transformer_end_it)->BaseVoltage->nominalVoltage.value);
+      } else {
+        Trafo.set_Vnom2((*transformer_end_it)->BaseVoltage->nominalVoltage.value*1000);
+      }
     }
   }
 
@@ -555,10 +581,16 @@ PQLoad CIMObjectHandler::EnergyConsumerHandler(const TPNodePtr tp_node, const Te
 
     PQLoad pqload(PQLoadType::Standard);
 
+    if (tp_node->BaseVoltage->name.find("LV")!=std::string::npos || tp_node->BaseVoltage->name.find("V")!=std::string::npos ) {
+      pqload.set_Vnom(tp_node->BaseVoltage->nominalVoltage.value*1000);
+    } else if (tp_node->BaseVoltage->name.find("HV")!=std::string::npos || tp_node->BaseVoltage->name.find("kV")!=std::string::npos || tp_node->BaseVoltage->name.find("KV")!=std::string::npos) {
+      pqload.set_Vnom(tp_node->BaseVoltage->nominalVoltage.value);
+    } else {
+      pqload.set_Vnom(tp_node->BaseVoltage->nominalVoltage.value*1000);
+    }
     pqload.set_name(name_in_modelica(energy_consumer->name));
     pqload.set_Pnom(energy_consumer->p.value);
     pqload.set_Qnom(energy_consumer->q.value);
-    pqload.set_Vnom(tp_node->BaseVoltage->nominalVoltage.value);
     pqload.set_sequenceNumber(terminal->sequenceNumber);
     pqload.set_connected(terminal->connected);
     pqload.annotation.placement.visible = true;
