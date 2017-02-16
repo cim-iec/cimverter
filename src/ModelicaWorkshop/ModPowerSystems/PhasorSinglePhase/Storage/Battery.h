@@ -103,7 +103,7 @@ class Battery : public ModBaseClass {
 
   enum BatteryType _Type = BatteryType::Type0;
   //Type0
-  double _Cnom = 5000; //usable battery capacity in Wh;
+  double _Cnom = 0; //usable battery capacity in Wh;
   bool _enableOutputWbat = false;
   double _Vnom = 0;//battery charging power;
   double _SOC_start = 0;//state of charge

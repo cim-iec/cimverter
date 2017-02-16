@@ -62,13 +62,13 @@ PiLine::~PiLine() {
 bool PiLine::set_template_values(ctemplate::TemplateDictionary *dictionary) {
 
   dictionary->SetValue(NAME, this->name());
-  dictionary->SetFormattedValue(LENGTH, "%.2f", this->length());
-  dictionary->SetFormattedValue(IMAX, "%.2f", this->Imax());
-  dictionary->SetFormattedValue(R, "%.3f", this->r());
-  dictionary->SetFormattedValue(X, "%.3f", this->x());
+  dictionary->SetFormattedValue(LENGTH, "%.6f", this->length());
+  dictionary->SetFormattedValue(IMAX, "%.3f", this->Imax());
+  dictionary->SetFormattedValue(R, "%.6f", this->r());
+  dictionary->SetFormattedValue(X, "%.6f", this->x());
   dictionary->SetFormattedValue(B, "%.10f", this->b());
-  dictionary->SetFormattedValue(G, "%.f", this->g());
-  dictionary->SetFormattedValue(SR, "%.f", this->Sr());
+  dictionary->SetFormattedValue(G, "%.6f", this->g());
+  dictionary->SetFormattedValue(SR, "%.6f", this->Sr());
   dictionary->SetValue(IMAX_DISPLAYUNIT, (ModelicaUnit[this->Imax_displayUnit()]));
   dictionary->SetValue(SR_DISPLAYUNIT, (ModelicaUnit[this->Sr_displayUnit()]));
 

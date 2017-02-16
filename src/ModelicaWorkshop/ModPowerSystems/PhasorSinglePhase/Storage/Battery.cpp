@@ -59,9 +59,9 @@ Battery::~Battery() {
 bool Battery::set_template_values(ctemplate::TemplateDictionary *dictionary) {
 
   dictionary->SetValue(NAME, this->name());
-  dictionary->SetFormattedValue(VNOM, "%.2f", this->Vnom());
-  dictionary->SetFormattedValue(CNOM, "%.2f", this->Cnom());
-  dictionary->SetFormattedValue(SOC_START, "%.2f", this->SOC_start());
+  dictionary->SetFormattedValue(VNOM, "%.3f", this->Vnom());
+  dictionary->SetFormattedValue(CNOM, "%.5f", this->Cnom());
+  dictionary->SetFormattedValue(SOC_START, "%.5f", this->SOC_start());
   dictionary->SetValue(ENABLE_OUTPUT_WBAT, this->enableOutputWbat());
   dictionary->SetValue(VNOM_DISPLAYUNIT, (ModelicaUnit[this->Vnom_displayUnit()]));
   dictionary->SetValue(CNOM_DISPLAYUNIT, (ModelicaUnit[this->Cnom_displayUnit()]));

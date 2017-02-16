@@ -64,15 +64,15 @@ bool SolarGenerator::set_template_values(ctemplate::TemplateDictionary *dictiona
   dictionary->SetValue(NAME, this->name());
   dictionary->SetValue(PROFILE_NAME, this->profileName());
   dictionary->SetValue(PROFILE_FILENAME, this->profileFileName());
-  dictionary->SetFormattedValue(VNOM, "%.2f", this->Vnom());
-  dictionary->SetFormattedValue(PNOM, "%.2f", this->Pnom());
+  dictionary->SetFormattedValue(VNOM, "%.3f", this->Vnom());
+  dictionary->SetFormattedValue(PNOM, "%.3f", this->Pnom());
   dictionary->SetValue(STATUS_ON, this->StatusOn());
   dictionary->SetValue(ENABLE_INPUT_PLOAD, this->enableInputPload());
   dictionary->SetValue(ENABLE_OUTPUT_PSOLAR, this->enableOutputPsolar());
-  dictionary->SetFormattedValue(CURTAIL_LIMIT, "%.2f", this->CurtailLimit());
+  dictionary->SetFormattedValue(CURTAIL_LIMIT, "%.6f", this->CurtailLimit());
   dictionary->SetIntValue(CONTROLLER_TYPE, this->ControllerType());
-  dictionary->SetFormattedValue(W_LOSS, "%.2f", this->W_loss());
-  dictionary->SetFormattedValue(W_TOTAL, "%.2f", this->W_total());
+  dictionary->SetFormattedValue(W_LOSS, "%.6f", this->W_loss());
+  dictionary->SetFormattedValue(W_TOTAL, "%.6f", this->W_total());
   dictionary->SetValue(VNOM_DISPLAYUNIT, (ModelicaUnit[this->Vnom_displayUnit()]));
   dictionary->SetValue(PNOM_DISPLAYUNIT, (ModelicaUnit[this->Pnom_displayUnit()]));
 

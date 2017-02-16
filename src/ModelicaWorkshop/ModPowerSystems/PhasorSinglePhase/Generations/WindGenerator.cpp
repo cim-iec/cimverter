@@ -56,13 +56,13 @@ WindGenerator::~WindGenerator() {
 bool WindGenerator::set_template_values(ctemplate::TemplateDictionary *dictionary) {
 
   dictionary->SetValue(NAME, this->name());
-  dictionary->SetFormattedValue(VNOM, "%.2f", this->Vnom());
-  dictionary->SetFormattedValue(PNOM, "%.2f", this->Pnom());
+  dictionary->SetFormattedValue(VNOM, "%.3f", this->Vnom());
+  dictionary->SetFormattedValue(PNOM, "%.3f", this->Pnom());
   dictionary->SetValue(PROFILE_NAME, this->profileName());
   dictionary->SetValue(PROFILE_FILENAME, this->profileFileName());
-  dictionary->SetFormattedValue(V_S, "%.2f", this->v_s());
-  dictionary->SetFormattedValue(V_R, "%.2f", this->v_r());
-  dictionary->SetFormattedValue(V_C, "%.2f", this->v_s());
+  dictionary->SetFormattedValue(V_S, "%.6f", this->v_s());
+  dictionary->SetFormattedValue(V_R, "%.6f", this->v_r());
+  dictionary->SetFormattedValue(V_C, "%.6f", this->v_s());
 
 
   this->set_template_annotation_values(dictionary);

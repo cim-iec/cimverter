@@ -131,9 +131,9 @@ class Transformer : public ModBaseClass {
 
  private:
 
-  double _Vnom1 = 110000;  //primary voltage level
-  double _Vnom2 = 20000;  //secondary voltage level
-  double _Sr = 40000;  //rated apparent power
+  double _Vnom1 = 0;  //primary voltage level
+  double _Vnom2 = 0;  //secondary voltage level
+  double _Sr = 0;  //rated apparent power
   double _URr = 0.31;  //copper losses
   double _Ukr = 12.04;  //short circuit voltage
 

@@ -112,26 +112,26 @@ bool Household::set_template_values(ctemplate::TemplateDictionary *dictionary) {
   if(this->_Type == HouseholdType::Type0) {
 
     dictionary->SetValue(NAME, this->name());
-    dictionary->SetFormattedValue(LOAD_PNOM, "%.2f", this->Load_Pnom());
-    dictionary->SetFormattedValue(LOAD_QNOM, "%.2f", this->Load_Qnom());
+    dictionary->SetFormattedValue(LOAD_PNOM, "%.3f", this->Load_Pnom());
+    dictionary->SetFormattedValue(LOAD_QNOM, "%.3f", this->Load_Qnom());
 
   } else if(this->_Type == HouseholdType::Type1) {
 
     dictionary->SetValue(NAME, this->name());
-    dictionary->SetFormattedValue(LOAD_PNOM, "%.2f", this->Load_Pnom());
-    dictionary->SetFormattedValue(LOAD_QNOM, "%.2f", this->Load_Qnom());
+    dictionary->SetFormattedValue(LOAD_PNOM, "%.3f", this->Load_Pnom());
+    dictionary->SetFormattedValue(LOAD_QNOM, "%.3f", this->Load_Qnom());
     dictionary->SetValue(LOAD_PROFILE_NAME, this->Load_ProfileName());
     dictionary->SetValue(LOAD_PROFILE_FILENAME, this->Load_ProfileFileName());
 
   } else if(this->_Type == HouseholdType::Type2) {
 
     dictionary->SetValue(NAME, this->name());
-    dictionary->SetFormattedValue(LOAD_PNOM, "%.2f", this->Load_Pnom());
-    dictionary->SetFormattedValue(LOAD_QNOM, "%.2f", this->Load_Qnom());
+    dictionary->SetFormattedValue(LOAD_PNOM, "%.3f", this->Load_Pnom());
+    dictionary->SetFormattedValue(LOAD_QNOM, "%.3f", this->Load_Qnom());
     dictionary->SetValue(LOAD_PROFILE_NAME, this->Load_ProfileName());
     dictionary->SetValue(LOAD_PROFILE_FILENAME, this->Load_ProfileFileName());
 
-    dictionary->SetFormattedValue(PV_PNOM, "%.2f", this->PV_Pnom());
+    dictionary->SetFormattedValue(PV_PNOM, "%.3f", this->PV_Pnom());
     dictionary->SetValue(PV_PROFILE_NAME, this->PV_ProfileName());
     dictionary->SetValue(PV_PROFILE_FILENAME, this->PV_ProfileFileName());
     dictionary->SetIntValue(PV_CONTROLLER, this->PV_Controller());
