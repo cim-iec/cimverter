@@ -11,19 +11,19 @@
 
 #include <cmath>
 
-typedef ModPowerSystems::SinglePhase::Connections::BusBar BusBar;
-typedef ModPowerSystems::SinglePhase::Connections::ConnectivityNode ConnectivityNode;
-typedef ModPowerSystems::SinglePhase::Sources::Slack Slack;
-typedef ModPowerSystems::SinglePhase::Loads::PQLoad PQLoad;
-typedef ModPowerSystems::SinglePhase::Loads::ZLoad ZLoad;
-typedef ModPowerSystems::SinglePhase::Lines::PiLine PiLine;
-typedef ModPowerSystems::SinglePhase::Lines::RxLine RxLine;
-typedef ModPowerSystems::SinglePhase::Transformers::Transformer Transformer;
-typedef ModPowerSystems::SinglePhase::Generations::GenericGenerator GenericGenerator;
-typedef ModPowerSystems::SinglePhase::Generations::WindGenerator WindGenerator;
-typedef ModPowerSystems::SinglePhase::Generations::SolarGenerator SolarGenerator;
-typedef ModPowerSystems::SinglePhase::Storage::Battery Battery;
-typedef ModPowerSystems::SinglePhase::Households::Household Household;
+typedef ModPowerSystems::PhasorSinglePhase::Connections::BusBar BusBar;
+typedef ModPowerSystems::PhasorSinglePhase::Connections::ConnectivityNode ConnectivityNode;
+typedef ModPowerSystems::PhasorSinglePhase::Sources::Slack Slack;
+typedef ModPowerSystems::PhasorSinglePhase::Loads::PQLoad PQLoad;
+typedef ModPowerSystems::PhasorSinglePhase::Loads::ZLoad ZLoad;
+typedef ModPowerSystems::PhasorSinglePhase::Lines::PiLine PiLine;
+typedef ModPowerSystems::PhasorSinglePhase::Lines::RxLine RxLine;
+typedef ModPowerSystems::PhasorSinglePhase::Transformers::Transformer Transformer;
+typedef ModPowerSystems::PhasorSinglePhase::Generations::GenericGenerator GenericGenerator;
+typedef ModPowerSystems::PhasorSinglePhase::Generations::WindGenerator WindGenerator;
+typedef ModPowerSystems::PhasorSinglePhase::Generations::SolarGenerator SolarGenerator;
+typedef ModPowerSystems::PhasorSinglePhase::Storage::Battery Battery;
+typedef ModPowerSystems::PhasorSinglePhase::Households::Household Household;
 
 namespace ModelicaWorkshop {
 
