@@ -72,7 +72,7 @@ class Slack : public ModBaseClass {
 
  private:
 
-  double _Vnom = 110000;// Voltage level
+  double _Vnom = 0;// Voltage level
   double _frequency = 50;  //Frequency
   double _phiV = 0;  //Initial Voltage Angle
 

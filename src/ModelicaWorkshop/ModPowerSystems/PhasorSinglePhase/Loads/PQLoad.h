@@ -111,7 +111,7 @@ class PQLoad : public ModBaseClass {
   //Parameters
   double _Pnom = 0;  //active power per phase
   double _Qnom = 0;  //reactive power per phase
-  double _Vnom = 110000;  //nominal voltage level
+  double _Vnom = 0;  //nominal voltage level
 
   modelicaUnit _Pnom_displayUnit = modelicaUnit::W;
   modelicaUnit _Qnom_displayUnit = modelicaUnit::var;

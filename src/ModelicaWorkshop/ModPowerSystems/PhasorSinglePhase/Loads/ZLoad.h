@@ -123,7 +123,7 @@ class ZLoad : public ModBaseClass {
   //Parameters
   double _Pnom = 0;  //active power per phase
   double _Qnom = 0;  //reactive power per phase
-  double _Vnom = 110000;  //nominal voltage level
+  double _Vnom = 0;  //nominal voltage level
 
   //ZLoadProfile Parameters
   std::string _profileFileName = "NoName"; //File where matrix is stored
