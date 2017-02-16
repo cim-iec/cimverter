@@ -439,11 +439,11 @@ CIMObjectHandler::ACLineSegmentHandler(const TPNodePtr tp_node, const TerminalPt
                                        ctemplate::TemplateDictionary *dict) {
   PiLine Pi_line;
   Pi_line.set_name(name_in_modelica(ac_line->name));
-  Pi_line.set_r(ac_line->r.value);
-  Pi_line.set_x(ac_line->x.value);
-  Pi_line.set_b(ac_line->bch.value);
-  Pi_line.set_g(ac_line->gch.value);
   Pi_line.set_length(ac_line->length.value);
+  Pi_line.set_r(ac_line->r.value/ac_line->length.value);
+  Pi_line.set_x(ac_line->x.value/ac_line->length.value);
+  Pi_line.set_b(ac_line->bch.value/ac_line->length.value);
+  Pi_line.set_g(ac_line->gch.value/ac_line->length.value);
   Pi_line.set_sequenceNumber(terminal->sequenceNumber);
   Pi_line.set_connected(terminal->connected);
   Pi_line.annotation.placement.visible = true;
