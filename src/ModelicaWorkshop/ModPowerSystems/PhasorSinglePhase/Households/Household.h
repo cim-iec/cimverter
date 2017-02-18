@@ -29,8 +29,8 @@ using namespace ModelicaWorkshop;
  */
 enum class HouseholdType {
   Type0, Type1, Type2,
-  type3a, type3ba, type3bb,
-  type3ca, type3cb, type3cc, type3cd, type3ce
+  Type3a, Type3ba, Type3bb,
+  Type3ca, Type3cb, Type3cc, Type3cd, Type3ce
 };
 
 namespace ModPowerSystems {
