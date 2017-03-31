@@ -58,17 +58,17 @@ Battery::~Battery() {
 
 bool Battery::set_template_values(ctemplate::TemplateDictionary *dictionary) {
 
-  dictionary->SetValue(NAME, this->name());
-  dictionary->SetFormattedValue(VNOM, "%.3f", this->Vnom());
-  dictionary->SetFormattedValue(CNOM, "%.5f", this->Cnom());
-  dictionary->SetFormattedValue(SOC_START, "%.5f", this->SOC_start());
-  dictionary->SetValue(ENABLE_OUTPUT_WBAT, this->enableOutputWbat());
-  dictionary->SetValue(VNOM_DISPLAYUNIT, (ModelicaUnit[this->Vnom_displayUnit()]));
-  dictionary->SetValue(CNOM_DISPLAYUNIT, (ModelicaUnit[this->Cnom_displayUnit()]));
+  dictionary->SetValue("NAME", this->name());
+  dictionary->SetFormattedValue("VNOM", "%.3f", this->Vnom());
+  dictionary->SetFormattedValue("CNOM", "%.5f", this->Cnom());
+  dictionary->SetFormattedValue("SOC_START", "%.5f", this->SOC_start());
+  dictionary->SetValue("ENABLE_OUTPUT_WBAT", this->enableOutputWbat());
+  dictionary->SetValue("VNOM_DISPLAYUNIT", (ModelicaUnit[this->Vnom_displayUnit()]));
+  dictionary->SetValue("CNOM_DISPLAYUNIT", (ModelicaUnit[this->Cnom_displayUnit()]));
 
   if(_Type == BatteryType::Type1) {
-    dictionary->SetFormattedValue(ETA_CH, "%.2f", this->eta_ch());
-    dictionary->SetFormattedValue(ETA_DISCH, "%.2f", this->eta_disch());
+    dictionary->SetFormattedValue("ETA_CH", "%.2f", this->eta_ch());
+    dictionary->SetFormattedValue("ETA_DISCH", "%.2f", this->eta_disch());
   }
 
   this->set_template_annotation_values(dictionary);

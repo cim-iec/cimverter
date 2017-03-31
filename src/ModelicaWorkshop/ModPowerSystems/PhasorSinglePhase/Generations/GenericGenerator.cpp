@@ -22,7 +22,7 @@ GenericGenerator::~GenericGenerator() {
 
 bool GenericGenerator::set_template_values(ctemplate::TemplateDictionary *dictionary) {
 
-  dictionary->SetValue(NAME, this->name());
+  dictionary->SetValue("NAME", this->name());
   this->set_template_annotation_values(dictionary);
 
   return true;

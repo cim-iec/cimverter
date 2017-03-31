@@ -45,10 +45,10 @@ RxLine::~RxLine() {
 
 bool RxLine::set_template_values(ctemplate::TemplateDictionary *dictionary) {
 
-  dictionary->SetValue(NAME, this->name());
-  dictionary->SetFormattedValue(LENGTH, "%.3f", this->length());
-  dictionary->SetFormattedValue(R, "%.6f", this->r());
-  dictionary->SetFormattedValue(X, "%.6f", this->x());
+  dictionary->SetValue("NAME", this->name());
+  dictionary->SetFormattedValue("LENGTH", "%.3f", this->length());
+  dictionary->SetFormattedValue("R", "%.6f", this->r());
+  dictionary->SetFormattedValue("X", "%.6f", this->x());
 
   this->set_template_annotation_values(dictionary);
 

@@ -71,21 +71,21 @@ bool PQLoad::set_template_values(ctemplate::TemplateDictionary *dictionary) {
 
   if(this->_Type == PQLoadType::Standard) {
 
-    dictionary->SetValue(NAME, this->name());
-    dictionary->SetFormattedValue(PNOM, "%.3f", this->Pnom());
-    dictionary->SetFormattedValue(QNOM, "%.3f", this->Qnom());
-    dictionary->SetFormattedValue(VNOM, "%.3f", this->Vnom());
-    dictionary->SetValue(PNOM_DISPLAYUNIT, (ModelicaUnit[this->Pnom_displayUnit()]));
-    dictionary->SetValue(QNOM_DISPLAYUNIT, (ModelicaUnit[this->Qnom_displayUnit()]));
-    dictionary->SetValue(VNOM_DISPLAYUNIT, (ModelicaUnit[this->Vnom_displayUnit()]));
+    dictionary->SetValue("NAME", this->name());
+    dictionary->SetFormattedValue("PNOM", "%.3f", this->Pnom());
+    dictionary->SetFormattedValue("QNOM", "%.3f", this->Qnom());
+    dictionary->SetFormattedValue("VNOM", "%.3f", this->Vnom());
+    dictionary->SetValue("PNOM_DISPLAYUNIT", (ModelicaUnit[this->Pnom_displayUnit()]));
+    dictionary->SetValue("QNOM_DISPLAYUNIT", (ModelicaUnit[this->Qnom_displayUnit()]));
+    dictionary->SetValue("VNOM_DISPLAYUNIT", (ModelicaUnit[this->Vnom_displayUnit()]));
   } else if(this->_Type == PQLoadType::Profile) {
 
-    dictionary->SetValue(NAME, this->name());
-    dictionary->SetValue(PROFILE_NAME, this->profileName());
-    dictionary->SetValue(PROFILE_FILENAME, this->profileFileName());
-    dictionary->SetValue(ENABLE_OUTPUT_PLOAD, this->enableOutputPload());
-    dictionary->SetFormattedValue(VNOM, "%.3f", this->Vnom());
-    dictionary->SetValue(VNOM_DISPLAYUNIT, (ModelicaUnit[this->Vnom_displayUnit()]));
+    dictionary->SetValue("NAME", this->name());
+    dictionary->SetValue("PROFILE_NAME", this->profileName());
+    dictionary->SetValue("PROFILE_FILENAME", this->profileFileName());
+    dictionary->SetValue("ENABLE_OUTPUT_PLOAD", this->enableOutputPload());
+    dictionary->SetFormattedValue("VNOM", "%.3f", this->Vnom());
+    dictionary->SetValue("VNOM_DISPLAYUNIT", (ModelicaUnit[this->Vnom_displayUnit()]));
   }
 
   this->set_template_annotation_values(dictionary);

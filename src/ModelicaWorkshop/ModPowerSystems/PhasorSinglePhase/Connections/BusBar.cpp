@@ -30,8 +30,8 @@ BusBar::~BusBar() {
 
 bool BusBar::set_template_values(ctemplate::TemplateDictionary *dictionary) {
 
-  dictionary->SetFormattedValue(VNOM, "%.3f", this->Vnom());
-  dictionary->SetValue(NAME, this->name());
+  dictionary->SetFormattedValue("VNOM", "%.3f", this->Vnom());
+  dictionary->SetValue("NAME", this->name());
   this->set_template_annotation_values(dictionary);
 
   return true;

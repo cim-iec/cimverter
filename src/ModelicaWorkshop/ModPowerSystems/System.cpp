@@ -101,8 +101,8 @@ std::string System::output_icon_extent_points() const {
  * Fill the system setting part of modelica template
  */
 bool System::set_system_setting(ctemplate::TemplateDictionary *dictionary) {
-  dictionary->SetValue(DIAGRAM_EXTENT_POINTS, this->output_diagram_extent_points());
-  dictionary->SetValue(ICON_EXTENT_POINTS, this->output_icon_extent_points());
+  dictionary->SetValue("DIAGRAM_EXTENT_POINTS", this->output_diagram_extent_points());
+  dictionary->SetValue("ICON_EXTENT_POINTS", this->output_icon_extent_points());
 
   return true;
 }
@@ -111,11 +111,11 @@ bool System::set_system_setting(ctemplate::TemplateDictionary *dictionary) {
  * Fill the system label part of modelica template
  */
 bool System::set_system_label(ctemplate::TemplateDictionary *dictionary) {
-  dictionary->SetFormattedValue(FNOM, "%.1f", this->f_nom());
-  dictionary->SetValue(NAME, this->name());
-  dictionary->SetValue(FNOM_DISPLAYUNIT, (ModelicaUnit[this->f_nom_displayUnit()]));
-  dictionary->SetValue(SIMMODE, this->simMode());
-  dictionary->SetValue(INIT, this->init());
+  dictionary->SetFormattedValue("FNOM", "%.1f", this->f_nom());
+  dictionary->SetValue("NAME", this->name());
+  dictionary->SetValue("FNOM_DISPLAYUNIT", (ModelicaUnit[this->f_nom_displayUnit()]));
+  dictionary->SetValue("SIMMODE", this->simMode());
+  dictionary->SetValue("INIT", this->init());
 
   return true;
 }

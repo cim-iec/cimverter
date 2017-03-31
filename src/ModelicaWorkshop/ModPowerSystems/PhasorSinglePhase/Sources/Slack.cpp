@@ -43,13 +43,13 @@ Slack::~Slack() {
 
 bool Slack::set_template_values(ctemplate::TemplateDictionary *dictionary) {
 
-  dictionary->SetFormattedValue(VNOM, "%.3f", this->Vnom());
-  dictionary->SetValue(NAME, this->name());
-  dictionary->SetValue(VNOM_DISPLAYUNIT, (ModelicaUnit[this->Vnom_displayUnit()]));
-  dictionary->SetFormattedValue(FREQUENCY, "%.1f", this->frequency());
-  dictionary->SetValue(FREQUENCY_DISPLAYUNIT, (ModelicaUnit[this->frequency_displayUnit()]));
-  dictionary->SetFormattedValue(PHIV, "%.3f", this->phiV());
-  dictionary->SetValue(PHIV_DISPLAYUNIT, (ModelicaUnit[this->phiV_displayUnit()]));
+  dictionary->SetFormattedValue("VNOM", "%.3f", this->Vnom());
+  dictionary->SetValue("NAME", this->name());
+  dictionary->SetValue("VNOM_DISPLAYUNIT", (ModelicaUnit[this->Vnom_displayUnit()]));
+  dictionary->SetFormattedValue("FREQUENCY", "%.1f", this->frequency());
+  dictionary->SetValue("FREQUENCY_DISPLAYUNIT", (ModelicaUnit[this->frequency_displayUnit()]));
+  dictionary->SetFormattedValue("PHIV", "%.3f", this->phiV());
+  dictionary->SetValue("PHIV_DISPLAYUNIT", (ModelicaUnit[this->phiV_displayUnit()]));
 
   this->set_template_annotation_values(dictionary);
 

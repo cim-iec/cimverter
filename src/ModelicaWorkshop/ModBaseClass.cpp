@@ -64,10 +64,10 @@ std::string ModBaseClass::output_trans_origin_points() const {
  * Fill the annotation part of modelica template
  */
 bool ModBaseClass::set_template_annotation_values(ctemplate::TemplateDictionary *dictionary) {
-  dictionary->SetValue(TRANS_EXTENT_POINTS, this->output_trans_extent_points());
-  dictionary->SetValue(ORIGIN_POINT, this->output_trans_origin_points());
-  dictionary->SetIntValue(ROTATION, this->annotation.placement.transfomation.rotation);
-  dictionary->SetFormattedValue(VISIBLE, "%s", this->annotation.placement.visible ? "true" : "false");
+  dictionary->SetValue("TRANS_EXTENT_POINTS", this->output_trans_extent_points());
+  dictionary->SetValue("ORIGIN_POINT", this->output_trans_origin_points());
+  dictionary->SetIntValue("ROTATION", this->annotation.placement.transfomation.rotation);
+  dictionary->SetFormattedValue("VISIBLE", "%s", this->annotation.placement.visible ? "true" : "false");
 
   return true;
 }

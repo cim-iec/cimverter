@@ -367,13 +367,13 @@ std::string Connection::output_points() const {
 
 void Connection::draw_connection(ctemplate::TemplateDictionary *dictionary) {
 
-  dictionary->SetValue(PORT1, _port1);
-  dictionary->SetValue(PORT2, _port2);
+  dictionary->SetValue("PORT1", _port1);
+  dictionary->SetValue("PORT2", _port2);
 
   if(this->is_connected()) {
-    dictionary->SetValue(CONNECTION_TYPE, _connection_type);
-    dictionary->SetValue(COLOR, this->lineColor());
-    dictionary->SetValue(POINTS, this->output_points());
+    dictionary->SetValue("CONNECTION_TYPE", _connection_type);
+    dictionary->SetValue("COLOR", this->lineColor());
+    dictionary->SetValue("POINTS", this->output_points());
   }
 
 }

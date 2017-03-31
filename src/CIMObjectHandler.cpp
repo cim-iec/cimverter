@@ -213,7 +213,7 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::vector<std::string> args) {
 bool CIMObjectHandler::SystemSettingsHandler(const std::string filename, ctemplate::TemplateDictionary *dict) {
   //Modelica_Header
   dict->AddSectionDictionary("HEADER_FOOTER_SECTION");
-  dict->SetValue(GRID_NAME, filename);
+  dict->SetValue("GRID_NAME", filename);
 
   //Global Settings
   dict->AddSectionDictionary("SYSTEM_SETTINGS_SECTION");
@@ -824,7 +824,7 @@ bool CIMObjectHandler::ConnectionHandler(ctemplate::TemplateDictionary *dict) {
   size = connectionQueue.size();
   std::cout << "connectionQueue size: " << size << std::endl;
   while (!connectionQueue.empty()) {
-    ctemplate::TemplateDictionary *connection_dict = dict->AddIncludeDictionary(CONNECTIONS_DICT);
+    ctemplate::TemplateDictionary *connection_dict = dict->AddIncludeDictionary("CONNECTIONS_DICT");
     connection_dict->SetFilename(this->configManager.ts.directory_path + "resource/Connections.tpl");
     if (connectionQueue.front().is_connected()) {
       connection_dict->AddSectionDictionary("CONNECTED_SECTION");
