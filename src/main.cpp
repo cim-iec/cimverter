@@ -132,12 +132,19 @@ int main(int argc, const char **argv) {
   cimModel.parseFiles();// Parser begin!
   CIMObjectHandler ObjectHandler(std::move(cimModel.Objects));// r-value
   ObjectHandler.get_config();// Get configuration files
+
+//  // Timer start
+//  std::chrono::time_point<std::chrono::high_resolution_clock> start, stop;
+//  start = std::chrono::high_resolution_clock::now();
   ObjectHandler.ModelicaCodeGenerator(args);
 
   // Timer stop
   stop = std::chrono::high_resolution_clock::now();
   secs = std::chrono::duration_cast<std::chrono::microseconds
   >(stop - start).count();
+
+  std::cout << file_size/1000 << "KByte" << std::endl;
+  std::cout << secs << "us" << std::endl;
 
   std::cout << 1000*file_size/secs << "KByte/s" << std::endl;
   print_separator();
