@@ -127,7 +127,10 @@ This tool is used to convert CIM-XML-RDF files into Modelica code.
 ### Project Folder may has authority problem on Linux:
 
     sudo chown -R [your account username] CIM2Mod/
-
+    
+### setDependencyCheckOff() should be added right now before bug fixed of the CIM Parser
+    see line 133 in main.cpp
+    
 ### Solve Eclipse CDT indexer unresolve inclusion problem:
 
 * Right click Project-> Properties-> Paths and Symbols -> Includes in GNU c++:
