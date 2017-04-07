@@ -129,6 +129,9 @@ int main(int argc, const char **argv) {
   std::chrono::time_point<std::chrono::high_resolution_clock> start, stop;
   start = std::chrono::high_resolution_clock::now();
 
+  //set off the Dependency check
+  cimModel.setDependencyCheckOff();
+  
   cimModel.parseFiles();// Parser begin!
   CIMObjectHandler ObjectHandler(std::move(cimModel.Objects));// r-value
   ObjectHandler.get_config();// Get configuration files
