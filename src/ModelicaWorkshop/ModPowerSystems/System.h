@@ -28,19 +28,6 @@ class System : public ModBaseClass {
     return _f_nom;
   };
 
-  void set_simMode(std::string simMode) {
-    this->_simMode = simMode;
-  };
-  std::string simMode() const {
-    return _simMode;
-  };
-
-  void set_init(std::string init) {
-    this->_init = init;
-  };
-  std::string init() const {
-    return _init;
-  };
   void set_f_nom_displayUnit(modelicaUnit f_nom_displayUnit) {
     this->_f_nom_displayUnit = f_nom_displayUnit;
   };
@@ -55,8 +42,6 @@ class System : public ModBaseClass {
  private:
 
   double _f_nom = 50;  //nominal frequency
-  std::string _simMode = "steady";  //transient or steady-state simulation
-  std::string _init = "steady";
   modelicaUnit _f_nom_displayUnit = modelicaUnit::Hz;
 
   double _lx = 0;

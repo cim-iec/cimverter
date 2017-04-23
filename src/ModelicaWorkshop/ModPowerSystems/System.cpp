@@ -114,8 +114,6 @@ bool System::set_system_label(ctemplate::TemplateDictionary *dictionary) {
   dictionary->SetFormattedValue("FNOM", "%.1f", this->f_nom());
   dictionary->SetValue("NAME", this->name());
   dictionary->SetValue("FNOM_DISPLAYUNIT", (ModelicaUnit[this->f_nom_displayUnit()]));
-  dictionary->SetValue("SIMMODE", this->simMode());
-  dictionary->SetValue("INIT", this->init());
 
   return true;
 }
