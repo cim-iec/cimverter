@@ -63,6 +63,12 @@ class Household : public ModBaseClass {
   double Load_Pnom() const {
     return _Load_Pnom;
   };
+  void set_Household_Vnom(double Household_Vnom) {
+    this->_Household_Vnom = Household_Vnom;
+  };
+  double Household_Vnom() const {
+    return _Household_Vnom;
+  };
   void set_Load_Qnom(double Load_Qnom) {
     this->_Load_Qnom = Load_Qnom;
   };
@@ -144,10 +150,13 @@ class Household : public ModBaseClass {
  private:
   enum HouseholdType _Type;
 
-  //Type0 Parameters
+  double _Household_Vnom = 400; //nominal voltage of household;
+
+  //Basis Parameters
   double _Load_Pnom = 2000;//nominal active power of PQ load
   double _Load_Qnom = 0.0;//nominal reactive power of PQ load
 
+  modelicaUnit _Household_Vnom_displayUnit = modelicaUnit::W;
   modelicaUnit _Load_Pnom_displayUnit = modelicaUnit::W;
   modelicaUnit _Load_Qnom_displayUnit = modelicaUnit::var;
   //from now, Type1 Parameters...

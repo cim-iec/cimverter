@@ -25,6 +25,7 @@ Household::Household(enum HouseholdType Type):_Type(Type) {
 Household::Household(const Loads::PQLoad pq_load):_Type(HouseholdType::Type1) {
 
   this->set_name(pq_load.name());
+  this->set_Household_Vnom(pq_load.Vnom());
   this->set_Load_Pnom(pq_load.Pnom());
   this->set_Load_Qnom(pq_load.Qnom());
   this->set_sequenceNumber(pq_load.sequenceNumber());
@@ -38,6 +39,7 @@ Household::Household(const Loads::PQLoad pq_load):_Type(HouseholdType::Type1) {
 Household::Household(const Loads::PQLoad pq_load,const Generations::SolarGenerator solar_generator):_Type(HouseholdType::Type2) {
 
   this->set_name(pq_load.name());
+  this->set_Household_Vnom(pq_load.Vnom());
   this->set_Load_Pnom(pq_load.Pnom());
   this->set_Load_Qnom(pq_load.Qnom());
   this->set_sequenceNumber(pq_load.sequenceNumber());
@@ -64,9 +66,11 @@ Household::Household(enum HouseholdType Type, std::string load_profileFileName, 
 Household::Household(const Household &rhs) : ModBaseClass(rhs) {
 
   this->_Type = rhs._Type;
+  this->_Household_Vnom = rhs._Household_Vnom;
   this->_Load_Pnom = rhs._Load_Pnom;
   this->_Load_Qnom = rhs._Load_Qnom;
 
+  this->_Household_Vnom_displayUnit = rhs._Household_Vnom_displayUnit;
   this->_Load_Pnom_displayUnit = rhs._Load_Pnom_displayUnit;
   this->_Load_Qnom_displayUnit = rhs._Load_Qnom_displayUnit;
 
@@ -93,9 +97,11 @@ Household& Household::operator=(const Household &rhs) {
   if(this == &rhs) return *this;
 
   this->_Type = rhs._Type;
+  this->_Household_Vnom = rhs._Household_Vnom;
   this->_Load_Pnom = rhs._Load_Pnom;
   this->_Load_Qnom = rhs._Load_Qnom;
 
+  this->_Household_Vnom_displayUnit = rhs._Household_Vnom_displayUnit;
   this->_Load_Pnom_displayUnit = rhs._Load_Pnom_displayUnit;
   this->_Load_Qnom_displayUnit = rhs._Load_Qnom_displayUnit;
 
@@ -126,26 +132,28 @@ bool Household::set_template_values(ctemplate::TemplateDictionary *dictionary) {
 
    if(this->_Type == HouseholdType::Type1) {
 
-    dictionary->SetValue("NAME", this->name());
-    dictionary->SetFormattedValue("LOAD_PNOM", "%.3f", this->Load_Pnom());
-    dictionary->SetFormattedValue("LOAD_QNOM", "%.3f", this->Load_Qnom());
-    dictionary->SetValue("LOAD_PROFILE_NAME", this->Load_ProfileName());
-    dictionary->SetValue("LOAD_PROFILE_FILENAME", this->Load_ProfileFileName());
+     dictionary->SetValue("NAME", this->name());
+     dictionary->SetFormattedValue("Household_Vnom", "%.3f", this->Household_Vnom());
+     dictionary->SetFormattedValue("LOAD_PNOM", "%.3f", this->Load_Pnom());
+     dictionary->SetFormattedValue("LOAD_QNOM", "%.3f", this->Load_Qnom());
+     dictionary->SetValue("LOAD_PROFILE_NAME", this->Load_ProfileName());
+     dictionary->SetValue("LOAD_PROFILE_FILENAME", this->Load_ProfileFileName());
 
   } else if(this->_Type == HouseholdType::Type2) {
 
-    dictionary->SetValue("NAME", this->name());
-    dictionary->SetFormattedValue("LOAD_PNOM", "%.3f", this->Load_Pnom());
-    dictionary->SetFormattedValue("LOAD_QNOM", "%.3f", this->Load_Qnom());
-    dictionary->SetValue("LOAD_PROFILE_NAME", this->Load_ProfileName());
-    dictionary->SetValue("LOAD_PROFILE_FILENAME", this->Load_ProfileFileName());
+     dictionary->SetValue("NAME", this->name());
+     dictionary->SetFormattedValue("Household_Vnom", "%.3f", this->Household_Vnom());
+     dictionary->SetFormattedValue("LOAD_PNOM", "%.3f", this->Load_Pnom());
+     dictionary->SetFormattedValue("LOAD_QNOM", "%.3f", this->Load_Qnom());
+     dictionary->SetValue("LOAD_PROFILE_NAME", this->Load_ProfileName());
+     dictionary->SetValue("LOAD_PROFILE_FILENAME", this->Load_ProfileFileName());
 
-    dictionary->SetFormattedValue("PV_PNOM", "%.3f", this->PV_Pnom());
-    dictionary->SetValue("PV_PROFILE_NAME", this->PV_ProfileName());
-    dictionary->SetValue("PV_PROFILE_FILENAME", this->PV_ProfileFileName());
-    dictionary->SetIntValue("PV_CONTROLLER", this->PV_Controller());
-    dictionary->SetValue("PV_SYSTEMON", this->PV_SystemOn());
-    dictionary->SetIntValue("PV_CURTAILMENT_LIMIT", this->PV_CurtailmentLimit());
+     dictionary->SetFormattedValue("PV_PNOM", "%.3f", this->PV_Pnom());
+     dictionary->SetValue("PV_PROFILE_NAME", this->PV_ProfileName());
+     dictionary->SetValue("PV_PROFILE_FILENAME", this->PV_ProfileFileName());
+     dictionary->SetIntValue("PV_CONTROLLER", this->PV_Controller());
+     dictionary->SetValue("PV_SYSTEMON", this->PV_SystemOn());
+     dictionary->SetIntValue("PV_CURTAILMENT_LIMIT", this->PV_CurtailmentLimit());
 
   }
 
