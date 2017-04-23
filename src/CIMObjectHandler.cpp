@@ -593,7 +593,7 @@ PQLoad CIMObjectHandler::EnergyConsumerHandler(const TPNodePtr tp_node, const Te
                                                const EnergyConsumerPtr energy_consumer,
                                                ctemplate::TemplateDictionary *dict) {
 
-  if (this->configManager.pqload_parameters.use_profiles==false) {
+  if (this->configManager.pqload_parameters.use_profiles == false) {
 
     PQLoad pqload(PQLoadType::Standard);
 
