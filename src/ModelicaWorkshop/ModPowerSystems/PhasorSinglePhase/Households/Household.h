@@ -13,7 +13,7 @@
 
 using namespace ModelicaWorkshop;
 
-/*
+/**
  * Household Type
  * Type1 : Household with specific load profile
  * Type2 : Household with load and solar generation
@@ -56,6 +56,12 @@ class Household : public ModBaseClass {
   };
   enum HouseholdType HouseholdType() const {
     return _Type;
+  };
+  void set_Load_Type(int Load_Type) {
+    this->_Load_Type = Load_Type;
+  };
+  int Load_Type() const {
+    return _Load_Type;
   };
   void set_Load_Pnom(double Load_Pnom) {
     this->_Load_Pnom = Load_Pnom;
@@ -150,18 +156,24 @@ class Household : public ModBaseClass {
  private:
   enum HouseholdType _Type;
 
-  double _Household_Vnom = 400; //nominal voltage of household;
+  /// \brief Parameter Integer Load_Type
+  /// 1 : Constant P and Q values
+  /// 2 : P and Q of load profile
+  /// 3 : Nominal values for P and Q and weighting profile
+  int _Load_Type = 1;
 
   //Basis Parameters
-  double _Load_Pnom = 2000;//nominal active power of PQ load
-  double _Load_Qnom = 0.0;//nominal reactive power of PQ load
+  double _Household_Vnom = 400; ///nominal voltage of household;
+  double _Load_Pnom = 2000;     ///nominal active power of PQ load
+  double _Load_Qnom = 0.0;      ///nominal reactive power of PQ load
+
 
   modelicaUnit _Household_Vnom_displayUnit = modelicaUnit::W;
   modelicaUnit _Load_Pnom_displayUnit = modelicaUnit::W;
   modelicaUnit _Load_Qnom_displayUnit = modelicaUnit::var;
   //from now, Type1 Parameters...
-  std::string _Load_ProfileFileName = "NoName";//File where load profile is stored
-  std::string _Load_ProfileName = "NoName";//Table name on load profile file
+  std::string _Load_ProfileFileName = "NoName"; ///File where load profile is stored
+  std::string _Load_ProfileName = "NoName";     ///Table name on load profile file
 
   //from now, Type2 Parameters...
   double _PV_Pnom = 5000; //nominal power of pv system;

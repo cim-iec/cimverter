@@ -127,6 +127,7 @@ typedef struct HouseholdSettings {
   bool enable;                      /// enable Household settings
   std::string type;                 /// Household type: type1, type2
   bool use_households;              /// use Household instead of PQLoad, SolarGenerator and Battery
+  int load_type;                    /// Parameter Integer Load_Type: 1, 2, 3
   AnnotationSettings annotation;
 
 } HouseholdSettings;

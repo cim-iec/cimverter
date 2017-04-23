@@ -293,7 +293,7 @@ bool CIMObjectHandler::HouseholdComponetsHandler(const TPNodePtr tp_node, ctempl
         PQLoad pqload = this->EnergyConsumerHandler(tp_node, (*terminal_it), energy_consumer, dict);
         Household household(pqload);
         if (this->configManager.household_parameters.enable) {
-
+          household.set_Load_Type(this->configManager.household_parameters.load_type);
           household.annotation.placement.transfomation.extent.first.x =
               configManager.household_parameters.annotation.transformation_extent[0];
           household.annotation.placement.transfomation.extent.first.y =
@@ -325,7 +325,7 @@ bool CIMObjectHandler::HouseholdComponetsHandler(const TPNodePtr tp_node, ctempl
         Household household(this->pqloadQueue.front(), this->solarGeneratorQueue.front());  //type2
 
         if (this->configManager.household_parameters.enable) {
-
+          household.set_Load_Type(this->configManager.household_parameters.load_type);
           household.annotation.placement.transfomation.extent.first.x =
               configManager.household_parameters.annotation.transformation_extent[0];
           household.annotation.placement.transfomation.extent.first.y =

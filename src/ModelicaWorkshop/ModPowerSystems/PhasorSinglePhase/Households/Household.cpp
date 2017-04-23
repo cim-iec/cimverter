@@ -66,6 +66,7 @@ Household::Household(enum HouseholdType Type, std::string load_profileFileName, 
 Household::Household(const Household &rhs) : ModBaseClass(rhs) {
 
   this->_Type = rhs._Type;
+  this->_Load_Type = rhs._Load_Type;
   this->_Household_Vnom = rhs._Household_Vnom;
   this->_Load_Pnom = rhs._Load_Pnom;
   this->_Load_Qnom = rhs._Load_Qnom;
@@ -97,6 +98,7 @@ Household& Household::operator=(const Household &rhs) {
   if(this == &rhs) return *this;
 
   this->_Type = rhs._Type;
+  this->_Load_Type = rhs._Load_Type;
   this->_Household_Vnom = rhs._Household_Vnom;
   this->_Load_Pnom = rhs._Load_Pnom;
   this->_Load_Qnom = rhs._Load_Qnom;
@@ -133,18 +135,20 @@ bool Household::set_template_values(ctemplate::TemplateDictionary *dictionary) {
    if(this->_Type == HouseholdType::Type1) {
 
      dictionary->SetValue("NAME", this->name());
-     dictionary->SetFormattedValue("Household_Vnom", "%.3f", this->Household_Vnom());
+     dictionary->SetFormattedValue("HOUSEHOLD_VNOM", "%.3f", this->Household_Vnom());
      dictionary->SetFormattedValue("LOAD_PNOM", "%.3f", this->Load_Pnom());
      dictionary->SetFormattedValue("LOAD_QNOM", "%.3f", this->Load_Qnom());
+     dictionary->SetIntValue("LOAD_TYPE", this->Load_Type());
      dictionary->SetValue("LOAD_PROFILE_NAME", this->Load_ProfileName());
      dictionary->SetValue("LOAD_PROFILE_FILENAME", this->Load_ProfileFileName());
 
   } else if(this->_Type == HouseholdType::Type2) {
 
      dictionary->SetValue("NAME", this->name());
-     dictionary->SetFormattedValue("Household_Vnom", "%.3f", this->Household_Vnom());
+     dictionary->SetFormattedValue("HOUSEHOLD_VNOM", "%.3f", this->Household_Vnom());
      dictionary->SetFormattedValue("LOAD_PNOM", "%.3f", this->Load_Pnom());
      dictionary->SetFormattedValue("LOAD_QNOM", "%.3f", this->Load_Qnom());
+     dictionary->SetIntValue("LOAD_TYPE", this->Load_Type());
      dictionary->SetValue("LOAD_PROFILE_NAME", this->Load_ProfileName());
      dictionary->SetValue("LOAD_PROFILE_FILENAME", this->Load_ProfileFileName());
 

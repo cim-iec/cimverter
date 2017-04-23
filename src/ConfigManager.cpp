@@ -548,6 +548,7 @@ void ConfigManager::getHouseholdSettings() {
   try {
     this->household_parameters.type = this->cfg.lookup("single_phase.household.type").c_str();
     std::cout << "type: " << household_parameters.type << std::endl;
+    std::cout << "get household_parameters.type successfully!" << std::endl;
   }
   catch (const SettingNotFoundException &nfex) {
     std::cerr << "No type settings in configuration file." << std::endl;
@@ -557,7 +558,24 @@ void ConfigManager::getHouseholdSettings() {
     this->household_parameters.use_households = this->cfg.lookup("single_phase.household.use_households");
     if (this->household_parameters.use_households)
       std::cout << "Using Households" << std::endl;
+    std::cout << "get household_parameters.use_households successfully!" << std::endl;
   }
+  catch (const SettingNotFoundException &nfex) {
+    std::cerr << "UseHouseholds setting mistake in configuration file." << std::endl;
+  }
+  try {
+    // Get the UseHouseholds.
+    this->household_parameters.load_type = this->cfg.lookup("single_phase.household.load_type");
+    if(this->household_parameters.load_type < 1 || this->household_parameters.load_type > 3){
+      throw -1;
+    }
+      if (this->household_parameters.load_type){
+      std::cout << "load_type:" << household_parameters.load_type << std::endl;
+      std::cout << "get household_parameters.load_type successfully!" << std::endl;
+      }
+
+  }
+    catch(int e)  {std::cerr << ">>>>>>>>>>>wrong load_type number:" << household_parameters.load_type << std::endl; exit(0);}
   catch (const SettingNotFoundException &nfex) {
     std::cerr << "UseHouseholds setting mistake in configuration file." << std::endl;
   }
