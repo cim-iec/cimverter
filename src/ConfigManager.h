@@ -125,7 +125,7 @@ typedef struct BatterySettings {
 /// Household settings in Config.cfg
 typedef struct HouseholdSettings {
   bool enable;                      /// enable Household settings
-  std::string type;                 /// Household type: type0, type1, type2
+  std::string type;                 /// Household type: type1, type2
   bool use_households;              /// use Household instead of PQLoad, SolarGenerator and Battery
   AnnotationSettings annotation;
 

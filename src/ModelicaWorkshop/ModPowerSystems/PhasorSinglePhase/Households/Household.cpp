@@ -9,20 +9,37 @@ namespace ModPowerSystems {
 namespace PhasorSinglePhase {
 namespace Households {
 
-Household::Household():_Type(HouseholdType::Type0) {
+//Default Type1
+Household::Household():_Type(HouseholdType::Type1) {
   // TODO Auto-generated constructor stub
 
 }
 
 Household::Household(enum HouseholdType Type):_Type(Type) {
-  // TODO Auto-generated constructor stub
 
+  this->annotation.placement.visible = true;
+  this->annotation.placement.transfomation.rotation = 0;
+
+}
+
+Household::Household(const Loads::PQLoad pq_load):_Type(HouseholdType::Type1) {
+
+  this->set_name(pq_load.name());
+  this->set_Load_Pnom(pq_load.Pnom());
+  this->set_Load_Qnom(pq_load.Qnom());
+  this->set_sequenceNumber(pq_load.sequenceNumber());
+  this->set_connected(pq_load.is_connected());
+  this->annotation.placement.visible = true;
+  this->annotation.placement.transfomation.origin.x = pq_load.annotation.placement.transfomation.origin.x;
+  this->annotation.placement.transfomation.origin.y = pq_load.annotation.placement.transfomation.origin.y;
+  this->annotation.placement.transfomation.rotation = 0;
 }
 
 Household::Household(const Loads::PQLoad pq_load,const Generations::SolarGenerator solar_generator):_Type(HouseholdType::Type2) {
 
   this->set_name(pq_load.name());
   this->set_Load_Pnom(pq_load.Pnom());
+  this->set_Load_Qnom(pq_load.Qnom());
   this->set_sequenceNumber(pq_load.sequenceNumber());
   this->set_connected(pq_load.is_connected());
   this->annotation.placement.visible = true;
@@ -34,13 +51,11 @@ Household::Household(const Loads::PQLoad pq_load,const Generations::SolarGenerat
 Household::Household(enum HouseholdType Type, std::string load_profileFileName, std::string load_profileName): _Type(Type),
     _Load_ProfileFileName(load_profileFileName), _Load_ProfileName(load_profileName) {
 
-
 }
 
 Household::Household(enum HouseholdType Type, std::string load_profileFileName, std::string load_profileName,
               std::string pv_profileFileName, std::string pv_profileName):_Type(Type), _Load_ProfileFileName(load_profileFileName), _Load_ProfileName(load_profileName),
                   _PV_ProfileFileName(pv_profileFileName), _PV_ProfileName(pv_profileName){
-
 
 
 }
@@ -50,7 +65,7 @@ Household::Household(const Household &rhs) : ModBaseClass(rhs) {
 
   this->_Type = rhs._Type;
   this->_Load_Pnom = rhs._Load_Pnom;
-  this->_Load_Qnom = rhs._Load_Pnom;
+  this->_Load_Qnom = rhs._Load_Qnom;
 
   this->_Load_Pnom_displayUnit = rhs._Load_Pnom_displayUnit;
   this->_Load_Qnom_displayUnit = rhs._Load_Qnom_displayUnit;
@@ -79,7 +94,7 @@ Household& Household::operator=(const Household &rhs) {
 
   this->_Type = rhs._Type;
   this->_Load_Pnom = rhs._Load_Pnom;
-  this->_Load_Qnom = rhs._Load_Pnom;
+  this->_Load_Qnom = rhs._Load_Qnom;
 
   this->_Load_Pnom_displayUnit = rhs._Load_Pnom_displayUnit;
   this->_Load_Qnom_displayUnit = rhs._Load_Qnom_displayUnit;
@@ -109,13 +124,7 @@ Household::~Household() {
 
 bool Household::set_template_values(ctemplate::TemplateDictionary *dictionary) {
 
-  if(this->_Type == HouseholdType::Type0) {
-
-    dictionary->SetValue("NAME", this->name());
-    dictionary->SetFormattedValue("LOAD_PNOM", "%.3f", this->Load_Pnom());
-    dictionary->SetFormattedValue("LOAD_QNOM", "%.3f", this->Load_Qnom());
-
-  } else if(this->_Type == HouseholdType::Type1) {
+   if(this->_Type == HouseholdType::Type1) {
 
     dictionary->SetValue("NAME", this->name());
     dictionary->SetFormattedValue("LOAD_PNOM", "%.3f", this->Load_Pnom());

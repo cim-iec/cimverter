@@ -15,7 +15,6 @@ using namespace ModelicaWorkshop;
 
 /*
  * Household Type
- * Type0 : Household with constant load
  * Type1 : Household with specific load profile
  * Type2 : Household with load and solar generation
  * Type3a : Household with battery storage - Maximizing self-consumption
@@ -28,7 +27,7 @@ using namespace ModelicaWorkshop;
  * Type3ce : Household with load, solar generation and battery storage, Topology for Model Predictive Control of Ppcc (state + disturbance measurement)
  */
 enum class HouseholdType {
-  Type0, Type1, Type2,
+  Type1, Type2,
   Type3a, Type3ba, Type3bb,
   Type3ca, Type3cb, Type3cc, Type3cd, Type3ce
 };
@@ -40,8 +39,10 @@ namespace Households {
 class Household : public ModBaseClass {
  public:
   Household();
+  //HouseHoldType Constructor with profile
   Household(enum HouseholdType Type);
-  //HouseHoldType1 Constructor
+  //HouseHoldType1 Constructor with profile
+  Household(const Loads::PQLoad pq_load);
   Household(enum HouseholdType Type, std::string load_profileFileName, std::string load_profileName);
   //HouseHoldType2 Constructor
   Household(const Loads::PQLoad pq_load, const Generations::SolarGenerator solar_generator);
@@ -141,7 +142,7 @@ class Household : public ModBaseClass {
   bool set_template_values(ctemplate::TemplateDictionary *dictionary) override;
 
  private:
-  enum HouseholdType _Type = HouseholdType::Type0;
+  enum HouseholdType _Type;
 
   //Type0 Parameters
   double _Load_Pnom = 2000;//nominal active power of PQ load

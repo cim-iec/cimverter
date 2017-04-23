@@ -61,7 +61,7 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::vector<std::string> args) {
 
       BusBar busbar = this->TopologicalNodeHandler(tp_node, dict);
 
-      if (this->configManager.household_parameters.use_households==true) {
+      if (this->configManager.household_parameters.use_households==true ) {
         this->HouseholdComponetsHandler(tp_node, dict);
       }
 
@@ -94,14 +94,14 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::vector<std::string> args) {
 
         } else if (auto *energy_consumer = dynamic_cast<EnergyConsumerPtr>((*terminal_it)->ConductingEquipment)) {
 
-          if (this->configManager.household_parameters.use_households==false) {
+          if (this->configManager.household_parameters.use_households==false ) {
             PQLoad pqload = this->EnergyConsumerHandler(tp_node, (*terminal_it), energy_consumer, dict);
             Connection conn(&busbar, &pqload);
             connectionQueue.push(conn);
           }
 
         } else if (auto *syn_machine = dynamic_cast<SynMachinePtr>((*terminal_it)->ConductingEquipment)) {
-          if (this->configManager.household_parameters.use_households==false) {
+          if (this->configManager.household_parameters.use_households==false ) {
             SolarGenerator solar_generator = this->SynchronousMachineHandlerType2(tp_node, (*terminal_it),
                                                                                   syn_machine, dict);
             Connection conn(&busbar, &solar_generator);
@@ -114,21 +114,11 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::vector<std::string> args) {
         }
       }
 
-      if (this->configManager.household_parameters.use_households==true) {
+      if (this->configManager.household_parameters.use_households==true ) {
 
         while (!this->householdQueue.empty()) {
 
           switch (this->householdQueue.front().HouseholdType()) {
-            case (HouseholdType::Type0):
-              if (this->householdQueue.front().sequenceNumber()==0
-                  || this->householdQueue.front().sequenceNumber()==1) {
-                ctemplate::TemplateDictionary *household_dict = dict->AddIncludeDictionary(
-                    "HOUSEHOLD_TYPE0_DICT");
-                household_dict->SetFilename(
-                    this->configManager.ts.directory_path + "resource/HouseholdType0.tpl");
-                this->householdQueue.front().set_template_values(household_dict);
-              }
-              break;
             case (HouseholdType::Type1):
               if (this->householdQueue.front().sequenceNumber()==0
                   || this->householdQueue.front().sequenceNumber()==1) {
@@ -294,37 +284,63 @@ BusBar CIMObjectHandler::TopologicalNodeHandler(const TPNodePtr tp_node, ctempla
 bool CIMObjectHandler::HouseholdComponetsHandler(const TPNodePtr tp_node, ctemplate::TemplateDictionary *dict) {
 
   std::list<TerminalPtr>::iterator terminal_it;
-  for (terminal_it = tp_node->Terminal.begin(); terminal_it != tp_node->Terminal.end(); ++terminal_it) {
+  if(this->configManager.household_parameters.type == "type1" ){
 
-    if (auto *energy_consumer = dynamic_cast<EnergyConsumerPtr>((*terminal_it)->ConductingEquipment)) {
-      PQLoad pqload = this->EnergyConsumerHandler(tp_node, (*terminal_it), energy_consumer, dict);
-      this->pqloadQueue.push(pqload);
-    } else if (auto *syn_machine = dynamic_cast<SynMachinePtr>((*terminal_it)->ConductingEquipment)) {
-      SolarGenerator solar_generator = this->SynchronousMachineHandlerType2(tp_node, (*terminal_it), syn_machine,
-                                                                            dict);
-      this->solarGeneratorQueue.push(solar_generator);
+    for (terminal_it = tp_node->Terminal.begin(); terminal_it != tp_node->Terminal.end(); ++terminal_it) {
+
+      if (auto *energy_consumer = dynamic_cast<EnergyConsumerPtr>((*terminal_it)->ConductingEquipment)) {
+
+        PQLoad pqload = this->EnergyConsumerHandler(tp_node, (*terminal_it), energy_consumer, dict);
+        Household household(pqload);
+        if (this->configManager.household_parameters.enable) {
+
+          household.annotation.placement.transfomation.extent.first.x =
+              configManager.household_parameters.annotation.transformation_extent[0];
+          household.annotation.placement.transfomation.extent.first.y =
+              configManager.household_parameters.annotation.transformation_extent[1];
+          household.annotation.placement.transfomation.extent.second.x =
+              configManager.household_parameters.annotation.transformation_extent[2];
+          household.annotation.placement.transfomation.extent.second.y =
+              configManager.household_parameters.annotation.transformation_extent[3];
+          household.annotation.placement.visible = configManager.household_parameters.annotation.visible;
+        }
+
+        this->householdQueue.push(household);
+      }
     }
+  } else if (this->configManager.household_parameters.type == "type2"){
+    for (terminal_it = tp_node->Terminal.begin(); terminal_it != tp_node->Terminal.end(); ++terminal_it) {
 
-    if (this->pqloadQueue.size()==1 && this->solarGeneratorQueue.size()==1) {
-
-      Household household(this->pqloadQueue.front(), this->solarGeneratorQueue.front());  //type2
-
-      if (this->configManager.household_parameters.enable) {
-
-        household.annotation.placement.transfomation.extent.first.x =
-            configManager.household_parameters.annotation.transformation_extent[0];
-        household.annotation.placement.transfomation.extent.first.y =
-            configManager.household_parameters.annotation.transformation_extent[1];
-        household.annotation.placement.transfomation.extent.second.x =
-            configManager.household_parameters.annotation.transformation_extent[2];
-        household.annotation.placement.transfomation.extent.second.y =
-            configManager.household_parameters.annotation.transformation_extent[3];
-        household.annotation.placement.visible = configManager.household_parameters.annotation.visible;
+      if (auto *energy_consumer = dynamic_cast<EnergyConsumerPtr>((*terminal_it)->ConductingEquipment)) {
+        PQLoad pqload = this->EnergyConsumerHandler(tp_node, (*terminal_it), energy_consumer, dict);
+        this->pqloadQueue.push(pqload);
+      } else if (auto *syn_machine = dynamic_cast<SynMachinePtr>((*terminal_it)->ConductingEquipment)) {
+        SolarGenerator solar_generator = this->SynchronousMachineHandlerType2(tp_node, (*terminal_it), syn_machine,
+                                                                              dict);
+        this->solarGeneratorQueue.push(solar_generator);
       }
 
-      this->householdQueue.push(household);
-      this->pqloadQueue.pop();
-      this->solarGeneratorQueue.pop();
+      if (this->pqloadQueue.size()==1 && this->solarGeneratorQueue.size()==1) {
+
+        Household household(this->pqloadQueue.front(), this->solarGeneratorQueue.front());  //type2
+
+        if (this->configManager.household_parameters.enable) {
+
+          household.annotation.placement.transfomation.extent.first.x =
+              configManager.household_parameters.annotation.transformation_extent[0];
+          household.annotation.placement.transfomation.extent.first.y =
+              configManager.household_parameters.annotation.transformation_extent[1];
+          household.annotation.placement.transfomation.extent.second.x =
+              configManager.household_parameters.annotation.transformation_extent[2];
+          household.annotation.placement.transfomation.extent.second.y =
+              configManager.household_parameters.annotation.transformation_extent[3];
+          household.annotation.placement.visible = configManager.household_parameters.annotation.visible;
+        }
+
+        this->householdQueue.push(household);
+        this->pqloadQueue.pop();
+        this->solarGeneratorQueue.pop();
+      }
     }
   }
   return !this->householdQueue.empty();
@@ -629,9 +645,19 @@ PQLoad CIMObjectHandler::EnergyConsumerHandler(const TPNodePtr tp_node, const Te
 
     return pqload;
 
-  } else {
+  } else if(this->configManager.pqload_parameters.use_profiles == true ||
+      (this->configManager.household_parameters.use_households == true && this->configManager.household_parameters.type == "type1") ){
 
     PQLoad pqload(PQLoadType::Profile);
+
+    if (tp_node->BaseVoltage->name.find("LV")!=std::string::npos || tp_node->BaseVoltage->name.find("V")!=std::string::npos ) {
+      pqload.set_Vnom(tp_node->BaseVoltage->nominalVoltage.value*1000);
+    } else if (tp_node->BaseVoltage->name.find("HV")!=std::string::npos || tp_node->BaseVoltage->name.find("kV")!=std::string::npos || tp_node->BaseVoltage->name.find("KV")!=std::string::npos) {
+      pqload.set_Vnom(tp_node->BaseVoltage->nominalVoltage.value);
+    } else {
+      pqload.set_Vnom(tp_node->BaseVoltage->nominalVoltage.value*1000);
+    }
+
     pqload.set_name(name_in_modelica(energy_consumer->name));
     pqload.set_Vnom(tp_node->BaseVoltage->nominalVoltage.value);
     pqload.set_sequenceNumber(terminal->sequenceNumber);
@@ -662,7 +688,7 @@ PQLoad CIMObjectHandler::EnergyConsumerHandler(const TPNodePtr tp_node, const Te
       pqload.annotation.placement.transfomation.origin.y = _t_points.yPosition;
       pqload.annotation.placement.transfomation.rotation = (*diagram_it)->rotation.value;
 
-      if (this->configManager.household_parameters.use_households==false) {
+      if (this->configManager.household_parameters.use_households == false ) {
         if (pqload.sequenceNumber()==0 || pqload.sequenceNumber()==1) {
           ctemplate::TemplateDictionary *pqLoad_dict = dict->AddIncludeDictionary("PQLOADPROFILE_DICT");
           pqLoad_dict->SetFilename(this->configManager.ts.directory_path + "resource/PQLoadProfile.tpl");
