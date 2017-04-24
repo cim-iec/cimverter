@@ -29,6 +29,9 @@ typedef IEC61970::Base::DiagramLayout::DiagramObject* DiagramObjectPtr;
 typedef IEC61970::Base::DiagramLayout::DiagramObjectPoint* DiagramObjectPointPtr;
 typedef IEC61970::Base::DiagramLayout::DiagramObjectPoint DiagramObjectPoint;
 typedef IEC61970::Base::StateVariables::SvPowerFlow* SVPowerFlowPtr;
+typedef IEC61970::Base::OperationalLimits::OperationalLimitSet* OpLimitSetPtr;
+typedef IEC61970::Base::OperationalLimits::CurrentLimit* CurrentLimitPtr;
+typedef IEC61970::Base::OperationalLimits::OperationalLimit* OpLimitPtr;
 
 void static print_separator() {
   std::string prefix_deco(200, '-');
@@ -81,6 +84,7 @@ class CIMObjectHandler {
   std::queue<Household> householdQueue;
   std::queue<Connection> connectionQueue;
   std::unordered_map<TerminalPtr,SVPowerFlowPtr> svPowerFlowMap;
+  std::unordered_map<AcLinePtr,OpLimitSetPtr> OpLimitMap;
 
   std::list<DiagramObjectPtr>::iterator diagram_it;
   DiagramObjectPoint calculate_average_position();// using this->diagram_it

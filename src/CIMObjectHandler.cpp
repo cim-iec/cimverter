@@ -54,12 +54,19 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::vector<std::string> args) {
   ctemplate::TemplateDictionary *dict = new ctemplate::TemplateDictionary("MODELICA");
   this->SystemSettingsHandler(filename, dict);
 
-  //pre-search loop, find svPowerFlow for terminal
+  ///pre-search loop, find svPowerFlow for terminal, find OperationLimitSet for AClineSegment
   if(this->configManager.gs.apply_Neplan_fix == true){
     for (BaseClass *Object : this->_CIMObjects) {
-      //find terminal's svPowerFlow
+      ///find terminal's svPowerFlow
       if (auto *sv_powerflow = dynamic_cast<SVPowerFlowPtr>(Object)) {
         svPowerFlowMap.insert({sv_powerflow->Terminal,sv_powerflow}); //hashmap
+      }
+
+      ///find OperationLimitSet for AClineSegment
+      if (auto *op_limitset = dynamic_cast<OpLimitSetPtr>(Object)) {
+        if(auto *ac_line = dynamic_cast<AcLinePtr>(op_limitset->Equipment)){
+          OpLimitMap.insert({ac_line,op_limitset}); //hashmap
+        }
       }
     }
   }
@@ -485,6 +492,16 @@ CIMObjectHandler::ACLineSegmentHandler(const TPNodePtr tp_node, const TerminalPt
   Pi_line.set_x(ac_line->x.value/ac_line->length.value);
   Pi_line.set_b(ac_line->bch.value/ac_line->length.value);
   Pi_line.set_g(ac_line->gch.value/ac_line->length.value);
+
+  //find I_Max
+  if(OpLimitMap[ac_line]){
+    for(OpLimitPtr op_limit: OpLimitMap[ac_line]->OperationalLimitValue){
+      if(auto current_limit = dynamic_cast<CurrentLimitPtr>(op_limit)){
+        Pi_line.set_Imax(current_limit->value.value);
+      }
+    }
+  }
+
   Pi_line.set_sequenceNumber(terminal->sequenceNumber);
   Pi_line.set_connected(terminal->connected);
   Pi_line.annotation.placement.visible = true;
