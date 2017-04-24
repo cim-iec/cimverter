@@ -68,7 +68,7 @@ class CIMObjectHandler {
   bool HouseholdComponetsHandler(const TPNodePtr tp_node, ctemplate::TemplateDictionary* dict);  //to find household Componets
   bool ConnectionHandler(ctemplate::TemplateDictionary* dict);
 
-
+  bool pre_process(); ///first loop
   void get_config();  /// Get congiurations from config.cfg
   void print_RTTI(BaseClass *Object);  /// Print component information
   static std::string name_in_modelica(std::string orginal_name);/// Modify illega modelica name
@@ -87,7 +87,7 @@ class CIMObjectHandler {
   std::unordered_map<AcLinePtr,OpLimitSetPtr> OpLimitMap;
 
   std::list<DiagramObjectPtr>::iterator diagram_it;
-  DiagramObjectPoint calculate_average_position();// using this->diagram_it
+  DiagramObjectPoint calculate_average_position();//using this->diagram_it
 
 };
 

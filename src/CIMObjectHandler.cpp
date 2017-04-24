@@ -46,15 +46,12 @@ void CIMObjectHandler::print_RTTI(BaseClass *Object) {
 }
 
 /**
- * Generate the modelica code
- * by parsering the _CIMObjects
+ * frist searching loop
+ * to find I_max of ACLineSegment, SvPowerFlow of Terminal for PQLoad
+ * using hashmap
  */
-bool CIMObjectHandler::ModelicaCodeGenerator(std::vector<std::string> args) {
-  const std::string filename = args[0];
-  ctemplate::TemplateDictionary *dict = new ctemplate::TemplateDictionary("MODELICA");
-  this->SystemSettingsHandler(filename, dict);
-
-  ///pre-search loop, find svPowerFlow for terminal, find OperationLimitSet for AClineSegment
+bool CIMObjectHandler::pre_process() {
+  ///pre searching loop
   if(this->configManager.gs.apply_Neplan_fix == true){
     for (BaseClass *Object : this->_CIMObjects) {
       ///find terminal's svPowerFlow
@@ -62,7 +59,7 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::vector<std::string> args) {
         svPowerFlowMap.insert({sv_powerflow->Terminal,sv_powerflow}); //hashmap
       }
 
-      ///find OperationLimitSet for AClineSegment
+      ///find OperationLimitSet for AClineSegment, stored in hashmap
       if (auto *op_limitset = dynamic_cast<OpLimitSetPtr>(Object)) {
         if(auto *ac_line = dynamic_cast<AcLinePtr>(op_limitset->Equipment)){
           OpLimitMap.insert({ac_line,op_limitset}); //hashmap
@@ -70,12 +67,27 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::vector<std::string> args) {
       }
     }
   }
+  return true;
+}
 
-  //main search loop
+/**
+ * Generate the modelica code
+ * by parsering the _CIMObjects
+ */
+bool CIMObjectHandler::ModelicaCodeGenerator(std::vector<std::string> args) {
+
+  const std::string filename = args[0];
+  ctemplate::TemplateDictionary *dict = new ctemplate::TemplateDictionary("MODELICA");///set the main tpl file
+  this->SystemSettingsHandler(filename, dict);
+
+  ///frist searching loop, to find I_max of ACLineSegment, SvPowerFlow of Terminal for PQLoad
+  this->pre_process();
+
+  ///main searching loop
   for (BaseClass *Object : this->_CIMObjects) {
 
 
-    //TopologicalNode, convert to BusBar
+    ///TopologicalNode, convert to BusBar
     if (auto *tp_node = dynamic_cast<TPNodePtr>(Object)) {
 
       BusBar busbar = this->TopologicalNodeHandler(tp_node, dict);
