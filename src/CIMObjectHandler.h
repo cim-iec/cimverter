@@ -28,6 +28,7 @@ typedef IEC61970::Base::Wires::SynchronousMachine* SynMachinePtr;
 typedef IEC61970::Base::DiagramLayout::DiagramObject* DiagramObjectPtr;
 typedef IEC61970::Base::DiagramLayout::DiagramObjectPoint* DiagramObjectPointPtr;
 typedef IEC61970::Base::DiagramLayout::DiagramObjectPoint DiagramObjectPoint;
+typedef IEC61970::Base::StateVariables::SvPowerFlow* SVPowerFlowPtr;
 
 void static print_separator() {
   std::string prefix_deco(200, '-');
@@ -64,6 +65,7 @@ class CIMObjectHandler {
   bool HouseholdComponetsHandler(const TPNodePtr tp_node, ctemplate::TemplateDictionary* dict);  //to find household Componets
   bool ConnectionHandler(ctemplate::TemplateDictionary* dict);
 
+
   void get_config();  /// Get congiurations from config.cfg
   void print_RTTI(BaseClass *Object);  /// Print component information
   static std::string name_in_modelica(std::string orginal_name);/// Modify illega modelica name
@@ -78,6 +80,7 @@ class CIMObjectHandler {
   std::queue<SolarGenerator> solarGeneratorQueue;
   std::queue<Household> householdQueue;
   std::queue<Connection> connectionQueue;
+  std::unordered_map<TerminalPtr,SVPowerFlowPtr> svPowerFlowMap;
 
   std::list<DiagramObjectPtr>::iterator diagram_it;
   DiagramObjectPoint calculate_average_position();// using this->diagram_it

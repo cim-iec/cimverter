@@ -18,6 +18,7 @@ ConfigManager::~ConfigManager() {
 ///
 void ConfigManager::getAllSettings() {
 
+  this->getGlobalSettings();
   this->getFilesSettings();
   this->getSystemSettings();
   this->getSlackSettings();
@@ -33,6 +34,7 @@ void ConfigManager::getAllSettings() {
   this->getHouseholdSettings();
 }
 
+
 /// \brief find config file.
 ///
 ///
@@ -46,6 +48,31 @@ void ConfigManager::getConfigFiles() {
   }
   catch (const ParseException &pex) {
     std::cerr << "Parse error at " << pex.getFile() << ":" << pex.getLine() << " - " << pex.getError() << std::endl;
+  }
+}
+
+///
+/// Get getGlobalSettings
+///
+void ConfigManager::getGlobalSettings(){
+  try {
+    this->gs.source_tool_name = this->cfg.lookup("source_tool_name").c_str();
+    std::cout << "Source tool: " << this->gs.source_tool_name << std::endl;
+  }
+  catch (const SettingNotFoundException &nfex) {
+    std::cerr << "No source_tool_name in configuration file." << std::endl;
+  }
+  try {
+    this->gs.apply_Neplan_fix = this->cfg.lookup("apply_Neplan_fix");
+    if(this->gs.apply_Neplan_fix == true){
+      std::cout << "Apply Neplan Fix: true" << std::endl;
+    } else {
+      std::cout << "Apply Neplan Fix: false" << std::endl;
+
+    }
+  }
+  catch (const SettingNotFoundException &nfex) {
+    std::cerr << "No apply_Neplan_fix settings in configuration file." << std::endl;
   }
 }
 

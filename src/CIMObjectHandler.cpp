@@ -54,7 +54,19 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::vector<std::string> args) {
   ctemplate::TemplateDictionary *dict = new ctemplate::TemplateDictionary("MODELICA");
   this->SystemSettingsHandler(filename, dict);
 
+  //pre-search loop, find svPowerFlow for terminal
+  if(this->configManager.gs.apply_Neplan_fix == true){
+    for (BaseClass *Object : this->_CIMObjects) {
+      //find terminal's svPowerFlow
+      if (auto *sv_powerflow = dynamic_cast<SVPowerFlowPtr>(Object)) {
+        svPowerFlowMap.insert({sv_powerflow->Terminal,sv_powerflow}); //hashmap
+      }
+    }
+  }
+
+  //main search loop
   for (BaseClass *Object : this->_CIMObjects) {
+
 
     //TopologicalNode, convert to BusBar
     if (auto *tp_node = dynamic_cast<TPNodePtr>(Object)) {
@@ -605,8 +617,10 @@ PQLoad CIMObjectHandler::EnergyConsumerHandler(const TPNodePtr tp_node, const Te
       pqload.set_Vnom(tp_node->BaseVoltage->nominalVoltage.value*1000);
     }
     pqload.set_name(name_in_modelica(energy_consumer->name));
-    pqload.set_Pnom(energy_consumer->p.value);
-    pqload.set_Qnom(energy_consumer->q.value);
+    if(this->configManager.gs.apply_Neplan_fix == true && svPowerFlowMap[terminal]){
+      pqload.set_Pnom(svPowerFlowMap[terminal]->p.value);
+      pqload.set_Qnom(svPowerFlowMap[terminal]->q.value);
+    }
     pqload.set_sequenceNumber(terminal->sequenceNumber);
     pqload.set_connected(terminal->connected);
     pqload.annotation.placement.visible = true;

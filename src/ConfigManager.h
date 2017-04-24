@@ -13,6 +13,13 @@
 
 using namespace libconfig;
 
+/// global settings in Config.cfg
+typedef struct GlobalSettings{
+  std::string source_tool_name;
+  bool apply_Neplan_fix;
+
+} GlobalSettings;
+
 /// template settings in Config.cfg
 typedef struct TemplateSettings {
   /// template tpl file path
@@ -143,6 +150,7 @@ class ConfigManager {
 
   virtual ~ConfigManager();
 
+  GlobalSettings  gs;
   TemplateSettings ts;
   FilesSettings fs;
   SystemSettings ss;
@@ -161,6 +169,8 @@ class ConfigManager {
  public:
 
   void getAllSettings();
+
+  void getGlobalSettings();
 
   void getConfigFiles();
 

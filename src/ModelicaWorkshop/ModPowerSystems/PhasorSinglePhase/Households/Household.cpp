@@ -26,8 +26,6 @@ Household::Household(const Loads::PQLoad pq_load):_Type(HouseholdType::Type1) {
 
   this->set_name(pq_load.name());
   this->set_Household_Vnom(pq_load.Vnom());
-  this->set_Load_Pnom(pq_load.Pnom());
-  this->set_Load_Qnom(pq_load.Qnom());
   this->set_sequenceNumber(pq_load.sequenceNumber());
   this->set_connected(pq_load.is_connected());
   this->annotation.placement.visible = true;
