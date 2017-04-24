@@ -132,31 +132,99 @@ bool Household::set_template_values(ctemplate::TemplateDictionary *dictionary) {
 
    if(this->_Type == HouseholdType::Type1) {
 
-     dictionary->SetValue("NAME", this->name());
-     dictionary->SetFormattedValue("HOUSEHOLD_VNOM", "%.3f", this->Household_Vnom());
-     dictionary->SetFormattedValue("LOAD_PNOM", "%.3f", this->Load_Pnom());
-     dictionary->SetFormattedValue("LOAD_QNOM", "%.3f", this->Load_Qnom());
-     dictionary->SetIntValue("LOAD_TYPE", this->Load_Type());
-     dictionary->SetValue("LOAD_PROFILE_NAME", this->Load_ProfileName());
-     dictionary->SetValue("LOAD_PROFILE_FILENAME", this->Load_ProfileFileName());
+     switch(this->Load_Type()) {
+        case 1:{
+          dictionary->AddSectionDictionary("LOADTYPE1_SECTION");
+          dictionary->SetValue("NAME", this->name());
+          dictionary->SetFormattedValue("HOUSEHOLD_VNOM", "%.3f", this->Household_Vnom());
+          dictionary->SetFormattedValue("LOAD_PNOM", "%.3f", this->Load_Pnom());
+          dictionary->SetFormattedValue("LOAD_QNOM", "%.3f", this->Load_Qnom());
+          dictionary->SetIntValue("LOAD_TYPE", this->Load_Type());
+          dictionary->ShowSection("LOADTYPE1_SECTION");
+          break;
+        }
+        case 2:{
+          dictionary->AddSectionDictionary("LOADTYPE2_SECTION");
+          dictionary->SetValue("NAME", this->name());
+          dictionary->SetFormattedValue("HOUSEHOLD_VNOM", "%.3f", this->Household_Vnom());
+          dictionary->SetIntValue("LOAD_TYPE", this->Load_Type());
+          dictionary->SetValue("LOAD_PROFILE_NAME", this->Load_ProfileName());
+          dictionary->SetValue("LOAD_PROFILE_FILENAME", this->Load_ProfileFileName());
+          dictionary->ShowSection("LOADTYPE2_SECTION");
+          break;
+        }
+        case 3:{
+          dictionary->AddSectionDictionary("LOADTYPE3_SECTION");
+          dictionary->ShowSection("LOADTYPE3_SECTION");
+          dictionary->SetValue("NAME", this->name());
+          dictionary->SetFormattedValue("HOUSEHOLD_VNOM", "%.3f", this->Household_Vnom());
+          dictionary->SetFormattedValue("LOAD_PNOM", "%.3f", this->Load_Pnom());
+          dictionary->SetFormattedValue("LOAD_QNOM", "%.3f", this->Load_Qnom());
+          dictionary->SetIntValue("LOAD_TYPE", this->Load_Type());
+          dictionary->SetValue("LOAD_PROFILE_NAME", this->Load_ProfileName());
+          dictionary->SetValue("LOAD_PROFILE_FILENAME", this->Load_ProfileFileName());
+          dictionary->ShowSection("LOADTYPE3_SECTION");
+          break;
+        }
+      }
 
   } else if(this->_Type == HouseholdType::Type2) {
 
-     dictionary->SetValue("NAME", this->name());
-     dictionary->SetFormattedValue("HOUSEHOLD_VNOM", "%.3f", this->Household_Vnom());
-     dictionary->SetFormattedValue("LOAD_PNOM", "%.3f", this->Load_Pnom());
-     dictionary->SetFormattedValue("LOAD_QNOM", "%.3f", this->Load_Qnom());
-     dictionary->SetIntValue("LOAD_TYPE", this->Load_Type());
-     dictionary->SetValue("LOAD_PROFILE_NAME", this->Load_ProfileName());
-     dictionary->SetValue("LOAD_PROFILE_FILENAME", this->Load_ProfileFileName());
+     switch(this->Load_Type()) {
+       case 1:{
+         dictionary->AddSectionDictionary("LOADTYPE1_SECTION");
+         dictionary->SetValue("NAME", this->name());
+         dictionary->SetFormattedValue("HOUSEHOLD_VNOM", "%.3f", this->Household_Vnom());
+         dictionary->SetFormattedValue("LOAD_PNOM", "%.3f", this->Load_Pnom());
+         dictionary->SetFormattedValue("LOAD_QNOM", "%.3f", this->Load_Qnom());
+         dictionary->SetIntValue("LOAD_TYPE", this->Load_Type());
 
-     dictionary->SetFormattedValue("PV_PNOM", "%.3f", this->PV_Pnom());
-     dictionary->SetValue("PV_PROFILE_NAME", this->PV_ProfileName());
-     dictionary->SetValue("PV_PROFILE_FILENAME", this->PV_ProfileFileName());
-     dictionary->SetIntValue("PV_CONTROLLER", this->PV_Controller());
-     dictionary->SetValue("PV_SYSTEMON", this->PV_SystemOn());
-     dictionary->SetIntValue("PV_CURTAILMENT_LIMIT", this->PV_CurtailmentLimit());
+         dictionary->SetFormattedValue("PV_PNOM", "%.3f", this->PV_Pnom());
+         dictionary->SetValue("PV_PROFILE_NAME", this->PV_ProfileName());
+         dictionary->SetValue("PV_PROFILE_FILENAME", this->PV_ProfileFileName());
+         dictionary->SetIntValue("PV_CONTROLLER", this->PV_Controller());
+         dictionary->SetValue("PV_SYSTEMON", this->PV_SystemOn());
+         dictionary->SetIntValue("PV_CURTAILMENT_LIMIT", this->PV_CurtailmentLimit());
+         dictionary->ShowSection("LOADTYPE1_SECTION");
+         break;
+       }
+       case 2:{
+         dictionary->AddSectionDictionary("LOADTYPE2_SECTION");
+         dictionary->SetValue("NAME", this->name());
+         dictionary->SetFormattedValue("HOUSEHOLD_VNOM", "%.3f", this->Household_Vnom());
+         dictionary->SetIntValue("LOAD_TYPE", this->Load_Type());
+         dictionary->SetValue("LOAD_PROFILE_NAME", this->Load_ProfileName());
+         dictionary->SetValue("LOAD_PROFILE_FILENAME", this->Load_ProfileFileName());
 
+         dictionary->SetFormattedValue("PV_PNOM", "%.3f", this->PV_Pnom());
+         dictionary->SetValue("PV_PROFILE_NAME", this->PV_ProfileName());
+         dictionary->SetValue("PV_PROFILE_FILENAME", this->PV_ProfileFileName());
+         dictionary->SetIntValue("PV_CONTROLLER", this->PV_Controller());
+         dictionary->SetValue("PV_SYSTEMON", this->PV_SystemOn());
+         dictionary->SetIntValue("PV_CURTAILMENT_LIMIT", this->PV_CurtailmentLimit());
+         dictionary->ShowSection("LOADTYPE2_SECTION");
+         break;
+       }
+       case 3:{
+         dictionary->AddSectionDictionary("LOADTYPE3_SECTION");
+         dictionary->SetValue("NAME", this->name());
+         dictionary->SetFormattedValue("HOUSEHOLD_VNOM", "%.3f", this->Household_Vnom());
+         dictionary->SetFormattedValue("LOAD_PNOM", "%.3f", this->Load_Pnom());
+         dictionary->SetFormattedValue("LOAD_QNOM", "%.3f", this->Load_Qnom());
+         dictionary->SetIntValue("LOAD_TYPE", this->Load_Type());
+         dictionary->SetValue("LOAD_PROFILE_NAME", this->Load_ProfileName());
+         dictionary->SetValue("LOAD_PROFILE_FILENAME", this->Load_ProfileFileName());
+
+         dictionary->SetFormattedValue("PV_PNOM", "%.3f", this->PV_Pnom());
+         dictionary->SetValue("PV_PROFILE_NAME", this->PV_ProfileName());
+         dictionary->SetValue("PV_PROFILE_FILENAME", this->PV_ProfileFileName());
+         dictionary->SetIntValue("PV_CONTROLLER", this->PV_Controller());
+         dictionary->SetValue("PV_SYSTEMON", this->PV_SystemOn());
+         dictionary->SetIntValue("PV_CURTAILMENT_LIMIT", this->PV_CurtailmentLimit());
+         dictionary->ShowSection("LOADTYPE3_SECTION");
+         break;
+       }
+     }
   }
 
   this->set_template_annotation_values(dictionary);
