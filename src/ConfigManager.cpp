@@ -395,6 +395,15 @@ void ConfigManager::getPQLoadSettings() {
   catch (const SettingNotFoundException &nfex) {
     std::cerr << "use_profiles setting mistake in configuration file." << std::endl;
   }
+  try {
+    /// Get the Profiles Type.
+    this->pqload_parameters.type = this->cfg.lookup("single_phase.pqload.type");
+    if (this->pqload_parameters.type)
+      std::cout << "Using Profiles Type: " << this->pqload_parameters.type << std::endl;
+  }
+  catch (const SettingNotFoundException &nfex) {
+    std::cerr << "Profile Type setting mistake in configuration file." << std::endl;
+  }
 }
 
 ///
@@ -575,7 +584,6 @@ void ConfigManager::getHouseholdSettings() {
   try {
     this->household_parameters.type = this->cfg.lookup("single_phase.household.type").c_str();
     std::cout << "type: " << household_parameters.type << std::endl;
-    std::cout << "get household_parameters.type successfully!" << std::endl;
   }
   catch (const SettingNotFoundException &nfex) {
     std::cerr << "No type settings in configuration file." << std::endl;
@@ -585,7 +593,6 @@ void ConfigManager::getHouseholdSettings() {
     this->household_parameters.use_households = this->cfg.lookup("single_phase.household.use_households");
     if (this->household_parameters.use_households)
       std::cout << "Using Households" << std::endl;
-    std::cout << "get household_parameters.use_households successfully!" << std::endl;
   }
   catch (const SettingNotFoundException &nfex) {
     std::cerr << "UseHouseholds setting mistake in configuration file." << std::endl;
@@ -602,7 +609,9 @@ void ConfigManager::getHouseholdSettings() {
       }
 
   }
-    catch(int e)  {std::cerr << ">>>>>>>>>>>wrong load_type number:" << household_parameters.load_type << std::endl; exit(0);}
+  catch(int error_num)  {
+    std::cerr << ">>>>>>>>>>>wrong load_type number:" << household_parameters.load_type << "load_type should between 1-3"<< std::endl; exit(0);
+  }
   catch (const SettingNotFoundException &nfex) {
     std::cerr << "UseHouseholds setting mistake in configuration file." << std::endl;
   }

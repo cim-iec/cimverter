@@ -24,6 +24,14 @@ Household::Household(enum HouseholdType Type):_Type(Type) {
 
 Household::Household(const Loads::PQLoad pq_load):_Type(HouseholdType::Type1) {
 
+  if (pq_load.PQLoadType() == PQLoadType::Standard) {
+    this->set_Load_Type(1);
+  } else if (pq_load.PQLoadType() == PQLoadType::Profile){
+    this->set_Load_Type(2);
+  } else if(pq_load.PQLoadType() == PQLoadType::NormProfile){
+    this->set_Load_Type(3);
+  }
+
   this->set_name(pq_load.name());
   this->set_Household_Vnom(pq_load.Vnom());
   this->set_sequenceNumber(pq_load.sequenceNumber());
@@ -56,7 +64,6 @@ Household::Household(enum HouseholdType Type, std::string load_profileFileName, 
 Household::Household(enum HouseholdType Type, std::string load_profileFileName, std::string load_profileName,
               std::string pv_profileFileName, std::string pv_profileName):_Type(Type), _Load_ProfileFileName(load_profileFileName), _Load_ProfileName(load_profileName),
                   _PV_ProfileFileName(pv_profileFileName), _PV_ProfileName(pv_profileName){
-
 
 }
 

@@ -39,12 +39,12 @@ namespace Households {
 class Household : public ModBaseClass {
  public:
   Household();
-  //HouseHoldType Constructor with profile
+  ///HouseHoldType Constructor with profile
   Household(enum HouseholdType Type);
-  //HouseHoldType1 Constructor with profile
+  ///HouseHoldType1 Constructor with profile
   Household(const Loads::PQLoad pq_load);
   Household(enum HouseholdType Type, std::string load_profileFileName, std::string load_profileName);
-  //HouseHoldType2 Constructor
+  ///HouseHoldType2 Constructor
   Household(const Loads::PQLoad pq_load, const Generations::SolarGenerator solar_generator);
   Household(enum HouseholdType Type, std::string load_profileFileName, std::string load_profileName, std::string pv_profileFileName, std::string pv_profileName);
   Household(const Household &);

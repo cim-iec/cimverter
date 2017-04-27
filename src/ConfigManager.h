@@ -84,6 +84,7 @@ typedef struct RxLineSettings {
 typedef struct PQLoadSettings {
   bool enable;                      /// enable PQLoad settings
   bool use_profiles;                /// use PQLoadProfile instead of PQLoad
+  int type;                         /// if using profiles, type 1:PQLoadProfile, 2:PQLoadNormProfile;
   std::string profile_name;
   std::string profile_filename;
   AnnotationSettings annotation;

@@ -17,7 +17,7 @@ CIMObjectHandler::CIMObjectHandler(std::vector<BaseClass *> &&CIMObjects)
 }
 
 CIMObjectHandler::~CIMObjectHandler() {
-  // TODO Auto-generated destructor stub
+
 }
 
 /**
@@ -60,7 +60,7 @@ bool CIMObjectHandler::pre_process() {
       }
 
       ///find OperationLimitSet for AClineSegment, stored in hashmap
-      if (auto *op_limitset = dynamic_cast<OpLimitSetPtr>(Object)) {
+      else if (auto *op_limitset = dynamic_cast<OpLimitSetPtr>(Object)) {
         if(auto *ac_line = dynamic_cast<AcLinePtr>(op_limitset->Equipment)){
           OpLimitMap.insert({ac_line,op_limitset}); //hashmap
         }
@@ -85,7 +85,6 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::vector<std::string> args) {
 
   ///main searching loop
   for (BaseClass *Object : this->_CIMObjects) {
-
 
     ///TopologicalNode, convert to BusBar
     if (auto *tp_node = dynamic_cast<TPNodePtr>(Object)) {
@@ -178,14 +177,20 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::vector<std::string> args) {
           this->householdQueue.pop();
         }
         while (!this->pqloadQueue.empty()) {
-          if (this->configManager.pqload_parameters.use_profiles==false) {
+          if (this->configManager.pqload_parameters.use_profiles == false) {
             ctemplate::TemplateDictionary *pqLoad_dict = dict->AddIncludeDictionary("PQLOAD_DICT");
             pqLoad_dict->SetFilename(this->configManager.ts.directory_path + "resource/PQLoad.tpl");
             pqloadQueue.front().set_template_values(pqLoad_dict);
-          } else if (this->configManager.pqload_parameters.use_profiles==true) {
-            ctemplate::TemplateDictionary *pqLoad_dict = dict->AddIncludeDictionary("PQLOADPROFILE_DICT");
-            pqLoad_dict->SetFilename(this->configManager.ts.directory_path + "resource/PQLoadProfile.tpl");
-            pqloadQueue.front().set_template_values(pqLoad_dict);
+          } else if (this->configManager.pqload_parameters.use_profiles == true) {
+            if(this->configManager.pqload_parameters.type == 1 && pqloadQueue.front().PQLoadType() == PQLoadType::Profile ){
+              ctemplate::TemplateDictionary *pqLoad_dict = dict->AddIncludeDictionary("PQLOAD_PROFILE_DICT");
+              pqLoad_dict->SetFilename(this->configManager.ts.directory_path + "resource/PQLoadProfile.tpl");
+              pqloadQueue.front().set_template_values(pqLoad_dict);
+            } else if(this->configManager.pqload_parameters.type == 2 && pqloadQueue.front().PQLoadType() == PQLoadType::NormProfile ){
+              ctemplate::TemplateDictionary *pqLoad_dict = dict->AddIncludeDictionary("PQLOAD_NORM_PROFILE_DICT");
+              pqLoad_dict->SetFilename(this->configManager.ts.directory_path + "resource/PQLoadNormProfile.tpl");
+              pqloadQueue.front().set_template_values(pqLoad_dict);
+            }
           }
           Connection conn(&busbar, &pqloadQueue.front());
           connectionQueue.push(conn);
@@ -324,7 +329,6 @@ bool CIMObjectHandler::HouseholdComponetsHandler(const TPNodePtr tp_node, ctempl
         PQLoad pqload = this->EnergyConsumerHandler(tp_node, (*terminal_it), energy_consumer, dict);
         Household household(pqload);
         if (this->configManager.household_parameters.enable) {
-          household.set_Load_Type(this->configManager.household_parameters.load_type);
           household.annotation.placement.transfomation.extent.first.x =
               configManager.household_parameters.annotation.transformation_extent[0];
           household.annotation.placement.transfomation.extent.first.y =
@@ -634,114 +638,100 @@ PQLoad CIMObjectHandler::EnergyConsumerHandler(const TPNodePtr tp_node, const Te
                                                const EnergyConsumerPtr energy_consumer,
                                                ctemplate::TemplateDictionary *dict) {
 
+  PQLoad pqload;
+
   if (this->configManager.pqload_parameters.use_profiles == false) {
+    pqload.set_PQLoadType(PQLoadType::Standard);
 
-    PQLoad pqload(PQLoadType::Standard);
-
-    if (tp_node->BaseVoltage->name.find("LV")!=std::string::npos || tp_node->BaseVoltage->name.find("V")!=std::string::npos ) {
-      pqload.set_Vnom(tp_node->BaseVoltage->nominalVoltage.value*1000);
-    } else if (tp_node->BaseVoltage->name.find("HV")!=std::string::npos || tp_node->BaseVoltage->name.find("kV")!=std::string::npos || tp_node->BaseVoltage->name.find("KV")!=std::string::npos) {
-      pqload.set_Vnom(tp_node->BaseVoltage->nominalVoltage.value);
-    } else {
-      pqload.set_Vnom(tp_node->BaseVoltage->nominalVoltage.value*1000);
-    }
-    pqload.set_name(name_in_modelica(energy_consumer->name));
-    if(this->configManager.gs.apply_Neplan_fix == true && svPowerFlowMap[terminal]){
+    if (this->configManager.gs.apply_Neplan_fix == true && svPowerFlowMap[terminal]) {
       pqload.set_Pnom(svPowerFlowMap[terminal]->p.value);
       pqload.set_Qnom(svPowerFlowMap[terminal]->q.value);
     }
-    pqload.set_sequenceNumber(terminal->sequenceNumber);
-    pqload.set_connected(terminal->connected);
-    pqload.annotation.placement.visible = true;
+  //  (this->configManager.household_parameters.use_households == true && this->configManager.household_parameters.type == "type1")
+  } else if(this->configManager.pqload_parameters.use_profiles == true){
+    if(this->configManager.pqload_parameters.type == 1){
+      pqload.set_PQLoadType(PQLoadType::Profile);
+    } else if (this->configManager.pqload_parameters.type == 2){
+      pqload.set_PQLoadType(PQLoadType::NormProfile);
 
-    if (this->configManager.pqload_parameters.enable) {
-
-      pqload.annotation.placement.transfomation.extent.first.x =
-          configManager.pqload_parameters.annotation.transformation_extent[0];
-      pqload.annotation.placement.transfomation.extent.first.y =
-          configManager.pqload_parameters.annotation.transformation_extent[1];
-      pqload.annotation.placement.transfomation.extent.second.x =
-          configManager.pqload_parameters.annotation.transformation_extent[2];
-      pqload.annotation.placement.transfomation.extent.second.y =
-          configManager.pqload_parameters.annotation.transformation_extent[3];
-      pqload.annotation.placement.visible = configManager.pqload_parameters.annotation.visible;
+      if(this->configManager.gs.apply_Neplan_fix == true && svPowerFlowMap[terminal]){
+        pqload.set_Pnom(svPowerFlowMap[terminal]->p.value);
+        pqload.set_Qnom(svPowerFlowMap[terminal]->q.value);
+      }
     }
+  }
 
-    for (diagram_it = energy_consumer->DiagramObjects.begin();
-         diagram_it!=energy_consumer->DiagramObjects.end();
-         ++diagram_it) {
+  pqload.set_name(name_in_modelica(energy_consumer->name));
 
-      _t_points = this->calculate_average_position();
-      pqload.annotation.placement.transfomation.origin.x = _t_points.xPosition;
-      pqload.annotation.placement.transfomation.origin.y = _t_points.yPosition;
-      pqload.annotation.placement.transfomation.rotation = (*diagram_it)->rotation.value;
+  if (tp_node->BaseVoltage->name.find("LV")!=std::string::npos || tp_node->BaseVoltage->name.find("V")!=std::string::npos ) {
+    pqload.set_Vnom(tp_node->BaseVoltage->nominalVoltage.value*1000);
+  } else if (tp_node->BaseVoltage->name.find("HV")!=std::string::npos || tp_node->BaseVoltage->name.find("kV")!=std::string::npos || tp_node->BaseVoltage->name.find("KV")!=std::string::npos) {
+        pqload.set_Vnom(tp_node->BaseVoltage->nominalVoltage.value);
+  } else {
+    pqload.set_Vnom(tp_node->BaseVoltage->nominalVoltage.value*1000);
+  }
 
-      if (this->configManager.household_parameters.use_households==false) {
+  pqload.set_name(name_in_modelica(energy_consumer->name));
+  pqload.set_sequenceNumber(terminal->sequenceNumber);
+  pqload.set_connected(terminal->connected);
+  pqload.annotation.placement.visible = true;
 
-        if (pqload.sequenceNumber()==0 || pqload.sequenceNumber()==1) {
+  if (this->configManager.pqload_parameters.enable) {
+
+    pqload.annotation.placement.transfomation.extent.first.x =
+            configManager.pqload_parameters.annotation.transformation_extent[0];
+    pqload.annotation.placement.transfomation.extent.first.y =
+            configManager.pqload_parameters.annotation.transformation_extent[1];
+    pqload.annotation.placement.transfomation.extent.second.x =
+            configManager.pqload_parameters.annotation.transformation_extent[2];
+    pqload.annotation.placement.transfomation.extent.second.y =
+            configManager.pqload_parameters.annotation.transformation_extent[3];
+    pqload.annotation.placement.visible = configManager.pqload_parameters.annotation.visible;
+    pqload.set_profileName(configManager.pqload_parameters.profile_name);
+    pqload.set_profileFileName(configManager.pqload_parameters.profile_filename);
+  }
+
+  for (diagram_it = energy_consumer->DiagramObjects.begin();
+           diagram_it!=energy_consumer->DiagramObjects.end();
+           ++diagram_it) {
+
+    _t_points = this->calculate_average_position();
+    pqload.annotation.placement.transfomation.origin.x = _t_points.xPosition;
+    pqload.annotation.placement.transfomation.origin.y = _t_points.yPosition;
+    pqload.annotation.placement.transfomation.rotation = (*diagram_it)->rotation.value;
+
+    if (this->configManager.household_parameters.use_households == false &&
+        this->configManager.pqload_parameters.use_profiles == false ) {
+
+      if (pqload.sequenceNumber() == 0 || pqload.sequenceNumber() == 1) {
+
+        if (pqload.PQLoadType() == PQLoadType::Standard) {
+
           ctemplate::TemplateDictionary *pqLoad_dict = dict->AddIncludeDictionary("PQLOAD_DICT");
           pqLoad_dict->SetFilename(this->configManager.ts.directory_path + "resource/PQLoad.tpl");
           pqload.set_template_values(pqLoad_dict);
         }
       }
-    }
 
-    return pqload;
-
-  } else if(this->configManager.pqload_parameters.use_profiles == true ||
-      (this->configManager.household_parameters.use_households == true && this->configManager.household_parameters.type == "type1") ){
-
-    PQLoad pqload(PQLoadType::Profile);
-
-    if (tp_node->BaseVoltage->name.find("LV")!=std::string::npos || tp_node->BaseVoltage->name.find("V")!=std::string::npos ) {
-      pqload.set_Vnom(tp_node->BaseVoltage->nominalVoltage.value*1000);
-    } else if (tp_node->BaseVoltage->name.find("HV")!=std::string::npos || tp_node->BaseVoltage->name.find("kV")!=std::string::npos || tp_node->BaseVoltage->name.find("KV")!=std::string::npos) {
-      pqload.set_Vnom(tp_node->BaseVoltage->nominalVoltage.value);
-    } else {
-      pqload.set_Vnom(tp_node->BaseVoltage->nominalVoltage.value*1000);
-    }
-
-    pqload.set_name(name_in_modelica(energy_consumer->name));
-    pqload.set_Vnom(tp_node->BaseVoltage->nominalVoltage.value);
-    pqload.set_sequenceNumber(terminal->sequenceNumber);
-    pqload.set_connected(terminal->connected);
-    pqload.annotation.placement.visible = true;
-
-    if (this->configManager.pqload_parameters.enable) {
-
-      pqload.annotation.placement.transfomation.extent.first.x =
-          configManager.pqload_parameters.annotation.transformation_extent[0];
-      pqload.annotation.placement.transfomation.extent.first.y =
-          configManager.pqload_parameters.annotation.transformation_extent[1];
-      pqload.annotation.placement.transfomation.extent.second.x =
-          configManager.pqload_parameters.annotation.transformation_extent[2];
-      pqload.annotation.placement.transfomation.extent.second.y =
-          configManager.pqload_parameters.annotation.transformation_extent[3];
-      pqload.annotation.placement.visible = configManager.pqload_parameters.annotation.visible;
-      pqload.set_profileName(configManager.pqload_parameters.profile_name);
-      pqload.set_profileFileName(configManager.pqload_parameters.profile_filename);
-    }
-
-    for (diagram_it = energy_consumer->DiagramObjects.begin();
-         diagram_it!=energy_consumer->DiagramObjects.end();
-         ++diagram_it) {
-
-      _t_points = this->calculate_average_position();
-      pqload.annotation.placement.transfomation.origin.x = _t_points.xPosition;
-      pqload.annotation.placement.transfomation.origin.y = _t_points.yPosition;
-      pqload.annotation.placement.transfomation.rotation = (*diagram_it)->rotation.value;
-
-      if (this->configManager.household_parameters.use_households == false ) {
+    } else if (this->configManager.pqload_parameters.use_profiles == true){
         if (pqload.sequenceNumber()==0 || pqload.sequenceNumber()==1) {
-          ctemplate::TemplateDictionary *pqLoad_dict = dict->AddIncludeDictionary("PQLOADPROFILE_DICT");
+
+          if(this->configManager.pqload_parameters.type == 1 && pqload.PQLoadType() == PQLoadType::Profile){
+
+          ctemplate::TemplateDictionary *pqLoad_dict = dict->AddIncludeDictionary("PQLOAD_PROFILE_DICT");
           pqLoad_dict->SetFilename(this->configManager.ts.directory_path + "resource/PQLoadProfile.tpl");
           pqload.set_template_values(pqLoad_dict);
+
+          } else if(this->configManager.pqload_parameters.type == 2 && pqload.PQLoadType() == PQLoadType::NormProfile){
+
+            ctemplate::TemplateDictionary *pqLoad_dict = dict->AddIncludeDictionary("PQLOAD_NORM_PROFILE_DICT");
+            pqLoad_dict->SetFilename(this->configManager.ts.directory_path + "resource/PQLoadNormProfile.tpl");
+            pqload.set_template_values(pqLoad_dict);
+          }
         }
       }
     }
-
-    return pqload;
-  }
+  return pqload;
 }
 
 /**
