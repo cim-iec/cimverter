@@ -9,7 +9,7 @@ namespace ModPowerSystems {
 namespace PhasorSinglePhase {
 namespace Connections {
 BusBar::BusBar()
-    : _Vnom(110000) {
+    : _Vnom(0) {
 
 }
 

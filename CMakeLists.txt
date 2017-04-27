@@ -48,7 +48,7 @@ file(GLOB_RECURSE SRC_LIST ${PROJECT_SOURCE_DIR}/src/*.cpp)
 
 # compile and link
 set(CMAKE_CXX_COMPILER "clang++")
-add_executable(${PROJECT_NAME} ${SRC_LIST})
+add_executable(${PROJECT_NAME} ${SRC_LIST} TestCase/main.cpp)
 target_link_libraries(CIM2Mod CIMParser ${Boost_LIBRARIES} ${CTEMPLATE_LIBRARIES} ${CONFIG++_LIBRARY})
 target_compile_features(CIM2Mod PUBLIC cxx_range_for)
 

@@ -31,7 +31,7 @@ class BusBar : public ModBaseClass {
   bool set_template_values(ctemplate::TemplateDictionary *dictionary) override;
 
  private:
-  double _Vnom = 110000;//nominal Voltage
+  double _Vnom = 0;//nominal Voltage
 };
 
 }/* namespace Connections */

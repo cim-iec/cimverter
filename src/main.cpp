@@ -136,8 +136,6 @@ int main(int argc, const char **argv) {
   CIMObjectHandler ObjectHandler(std::move(cimModel.Objects));// r-value
   ObjectHandler.get_config();// Get configuration files
 
-//  std::chrono::time_point<std::chrono::high_resolution_clock> start, stop;
-//  start = std::chrono::high_resolution_clock::now();
   ObjectHandler.ModelicaCodeGenerator(args);
 
   // Timer stop
