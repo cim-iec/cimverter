@@ -83,7 +83,6 @@ class CIMObjectHandler {
     }
   }
 
-
   static std::string name_in_modelica(std::string orginal_name);/// Modify illega modelica name
   static DiagramObjectPoint convert_coordinate(double x, double y, const ConfigManager & configManager);/// Tranfer the modelica components' coordinate
 

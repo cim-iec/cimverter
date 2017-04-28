@@ -719,47 +719,6 @@ PQLoad CIMObjectHandler::EnergyConsumerHandler(const TPNodePtr tp_node, const Te
 
 /**
  * ConductingEquipment of Terminal
- * ConductingEquipment cast to energy_consumer
- * Convert to households in Modelica
- */
-//Household CIMObjectHandler::HouseholdHandler(const TPNodePtr tp_node, const TerminalPtr terminal, const EnergyConsumerPtr energy_consumer, ctemplate::TemplateDictionary* dict) {
-//
-//  Household household(HouseholdType::Type1);
-//
-//  household.set_name(name_in_modelica(energy_consumer->name));
-//  household.set_Load_Pnom(energy_consumer->p.value);
-//  //household.set_Load_Qnom(energy_consumer->q.value);
-//  household.set_sequenceNumber(terminal->sequenceNumber);
-//  household.annotation.placement.visible = true;
-//
-//  for (diagram_it = energy_consumer->DiagramObjects.begin(); diagram_it != energy_consumer->DiagramObjects.end();
-//        ++diagram_it) {
-//
-//    _t_points = this->calculate_average_position();
-//    household.annotation.placement.transfomation.origin.x = _t_points.xPosition;
-//    household.annotation.placement.transfomation.origin.y = _t_points.yPosition;
-//    household.annotation.placement.transfomation.rotation = (*diagram_it)->rotation.value;
-//
-//    if (household.sequenceNumber() == 0 || household.sequenceNumber() == 1) {
-//
-//      if(household.HouseholdType() == HouseholdType::Type0){
-//        ctemplate::TemplateDictionary* household_dict = dict->AddIncludeDictionary("HOUSEHOLD_TYPE0_DICT");
-//        household_dict->SetFilename(this->configManager.ts.directory_path + "resource/HouseholdType0.tpl");
-//        household.set_template_values(household_dict);
-//
-//      } else if (household.HouseholdType() == HouseholdType::Type1) {
-//
-//        ctemplate::TemplateDictionary* household_dict = dict->AddIncludeDictionary("HOUSEHOLD_TYPE1_DICT");
-//        household_dict->SetFilename(this->configManager.ts.directory_path + "resource/HouseholdType1.tpl");
-//        household.set_template_values(household_dict);
-//      }
-//    }
-//  }
-//
-//  return household;
-//}
-/**
- * ConductingEquipment of Terminal
  * ConductingEquipment cast to SynchronousMachine
  * Convert to WindGenerator in Modelica
  */
