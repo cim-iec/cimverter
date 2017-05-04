@@ -71,18 +71,6 @@ class CIMObjectHandler {
   bool pre_process(); ///first loop
   void get_config();  /// Get congiurations from config.cfg
   void print_RTTI(BaseClass *Object);  /// Print component information
-
-  template<typename T, typename U>
-  void fix_NEPLAN_Voltage(T* node, U& component) {
-    if (node->BaseVoltage->name.find("LV")!=std::string::npos || node->BaseVoltage->name.find("V")!=std::string::npos ) {
-      component.set_Vnom(node->BaseVoltage->nominalVoltage.value*1000);
-    } else if (node->BaseVoltage->name.find("HV")!=std::string::npos || node->BaseVoltage->name.find("kV")!=std::string::npos || node->BaseVoltage->name.find("KV")!=std::string::npos) {
-      component.set_Vnom(node->BaseVoltage->nominalVoltage.value);
-    } else {
-      component.set_Vnom(node->BaseVoltage->nominalVoltage.value*1000);
-    }
-  }
-
   static std::string name_in_modelica(std::string orginal_name);/// Modify illega modelica name
   static DiagramObjectPoint convert_coordinate(double x, double y, const ConfigManager & configManager);/// Tranfer the modelica components' coordinate
 

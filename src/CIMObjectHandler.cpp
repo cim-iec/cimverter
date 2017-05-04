@@ -5,6 +5,28 @@
 
 #include "CIMObjectHandler.h"
 
+/**\brief Macro for transformation.extent setting
+ */
+#define  SET_TRANS_EXTENT(component, type_str) \
+                      component.annotation.placement.transfomation.extent.first.x = \
+                      configManager.type_str##_parameters.annotation.transformation_extent[0]; \
+                      component.annotation.placement.transfomation.extent.first.y = \
+                      configManager.type_str##_parameters.annotation.transformation_extent[1]; \
+                      component.annotation.placement.transfomation.extent.second.x = \
+                      configManager.type_str##_parameters.annotation.transformation_extent[2]; \
+                      component.annotation.placement.transfomation.extent.second.y = \
+                      configManager.type_str##_parameters.annotation.transformation_extent[3]; \
+
+/**\brief Macro for transformation.extent setting
+ */
+#define  FIX_NEPLAN_VOLTAGE(node, component) \
+                    if (node->BaseVoltage->name.find("LV")!=std::string::npos || node->BaseVoltage->name.find("V")!=std::string::npos ) { \
+                      component.set_Vnom(node->BaseVoltage->nominalVoltage.value*1000); \
+                    } else if (node->BaseVoltage->name.find("HV")!=std::string::npos || node->BaseVoltage->name.find("kV")!=std::string::npos || \
+                        node->BaseVoltage->name.find("KV")!=std::string::npos) { \
+                          component.set_Vnom(node->BaseVoltage->nominalVoltage.value); \
+                    } else { component.set_Vnom(node->BaseVoltage->nominalVoltage.value*1000);} \
+
 /**
  * Constructor
  * rvalue reference
@@ -18,13 +40,17 @@ CIMObjectHandler::CIMObjectHandler(std::vector<BaseClass *> &&CIMObjects)
 
 CIMObjectHandler::~CIMObjectHandler() {
 
-  for (auto it = svPowerFlowMap.begin(); it != svPowerFlowMap.end(); ++it)
+  auto sv_it = svPowerFlowMap.begin();
+  auto Opl_it = OpLimitMap.begin();
+
+  while (sv_it != svPowerFlowMap.end())
   {
-    delete it->first;
+    svPowerFlowMap.erase(sv_it++);
   }
-  for (auto it = OpLimitMap.begin(); it != OpLimitMap.end(); ++it)
+
+  while (Opl_it != OpLimitMap.end())
   {
-    delete it->first;
+    OpLimitMap.erase(Opl_it++);
   }
 
 }
@@ -274,20 +300,12 @@ bool CIMObjectHandler::SystemSettingsHandler(const std::string filename, ctempla
  */
 BusBar CIMObjectHandler::TopologicalNodeHandler(const TPNodePtr tp_node, ctemplate::TemplateDictionary *dict) {
   BusBar busbar;
-  fix_NEPLAN_Voltage(tp_node, busbar);
+  FIX_NEPLAN_VOLTAGE(tp_node, busbar);
   busbar.set_name(name_in_modelica(tp_node->name));
   busbar.annotation.placement.visible = true;
 
   if (this->configManager.busbar_parameters.enable) {
-
-    busbar.annotation.placement.transfomation.extent.first.x =
-        configManager.busbar_parameters.annotation.transformation_extent[0];
-    busbar.annotation.placement.transfomation.extent.first.y =
-        configManager.busbar_parameters.annotation.transformation_extent[1];
-    busbar.annotation.placement.transfomation.extent.second.x =
-        configManager.busbar_parameters.annotation.transformation_extent[2];
-    busbar.annotation.placement.transfomation.extent.second.y =
-        configManager.busbar_parameters.annotation.transformation_extent[3];
+    SET_TRANS_EXTENT(busbar,busbar);//Macro
     busbar.annotation.placement.visible = configManager.busbar_parameters.annotation.visible;
   }
 
@@ -330,14 +348,7 @@ bool CIMObjectHandler::HouseholdComponetsHandler(const TPNodePtr tp_node, ctempl
         PQLoad pqload = this->EnergyConsumerHandler(tp_node, (*terminal_it), energy_consumer, dict);
         Household household(pqload);
         if (this->configManager.household_parameters.enable) {
-          household.annotation.placement.transfomation.extent.first.x =
-              configManager.household_parameters.annotation.transformation_extent[0];
-          household.annotation.placement.transfomation.extent.first.y =
-              configManager.household_parameters.annotation.transformation_extent[1];
-          household.annotation.placement.transfomation.extent.second.x =
-              configManager.household_parameters.annotation.transformation_extent[2];
-          household.annotation.placement.transfomation.extent.second.y =
-              configManager.household_parameters.annotation.transformation_extent[3];
+          SET_TRANS_EXTENT(household,household);
           household.annotation.placement.visible = configManager.household_parameters.annotation.visible;
         }
 
@@ -362,14 +373,7 @@ bool CIMObjectHandler::HouseholdComponetsHandler(const TPNodePtr tp_node, ctempl
 
         if (this->configManager.household_parameters.enable) {
           household.set_Load_Type(this->configManager.household_parameters.load_type);
-          household.annotation.placement.transfomation.extent.first.x =
-              configManager.household_parameters.annotation.transformation_extent[0];
-          household.annotation.placement.transfomation.extent.first.y =
-              configManager.household_parameters.annotation.transformation_extent[1];
-          household.annotation.placement.transfomation.extent.second.x =
-              configManager.household_parameters.annotation.transformation_extent[2];
-          household.annotation.placement.transfomation.extent.second.y =
-              configManager.household_parameters.annotation.transformation_extent[3];
+          SET_TRANS_EXTENT(household,household);
           household.annotation.placement.visible = configManager.household_parameters.annotation.visible;
         }
 
@@ -413,7 +417,7 @@ ConnectivityNode CIMObjectHandler::ConnectiviyNodeHandler(const TPNodePtr tp_nod
                                                           const ConnectivityNodePtr connectivity_node,
                                                           ctemplate::TemplateDictionary *dict) {
   ConnectivityNode conn_node;
-  fix_NEPLAN_Voltage(tp_node, conn_node);
+  FIX_NEPLAN_VOLTAGE(tp_node, conn_node);
 
   conn_node.set_name(name_in_modelica(connectivity_node->name));
   conn_node.annotation.placement.visible = true;
@@ -446,7 +450,7 @@ ConnectivityNode CIMObjectHandler::ConnectiviyNodeHandler(const TPNodePtr tp_nod
 Slack CIMObjectHandler::ExternalNIHandler(const TPNodePtr tp_node, const TerminalPtr terminal, const ExNIPtr externalNI,
                                           ctemplate::TemplateDictionary *dict) {
   Slack slack;
-  fix_NEPLAN_Voltage(tp_node,slack);
+  FIX_NEPLAN_VOLTAGE(tp_node,slack);
 
   slack.set_name(name_in_modelica(externalNI->name));
   slack.set_sequenceNumber(terminal->sequenceNumber);
@@ -455,14 +459,7 @@ Slack CIMObjectHandler::ExternalNIHandler(const TPNodePtr tp_node, const Termina
 
   if (this->configManager.slack_parameters.enable) {
 
-    slack.annotation.placement.transfomation.extent.first.x =
-        configManager.slack_parameters.annotation.transformation_extent[0];
-    slack.annotation.placement.transfomation.extent.first.y =
-        configManager.slack_parameters.annotation.transformation_extent[1];
-    slack.annotation.placement.transfomation.extent.second.x =
-        configManager.slack_parameters.annotation.transformation_extent[2];
-    slack.annotation.placement.transfomation.extent.second.y =
-        configManager.slack_parameters.annotation.transformation_extent[3];
+    SET_TRANS_EXTENT(slack,slack);
     slack.annotation.placement.visible = configManager.slack_parameters.annotation.visible;
   }
 
@@ -491,55 +488,48 @@ Slack CIMObjectHandler::ExternalNIHandler(const TPNodePtr tp_node, const Termina
 PiLine
 CIMObjectHandler::ACLineSegmentHandler(const TPNodePtr tp_node, const TerminalPtr terminal, const AcLinePtr ac_line,
                                        ctemplate::TemplateDictionary *dict) {
-  PiLine Pi_line;
-  Pi_line.set_name(name_in_modelica(ac_line->name));
-  Pi_line.set_length(ac_line->length.value);
-  Pi_line.set_r(ac_line->r.value/ac_line->length.value);
-  Pi_line.set_x(ac_line->x.value/ac_line->length.value);
-  Pi_line.set_b(ac_line->bch.value/ac_line->length.value);
-  Pi_line.set_g(ac_line->gch.value/ac_line->length.value);
+  PiLine piline;
+  piline.set_name(name_in_modelica(ac_line->name));
+  piline.set_length(ac_line->length.value);
+  piline.set_r(ac_line->r.value/ac_line->length.value);
+  piline.set_x(ac_line->x.value/ac_line->length.value);
+  piline.set_b(ac_line->bch.value/ac_line->length.value);
+  piline.set_g(ac_line->gch.value/ac_line->length.value);
 
   //find I_Max
   if(OpLimitMap[ac_line]){
     for(OpLimitPtr op_limit: OpLimitMap[ac_line]->OperationalLimitValue){
       if(auto current_limit = dynamic_cast<CurrentLimitPtr>(op_limit)){
-        Pi_line.set_Imax(current_limit->value.value);
+        piline.set_Imax(current_limit->value.value);
       }
     }
   }
 
-  Pi_line.set_sequenceNumber(terminal->sequenceNumber);
-  Pi_line.set_connected(terminal->connected);
-  Pi_line.annotation.placement.visible = true;
+  piline.set_sequenceNumber(terminal->sequenceNumber);
+  piline.set_connected(terminal->connected);
+  piline.annotation.placement.visible = true;
 
   if (this->configManager.piline_parameters.enable) {
 
-    Pi_line.annotation.placement.transfomation.extent.first.x =
-        configManager.piline_parameters.annotation.transformation_extent[0];
-    Pi_line.annotation.placement.transfomation.extent.first.y =
-        configManager.piline_parameters.annotation.transformation_extent[1];
-    Pi_line.annotation.placement.transfomation.extent.second.x =
-        configManager.piline_parameters.annotation.transformation_extent[2];
-    Pi_line.annotation.placement.transfomation.extent.second.y =
-        configManager.piline_parameters.annotation.transformation_extent[3];
-    Pi_line.annotation.placement.visible = configManager.piline_parameters.annotation.visible;
+    SET_TRANS_EXTENT(piline,piline);
+    piline.annotation.placement.visible = configManager.piline_parameters.annotation.visible;
   }
 
   for (diagram_it = ac_line->DiagramObjects.begin(); diagram_it!=ac_line->DiagramObjects.end(); ++diagram_it) {
 
     _t_points = this->calculate_average_position();
-    Pi_line.annotation.placement.transfomation.origin.x = _t_points.xPosition;
-    Pi_line.annotation.placement.transfomation.origin.y = _t_points.yPosition;
-    Pi_line.annotation.placement.transfomation.rotation = (*diagram_it)->rotation.value - 90;
+    piline.annotation.placement.transfomation.origin.x = _t_points.xPosition;
+    piline.annotation.placement.transfomation.origin.y = _t_points.yPosition;
+    piline.annotation.placement.transfomation.rotation = (*diagram_it)->rotation.value - 90;
 
-    if (Pi_line.sequenceNumber()==0 || Pi_line.sequenceNumber()==1) {
+    if (piline.sequenceNumber()==0 || piline.sequenceNumber()==1) {
       ctemplate::TemplateDictionary *piLine_dict = dict->AddIncludeDictionary("PILINE_DICT");
       piLine_dict->SetFilename(this->configManager.ts.directory_path + "resource/PiLine.tpl");
-      Pi_line.set_template_values(piLine_dict);
+      piline.set_template_values(piLine_dict);
     }
   }
 
-  return Pi_line;
+  return piline;
 }
 
 /**
@@ -551,11 +541,11 @@ Transformer CIMObjectHandler::PowerTransformerHandler(const TPNodePtr tp_node, c
                                                       const PowerTrafoPtr power_trafo,
                                                       ctemplate::TemplateDictionary *dict) {
 
-  Transformer Trafo;
-  Trafo.set_name(name_in_modelica(power_trafo->name));
-  Trafo.set_sequenceNumber(terminal->sequenceNumber);
-  Trafo.set_connected(terminal->connected);
-  Trafo.annotation.placement.visible = true;
+  Transformer trafo;
+  trafo.set_name(name_in_modelica(power_trafo->name));
+  trafo.set_sequenceNumber(terminal->sequenceNumber);
+  trafo.set_connected(terminal->connected);
+  trafo.annotation.placement.visible = true;
 
   std::list<PowerTransformerEndPtr>::iterator transformer_end_it;
   for (transformer_end_it = power_trafo->PowerTransformerEnd.begin();
@@ -563,41 +553,34 @@ Transformer CIMObjectHandler::PowerTransformerHandler(const TPNodePtr tp_node, c
        ++transformer_end_it) {
     if ((*transformer_end_it)->endNumber==1) {
       if ((*transformer_end_it)->BaseVoltage->name.find("LV")!=std::string::npos || (*transformer_end_it)->BaseVoltage->name.find("V")!=std::string::npos ) {
-        Trafo.set_Vnom1((*transformer_end_it)->BaseVoltage->nominalVoltage.value*1000);
+        trafo.set_Vnom1((*transformer_end_it)->BaseVoltage->nominalVoltage.value*1000);
       } else if ((*transformer_end_it)->BaseVoltage->name.find("HV")!=std::string::npos || (*transformer_end_it)->BaseVoltage->name.find("kV")!=std::string::npos || (*transformer_end_it)->BaseVoltage->name.find("KV")!=std::string::npos) {
-        Trafo.set_Vnom1((*transformer_end_it)->BaseVoltage->nominalVoltage.value);
+        trafo.set_Vnom1((*transformer_end_it)->BaseVoltage->nominalVoltage.value);
       } else {
-        Trafo.set_Vnom1((*transformer_end_it)->BaseVoltage->nominalVoltage.value*1000);
+        trafo.set_Vnom1((*transformer_end_it)->BaseVoltage->nominalVoltage.value*1000);
       }
-      Trafo.set_Sr((*transformer_end_it)->ratedS.value*1000000);
-      Trafo.set_r((*transformer_end_it)->r.value);
-      Trafo.set_x((*transformer_end_it)->x.value);
-      Trafo.set_b((*transformer_end_it)->b.value);
-      Trafo.calc_URr();
-      Trafo.calc_Ukr();
+      trafo.set_Sr((*transformer_end_it)->ratedS.value*1000000);
+      trafo.set_r((*transformer_end_it)->r.value);
+      trafo.set_x((*transformer_end_it)->x.value);
+      trafo.set_b((*transformer_end_it)->b.value);
+      trafo.calc_URr();
+      trafo.calc_Ukr();
     } else if ((*transformer_end_it)->endNumber==2) {
 
       if ((*transformer_end_it)->BaseVoltage->name.find("LV")!=std::string::npos || (*transformer_end_it)->BaseVoltage->name.find("V")!=std::string::npos ) {
-        Trafo.set_Vnom2((*transformer_end_it)->BaseVoltage->nominalVoltage.value*1000);
+        trafo.set_Vnom2((*transformer_end_it)->BaseVoltage->nominalVoltage.value*1000);
       } else if ((*transformer_end_it)->BaseVoltage->name.find("HV")!=std::string::npos || (*transformer_end_it)->BaseVoltage->name.find("kV")!=std::string::npos || (*transformer_end_it)->BaseVoltage->name.find("KV")!=std::string::npos) {
-        Trafo.set_Vnom2((*transformer_end_it)->BaseVoltage->nominalVoltage.value);
+        trafo.set_Vnom2((*transformer_end_it)->BaseVoltage->nominalVoltage.value);
       } else {
-        Trafo.set_Vnom2((*transformer_end_it)->BaseVoltage->nominalVoltage.value*1000);
+        trafo.set_Vnom2((*transformer_end_it)->BaseVoltage->nominalVoltage.value*1000);
       }
     }
   }
 
   if (this->configManager.trafo_parameters.enable) {
 
-    Trafo.annotation.placement.transfomation.extent.first.x =
-        configManager.trafo_parameters.annotation.transformation_extent[0];
-    Trafo.annotation.placement.transfomation.extent.first.y =
-        configManager.trafo_parameters.annotation.transformation_extent[1];
-    Trafo.annotation.placement.transfomation.extent.second.x =
-        configManager.trafo_parameters.annotation.transformation_extent[2];
-    Trafo.annotation.placement.transfomation.extent.second.y =
-        configManager.trafo_parameters.annotation.transformation_extent[3];
-    Trafo.annotation.placement.visible = configManager.trafo_parameters.annotation.visible;
+    SET_TRANS_EXTENT(trafo,trafo);
+    trafo.annotation.placement.visible = configManager.trafo_parameters.annotation.visible;
   }
 
   for (diagram_it = power_trafo->DiagramObjects.begin();
@@ -605,18 +588,18 @@ Transformer CIMObjectHandler::PowerTransformerHandler(const TPNodePtr tp_node, c
        ++diagram_it) {
 
     _t_points = this->calculate_average_position();
-    Trafo.annotation.placement.transfomation.origin.x = _t_points.xPosition;
-    Trafo.annotation.placement.transfomation.origin.y = _t_points.yPosition;
-    Trafo.annotation.placement.transfomation.rotation = (*diagram_it)->rotation.value - 90;
+    trafo.annotation.placement.transfomation.origin.x = _t_points.xPosition;
+    trafo.annotation.placement.transfomation.origin.y = _t_points.yPosition;
+    trafo.annotation.placement.transfomation.rotation = (*diagram_it)->rotation.value - 90;
 
-    if (Trafo.sequenceNumber()==0 || Trafo.sequenceNumber()==1) {
+    if (trafo.sequenceNumber()==0 || trafo.sequenceNumber()==1) {
       ctemplate::TemplateDictionary *powerTrafo_dict = dict->AddIncludeDictionary("TRANSFORMER_DICT");
       powerTrafo_dict->SetFilename(this->configManager.ts.directory_path + "resource/Transformer.tpl");
-      Trafo.set_template_values(powerTrafo_dict);
+      trafo.set_template_values(powerTrafo_dict);
     }
   }
 
-  return Trafo;
+  return trafo;
 }
 
 /**
@@ -652,7 +635,7 @@ PQLoad CIMObjectHandler::EnergyConsumerHandler(const TPNodePtr tp_node, const Te
   }
 
   pqload.set_name(name_in_modelica(energy_consumer->name));
-  fix_NEPLAN_Voltage(tp_node,pqload);
+  FIX_NEPLAN_VOLTAGE(tp_node,pqload);
 
   pqload.set_name(name_in_modelica(energy_consumer->name));
   pqload.set_sequenceNumber(terminal->sequenceNumber);
@@ -661,14 +644,7 @@ PQLoad CIMObjectHandler::EnergyConsumerHandler(const TPNodePtr tp_node, const Te
 
   if (this->configManager.pqload_parameters.enable) {
 
-    pqload.annotation.placement.transfomation.extent.first.x =
-            configManager.pqload_parameters.annotation.transformation_extent[0];
-    pqload.annotation.placement.transfomation.extent.first.y =
-            configManager.pqload_parameters.annotation.transformation_extent[1];
-    pqload.annotation.placement.transfomation.extent.second.x =
-            configManager.pqload_parameters.annotation.transformation_extent[2];
-    pqload.annotation.placement.transfomation.extent.second.y =
-            configManager.pqload_parameters.annotation.transformation_extent[3];
+    SET_TRANS_EXTENT(pqload,pqload);
     pqload.annotation.placement.visible = configManager.pqload_parameters.annotation.visible;
     pqload.set_profileName(configManager.pqload_parameters.profile_name);
     pqload.set_profileFileName(configManager.pqload_parameters.profile_filename);
@@ -733,15 +709,7 @@ WindGenerator CIMObjectHandler::SynchronousMachineHandlerType1(const TPNodePtr t
   wind_generator.annotation.placement.visible = true;
 
   if (this->configManager.wind_gen_parameters.enable) {
-
-    wind_generator.annotation.placement.transfomation.extent.first.x =
-        configManager.wind_gen_parameters.annotation.transformation_extent[0];
-    wind_generator.annotation.placement.transfomation.extent.first.y =
-        configManager.wind_gen_parameters.annotation.transformation_extent[1];
-    wind_generator.annotation.placement.transfomation.extent.second.x =
-        configManager.wind_gen_parameters.annotation.transformation_extent[2];
-    wind_generator.annotation.placement.transfomation.extent.second.y =
-        configManager.wind_gen_parameters.annotation.transformation_extent[3];
+    SET_TRANS_EXTENT(wind_generator,wind_gen);
     wind_generator.annotation.placement.visible = configManager.wind_gen_parameters.annotation.visible;
   }
 
@@ -779,15 +747,7 @@ SolarGenerator CIMObjectHandler::SynchronousMachineHandlerType2(const TPNodePtr 
   solar_generator.set_sequenceNumber(terminal->sequenceNumber);
 
   if (this->configManager.wind_gen_parameters.enable) {
-
-    solar_generator.annotation.placement.transfomation.extent.first.x =
-        configManager.wind_gen_parameters.annotation.transformation_extent[0];
-    solar_generator.annotation.placement.transfomation.extent.first.y =
-        configManager.wind_gen_parameters.annotation.transformation_extent[1];
-    solar_generator.annotation.placement.transfomation.extent.second.x =
-        configManager.wind_gen_parameters.annotation.transformation_extent[2];
-    solar_generator.annotation.placement.transfomation.extent.second.y =
-        configManager.wind_gen_parameters.annotation.transformation_extent[3];
+    SET_TRANS_EXTENT(solar_generator,wind_gen);
     solar_generator.annotation.placement.visible = configManager.wind_gen_parameters.annotation.visible;
   }
 
