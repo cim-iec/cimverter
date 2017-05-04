@@ -11,8 +11,8 @@ namespace ModelicaWorkshop {
  *
  * All model components connect BusBar(TopologyNode)!
 */
-Connection::Connection(const BusBar* busbar):_port1(busbar->name()),_terminalId1("T"),_p1(Point{busbar->annotation.placement.transfomation.origin.x,
-                                                                                           busbar->annotation.placement.transfomation.origin.y}) ,_p2(Point{0,0}){
+Connection::Connection(const BusBar* busbar):_port1(busbar->name()),_terminalId1("T"),_p1(Point{busbar->annotation.placement.transformation.origin.x,
+                                                                                           busbar->annotation.placement.transformation.origin.y}) ,_p2(Point{0,0}){
   _port1.append(".");
   _port1.append(_terminalId1);
 }
@@ -29,8 +29,8 @@ Connection::Connection(const BusBar* busbar, const Slack* slack): Connection(bus
   _terminalId2 = "T";
   _port2.append(".");
   _port2.append(_terminalId2);
-  _p2.x = slack->annotation.placement.transfomation.origin.x;
-  _p2.y = slack->annotation.placement.transfomation.origin.y;
+  _p2.x = slack->annotation.placement.transformation.origin.x;
+  _p2.y = slack->annotation.placement.transformation.origin.y;
   this->cal_middle_points(slack);
 }
 
@@ -44,19 +44,19 @@ Connection::Connection(const BusBar* busbar, const PQLoad* pq_load): Connection(
 
   if(pq_load->PQLoadType() == PQLoadType::Standard){
     //connection point's position auto adjust.
-    if (pq_load->annotation.placement.transfomation.rotation == 0 || pq_load->annotation.placement.transfomation.rotation == 359
-        || pq_load->annotation.placement.transfomation.rotation == 360) {
-      _p2.x = pq_load->annotation.placement.transfomation.origin.x;
-      _p2.y = pq_load->annotation.placement.transfomation.origin.y + pq_load->annotation.placement.transfomation.extent.second.y;
-    } else if (pq_load->annotation.placement.transfomation.rotation == 90 || pq_load->annotation.placement.transfomation.rotation == -270) {
-      _p2.x = pq_load->annotation.placement.transfomation.origin.x + pq_load->annotation.placement.transfomation.extent.second.x;
-      _p2.y = pq_load->annotation.placement.transfomation.origin.y;
-    } else if (pq_load->annotation.placement.transfomation.rotation == 180 || pq_load->annotation.placement.transfomation.rotation == -180) {
-      _p2.x = pq_load->annotation.placement.transfomation.origin.x;
-      _p2.y = pq_load->annotation.placement.transfomation.origin.y + pq_load->annotation.placement.transfomation.extent.first.y;
-    } else if (pq_load->annotation.placement.transfomation.rotation == -90 || pq_load->annotation.placement.transfomation.rotation == 270) {
-      _p2.x = pq_load->annotation.placement.transfomation.origin.x + pq_load->annotation.placement.transfomation.extent.first.x;
-      _p2.y = pq_load->annotation.placement.transfomation.origin.y;
+    if (pq_load->annotation.placement.transformation.rotation == 0 || pq_load->annotation.placement.transformation.rotation == 359
+        || pq_load->annotation.placement.transformation.rotation == 360) {
+      _p2.x = pq_load->annotation.placement.transformation.origin.x;
+      _p2.y = pq_load->annotation.placement.transformation.origin.y + pq_load->annotation.placement.transformation.extent.second.y;
+    } else if (pq_load->annotation.placement.transformation.rotation == 90 || pq_load->annotation.placement.transformation.rotation == -270) {
+      _p2.x = pq_load->annotation.placement.transformation.origin.x + pq_load->annotation.placement.transformation.extent.second.x;
+      _p2.y = pq_load->annotation.placement.transformation.origin.y;
+    } else if (pq_load->annotation.placement.transformation.rotation == 180 || pq_load->annotation.placement.transformation.rotation == -180) {
+      _p2.x = pq_load->annotation.placement.transformation.origin.x;
+      _p2.y = pq_load->annotation.placement.transformation.origin.y + pq_load->annotation.placement.transformation.extent.first.y;
+    } else if (pq_load->annotation.placement.transformation.rotation == -90 || pq_load->annotation.placement.transformation.rotation == 270) {
+      _p2.x = pq_load->annotation.placement.transformation.origin.x + pq_load->annotation.placement.transformation.extent.first.x;
+      _p2.y = pq_load->annotation.placement.transformation.origin.y;
     }
 
     _port2 = pq_load->name();
@@ -68,19 +68,19 @@ Connection::Connection(const BusBar* busbar, const PQLoad* pq_load): Connection(
 
   } else if(pq_load->PQLoadType() == PQLoadType::Profile){
     //connection point's position auto adjust.
-    if (pq_load->annotation.placement.transfomation.rotation == 0 || pq_load->annotation.placement.transfomation.rotation == 359
-        || pq_load->annotation.placement.transfomation.rotation == 360) {
-      _p2.x = pq_load->annotation.placement.transfomation.origin.x;
-      _p2.y = pq_load->annotation.placement.transfomation.origin.y + pq_load->annotation.placement.transfomation.extent.second.y;
-    } else if (pq_load->annotation.placement.transfomation.rotation == 90 || pq_load->annotation.placement.transfomation.rotation == -270) {
-      _p2.x = pq_load->annotation.placement.transfomation.origin.x + pq_load->annotation.placement.transfomation.extent.second.x;
-      _p2.y = pq_load->annotation.placement.transfomation.origin.y;
-    } else if (pq_load->annotation.placement.transfomation.rotation == 180 || pq_load->annotation.placement.transfomation.rotation == -180) {
-      _p2.x = pq_load->annotation.placement.transfomation.origin.x;
-      _p2.y = pq_load->annotation.placement.transfomation.origin.y + pq_load->annotation.placement.transfomation.extent.first.y;
-    } else if (pq_load->annotation.placement.transfomation.rotation == -90 || pq_load->annotation.placement.transfomation.rotation == 270) {
-      _p2.x = pq_load->annotation.placement.transfomation.origin.x + pq_load->annotation.placement.transfomation.extent.first.x;
-      _p2.y = pq_load->annotation.placement.transfomation.origin.y;
+    if (pq_load->annotation.placement.transformation.rotation == 0 || pq_load->annotation.placement.transformation.rotation == 359
+        || pq_load->annotation.placement.transformation.rotation == 360) {
+      _p2.x = pq_load->annotation.placement.transformation.origin.x;
+      _p2.y = pq_load->annotation.placement.transformation.origin.y + pq_load->annotation.placement.transformation.extent.second.y;
+    } else if (pq_load->annotation.placement.transformation.rotation == 90 || pq_load->annotation.placement.transformation.rotation == -270) {
+      _p2.x = pq_load->annotation.placement.transformation.origin.x + pq_load->annotation.placement.transformation.extent.second.x;
+      _p2.y = pq_load->annotation.placement.transformation.origin.y;
+    } else if (pq_load->annotation.placement.transformation.rotation == 180 || pq_load->annotation.placement.transformation.rotation == -180) {
+      _p2.x = pq_load->annotation.placement.transformation.origin.x;
+      _p2.y = pq_load->annotation.placement.transformation.origin.y + pq_load->annotation.placement.transformation.extent.first.y;
+    } else if (pq_load->annotation.placement.transformation.rotation == -90 || pq_load->annotation.placement.transformation.rotation == 270) {
+      _p2.x = pq_load->annotation.placement.transformation.origin.x + pq_load->annotation.placement.transformation.extent.first.x;
+      _p2.y = pq_load->annotation.placement.transformation.origin.y;
     }
 
     _port2 = pq_load->name();
@@ -101,19 +101,19 @@ Connection::Connection(const BusBar* busbar, const Household* household): Connec
   this->set_connected(household->is_connected());//electrical connected?
 
   //connection point's position could be automatically adjusted.
-  if (household->annotation.placement.transfomation.rotation == 0 || household->annotation.placement.transfomation.rotation == 359
-          || household->annotation.placement.transfomation.rotation == 360) {
-    _p2.x = household->annotation.placement.transfomation.origin.x;
-    _p2.y = household->annotation.placement.transfomation.origin.y + household->annotation.placement.transfomation.extent.second.y;
-  } else if (household->annotation.placement.transfomation.rotation == 90 || household->annotation.placement.transfomation.rotation == -270) {
-    _p2.x = household->annotation.placement.transfomation.origin.x + household->annotation.placement.transfomation.extent.second.x;
-    _p2.y = household->annotation.placement.transfomation.origin.y;
-  } else if (household->annotation.placement.transfomation.rotation == 180 || household->annotation.placement.transfomation.rotation == -180) {
-    _p2.x = household->annotation.placement.transfomation.origin.x;
-    _p2.y = household->annotation.placement.transfomation.origin.y + household->annotation.placement.transfomation.extent.first.y;
-  } else if (household->annotation.placement.transfomation.rotation == -90 || household->annotation.placement.transfomation.rotation == 270) {
-    _p2.x = household->annotation.placement.transfomation.origin.x + household->annotation.placement.transfomation.extent.first.x;
-    _p2.y = household->annotation.placement.transfomation.origin.y;
+  if (household->annotation.placement.transformation.rotation == 0 || household->annotation.placement.transformation.rotation == 359
+          || household->annotation.placement.transformation.rotation == 360) {
+    _p2.x = household->annotation.placement.transformation.origin.x;
+    _p2.y = household->annotation.placement.transformation.origin.y + household->annotation.placement.transformation.extent.second.y;
+  } else if (household->annotation.placement.transformation.rotation == 90 || household->annotation.placement.transformation.rotation == -270) {
+    _p2.x = household->annotation.placement.transformation.origin.x + household->annotation.placement.transformation.extent.second.x;
+    _p2.y = household->annotation.placement.transformation.origin.y;
+  } else if (household->annotation.placement.transformation.rotation == 180 || household->annotation.placement.transformation.rotation == -180) {
+    _p2.x = household->annotation.placement.transformation.origin.x;
+    _p2.y = household->annotation.placement.transformation.origin.y + household->annotation.placement.transformation.extent.first.y;
+  } else if (household->annotation.placement.transformation.rotation == -90 || household->annotation.placement.transformation.rotation == 270) {
+    _p2.x = household->annotation.placement.transformation.origin.x + household->annotation.placement.transformation.extent.first.x;
+    _p2.y = household->annotation.placement.transformation.origin.y;
   }
 
   _port2 = household->name();
@@ -137,8 +137,8 @@ Connection::Connection(const BusBar* busbar, const ConnectivityNode* connectivit
   _terminalId2 = "T";
   _port2.append(".");
   _port2.append(_terminalId2);
-  _p2.x = connectivity_node->annotation.placement.transfomation.origin.x;
-  _p2.y = connectivity_node->annotation.placement.transfomation.origin.y;
+  _p2.x = connectivity_node->annotation.placement.transformation.origin.x;
+  _p2.y = connectivity_node->annotation.placement.transformation.origin.y;
   this->cal_middle_points(connectivity_node);
 }
 
@@ -152,21 +152,21 @@ Connection::Connection(const BusBar* busbar, const PiLine* pi_line): Connection(
 
   if (pi_line->sequenceNumber() == 0 || pi_line->sequenceNumber() == 1) {
     _terminalId2 = "T1";
-    if (pi_line->annotation.placement.transfomation.rotation == 90 || pi_line->annotation.placement.transfomation.rotation == -90) {
-      _p2.x = pi_line->annotation.placement.transfomation.origin.x;
-      _p2.y = pi_line->annotation.placement.transfomation.origin.y + pi_line->annotation.placement.transfomation.extent.first.y;
+    if (pi_line->annotation.placement.transformation.rotation == 90 || pi_line->annotation.placement.transformation.rotation == -90) {
+      _p2.x = pi_line->annotation.placement.transformation.origin.x;
+      _p2.y = pi_line->annotation.placement.transformation.origin.y + pi_line->annotation.placement.transformation.extent.first.y;
     } else {
-      _p2.x = pi_line->annotation.placement.transfomation.origin.x + pi_line->annotation.placement.transfomation.extent.first.x;
-      _p2.y = pi_line->annotation.placement.transfomation.origin.y;
+      _p2.x = pi_line->annotation.placement.transformation.origin.x + pi_line->annotation.placement.transformation.extent.first.x;
+      _p2.y = pi_line->annotation.placement.transformation.origin.y;
     }
   } else if (pi_line->sequenceNumber() == 2) {
     _terminalId2 = "T2";
-    if (busbar->annotation.placement.transfomation.rotation == 90 || pi_line->annotation.placement.transfomation.rotation == -90) {
-      _p2.x = pi_line->annotation.placement.transfomation.origin.x;
-      _p2.y = pi_line->annotation.placement.transfomation.origin.y + pi_line->annotation.placement.transfomation.extent.second.y;
+    if (busbar->annotation.placement.transformation.rotation == 90 || pi_line->annotation.placement.transformation.rotation == -90) {
+      _p2.x = pi_line->annotation.placement.transformation.origin.x;
+      _p2.y = pi_line->annotation.placement.transformation.origin.y + pi_line->annotation.placement.transformation.extent.second.y;
     } else {
-      _p2.x = pi_line->annotation.placement.transfomation.origin.x + pi_line->annotation.placement.transfomation.extent.second.x;
-      _p2.y = pi_line->annotation.placement.transfomation.origin.y;
+      _p2.x = pi_line->annotation.placement.transformation.origin.x + pi_line->annotation.placement.transformation.extent.second.x;
+      _p2.y = pi_line->annotation.placement.transformation.origin.y;
     }
   } else {
     _terminalId2 = "T1";
@@ -187,21 +187,21 @@ Connection::Connection(const BusBar* busbar, const Transformer* transformer): Co
   this->set_connected(transformer->is_connected());//electrical connected?
   if (transformer->sequenceNumber() == 0 || transformer->sequenceNumber() == 1) {
     _terminalId2 = "T1";
-    if (transformer->annotation.placement.transfomation.rotation == 90 || transformer->annotation.placement.transfomation.rotation == -90) {
-      _p2.x = transformer->annotation.placement.transfomation.origin.x;
-      _p2.y = transformer->annotation.placement.transfomation.origin.y + transformer->annotation.placement.transfomation.extent.first.y;
+    if (transformer->annotation.placement.transformation.rotation == 90 || transformer->annotation.placement.transformation.rotation == -90) {
+      _p2.x = transformer->annotation.placement.transformation.origin.x;
+      _p2.y = transformer->annotation.placement.transformation.origin.y + transformer->annotation.placement.transformation.extent.first.y;
     } else {
-      _p2.x = transformer->annotation.placement.transfomation.origin.x + transformer->annotation.placement.transfomation.extent.first.x;
-      _p2.y = transformer->annotation.placement.transfomation.origin.y;
+      _p2.x = transformer->annotation.placement.transformation.origin.x + transformer->annotation.placement.transformation.extent.first.x;
+      _p2.y = transformer->annotation.placement.transformation.origin.y;
     }
   } else if (transformer->sequenceNumber() == 2) {
     _terminalId2 = "T2";
-    if (transformer->annotation.placement.transfomation.rotation == 90 || transformer->annotation.placement.transfomation.rotation == -90) {
-      _p2.x = transformer->annotation.placement.transfomation.origin.x;
-      _p2.y = transformer->annotation.placement.transfomation.origin.y + transformer->annotation.placement.transfomation.extent.second.y;
+    if (transformer->annotation.placement.transformation.rotation == 90 || transformer->annotation.placement.transformation.rotation == -90) {
+      _p2.x = transformer->annotation.placement.transformation.origin.x;
+      _p2.y = transformer->annotation.placement.transformation.origin.y + transformer->annotation.placement.transformation.extent.second.y;
     } else {
-      _p2.x = transformer->annotation.placement.transfomation.origin.x + transformer->annotation.placement.transfomation.extent.second.x;
-      _p2.y = transformer->annotation.placement.transfomation.origin.y;
+      _p2.x = transformer->annotation.placement.transformation.origin.x + transformer->annotation.placement.transformation.extent.second.x;
+      _p2.y = transformer->annotation.placement.transformation.origin.y;
     }
   } else {
     _terminalId2 = "T1";
@@ -225,8 +225,8 @@ Connection::Connection(const BusBar* busbar, const WindGenerator* wind_generator
   _terminalId2 = "T";
   _port2.append(".");
   _port2.append(_terminalId2);
-  _p2.x = wind_generator->annotation.placement.transfomation.origin.x;
-  _p2.y = wind_generator->annotation.placement.transfomation.origin.y;
+  _p2.x = wind_generator->annotation.placement.transformation.origin.x;
+  _p2.y = wind_generator->annotation.placement.transformation.origin.y;
   this->cal_middle_points(wind_generator);
 
 }
@@ -243,8 +243,8 @@ Connection::Connection(const BusBar* busbar, const SolarGenerator* solar_generat
   _terminalId2 = "T";
   _port2.append(".");
   _port2.append(_terminalId2);
-  _p2.x = solar_generator->annotation.placement.transfomation.origin.x;
-  _p2.y = solar_generator->annotation.placement.transfomation.origin.y;
+  _p2.x = solar_generator->annotation.placement.transformation.origin.x;
+  _p2.y = solar_generator->annotation.placement.transformation.origin.y;
   this->cal_middle_points(solar_generator);
 
 }
@@ -261,8 +261,8 @@ Connection::Connection(const BusBar* busbar, const Battery* battery): Connection
   _terminalId2 = "T";
   _port2.append(".");
   _port2.append(_terminalId2);
-  _p2.x = battery->annotation.placement.transfomation.origin.x;
-  _p2.y = battery->annotation.placement.transfomation.origin.y;
+  _p2.x = battery->annotation.placement.transformation.origin.x;
+  _p2.y = battery->annotation.placement.transformation.origin.y;
   this->cal_middle_points(battery);
 
 }
@@ -282,15 +282,15 @@ void Connection::cal_middle_points(T *Componet) {
 
   } else {
 
-    if (std::abs(_p1.x - _p2.x) <= std::abs(Componet->annotation.placement.transfomation.extent.first.x)
-        || std::abs(_p1.x - _p2.x) <= std::abs(Componet->annotation.placement.transfomation.extent.first.y)) {
+    if (std::abs(_p1.x - _p2.x) <= std::abs(Componet->annotation.placement.transformation.extent.first.x)
+        || std::abs(_p1.x - _p2.x) <= std::abs(Componet->annotation.placement.transformation.extent.first.y)) {
       Point _mp1 = { _p1.x, _p2.y };
       _points.push_back(_p1);
       _points.push_back(_mp1);
       _points.push_back(_p2);
 
-    } else if (std::abs(_p1.y - _p2.y) <= std::abs(Componet->annotation.placement.transfomation.extent.first.x)
-        || std::abs(_p1.y - _p2.y) <= std::abs(Componet->annotation.placement.transfomation.extent.first.y)) {
+    } else if (std::abs(_p1.y - _p2.y) <= std::abs(Componet->annotation.placement.transformation.extent.first.x)
+        || std::abs(_p1.y - _p2.y) <= std::abs(Componet->annotation.placement.transformation.extent.first.y)) {
       Point _mp1 = { _p2.x, _p1.y };
       _points.push_back(_p1);
       _points.push_back(_mp1);

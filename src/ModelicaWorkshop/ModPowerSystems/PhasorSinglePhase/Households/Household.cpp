@@ -18,7 +18,7 @@ Household::Household():_Type(HouseholdType::Type1) {
 Household::Household(enum HouseholdType Type):_Type(Type) {
 
   this->annotation.placement.visible = true;
-  this->annotation.placement.transfomation.rotation = 0;
+  this->annotation.placement.transformation.rotation = 0;
 
 }
 
@@ -37,9 +37,9 @@ Household::Household(const Loads::PQLoad pq_load):_Type(HouseholdType::Type1) {
   this->set_sequenceNumber(pq_load.sequenceNumber());
   this->set_connected(pq_load.is_connected());
   this->annotation.placement.visible = true;
-  this->annotation.placement.transfomation.origin.x = pq_load.annotation.placement.transfomation.origin.x;
-  this->annotation.placement.transfomation.origin.y = pq_load.annotation.placement.transfomation.origin.y;
-  this->annotation.placement.transfomation.rotation = 0;
+  this->annotation.placement.transformation.origin.x = pq_load.annotation.placement.transformation.origin.x;
+  this->annotation.placement.transformation.origin.y = pq_load.annotation.placement.transformation.origin.y;
+  this->annotation.placement.transformation.rotation = 0;
 }
 
 Household::Household(const Loads::PQLoad pq_load,const Generations::SolarGenerator solar_generator):_Type(HouseholdType::Type2) {
@@ -51,9 +51,9 @@ Household::Household(const Loads::PQLoad pq_load,const Generations::SolarGenerat
   this->set_sequenceNumber(pq_load.sequenceNumber());
   this->set_connected(pq_load.is_connected());
   this->annotation.placement.visible = true;
-  this->annotation.placement.transfomation.origin.x = pq_load.annotation.placement.transfomation.origin.x;
-  this->annotation.placement.transfomation.origin.y = pq_load.annotation.placement.transfomation.origin.y;
-  this->annotation.placement.transfomation.rotation = 0;
+  this->annotation.placement.transformation.origin.x = pq_load.annotation.placement.transformation.origin.x;
+  this->annotation.placement.transformation.origin.y = pq_load.annotation.placement.transformation.origin.y;
+  this->annotation.placement.transformation.rotation = 0;
 }
 
 Household::Household(enum HouseholdType Type, std::string load_profileFileName, std::string load_profileName): _Type(Type),

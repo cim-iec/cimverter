@@ -61,7 +61,7 @@ typedef struct Transformation {
 typedef struct Placement {
 
   bool visible = true;
-  Transformation transfomation;
+  Transformation transformation;
 
 } Placement;
 

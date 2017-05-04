@@ -8,13 +8,13 @@
 /**\brief Macro for transformation.extent setting
  */
 #define  SET_TRANS_EXTENT(component, type_str) \
-                      component.annotation.placement.transfomation.extent.first.x = \
+                      component.annotation.placement.transformation.extent.first.x = \
                       configManager.type_str##_parameters.annotation.transformation_extent[0]; \
-                      component.annotation.placement.transfomation.extent.first.y = \
+                      component.annotation.placement.transformation.extent.first.y = \
                       configManager.type_str##_parameters.annotation.transformation_extent[1]; \
-                      component.annotation.placement.transfomation.extent.second.x = \
+                      component.annotation.placement.transformation.extent.second.x = \
                       configManager.type_str##_parameters.annotation.transformation_extent[2]; \
-                      component.annotation.placement.transfomation.extent.second.y = \
+                      component.annotation.placement.transformation.extent.second.y = \
                       configManager.type_str##_parameters.annotation.transformation_extent[3]; \
 
 /**\brief Macro for transformation.extent setting
@@ -312,9 +312,9 @@ BusBar CIMObjectHandler::TopologicalNodeHandler(const TPNodePtr tp_node, ctempla
   // std::list<DiagramObjectPtr>::iterator diagram_it is class member!
   for (diagram_it = tp_node->DiagramObjects.begin(); diagram_it!=tp_node->DiagramObjects.end(); ++diagram_it) {
     _t_points = this->calculate_average_position();
-    busbar.annotation.placement.transfomation.origin.x = _t_points.xPosition;
-    busbar.annotation.placement.transfomation.origin.y = _t_points.yPosition;
-    busbar.annotation.placement.transfomation.rotation = (*diagram_it)->rotation.value;
+    busbar.annotation.placement.transformation.origin.x = _t_points.xPosition;
+    busbar.annotation.placement.transformation.origin.y = _t_points.yPosition;
+    busbar.annotation.placement.transformation.rotation = (*diagram_it)->rotation.value;
 
     ctemplate::TemplateDictionary *busbar_dict = dict->AddIncludeDictionary("BUSBAR_DICT");
     busbar_dict->SetFilename(this->configManager.ts.directory_path + "resource/BusBar.tpl");
@@ -398,9 +398,9 @@ bool CIMObjectHandler::BusBarSectionHandler(const BusBarSectionPtr busbar_sectio
        ++diagram_it) {
     _t_points = this->calculate_average_position();
 
-    busbar.annotation.placement.transfomation.origin.x = _t_points.xPosition;
-    busbar.annotation.placement.transfomation.origin.y = _t_points.yPosition;
-    busbar.annotation.placement.transfomation.rotation = (*diagram_it)->rotation.value;
+    busbar.annotation.placement.transformation.origin.x = _t_points.xPosition;
+    busbar.annotation.placement.transformation.origin.y = _t_points.yPosition;
+    busbar.annotation.placement.transformation.rotation = (*diagram_it)->rotation.value;
 
     ctemplate::TemplateDictionary *busbar_dict = dict->AddIncludeDictionary("BUSBAR_DICT");
     busbar_dict->SetFilename(this->configManager.ts.directory_path + "resource/BusBar.tpl");
@@ -428,9 +428,9 @@ ConnectivityNode CIMObjectHandler::ConnectiviyNodeHandler(const TPNodePtr tp_nod
        diagram_it!=connectivity_node->DiagramObjects.end();
        ++diagram_it) {
     _t_points = this->calculate_average_position();
-    conn_node.annotation.placement.transfomation.origin.x = _t_points.xPosition;
-    conn_node.annotation.placement.transfomation.origin.y = _t_points.yPosition;
-    conn_node.annotation.placement.transfomation.rotation = (*diagram_it)->rotation.value - 90;
+    conn_node.annotation.placement.transformation.origin.x = _t_points.xPosition;
+    conn_node.annotation.placement.transformation.origin.y = _t_points.yPosition;
+    conn_node.annotation.placement.transformation.rotation = (*diagram_it)->rotation.value - 90;
 
     if (conn_node.sequenceNumber()==0 || conn_node.sequenceNumber()==1) {
       ctemplate::TemplateDictionary *conn_node_dict = dict->AddIncludeDictionary("CONNECTIVITYNODE_DICT");
@@ -466,9 +466,9 @@ Slack CIMObjectHandler::ExternalNIHandler(const TPNodePtr tp_node, const Termina
   for (diagram_it = externalNI->DiagramObjects.begin(); diagram_it!=externalNI->DiagramObjects.end(); ++diagram_it) {
 
     _t_points = this->calculate_average_position();
-    slack.annotation.placement.transfomation.origin.x = _t_points.xPosition;
-    slack.annotation.placement.transfomation.origin.y = _t_points.yPosition;
-    slack.annotation.placement.transfomation.rotation = (*diagram_it)->rotation.value - 90;
+    slack.annotation.placement.transformation.origin.x = _t_points.xPosition;
+    slack.annotation.placement.transformation.origin.y = _t_points.yPosition;
+    slack.annotation.placement.transformation.rotation = (*diagram_it)->rotation.value - 90;
 
     if (slack.sequenceNumber()==0 || slack.sequenceNumber()==1) {
       ctemplate::TemplateDictionary *slack_dict = dict->AddIncludeDictionary("SLACK_DICT");
@@ -518,9 +518,9 @@ CIMObjectHandler::ACLineSegmentHandler(const TPNodePtr tp_node, const TerminalPt
   for (diagram_it = ac_line->DiagramObjects.begin(); diagram_it!=ac_line->DiagramObjects.end(); ++diagram_it) {
 
     _t_points = this->calculate_average_position();
-    piline.annotation.placement.transfomation.origin.x = _t_points.xPosition;
-    piline.annotation.placement.transfomation.origin.y = _t_points.yPosition;
-    piline.annotation.placement.transfomation.rotation = (*diagram_it)->rotation.value - 90;
+    piline.annotation.placement.transformation.origin.x = _t_points.xPosition;
+    piline.annotation.placement.transformation.origin.y = _t_points.yPosition;
+    piline.annotation.placement.transformation.rotation = (*diagram_it)->rotation.value - 90;
 
     if (piline.sequenceNumber()==0 || piline.sequenceNumber()==1) {
       ctemplate::TemplateDictionary *piLine_dict = dict->AddIncludeDictionary("PILINE_DICT");
@@ -588,9 +588,9 @@ Transformer CIMObjectHandler::PowerTransformerHandler(const TPNodePtr tp_node, c
        ++diagram_it) {
 
     _t_points = this->calculate_average_position();
-    trafo.annotation.placement.transfomation.origin.x = _t_points.xPosition;
-    trafo.annotation.placement.transfomation.origin.y = _t_points.yPosition;
-    trafo.annotation.placement.transfomation.rotation = (*diagram_it)->rotation.value - 90;
+    trafo.annotation.placement.transformation.origin.x = _t_points.xPosition;
+    trafo.annotation.placement.transformation.origin.y = _t_points.yPosition;
+    trafo.annotation.placement.transformation.rotation = (*diagram_it)->rotation.value - 90;
 
     if (trafo.sequenceNumber()==0 || trafo.sequenceNumber()==1) {
       ctemplate::TemplateDictionary *powerTrafo_dict = dict->AddIncludeDictionary("TRANSFORMER_DICT");
@@ -655,9 +655,9 @@ PQLoad CIMObjectHandler::EnergyConsumerHandler(const TPNodePtr tp_node, const Te
            ++diagram_it) {
 
     _t_points = this->calculate_average_position();
-    pqload.annotation.placement.transfomation.origin.x = _t_points.xPosition;
-    pqload.annotation.placement.transfomation.origin.y = _t_points.yPosition;
-    pqload.annotation.placement.transfomation.rotation = (*diagram_it)->rotation.value;
+    pqload.annotation.placement.transformation.origin.x = _t_points.xPosition;
+    pqload.annotation.placement.transformation.origin.y = _t_points.yPosition;
+    pqload.annotation.placement.transformation.rotation = (*diagram_it)->rotation.value;
 
     if (this->configManager.household_parameters.use_households == false &&
         this->configManager.pqload_parameters.use_profiles == false ) {
@@ -717,9 +717,9 @@ WindGenerator CIMObjectHandler::SynchronousMachineHandlerType1(const TPNodePtr t
        diagram_it!=syn_machine->DiagramObjects.end();
        ++diagram_it) {
     _t_points = this->calculate_average_position();
-    wind_generator.annotation.placement.transfomation.origin.x = _t_points.xPosition;
-    wind_generator.annotation.placement.transfomation.origin.y = _t_points.yPosition;
-    wind_generator.annotation.placement.transfomation.rotation = (*diagram_it)->rotation.value;
+    wind_generator.annotation.placement.transformation.origin.x = _t_points.xPosition;
+    wind_generator.annotation.placement.transformation.origin.y = _t_points.yPosition;
+    wind_generator.annotation.placement.transformation.rotation = (*diagram_it)->rotation.value;
 
     if (wind_generator.sequenceNumber()==0 || wind_generator.sequenceNumber()==1) {
       ctemplate::TemplateDictionary *wind_generator_dict = dict->AddIncludeDictionary("WINDGENERATOR_DICT");
@@ -755,9 +755,9 @@ SolarGenerator CIMObjectHandler::SynchronousMachineHandlerType2(const TPNodePtr 
        diagram_it!=syn_machine->DiagramObjects.end();
        ++diagram_it) {
     _t_points = this->calculate_average_position();
-    solar_generator.annotation.placement.transfomation.origin.x = _t_points.xPosition;
-    solar_generator.annotation.placement.transfomation.origin.y = _t_points.yPosition;
-    solar_generator.annotation.placement.transfomation.rotation = (*diagram_it)->rotation.value;
+    solar_generator.annotation.placement.transformation.origin.x = _t_points.xPosition;
+    solar_generator.annotation.placement.transformation.origin.y = _t_points.yPosition;
+    solar_generator.annotation.placement.transformation.rotation = (*diagram_it)->rotation.value;
 
     if (this->configManager.wind_gen_parameters.enable) {
       if (this->configManager.household_parameters.use_households==false) {

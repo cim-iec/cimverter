@@ -23,10 +23,10 @@ System::System(double lx, double ly, double rx, double ry)
 
   //initialize System Label
   this->set_name("system");
-  this->annotation.placement.transfomation.extent.first.x = 0;
-  this->annotation.placement.transfomation.extent.first.y = -30;
-  this->annotation.placement.transfomation.extent.second.x = 30;
-  this->annotation.placement.transfomation.extent.second.y = 0;
+  this->annotation.placement.transformation.extent.first.x = 0;
+  this->annotation.placement.transformation.extent.first.y = -30;
+  this->annotation.placement.transformation.extent.second.x = 30;
+  this->annotation.placement.transformation.extent.second.y = 0;
   this->annotation.placement.visible = true;
 
   //initialize System
@@ -48,10 +48,10 @@ System::System(const ConfigManager & configManager){
 
   //initialize System Label
   this->_name = configManager.ss.label_name;
-  this->annotation.placement.transfomation.extent.first.x = configManager.ss.label_extent[0];
-  this->annotation.placement.transfomation.extent.first.y = configManager.ss.label_extent[1];
-  this->annotation.placement.transfomation.extent.second.x = configManager.ss.label_extent[2];
-  this->annotation.placement.transfomation.extent.second.y = configManager.ss.label_extent[3];
+  this->annotation.placement.transformation.extent.first.x = configManager.ss.label_extent[0];
+  this->annotation.placement.transformation.extent.first.y = configManager.ss.label_extent[1];
+  this->annotation.placement.transformation.extent.second.x = configManager.ss.label_extent[2];
+  this->annotation.placement.transformation.extent.second.y = configManager.ss.label_extent[3];
   this->annotation.placement.visible = true;
 
   //initialize System
