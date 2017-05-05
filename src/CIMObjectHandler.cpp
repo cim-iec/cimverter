@@ -126,7 +126,7 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::vector<std::string> args) {
 
       BusBar busbar = this->TopologicalNodeHandler(tp_node, dict);
 
-      if (this->configManager.household_parameters.use_households==true ) {
+      if (this->configManager.household_parameters.use_households == true ) {
         this->HouseholdComponetsHandler(tp_node, dict);
       }
 
@@ -159,14 +159,14 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::vector<std::string> args) {
 
         } else if (auto *energy_consumer = dynamic_cast<EnergyConsumerPtr>((*terminal_it)->ConductingEquipment)) {
 
-          if (this->configManager.household_parameters.use_households==false ) {
+          if (this->configManager.household_parameters.use_households == false ) {
             PQLoad pqload = this->EnergyConsumerHandler(tp_node, (*terminal_it), energy_consumer, dict);
             Connection conn(&busbar, &pqload);
             connectionQueue.push(conn);
           }
 
         } else if (auto *syn_machine = dynamic_cast<SynMachinePtr>((*terminal_it)->ConductingEquipment)) {
-          if (this->configManager.household_parameters.use_households==false ) {
+          if (this->configManager.household_parameters.use_households == false ) {
             SolarGenerator solar_generator = this->SynchronousMachineHandlerType2(tp_node, (*terminal_it),
                                                                                   syn_machine, dict);
             Connection conn(&busbar, &solar_generator);
@@ -179,14 +179,14 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::vector<std::string> args) {
         }
       }
 
-      if (this->configManager.household_parameters.use_households==true ) {
+      if (this->configManager.household_parameters.use_households == true ) {
 
         while (!this->householdQueue.empty()) {
 
           switch (this->householdQueue.front().HouseholdType()) {
             case (HouseholdType::Type1):
-              if (this->householdQueue.front().sequenceNumber()==0
-                  || this->householdQueue.front().sequenceNumber()==1) {
+              if (this->householdQueue.front().sequenceNumber() == 0
+                  || this->householdQueue.front().sequenceNumber() == 1) {
                 ctemplate::TemplateDictionary *household_dict = dict->AddIncludeDictionary(
                     "HOUSEHOLD_TYPE1_DICT");
                 household_dict->SetFilename(
@@ -195,8 +195,8 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::vector<std::string> args) {
               }
               break;
             case (HouseholdType::Type2):
-              if (this->householdQueue.front().sequenceNumber()==0
-                  || this->householdQueue.front().sequenceNumber()==1) {
+              if (this->householdQueue.front().sequenceNumber() == 0
+                  || this->householdQueue.front().sequenceNumber() == 1) {
                 ctemplate::TemplateDictionary *household_dict = dict->AddIncludeDictionary(
                     "HOUSEHOLD_TYPE2_DICT");
                 household_dict->SetFilename(
@@ -212,20 +212,18 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::vector<std::string> args) {
           this->householdQueue.pop();
         }
         while (!this->pqloadQueue.empty()) {
-          if (this->configManager.pqload_parameters.use_profiles == false) {
+          if (this->configManager.pqload_parameters.type == 1 && pqloadQueue.front().PQLoadType() == PQLoadType::Standard) {
             ctemplate::TemplateDictionary *pqLoad_dict = dict->AddIncludeDictionary("PQLOAD_DICT");
             pqLoad_dict->SetFilename(this->configManager.ts.directory_path + "resource/PQLoad.tpl");
             pqloadQueue.front().set_template_values(pqLoad_dict);
-          } else if (this->configManager.pqload_parameters.use_profiles == true) {
-            if(this->configManager.pqload_parameters.type == 1 && pqloadQueue.front().PQLoadType() == PQLoadType::Profile ){
+          } else if (this->configManager.pqload_parameters.type == 2 && pqloadQueue.front().PQLoadType() == PQLoadType::Profile) {
               ctemplate::TemplateDictionary *pqLoad_dict = dict->AddIncludeDictionary("PQLOAD_PROFILE_DICT");
               pqLoad_dict->SetFilename(this->configManager.ts.directory_path + "resource/PQLoadProfile.tpl");
               pqloadQueue.front().set_template_values(pqLoad_dict);
-            } else if(this->configManager.pqload_parameters.type == 2 && pqloadQueue.front().PQLoadType() == PQLoadType::NormProfile ){
+          } else if(this->configManager.pqload_parameters.type == 3 && pqloadQueue.front().PQLoadType() == PQLoadType::NormProfile){
               ctemplate::TemplateDictionary *pqLoad_dict = dict->AddIncludeDictionary("PQLOAD_NORM_PROFILE_DICT");
               pqLoad_dict->SetFilename(this->configManager.ts.directory_path + "resource/PQLoadNormProfile.tpl");
               pqloadQueue.front().set_template_values(pqLoad_dict);
-            }
           }
           Connection conn(&busbar, &pqloadQueue.front());
           connectionQueue.push(conn);
@@ -372,7 +370,6 @@ bool CIMObjectHandler::HouseholdComponetsHandler(const TPNodePtr tp_node, ctempl
         Household household(this->pqloadQueue.front(), this->solarGeneratorQueue.front());  //type2
 
         if (this->configManager.household_parameters.enable) {
-          household.set_Load_Type(this->configManager.household_parameters.load_type);
           SET_TRANS_EXTENT(household,household);
           household.annotation.placement.visible = configManager.household_parameters.annotation.visible;
         }
@@ -613,25 +610,26 @@ PQLoad CIMObjectHandler::EnergyConsumerHandler(const TPNodePtr tp_node, const Te
 
   PQLoad pqload;
 
-  if (this->configManager.pqload_parameters.use_profiles == false) {
-    pqload.set_PQLoadType(PQLoadType::Standard);
+  if (this->configManager.pqload_parameters.type == 1 ) {
 
+    pqload.set_PQLoadType(PQLoadType::Standard);
     if (this->configManager.gs.apply_Neplan_fix == true && svPowerFlowMap[terminal]) {
       pqload.set_Pnom(svPowerFlowMap[terminal]->p.value);
       pqload.set_Qnom(svPowerFlowMap[terminal]->q.value);
     }
-  //  (this->configManager.household_parameters.use_households == true && this->configManager.household_parameters.type == "type1")
-  } else if(this->configManager.pqload_parameters.use_profiles == true){
-    if(this->configManager.pqload_parameters.type == 1){
-      pqload.set_PQLoadType(PQLoadType::Profile);
-    } else if (this->configManager.pqload_parameters.type == 2){
-      pqload.set_PQLoadType(PQLoadType::NormProfile);
 
-      if(this->configManager.gs.apply_Neplan_fix == true && svPowerFlowMap[terminal]){
-        pqload.set_Pnom(svPowerFlowMap[terminal]->p.value);
-        pqload.set_Qnom(svPowerFlowMap[terminal]->q.value);
-      }
+  } else if(this->configManager.pqload_parameters.type == 2){
+
+      pqload.set_PQLoadType(PQLoadType::Profile);
+
+  } else if(this->configManager.pqload_parameters.type == 3){
+
+    pqload.set_PQLoadType(PQLoadType::NormProfile);
+    if(this->configManager.gs.apply_Neplan_fix == true && svPowerFlowMap[terminal]){
+      pqload.set_Pnom(svPowerFlowMap[terminal]->p.value);
+      pqload.set_Qnom(svPowerFlowMap[terminal]->q.value);
     }
+
   }
 
   pqload.set_name(name_in_modelica(energy_consumer->name));
@@ -650,8 +648,7 @@ PQLoad CIMObjectHandler::EnergyConsumerHandler(const TPNodePtr tp_node, const Te
     pqload.set_profileFileName(configManager.pqload_parameters.profile_filename);
   }
 
-  for (diagram_it = energy_consumer->DiagramObjects.begin();
-           diagram_it!=energy_consumer->DiagramObjects.end();
+  for (diagram_it = energy_consumer->DiagramObjects.begin(); diagram_it!=energy_consumer->DiagramObjects.end();
            ++diagram_it) {
 
     _t_points = this->calculate_average_position();
@@ -659,37 +656,27 @@ PQLoad CIMObjectHandler::EnergyConsumerHandler(const TPNodePtr tp_node, const Te
     pqload.annotation.placement.transformation.origin.y = _t_points.yPosition;
     pqload.annotation.placement.transformation.rotation = (*diagram_it)->rotation.value;
 
-    if (this->configManager.household_parameters.use_households == false &&
-        this->configManager.pqload_parameters.use_profiles == false ) {
-
+    if(this->configManager.household_parameters.use_households == false){
       if (pqload.sequenceNumber() == 0 || pqload.sequenceNumber() == 1) {
 
-        if (pqload.PQLoadType() == PQLoadType::Standard) {
-
+        if (this->configManager.pqload_parameters.type == 1 && pqload.PQLoadType() == PQLoadType::Standard) {
           ctemplate::TemplateDictionary *pqLoad_dict = dict->AddIncludeDictionary("PQLOAD_DICT");
           pqLoad_dict->SetFilename(this->configManager.ts.directory_path + "resource/PQLoad.tpl");
           pqload.set_template_values(pqLoad_dict);
-        }
-      }
 
-    } else if (this->configManager.pqload_parameters.use_profiles == true){
-        if (pqload.sequenceNumber()==0 || pqload.sequenceNumber()==1) {
-
-          if(this->configManager.pqload_parameters.type == 1 && pqload.PQLoadType() == PQLoadType::Profile){
-
+        } else if(this->configManager.pqload_parameters.type == 2 && pqload.PQLoadType() == PQLoadType::Profile){
           ctemplate::TemplateDictionary *pqLoad_dict = dict->AddIncludeDictionary("PQLOAD_PROFILE_DICT");
           pqLoad_dict->SetFilename(this->configManager.ts.directory_path + "resource/PQLoadProfile.tpl");
           pqload.set_template_values(pqLoad_dict);
 
-          } else if(this->configManager.pqload_parameters.type == 2 && pqload.PQLoadType() == PQLoadType::NormProfile){
-
-            ctemplate::TemplateDictionary *pqLoad_dict = dict->AddIncludeDictionary("PQLOAD_NORM_PROFILE_DICT");
-            pqLoad_dict->SetFilename(this->configManager.ts.directory_path + "resource/PQLoadNormProfile.tpl");
-            pqload.set_template_values(pqLoad_dict);
-          }
+        } else if(this->configManager.pqload_parameters.type == 3 && pqload.PQLoadType() == PQLoadType::NormProfile){
+          ctemplate::TemplateDictionary *pqLoad_dict = dict->AddIncludeDictionary("PQLOAD_NORM_PROFILE_DICT");
+          pqLoad_dict->SetFilename(this->configManager.ts.directory_path + "resource/PQLoadNormProfile.tpl");
+          pqload.set_template_values(pqLoad_dict);
         }
       }
     }
+  }
   return pqload;
 }
 
@@ -760,7 +747,7 @@ SolarGenerator CIMObjectHandler::SynchronousMachineHandlerType2(const TPNodePtr 
     solar_generator.annotation.placement.transformation.rotation = (*diagram_it)->rotation.value;
 
     if (this->configManager.wind_gen_parameters.enable) {
-      if (this->configManager.household_parameters.use_households==false) {
+      if (this->configManager.household_parameters.use_households == false) {
 
         if (solar_generator.sequenceNumber()==0 || solar_generator.sequenceNumber()==1) {
           ctemplate::TemplateDictionary *solar_generator_dict = dict->AddIncludeDictionary(

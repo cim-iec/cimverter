@@ -83,8 +83,7 @@ typedef struct RxLineSettings {
 /// PQLoad settings in Config.cfg
 typedef struct PQLoadSettings {
   bool enable;                      /// enable PQLoad settings
-  bool use_profiles;                /// use PQLoadProfile instead of PQLoad
-  int type;                         /// if using profiles, type 1:PQLoadProfile, 2:PQLoadNormProfile;
+  int type;                         ///1:PQLoad, type 2:PQLoadProfile, 3:PQLoadNormProfile
   std::string profile_name;
   std::string profile_filename;
   AnnotationSettings annotation;
@@ -94,7 +93,7 @@ typedef struct PQLoadSettings {
 /// ZLoad settings in Config.cfg
 typedef struct ZLoadSettings {
   bool enable;                      /// enable ZLoad settings
-  bool use_profiles;
+  int type;
   std::string profile_name;
   std::string profile_filename;
   AnnotationSettings annotation;
@@ -135,7 +134,6 @@ typedef struct HouseholdSettings {
   bool enable;                      /// enable Household settings
   std::string type;                 /// Household type: type1, type2
   bool use_households;              /// use Household instead of PQLoad, SolarGenerator and Battery
-  int load_type;                    /// Parameter Integer Load_Type: 1, 2, 3
   AnnotationSettings annotation;
 
 } HouseholdSettings;

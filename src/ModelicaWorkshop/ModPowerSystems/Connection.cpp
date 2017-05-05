@@ -42,54 +42,28 @@ Connection::Connection(const BusBar* busbar, const PQLoad* pq_load): Connection(
 
   this->set_connected(pq_load->is_connected());//electrical connected?
 
-  if(pq_load->PQLoadType() == PQLoadType::Standard){
-    //connection point's position auto adjust.
-    if (pq_load->annotation.placement.transformation.rotation == 0 || pq_load->annotation.placement.transformation.rotation == 359
+  //connection point's position auto adjust.
+  if (pq_load->annotation.placement.transformation.rotation == 0 || pq_load->annotation.placement.transformation.rotation == 359
         || pq_load->annotation.placement.transformation.rotation == 360) {
       _p2.x = pq_load->annotation.placement.transformation.origin.x;
       _p2.y = pq_load->annotation.placement.transformation.origin.y + pq_load->annotation.placement.transformation.extent.second.y;
-    } else if (pq_load->annotation.placement.transformation.rotation == 90 || pq_load->annotation.placement.transformation.rotation == -270) {
+  } else if (pq_load->annotation.placement.transformation.rotation == 90 || pq_load->annotation.placement.transformation.rotation == -270) {
       _p2.x = pq_load->annotation.placement.transformation.origin.x + pq_load->annotation.placement.transformation.extent.second.x;
       _p2.y = pq_load->annotation.placement.transformation.origin.y;
-    } else if (pq_load->annotation.placement.transformation.rotation == 180 || pq_load->annotation.placement.transformation.rotation == -180) {
+  } else if (pq_load->annotation.placement.transformation.rotation == 180 || pq_load->annotation.placement.transformation.rotation == -180) {
       _p2.x = pq_load->annotation.placement.transformation.origin.x;
       _p2.y = pq_load->annotation.placement.transformation.origin.y + pq_load->annotation.placement.transformation.extent.first.y;
-    } else if (pq_load->annotation.placement.transformation.rotation == -90 || pq_load->annotation.placement.transformation.rotation == 270) {
+  } else if (pq_load->annotation.placement.transformation.rotation == -90 || pq_load->annotation.placement.transformation.rotation == 270) {
       _p2.x = pq_load->annotation.placement.transformation.origin.x + pq_load->annotation.placement.transformation.extent.first.x;
       _p2.y = pq_load->annotation.placement.transformation.origin.y;
-    }
-
-    _port2 = pq_load->name();
-    _terminalId2 = "T";
-    _port2.append(".");
-    _port2.append(_terminalId2);
-
-    this->cal_middle_points(pq_load);
-
-  } else if(pq_load->PQLoadType() == PQLoadType::Profile){
-    //connection point's position auto adjust.
-    if (pq_load->annotation.placement.transformation.rotation == 0 || pq_load->annotation.placement.transformation.rotation == 359
-        || pq_load->annotation.placement.transformation.rotation == 360) {
-      _p2.x = pq_load->annotation.placement.transformation.origin.x;
-      _p2.y = pq_load->annotation.placement.transformation.origin.y + pq_load->annotation.placement.transformation.extent.second.y;
-    } else if (pq_load->annotation.placement.transformation.rotation == 90 || pq_load->annotation.placement.transformation.rotation == -270) {
-      _p2.x = pq_load->annotation.placement.transformation.origin.x + pq_load->annotation.placement.transformation.extent.second.x;
-      _p2.y = pq_load->annotation.placement.transformation.origin.y;
-    } else if (pq_load->annotation.placement.transformation.rotation == 180 || pq_load->annotation.placement.transformation.rotation == -180) {
-      _p2.x = pq_load->annotation.placement.transformation.origin.x;
-      _p2.y = pq_load->annotation.placement.transformation.origin.y + pq_load->annotation.placement.transformation.extent.first.y;
-    } else if (pq_load->annotation.placement.transformation.rotation == -90 || pq_load->annotation.placement.transformation.rotation == 270) {
-      _p2.x = pq_load->annotation.placement.transformation.origin.x + pq_load->annotation.placement.transformation.extent.first.x;
-      _p2.y = pq_load->annotation.placement.transformation.origin.y;
-    }
-
-    _port2 = pq_load->name();
-    _terminalId2 = "T";
-    _port2.append(".");
-    _port2.append(_terminalId2);
-
-    this->cal_middle_points(pq_load);
   }
+
+  _port2 = pq_load->name();
+  _terminalId2 = "T";
+  _port2.append(".");
+  _port2.append(_terminalId2);
+
+  this->cal_middle_points(pq_load);
 }
 
 /** \brief Connection between BusBar and Household

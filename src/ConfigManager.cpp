@@ -387,15 +387,6 @@ void ConfigManager::getPQLoadSettings() {
     std::cerr << "No transformation_extent settings in configuration file." << std::endl;
   }
   try {
-    /// Get the UseProfiles.
-    this->pqload_parameters.use_profiles = this->cfg.lookup("single_phase.pqload.use_profiles");
-    if (this->pqload_parameters.use_profiles)
-      std::cout << "Using UseProfiles" << std::endl;
-  }
-  catch (const SettingNotFoundException &nfex) {
-    std::cerr << "use_profiles setting mistake in configuration file." << std::endl;
-  }
-  try {
     /// Get the Profiles Type.
     this->pqload_parameters.type = this->cfg.lookup("single_phase.pqload.type");
     if (this->pqload_parameters.type)
@@ -436,13 +427,13 @@ void ConfigManager::getZLoadSettings() {
     std::cerr << "No transformation_extent settings in configuration file." << std::endl;
   }
   try {
-    // Get the UseProfiles.
-    this->zload_parameters.use_profiles = this->cfg.lookup("single_phase.zload.use_profiles");
-    if (zload_parameters.use_profiles)
-      std::cout << "Using UseProfiles" << std::endl;
+    /// Get the Profiles Type.
+    this->zload_parameters.type = this->cfg.lookup("single_phase.zload.type");
+    if (this->zload_parameters.type)
+      std::cout << "Using Profiles Type: " << this->zload_parameters.type << std::endl;
   }
   catch (const SettingNotFoundException &nfex) {
-    std::cerr << "use_profiles setting mistake in configuration file." << std::endl;
+    std::cerr << "Profile Type setting mistake in configuration file." << std::endl;
   }
 }
 
@@ -597,23 +588,4 @@ void ConfigManager::getHouseholdSettings() {
   catch (const SettingNotFoundException &nfex) {
     std::cerr << "UseHouseholds setting mistake in configuration file." << std::endl;
   }
-  try {
-    // Get the UseHouseholds.
-    this->household_parameters.load_type = this->cfg.lookup("single_phase.household.load_type");
-    if(this->household_parameters.load_type < 1 || this->household_parameters.load_type > 3){
-      throw -1;
-    }
-      if (this->household_parameters.load_type){
-      std::cout << "load_type:" << household_parameters.load_type << std::endl;
-      std::cout << "get household_parameters.load_type successfully!" << std::endl;
-      }
-
-  }
-  catch(int error_num)  {
-    std::cerr << ">>>>>>>>>>>wrong load_type number:" << household_parameters.load_type << "load_type should between 1-3"<< std::endl; exit(0);
-  }
-  catch (const SettingNotFoundException &nfex) {
-    std::cerr << "UseHouseholds setting mistake in configuration file." << std::endl;
-  }
 }
-

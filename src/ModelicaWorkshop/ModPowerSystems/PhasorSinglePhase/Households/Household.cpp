@@ -44,6 +44,14 @@ Household::Household(const Loads::PQLoad pq_load):_Type(HouseholdType::Type1) {
 
 Household::Household(const Loads::PQLoad pq_load,const Generations::SolarGenerator solar_generator):_Type(HouseholdType::Type2) {
 
+  if (pq_load.PQLoadType() == PQLoadType::Standard) {
+    this->set_Load_Type(1);
+  } else if (pq_load.PQLoadType() == PQLoadType::Profile){
+    this->set_Load_Type(2);
+  } else if(pq_load.PQLoadType() == PQLoadType::NormProfile){
+    this->set_Load_Type(3);
+  }
+
   this->set_name(pq_load.name());
   this->set_Household_Vnom(pq_load.Vnom());
   this->set_Load_Pnom(pq_load.Pnom());

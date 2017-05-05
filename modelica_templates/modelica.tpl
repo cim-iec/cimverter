@@ -26,7 +26,9 @@ annotation(Placement(visible = {{VISIBLE}}, transformation(extent = {{TRANS_EXTE
 
 {{>PQLOAD_DICT}}
 
-{{>PQLOADPROFILE_DICT}}
+{{>PQLOAD_PROFILE_DICT}}
+
+{{>PQLOAD_NORM_PROFILE_DICT}}
 
 {{>ZLOAD_DICT}}
 
@@ -39,8 +41,6 @@ annotation(Placement(visible = {{VISIBLE}}, transformation(extent = {{TRANS_EXTE
 {{>BATTERY_TYPE0_DICT}}
 
 {{>BATTERY_TYPE1_DICT}}
-
-{{>HOUSEHOLD_TYPE0_DICT}}
 
 {{>HOUSEHOLD_TYPE1_DICT}}
 
