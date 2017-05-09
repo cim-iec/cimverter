@@ -124,7 +124,7 @@ typedef struct SolarGeneratorSettings {
 /// Battery settings in Config.cfg
 typedef struct BatterySettings {
   bool enable;                      /// enable Battery settings
-  std::string type;                 /// Battery type: type0, type1
+  int type;                 /// Battery type: type0, type1
   AnnotationSettings annotation;
 
 } BatterySettings;

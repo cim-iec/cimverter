@@ -523,7 +523,7 @@ void ConfigManager::getBatterySettings() {
     std::cerr << "No visible settings in configuration file." << std::endl;
   }
   try {
-    this->battery_parameters.type = this->cfg.lookup("single_phase.battery.type").c_str();
+    this->battery_parameters.type = this->cfg.lookup("single_phase.battery.type");
     std::cout << "type: " << battery_parameters.type << std::endl;
   }
   catch (const SettingNotFoundException &nfex) {
