@@ -7,24 +7,26 @@
 
 /**\brief Macro for transformation.extent setting
  */
-#define  SET_TRANS_EXTENT(component, type_str) \
-                      component.annotation.placement.transformation.extent.first.x = \
-                      configManager.type_str##_parameters.annotation.transformation_extent[0]; \
-                      component.annotation.placement.transformation.extent.first.y = \
-                      configManager.type_str##_parameters.annotation.transformation_extent[1]; \
-                      component.annotation.placement.transformation.extent.second.x = \
-                      configManager.type_str##_parameters.annotation.transformation_extent[2]; \
-                      component.annotation.placement.transformation.extent.second.y = \
-                      configManager.type_str##_parameters.annotation.transformation_extent[3]; \
+#define  SET_TRANS_EXTENT(component, type_str)                                                  \
+                      component.annotation.placement.transformation.extent.first.x =            \
+                      configManager.type_str##_parameters.annotation.transformation_extent[0];  \
+                      component.annotation.placement.transformation.extent.first.y =            \
+                      configManager.type_str##_parameters.annotation.transformation_extent[1];  \
+                      component.annotation.placement.transformation.extent.second.x =           \
+                      configManager.type_str##_parameters.annotation.transformation_extent[2];  \
+                      component.annotation.placement.transformation.extent.second.y =           \
+                      configManager.type_str##_parameters.annotation.transformation_extent[3];  \
 
 /**\brief Macro for transformation.extent setting
  */
-#define  FIX_NEPLAN_VOLTAGE(node, component) \
-                    if (node->BaseVoltage->name.find("LV")!=std::string::npos || node->BaseVoltage->name.find("V")!=std::string::npos ) { \
-                      component.set_Vnom(node->BaseVoltage->nominalVoltage.value*1000); \
-                    } else if (node->BaseVoltage->name.find("HV")!=std::string::npos || node->BaseVoltage->name.find("kV")!=std::string::npos || \
-                        node->BaseVoltage->name.find("KV")!=std::string::npos) { \
-                          component.set_Vnom(node->BaseVoltage->nominalVoltage.value); \
+#define  FIX_NEPLAN_VOLTAGE(node, component)                                                    \
+                    if (node->BaseVoltage->name.find("LV")!=std::string::npos ||                \
+                      node->BaseVoltage->name.find("V")!=std::string::npos ) {                  \
+                      component.set_Vnom(node->BaseVoltage->nominalVoltage.value*1000);         \
+                    } else if (node->BaseVoltage->name.find("HV")!=std::string::npos ||         \
+                      node->BaseVoltage->name.find("kV")!=std::string::npos ||                  \
+                      node->BaseVoltage->name.find("KV")!=std::string::npos) {                  \
+                      component.set_Vnom(node->BaseVoltage->nominalVoltage.value);              \
                     } else { component.set_Vnom(node->BaseVoltage->nominalVoltage.value*1000);} \
 
 /**
@@ -134,6 +136,7 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::vector<std::string> args) {
 
       for (terminal_it = tp_node->Terminal.begin(); terminal_it!=tp_node->Terminal.end(); ++terminal_it) {
 
+        //ConnectivityNode no use for NEPLAN
         if (auto *connectivity_node = dynamic_cast<ConnectivityNodePtr>((*terminal_it)->ConnectivityNode)) {
 
           ConnectivityNode connectivity_Node = this->ConnectiviyNodeHandler(tp_node, (*terminal_it),
@@ -173,7 +176,6 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::vector<std::string> args) {
             connectionQueue.push(conn);
           }
         } else if (auto *battery_storage = dynamic_cast<BatteryStoragePtr>((*terminal_it)->ConductingEquipment)){
-            std::cout<< "find Battery Storage!" << std::endl;
             Battery battery = this->BatteryStorageHandler(tp_node, (*terminal_it), battery_storage, dict);
             Connection conn(&busbar, &battery);
             connectionQueue.push(conn);
