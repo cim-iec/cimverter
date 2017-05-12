@@ -1357,8 +1357,8 @@
   <cim:DiagramObjectPoint rdf:ID="_0ff5edbf-7995-4c2b-94f4-60334177d2fb">
     <cim:DiagramObjectPoint.sequenceNumber>1</cim:DiagramObjectPoint.sequenceNumber>
     <cim:DiagramObjectPoint.DiagramObject rdf:resource="#_0bs97c8c-2dc7-4462-a162-04e96594895f"/>
-    <cim:DiagramObjectPoint.xPosition>202.000000</cim:DiagramObjectPoint.xPosition>
-    <cim:DiagramObjectPoint.yPosition>131.800000</cim:DiagramObjectPoint.yPosition>
+    <cim:DiagramObjectPoint.xPosition>222.000000</cim:DiagramObjectPoint.xPosition>
+    <cim:DiagramObjectPoint.yPosition>171.800000</cim:DiagramObjectPoint.yPosition>
   </cim:DiagramObjectPoint>
   <cim:NameType rdf:ID="_34945b1c-4924-4a17-8463-c0851de4ae4f">
     <cim:NameType.name>description</cim:NameType.name>
