@@ -7052,7 +7052,7 @@
     <cim:DiagramObjectPoint.yPosition>37.800000</cim:DiagramObjectPoint.yPosition>
   </cim:DiagramObjectPoint>
   <cim:DiagramObject rdf:ID="_bs1dc307-65db-4a48-9c0b-98001c7aff01">
-    <cim:DiagramObject.rotation>90</cim:DiagramObject.rotation>
+    <cim:DiagramObject.rotation>0</cim:DiagramObject.rotation>
     <cim:DiagramObject.IdentifiedObject rdf:resource="#BS7"/>
     <cim:DiagramObject.Diagram rdf:resource="#_fe354793-9c44-4424-9b99-f2ec4f66a751"/>
   </cim:DiagramObject>
