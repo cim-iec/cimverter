@@ -65,9 +65,9 @@
     <cim:Equipment.aggregate>false</cim:Equipment.aggregate>
     <cim:Equipment.EquipmentContainer rdf:resource="#_8bbd7e74-ae20-4dce-8780-c20f8e18c2e0"/>
     <cim:BatteryStorage.capacity>5000</cim:BatteryStorage.capacity>
-    <cim:BatteryStorage.nominalP>30.0</cim:BatteryStorage.nominalP>
-    <cim:BatteryStorage.nominalQ>40.0</cim:BatteryStorage.nominalQ>
-    <cim:BatteryStorage.ratedS>50.0</cim:BatteryStorage.ratedS>
+    <cim:BatteryStorage.nominalP>5000</cim:BatteryStorage.nominalP>
+    <cim:BatteryStorage.nominalQ>0</cim:BatteryStorage.nominalQ>
+    <cim:BatteryStorage.ratedS>5000</cim:BatteryStorage.ratedS>
     <cim:BatteryStorage.ratedPowerFactor>1</cim:BatteryStorage.ratedPowerFactor>
     <cim:BatteryStorage.ratedU>400</cim:BatteryStorage.ratedU>
     <cim:BatteryStorage.ElectricalCapacity rdf:resource="#_00ee-025f-48f6-a79b-597f4232325"/>
