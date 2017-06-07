@@ -165,7 +165,7 @@ class Household : public ModBaseClass {
   //Basis Parameters
   double _Household_Vnom = 400; ///nominal voltage of household;
   double _Load_Pnom = 2000;     ///nominal active power of PQ load
-  double _Load_Qnom = 0.0;      ///nominal reactive power of PQ load
+  double _Load_Qnom = 0;      ///nominal reactive power of PQ load
 
 
   modelicaUnit _Household_Vnom_displayUnit = modelicaUnit::W;

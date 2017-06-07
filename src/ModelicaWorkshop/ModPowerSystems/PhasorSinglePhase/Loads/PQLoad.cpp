@@ -37,6 +37,10 @@ PQLoad::PQLoad(const PQLoad &rhs):ModBaseClass(rhs) {
     this->_Qnom_displayUnit = rhs._Qnom_displayUnit;
 
   } else if(this->_Type == PQLoadType::Profile) {
+    this->_Pnom = rhs._Pnom;
+    this->_Qnom = rhs._Qnom;
+    this->_Pnom_displayUnit = rhs._Pnom_displayUnit;
+    this->_Qnom_displayUnit = rhs._Qnom_displayUnit;
     this->_enableOutputPload = rhs._enableOutputPload;
     this->_profileFileName = rhs._profileFileName;
     this->_profileName = rhs._profileName;
@@ -68,6 +72,10 @@ PQLoad& PQLoad::operator=(const PQLoad &rhs) {
     this->_Qnom_displayUnit = rhs._Qnom_displayUnit;
 
   } else if(this->_Type == PQLoadType::Profile) {
+    this->_Pnom = rhs._Pnom;
+    this->_Qnom = rhs._Qnom;
+    this->_Pnom_displayUnit = rhs._Pnom_displayUnit;
+    this->_Qnom_displayUnit = rhs._Qnom_displayUnit;
     this->_enableOutputPload = rhs._enableOutputPload;
     this->_profileFileName = rhs._profileFileName;
     this->_profileName = rhs._profileName;

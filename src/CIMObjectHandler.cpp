@@ -622,23 +622,18 @@ PQLoad CIMObjectHandler::EnergyConsumerHandler(const TPNodePtr tp_node, const Te
   if (this->configManager.pqload_parameters.type == 1 ) {
 
     pqload.set_PQLoadType(PQLoadType::Standard);
-    if (this->configManager.gs.apply_Neplan_fix == true && svPowerFlowMap[terminal]) {
-      pqload.set_Pnom(svPowerFlowMap[terminal]->p.value);
-      pqload.set_Qnom(svPowerFlowMap[terminal]->q.value);
-    }
 
   } else if(this->configManager.pqload_parameters.type == 2){
 
       pqload.set_PQLoadType(PQLoadType::Profile);
+      if(this->configManager.gs.apply_Neplan_fix == true && svPowerFlowMap[terminal]){
+        pqload.set_Pnom(svPowerFlowMap[terminal]->p.value);
+        pqload.set_Qnom(svPowerFlowMap[terminal]->q.value);
+      }
 
   } else if(this->configManager.pqload_parameters.type == 3){
 
     pqload.set_PQLoadType(PQLoadType::NormProfile);
-    if(this->configManager.gs.apply_Neplan_fix == true && svPowerFlowMap[terminal]){
-      pqload.set_Pnom(svPowerFlowMap[terminal]->p.value);
-      pqload.set_Qnom(svPowerFlowMap[terminal]->q.value);
-    }
-
   }
 
   pqload.set_name(name_in_modelica(energy_consumer->name));

@@ -34,6 +34,8 @@ Household::Household(const Loads::PQLoad pq_load):_Type(HouseholdType::Type1) {
 
   this->set_name(pq_load.name());
   this->set_Household_Vnom(pq_load.Vnom());
+  this->set_Load_Pnom(pq_load.Pnom());
+  this->set_Load_Qnom(pq_load.Qnom());
   this->set_sequenceNumber(pq_load.sequenceNumber());
   this->set_connected(pq_load.is_connected());
   this->annotation.placement.visible = true;
@@ -152,8 +154,6 @@ bool Household::set_template_values(ctemplate::TemplateDictionary *dictionary) {
           dictionary->AddSectionDictionary("LOADTYPE1_SECTION");
           dictionary->SetValue("NAME", this->name());
           dictionary->SetFormattedValue("HOUSEHOLD_VNOM", "%.3f", this->Household_Vnom());
-          dictionary->SetFormattedValue("LOAD_PNOM", "%.3f", this->Load_Pnom());
-          dictionary->SetFormattedValue("LOAD_QNOM", "%.3f", this->Load_Qnom());
           dictionary->SetIntValue("LOAD_TYPE", this->Load_Type());
           dictionary->ShowSection("LOADTYPE1_SECTION");
           break;
@@ -162,6 +162,8 @@ bool Household::set_template_values(ctemplate::TemplateDictionary *dictionary) {
           dictionary->AddSectionDictionary("LOADTYPE2_SECTION");
           dictionary->SetValue("NAME", this->name());
           dictionary->SetFormattedValue("HOUSEHOLD_VNOM", "%.3f", this->Household_Vnom());
+          dictionary->SetFormattedValue("LOAD_PNOM", "%.3f", this->Load_Pnom());
+          dictionary->SetFormattedValue("LOAD_QNOM", "%.3f", this->Load_Qnom());
           dictionary->SetIntValue("LOAD_TYPE", this->Load_Type());
           dictionary->SetValue("LOAD_PROFILE_NAME", this->Load_ProfileName());
           dictionary->SetValue("LOAD_PROFILE_FILENAME", this->Load_ProfileFileName());
@@ -173,8 +175,6 @@ bool Household::set_template_values(ctemplate::TemplateDictionary *dictionary) {
           dictionary->ShowSection("LOADTYPE3_SECTION");
           dictionary->SetValue("NAME", this->name());
           dictionary->SetFormattedValue("HOUSEHOLD_VNOM", "%.3f", this->Household_Vnom());
-          dictionary->SetFormattedValue("LOAD_PNOM", "%.3f", this->Load_Pnom());
-          dictionary->SetFormattedValue("LOAD_QNOM", "%.3f", this->Load_Qnom());
           dictionary->SetIntValue("LOAD_TYPE", this->Load_Type());
           dictionary->SetValue("LOAD_PROFILE_NAME", this->Load_ProfileName());
           dictionary->SetValue("LOAD_PROFILE_FILENAME", this->Load_ProfileFileName());
@@ -190,8 +190,6 @@ bool Household::set_template_values(ctemplate::TemplateDictionary *dictionary) {
          dictionary->AddSectionDictionary("LOADTYPE1_SECTION");
          dictionary->SetValue("NAME", this->name());
          dictionary->SetFormattedValue("HOUSEHOLD_VNOM", "%.3f", this->Household_Vnom());
-         dictionary->SetFormattedValue("LOAD_PNOM", "%.3f", this->Load_Pnom());
-         dictionary->SetFormattedValue("LOAD_QNOM", "%.3f", this->Load_Qnom());
          dictionary->SetIntValue("LOAD_TYPE", this->Load_Type());
 
          dictionary->SetFormattedValue("PV_PNOM", "%.3f", this->PV_Pnom());
@@ -207,6 +205,8 @@ bool Household::set_template_values(ctemplate::TemplateDictionary *dictionary) {
          dictionary->AddSectionDictionary("LOADTYPE2_SECTION");
          dictionary->SetValue("NAME", this->name());
          dictionary->SetFormattedValue("HOUSEHOLD_VNOM", "%.3f", this->Household_Vnom());
+         dictionary->SetFormattedValue("LOAD_PNOM", "%.3f", this->Load_Pnom());
+         dictionary->SetFormattedValue("LOAD_QNOM", "%.3f", this->Load_Qnom());
          dictionary->SetIntValue("LOAD_TYPE", this->Load_Type());
          dictionary->SetValue("LOAD_PROFILE_NAME", this->Load_ProfileName());
          dictionary->SetValue("LOAD_PROFILE_FILENAME", this->Load_ProfileFileName());
@@ -224,8 +224,6 @@ bool Household::set_template_values(ctemplate::TemplateDictionary *dictionary) {
          dictionary->AddSectionDictionary("LOADTYPE3_SECTION");
          dictionary->SetValue("NAME", this->name());
          dictionary->SetFormattedValue("HOUSEHOLD_VNOM", "%.3f", this->Household_Vnom());
-         dictionary->SetFormattedValue("LOAD_PNOM", "%.3f", this->Load_Pnom());
-         dictionary->SetFormattedValue("LOAD_QNOM", "%.3f", this->Load_Qnom());
          dictionary->SetIntValue("LOAD_TYPE", this->Load_Type());
          dictionary->SetValue("LOAD_PROFILE_NAME", this->Load_ProfileName());
          dictionary->SetValue("LOAD_PROFILE_FILENAME", this->Load_ProfileFileName());
