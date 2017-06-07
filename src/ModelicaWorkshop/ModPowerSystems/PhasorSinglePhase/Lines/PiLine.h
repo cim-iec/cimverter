@@ -126,7 +126,7 @@ class PiLine : public ModelicaWorkshop::ModBaseClass {
   double _b = 0;  //Shunt Susceptance per km
   double _g = 0;  //Shunt Conductance per km
   double _Sr = 1;  //rated apparent power
-  double _Imax = 100;  //maximal current
+  double _Imax = 0;  //maximal current
 
   modelicaUnit _Imax_displayUnit = modelicaUnit::A;
   modelicaUnit _Sr_displayUnit = modelicaUnit::W;

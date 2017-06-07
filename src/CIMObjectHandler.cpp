@@ -505,7 +505,8 @@ CIMObjectHandler::ACLineSegmentHandler(const TPNodePtr tp_node, const TerminalPt
   if(OpLimitMap[ac_line]){
     for(OpLimitPtr op_limit: OpLimitMap[ac_line]->OperationalLimitValue){
       if(auto current_limit = dynamic_cast<CurrentLimitPtr>(op_limit)){
-        piline.set_Imax(current_limit->value.value);
+        if(current_limit->name == "Normal")
+          piline.set_Imax(current_limit->value.value);
       }
     }
   }
@@ -785,7 +786,7 @@ Battery CIMObjectHandler::BatteryStorageHandler(const TPNodePtr tp_node, const T
   battery.set_name(name_in_modelica(battery_storge->name));
   battery.set_sequenceNumber(terminal->sequenceNumber);
   battery.set_connected(terminal->connected);
-  battery.annotation.placement.visible = true;
+  battery.set_Cnom(battery_storge->capacity.value);
 
   if (this->configManager.battery_parameters.enable) {
     SET_TRANS_EXTENT(battery,battery);

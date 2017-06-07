@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:cim="http://iec.ch/TC57/2012/CIM-schema-cim16#" xmlns:md="http://iec.ch/TC57/61970-552/ModelDescription/1#" xmlns:entsoe="http://entsoe.eu/Secretariat/ProfileExtension/2#" xmlns:neplan="http://www.neplan.ch#">
-  <md:FullModel rdf:about="urn:uuid:8eb22573-481d-47d1-af73-9d8cafddbe61">
-    <md:Model.created>2017-02-13T16:47:18</md:Model.created>
+  <md:FullModel rdf:about="urn:uuid:43175905-20e2-4540-9a8c-6badd01d9181">
+    <md:Model.created>2017-06-01T12:15:42</md:Model.created>
     <neplan:Model.createdBy>NEPLAN by Busarello + Cott + Partner AG, Switzerland</neplan:Model.createdBy>
-    <md:Model.scenarioTime>2017-02-13T16:47:11</md:Model.scenarioTime>
+    <md:Model.scenarioTime>2017-06-01T12:15:33</md:Model.scenarioTime>
     <md:Model.version>7</md:Model.version>
-    <md:Model.DependentOn rdf:resource="urn:uuid:f7cbd99a-fdf7-4871-83df-0c9c0d015b71"/>
+    <md:Model.DependentOn rdf:resource="urn:uuid:c84a4619-2ccd-4263-b558-1c283c5f30ef"/>
     <md:Model.description>NEPLAN</md:Model.description>
     <md:Model.modelingAuthoritySet>FULL</md:Model.modelingAuthoritySet>
     <md:Model.profile>http://iec.ch/TC57/61970-456/Topology/3</md:Model.profile>
   </md:FullModel>
-  <cim:NameType rdf:ID="_0232bfcb-1516-4236-802c-bbd022dc2e73">
+  <cim:NameType rdf:ID="_8de6efdd-8cd8-4be0-967d-c292d054115a">
     <cim:NameType.name>description</cim:NameType.name>
   </cim:NameType>
   <cim:TopologicalNode rdf:ID="N104">
