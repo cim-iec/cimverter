@@ -19,6 +19,7 @@ ConfigManager::~ConfigManager() {
 void ConfigManager::getAllSettings() {
 
   this->getGlobalSettings();
+  this->getUnitSettings();
   this->getFilesSettings();
   this->getSystemSettings();
   this->getSlackSettings();
@@ -73,6 +74,45 @@ void ConfigManager::getGlobalSettings(){
   }
   catch (const SettingNotFoundException &nfex) {
     std::cerr << "No apply_Neplan_fix settings in configuration file." << std::endl;
+  }
+}
+
+void ConfigManager::getUnitSettings() {
+  std::cout << "----------------Apply MEPLAN Unit fix-------------------" << std::endl;
+  try {
+    this->us.enable = this->cfg.lookup("apply_unit_fix.enable");
+    std::cout << "Unit Enable!" << std::endl;
+  }
+  catch (const SettingNotFoundException &nfex) {
+    std::cerr << "No unit settings in configuration file." << std::endl;
+  }
+  try {
+    this->us.voltage_unit = this->cfg.lookup("apply_unit_fix.voltage_unit").c_str();
+    std::cout << "voltage_unit:" << this->us.voltage_unit << std::endl;
+  }
+  catch (const SettingNotFoundException &nfex) {
+    std::cerr << "No voltage_unit settings in configuration file." << std::endl;
+  }
+  try {
+    this->us.current_unit = this->cfg.lookup("apply_unit_fix.current_unit").c_str();
+    std::cout << "current_unit:" << this->us.current_unit << std::endl;
+  }
+  catch (const SettingNotFoundException &nfex) {
+    std::cerr << "No current_unit settings in configuration file." << std::endl;
+  }
+  try {
+    this->us.active_power_unit = this->cfg.lookup("apply_unit_fix.active_power_unit").c_str();
+    std::cout << "active_power_unit:" << this->us.active_power_unit << std::endl;
+  }
+  catch (const SettingNotFoundException &nfex) {
+    std::cerr << "No active_power_unit settings in configuration file." << std::endl;
+  }
+  try {
+    this->us.reactive_power_unit = this->cfg.lookup("apply_unit_fix.reactive_power_unit").c_str();
+    std::cout << "reactive_power_unit:" << this->us.reactive_power_unit << std::endl;
+  }
+  catch (const SettingNotFoundException &nfex) {
+    std::cerr << "No reactive_power_unit settings in configuration file." << std::endl;
   }
 }
 

@@ -17,17 +17,19 @@
                       component.annotation.placement.transformation.extent.second.y =           \
                       configManager.type_str##_parameters.annotation.transformation_extent[3];  \
 
-/**\brief Macro for transformation.extent setting
+/**\brief Macro for NEPLAN Voltage unit fix
  */
-#define  FIX_NEPLAN_VOLTAGE(node, component)                                                    \
-                    if (node->BaseVoltage->name.find("LV")!=std::string::npos ||                \
-                      node->BaseVoltage->name.find("V")!=std::string::npos ) {                  \
-                      component.set_Vnom(node->BaseVoltage->nominalVoltage.value*1000);         \
-                    } else if (node->BaseVoltage->name.find("HV")!=std::string::npos ||         \
-                      node->BaseVoltage->name.find("kV")!=std::string::npos ||                  \
-                      node->BaseVoltage->name.find("KV")!=std::string::npos) {                  \
-                      component.set_Vnom(node->BaseVoltage->nominalVoltage.value);              \
-                    } else { component.set_Vnom(node->BaseVoltage->nominalVoltage.value*1000);} \
+#define FIX_NEPLAN_VOLTAGE(component)                                                           \
+                    if(this->configManager.us.voltage_unit == "V"){                             \
+                    component.set_Vnom(component.Vnom());                                       \
+                    } else if (this->configManager.us.voltage_unit == "kV") {                   \
+                    component.set_Vnom(component.Vnom()*1000);                                  \
+                    } else if(this->configManager.us.voltage_unit == "mV") {                    \
+                    component.set_Vnom(component.Vnom()*0.001);                                 \
+                    } else if(this->configManager.us.voltage_unit == "MV"){                     \
+                    component.set_Vnom(component.Vnom()*1000000);                               \
+                    }                                                                           \
+
 
 /**
  * Constructor
@@ -306,15 +308,19 @@ bool CIMObjectHandler::SystemSettingsHandler(const std::string filename, ctempla
  */
 BusBar CIMObjectHandler::TopologicalNodeHandler(const TPNodePtr tp_node, ctemplate::TemplateDictionary *dict) {
   BusBar busbar;
-  FIX_NEPLAN_VOLTAGE(tp_node, busbar);
   busbar.set_name(name_in_modelica(tp_node->name));
   busbar.annotation.placement.visible = true;
+  busbar.set_Vnom(tp_node->BaseVoltage->nominalVoltage.value);
+
+  if(this->configManager.us.enable){
+    FIX_NEPLAN_VOLTAGE(busbar);
+  }
 
   if (this->configManager.busbar_parameters.enable) {
     SET_TRANS_EXTENT(busbar,busbar);//Macro
     busbar.annotation.placement.visible = configManager.busbar_parameters.annotation.visible;
   }
-
+  busbar.set_Vnom_displayUnit(busbar.Vnom_displayUnit());
   // std::list<DiagramObjectPtr>::iterator diagram_it is class member!
   for (diagram_it = tp_node->DiagramObjects.begin(); diagram_it!=tp_node->DiagramObjects.end(); ++diagram_it) {
     _t_points = this->calculate_average_position();
@@ -340,6 +346,7 @@ BusBar CIMObjectHandler::TopologicalNodeHandler(const TPNodePtr tp_node, ctempla
 
 /**
  * In the TopologicalNode to
+ * find PQLoad in type1
  * find PQLoad, SolarGenerator, Battery which form HouseHold type2
  */
 bool CIMObjectHandler::HouseholdComponetsHandler(const TPNodePtr tp_node, ctemplate::TemplateDictionary *dict) {
@@ -422,8 +429,10 @@ ConnectivityNode CIMObjectHandler::ConnectiviyNodeHandler(const TPNodePtr tp_nod
                                                           const ConnectivityNodePtr connectivity_node,
                                                           ctemplate::TemplateDictionary *dict) {
   ConnectivityNode conn_node;
-  FIX_NEPLAN_VOLTAGE(tp_node, conn_node);
-
+  conn_node.set_Vnom(tp_node->BaseVoltage->nominalVoltage.value);
+  if(this->configManager.us.enable){
+    FIX_NEPLAN_VOLTAGE(conn_node);
+  }
   conn_node.set_name(name_in_modelica(connectivity_node->name));
   conn_node.annotation.placement.visible = true;
   conn_node.set_sequenceNumber(terminal->sequenceNumber);
@@ -455,15 +464,17 @@ ConnectivityNode CIMObjectHandler::ConnectiviyNodeHandler(const TPNodePtr tp_nod
 Slack CIMObjectHandler::ExternalNIHandler(const TPNodePtr tp_node, const TerminalPtr terminal, const ExNIPtr externalNI,
                                           ctemplate::TemplateDictionary *dict) {
   Slack slack;
-  FIX_NEPLAN_VOLTAGE(tp_node,slack);
 
   slack.set_name(name_in_modelica(externalNI->name));
   slack.set_sequenceNumber(terminal->sequenceNumber);
   slack.set_connected(terminal->connected);
   slack.annotation.placement.visible = true;
+  slack.set_Vnom(tp_node->BaseVoltage->nominalVoltage.value);
+  if(this->configManager.us.enable){
+    FIX_NEPLAN_VOLTAGE(slack);
+  }
 
   if (this->configManager.slack_parameters.enable) {
-
     SET_TRANS_EXTENT(slack,slack);
     slack.annotation.placement.visible = configManager.slack_parameters.annotation.visible;
   }
@@ -510,6 +521,18 @@ CIMObjectHandler::ACLineSegmentHandler(const TPNodePtr tp_node, const TerminalPt
       }
     }
   }
+  if(this->configManager.us.enable){
+    if(this->configManager.us.current_unit == "A"){
+      piline.set_Imax(piline.Imax());
+    } else if(this->configManager.us.current_unit == "kA"){
+        piline.set_Imax(piline.Imax()*1000);
+    } else if(this->configManager.us.current_unit == "mA"){
+      piline.set_Imax(piline.Imax()*0.001);
+    } else if(this->configManager.us.current_unit == "MA"){
+      piline.set_Imax(piline.Imax()*1000000);
+    }
+  }
+
 
   piline.set_sequenceNumber(terminal->sequenceNumber);
   piline.set_connected(terminal->connected);
@@ -558,27 +581,38 @@ Transformer CIMObjectHandler::PowerTransformerHandler(const TPNodePtr tp_node, c
        transformer_end_it!=power_trafo->PowerTransformerEnd.end();
        ++transformer_end_it) {
     if ((*transformer_end_it)->endNumber==1) {
-      if ((*transformer_end_it)->BaseVoltage->name.find("LV")!=std::string::npos || (*transformer_end_it)->BaseVoltage->name.find("V")!=std::string::npos ) {
-        trafo.set_Vnom1((*transformer_end_it)->BaseVoltage->nominalVoltage.value*1000);
-      } else if ((*transformer_end_it)->BaseVoltage->name.find("HV")!=std::string::npos || (*transformer_end_it)->BaseVoltage->name.find("kV")!=std::string::npos || (*transformer_end_it)->BaseVoltage->name.find("KV")!=std::string::npos) {
-        trafo.set_Vnom1((*transformer_end_it)->BaseVoltage->nominalVoltage.value);
-      } else {
-        trafo.set_Vnom1((*transformer_end_it)->BaseVoltage->nominalVoltage.value*1000);
-      }
+
       trafo.set_Sr((*transformer_end_it)->ratedS.value*1000000);
       trafo.set_r((*transformer_end_it)->r.value);
       trafo.set_x((*transformer_end_it)->x.value);
       trafo.set_b((*transformer_end_it)->b.value);
       trafo.calc_URr();
       trafo.calc_Ukr();
+
+      if(this->configManager.us.enable) {
+        if (this->configManager.us.voltage_unit == "V") {
+          trafo.set_Vnom1((*transformer_end_it)->BaseVoltage->nominalVoltage.value);
+        } else if (this->configManager.us.voltage_unit == "kV") {
+          trafo.set_Vnom1((*transformer_end_it)->BaseVoltage->nominalVoltage.value*1000);
+        } else if (this->configManager.us.voltage_unit == "mV") {
+          trafo.set_Vnom1((*transformer_end_it)->BaseVoltage->nominalVoltage.value*0.001);
+        } else if (this->configManager.us.voltage_unit == "MV") {
+          trafo.set_Vnom1((*transformer_end_it)->BaseVoltage->nominalVoltage.value*1000000);
+        }
+      }
+
     } else if ((*transformer_end_it)->endNumber==2) {
 
-      if ((*transformer_end_it)->BaseVoltage->name.find("LV")!=std::string::npos || (*transformer_end_it)->BaseVoltage->name.find("V")!=std::string::npos ) {
-        trafo.set_Vnom2((*transformer_end_it)->BaseVoltage->nominalVoltage.value*1000);
-      } else if ((*transformer_end_it)->BaseVoltage->name.find("HV")!=std::string::npos || (*transformer_end_it)->BaseVoltage->name.find("kV")!=std::string::npos || (*transformer_end_it)->BaseVoltage->name.find("KV")!=std::string::npos) {
-        trafo.set_Vnom2((*transformer_end_it)->BaseVoltage->nominalVoltage.value);
-      } else {
-        trafo.set_Vnom2((*transformer_end_it)->BaseVoltage->nominalVoltage.value*1000);
+      if(this->configManager.us.enable) {
+        if (this->configManager.us.voltage_unit == "V") {
+          trafo.set_Vnom2((*transformer_end_it)->BaseVoltage->nominalVoltage.value);
+        } else if (this->configManager.us.voltage_unit == "kV") {
+          trafo.set_Vnom2((*transformer_end_it)->BaseVoltage->nominalVoltage.value*1000);
+        } else if (this->configManager.us.voltage_unit == "mV") {
+          trafo.set_Vnom2((*transformer_end_it)->BaseVoltage->nominalVoltage.value*0.001);
+        } else if (this->configManager.us.voltage_unit == "MV") {
+          trafo.set_Vnom2((*transformer_end_it)->BaseVoltage->nominalVoltage.value*1000000);
+        }
       }
     }
   }
@@ -638,7 +672,31 @@ PQLoad CIMObjectHandler::EnergyConsumerHandler(const TPNodePtr tp_node, const Te
   }
 
   pqload.set_name(name_in_modelica(energy_consumer->name));
-  FIX_NEPLAN_VOLTAGE(tp_node,pqload);
+  pqload.set_Vnom(tp_node->BaseVoltage->nominalVoltage.value);
+  if(this->configManager.us.enable){
+    FIX_NEPLAN_VOLTAGE(pqload);
+
+    if(this->configManager.us.active_power_unit == "W"){
+      pqload.set_Pnom(pqload.Pnom());
+    } else if(this->configManager.us.active_power_unit == "kW"){
+      pqload.set_Pnom(pqload.Pnom()*1000);
+    } else if(this->configManager.us.active_power_unit == "mW"){
+      pqload.set_Pnom(pqload.Pnom()*0.001);
+    } else if(this->configManager.us.active_power_unit == "MW"){
+      pqload.set_Pnom(pqload.Pnom()*1000000);
+    }
+
+    if(this->configManager.us.reactive_power_unit == "var"){
+      pqload.set_Qnom(pqload.Qnom());
+    } else if(this->configManager.us.reactive_power_unit == "kvar"){
+      pqload.set_Qnom(pqload.Qnom()*1000);
+    } else if(this->configManager.us.reactive_power_unit == "mvar"){
+      pqload.set_Qnom(pqload.Qnom()*0.001);
+    } else if(this->configManager.us.reactive_power_unit == "Mvar"){
+      pqload.set_Qnom(pqload.Qnom()*1000000);
+    }
+
+  }
 
   pqload.set_name(name_in_modelica(energy_consumer->name));
   pqload.set_sequenceNumber(terminal->sequenceNumber);

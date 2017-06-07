@@ -27,11 +27,19 @@ class BusBar : public ModBaseClass {
   double Vnom() const {
     return _Vnom;
   };
+  void set_Vnom_displayUnit(modelicaUnit Vnom_displayUnit) {
+    this->_Vnom_displayUnit = Vnom_displayUnit;
+  };
+  modelicaUnit Vnom_displayUnit() const {
+    return _Vnom_displayUnit;
+  };
 
   bool set_template_values(ctemplate::TemplateDictionary *dictionary) override;
 
  private:
   double _Vnom = 0;//nominal Voltage
+  modelicaUnit _Vnom_displayUnit = modelicaUnit::V;
+
 };
 
 }/* namespace Connections */

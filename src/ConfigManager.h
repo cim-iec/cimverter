@@ -53,10 +53,21 @@ typedef struct AnnotationSettings {
   double transformation_extent[4];  /// Icon size
 } AnnotationSettings;
 
+/// default unit settings in Config.cfg
+typedef struct UnitSettings {
+  bool enable;
+  std::string voltage_unit;         /// Default unit of voltage
+  std::string current_unit;         /// Default unit of current
+  std::string active_power_unit;    /// Default unit of active power
+  std::string reactive_power_unit;  /// Default unit of reactive power
+} UnitSettings;
+
 /// slack settings in Config.cfg
 typedef struct SlackSettings {
   bool enable;                      /// enable slack settings
   AnnotationSettings annotation;    /// annotation settings
+  UnitSettings unit;
+
 } SlackSettings;
 
 /// BusBar settings in Config.cfg
@@ -150,6 +161,7 @@ class ConfigManager {
   virtual ~ConfigManager();
 
   GlobalSettings  gs;
+  UnitSettings us;
   TemplateSettings ts;
   FilesSettings fs;
   SystemSettings ss;
@@ -172,6 +184,8 @@ class ConfigManager {
   void getGlobalSettings();
 
   void getConfigFiles();
+
+  void getUnitSettings();
 
   void getFilesSettings();
 
