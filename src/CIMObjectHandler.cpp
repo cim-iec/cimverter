@@ -334,12 +334,12 @@ BusBar CIMObjectHandler::TopologicalNodeHandler(const TPNodePtr tp_node, ctempla
   }
 
   //BusBarSection used in Cimphony
-  std::list<TerminalPtr>::iterator terminal_it;
-  for (terminal_it = tp_node->Terminal.begin(); terminal_it!=tp_node->Terminal.end(); ++terminal_it) {
-    if (auto *busbar_section = dynamic_cast<BusBarSectionPtr>((*terminal_it)->ConductingEquipment)) {
-      this->BusBarSectionHandler(busbar_section, busbar, dict);
-    }
-  }
+//  std::list<TerminalPtr>::iterator terminal_it;
+//  for (terminal_it = tp_node->Terminal.begin(); terminal_it!=tp_node->Terminal.end(); ++terminal_it) {
+//    if (auto *busbar_section = dynamic_cast<BusBarSectionPtr>((*terminal_it)->ConductingEquipment)) {
+//      this->BusBarSectionHandler(busbar_section, busbar, dict);
+//    }
+//  }
 
   return busbar;
 }
