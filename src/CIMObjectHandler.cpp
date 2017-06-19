@@ -909,10 +909,10 @@ DiagramObjectPoint CIMObjectHandler::calculate_average_position() {
 
   std::list<DiagramObjectPointPtr>::iterator points_it;
   for (points_it = (*diagram_it)->DiagramObjectPoints.begin();
-       points_it!=(*diagram_it)->DiagramObjectPoints.end();
+       points_it!= (*diagram_it)->DiagramObjectPoints.end();
        ++points_it) {
-    t_points.xPosition += (*points_it)->xPosition;
-    t_points.yPosition += (*points_it)->yPosition;
+    t_points.xPosition = (*points_it)->xPosition + t_points.xPosition;
+    t_points.yPosition = (*points_it)->yPosition + t_points.yPosition;
   }
 
   std::size_t size = (*diagram_it)->DiagramObjectPoints.size();
