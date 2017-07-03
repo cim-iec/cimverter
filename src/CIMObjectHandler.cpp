@@ -586,8 +586,6 @@ Transformer CIMObjectHandler::PowerTransformerHandler(const TPNodePtr tp_node, c
       trafo.set_r((*transformer_end_it)->r.value);
       trafo.set_x((*transformer_end_it)->x.value);
       trafo.set_b((*transformer_end_it)->b.value);
-      trafo.calc_URr();
-      trafo.calc_Ukr();
 
       if(this->configManager.us.enable) {
         if (this->configManager.us.voltage_unit == "V") {
@@ -601,6 +599,20 @@ Transformer CIMObjectHandler::PowerTransformerHandler(const TPNodePtr tp_node, c
         }
       }
 
+      trafo.calc_URr();
+      trafo.calc_Ukr();
+      
+      /*
+      using namespace std;
+      cerr << "DEBUG: trafo._Sr = " << trafo.Sr() << endl;
+      cerr << "DEBUG: trafo._r = " << trafo.r() << endl;
+      cerr << "DEBUG: trafo._x = " << trafo.x() << endl;
+      cerr << "DEBUG: trafo._z = " << trafo.z() << endl;
+      cerr << "DEBUG: trafo._Vnom1 = " << trafo.Vnom1() << endl;
+      cerr << "DEBUG: trafo._URr = " << trafo.URr() << endl;
+      cerr << "DEBUG: trafo._Ukr = " << trafo.Ukr() << endl;
+      */
+    
     } else if ((*transformer_end_it)->endNumber==2) {
 
       if(this->configManager.us.enable) {
