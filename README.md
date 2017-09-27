@@ -51,7 +51,7 @@ In case of **commercial** use you are required to negotiate a proper license mod
 
 #### Get CIM-XML-Parser and GridData submodule:
 
-    git submodule update --init --recursive
+    git submodule update --init --recursive --remote
 
 ##### if it doesn't work (Release Branch Default)
 
