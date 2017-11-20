@@ -6,10 +6,10 @@ set(CIM2Mod_MINOR_VERSION 3)
 set(CIM2Mod_PATCH_VERSION 1)
 set(CIM2Mod_VERSION ${CIM2Mod_MAJOR_VERSION}.${CIM2Mod_MINOR_VERSION}.${CIM2Mod_PATCH_VERSION})
 
-# Find CIMParser
-add_subdirectory(${PROJECT_SOURCE_DIR}/CIM-XML-Parser ${PROJECT_SOURCE_DIR}/build/CIMParser)
-# find_package(CIMParser REQUIRED)
-# include_directories( ${PROJECT_SOURCE_DIR}/build/CIMParser/ )
+# Find libcimpp
+add_subdirectory(${PROJECT_SOURCE_DIR}/libcimpp ${PROJECT_SOURCE_DIR}/build/libcimpp)
+# find_package(libcimpp REQUIRED)
+# include_directories( ${PROJECT_SOURCE_DIR}/build/libcimpp/ )
 
 # Find Boost
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}")
@@ -49,7 +49,7 @@ file(GLOB_RECURSE SRC_LIST ${PROJECT_SOURCE_DIR}/src/*.cpp)
 # compile and link
 set(CMAKE_CXX_COMPILER "clang++")
 add_executable(${PROJECT_NAME} ${SRC_LIST} src/main.cpp)
-target_link_libraries(CIM2Mod CIMParser ${Boost_LIBRARIES} ${CTEMPLATE_LIBRARIES} ${CONFIG++_LIBRARY})
+target_link_libraries(CIM2Mod libcimpp ${Boost_LIBRARIES} ${CTEMPLATE_LIBRARIES} ${CONFIG++_LIBRARY})
 target_compile_features(CIM2Mod PUBLIC cxx_range_for)
 
 # Configure Doxyfile

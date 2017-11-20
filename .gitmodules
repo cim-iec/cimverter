@@ -1,9 +1,3 @@
-[submodule "GridData"]
-	path = GridData
-        url = https://git.rwth-aachen.de/PowerSystemSimulation/GridData.git
-        branch = master
-[submodule "CIM-XML-Parser"]
-	path = CIM-XML-Parser
-	url = https://git.rwth-aachen.de/CIM-XML-Interface/CIM-XML-Parser.git
-	branch = master
-
+[submodule "libcimpp"]
+	path = libcimpp
+	url = git@git.rwth-aachen.de:acs/core/cim/cimpp/libcimpp.git
