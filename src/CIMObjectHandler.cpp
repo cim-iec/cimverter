@@ -177,10 +177,10 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::vector<std::string> args) {
             Connection conn(&busbar, &solar_generator);
             connectionQueue.push(conn);
           }
-//        } else if (auto *battery_storage = dynamic_cast<BatteryStoragePtr>((*terminal_it)->ConductingEquipment)){
-//            Battery battery = this->BatteryStorageHandler(tp_node, (*terminal_it), battery_storage, dict);
-//            Connection conn(&busbar, &battery);
-//            connectionQueue.push(conn);
+        } else if (auto *battery_storage = dynamic_cast<BatteryStoragePtr>((*terminal_it)->ConductingEquipment)){
+            Battery battery = this->BatteryStorageHandler(tp_node, (*terminal_it), battery_storage, dict);
+            Connection conn(&busbar, &battery);
+           connectionQueue.push(conn);
 
         } else {
           if(args.size() == 2 && strcmp(args[1].c_str(), "--verbose") == 0) {
@@ -838,52 +838,52 @@ SolarGenerator CIMObjectHandler::SynchronousMachineHandlerType2(const TPNodePtr 
   return solar_generator;
 }
 
-//Battery CIMObjectHandler::BatteryStorageHandler(const TPNodePtr tp_node, const TerminalPtr terminal, const BatteryStoragePtr battery_storge,
-//                                                ctemplate::TemplateDictionary* dict){
-//
-//  Battery battery;
-//
-//  if (this->configManager.pqload_parameters.type == 0 ){
-//    battery.set_BatteryType(BatteryType::Type0);
-//  } else if(this->configManager.pqload_parameters.type == 1){
-//    battery.set_BatteryType(BatteryType::Type1);
-//  }
-//
-//  battery.set_name(name_in_modelica(battery_storge->name));
-//  battery.set_sequenceNumber(terminal->sequenceNumber);
-//  battery.set_connected(terminal->connected);
-//  battery.set_Cnom(battery_storge->capacity.value);
-//
-//  if (this->configManager.battery_parameters.enable) {
-//    SET_TRANS_EXTENT(battery,battery);
-//    battery.annotation.placement.visible = configManager.battery_parameters.annotation.visible;
-//  }
-//
-//  for (diagram_it = battery_storge->DiagramObjects.begin();
-//       diagram_it!=battery_storge->DiagramObjects.end();
-//       ++diagram_it) {
-//    _t_points = this->calculate_average_position();
-//    battery.annotation.placement.transformation.origin.x = _t_points.xPosition;
-//    battery.annotation.placement.transformation.origin.y = _t_points.yPosition;
-//    battery.annotation.placement.transformation.rotation = (*diagram_it)->rotation.value;
-//
-//    if (battery.sequenceNumber()==0 || battery.sequenceNumber()==1) {
-//      if (this->configManager.pqload_parameters.type == 0 && battery.BatteryType() == BatteryType::Type0) {
-//        ctemplate::TemplateDictionary *battery_dict = dict->AddIncludeDictionary("BATTERY_TYPE0_DICT");
-//        battery_dict->SetFilename(this->configManager.ts.directory_path + "resource/BatteryType0.tpl");
-//        battery.set_template_values(battery_dict);
-//
-//      } else if(this->configManager.pqload_parameters.type == 1 && battery.BatteryType() == BatteryType::Type1){
-//        ctemplate::TemplateDictionary *battery_dict = dict->AddIncludeDictionary("BATTERY_TYPE1_DICT");
-//        battery_dict->SetFilename(this->configManager.ts.directory_path + "resource/BatteryType1.tpl");
-//        battery.set_template_values(battery_dict);
-//      }
-//    }
-//  }
-//
-//  return battery;
-//
-//}
+Battery CIMObjectHandler::BatteryStorageHandler(const TPNodePtr tp_node, const TerminalPtr terminal, const BatteryStoragePtr battery_storge,
+                                                ctemplate::TemplateDictionary* dict){
+
+  Battery battery;
+
+  if (this->configManager.pqload_parameters.type == 0 ){
+    battery.set_BatteryType(BatteryType::Type0);
+  } else if(this->configManager.pqload_parameters.type == 1){
+    battery.set_BatteryType(BatteryType::Type1);
+ }
+
+  battery.set_name(name_in_modelica(battery_storge->name));
+  battery.set_sequenceNumber(terminal->sequenceNumber);
+  battery.set_connected(terminal->connected);
+  battery.set_Cnom(battery_storge->capacity.value);
+
+  if (this->configManager.battery_parameters.enable) {
+    SET_TRANS_EXTENT(battery,battery);
+    battery.annotation.placement.visible = configManager.battery_parameters.annotation.visible;
+  }
+
+  for (diagram_it = battery_storge->DiagramObjects.begin();
+       diagram_it!=battery_storge->DiagramObjects.end();
+       ++diagram_it) {
+    _t_points = this->calculate_average_position();
+    battery.annotation.placement.transformation.origin.x = _t_points.xPosition;
+    battery.annotation.placement.transformation.origin.y = _t_points.yPosition;
+    battery.annotation.placement.transformation.rotation = (*diagram_it)->rotation.value;
+
+    if (battery.sequenceNumber()==0 || battery.sequenceNumber()==1) {
+      if (this->configManager.pqload_parameters.type == 0 && battery.BatteryType() == BatteryType::Type0) {
+        ctemplate::TemplateDictionary *battery_dict = dict->AddIncludeDictionary("BATTERY_TYPE0_DICT");
+        battery_dict->SetFilename(this->configManager.ts.directory_path + "resource/BatteryType0.tpl");
+        battery.set_template_values(battery_dict);
+
+      } else if(this->configManager.pqload_parameters.type == 1 && battery.BatteryType() == BatteryType::Type1){
+        ctemplate::TemplateDictionary *battery_dict = dict->AddIncludeDictionary("BATTERY_TYPE1_DICT");
+        battery_dict->SetFilename(this->configManager.ts.directory_path + "resource/BatteryType1.tpl");
+        battery.set_template_values(battery_dict);
+      }
+    }
+  }
+
+  return battery;
+
+}
 
 
 /**
