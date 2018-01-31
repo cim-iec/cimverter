@@ -141,7 +141,7 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::vector<std::string> args) {
         //ConnectivityNode no use for NEPLAN
         if (auto *connectivity_node = dynamic_cast<ConnectivityNodePtr>((*terminal_it)->ConnectivityNode)) {
 
-          ConnectivityNode connectivity_Node = this->ConnectiviyNodeHandler(tp_node, (*terminal_it),
+          ConnectivityNode connectivity_Node = this->ConnectivityNodeHandler(tp_node, (*terminal_it),
                                                                             connectivity_node, dict);
           Connection conn(&busbar, &connectivity_Node);
           connectionQueue.push(conn);
@@ -422,10 +422,10 @@ bool CIMObjectHandler::BusBarSectionHandler(const BusBarSectionPtr busbar_sectio
 }
 
 /**
- * ConnectiviyNode
- * Convert to ConnectiviyNode in Modelica
+ * ConnectivityNode
+ * Convert to ConnectivityNode in Modelica
  */
-ConnectivityNode CIMObjectHandler::ConnectiviyNodeHandler(const TPNodePtr tp_node, const TerminalPtr terminal,
+ConnectivityNode CIMObjectHandler::ConnectivityNodeHandler(const TPNodePtr tp_node, const TerminalPtr terminal,
                                                           const ConnectivityNodePtr connectivity_node,
                                                           ctemplate::TemplateDictionary *dict) {
   ConnectivityNode conn_node;
@@ -448,7 +448,7 @@ ConnectivityNode CIMObjectHandler::ConnectiviyNodeHandler(const TPNodePtr tp_nod
 
     if (conn_node.sequenceNumber()==0 || conn_node.sequenceNumber()==1) {
       ctemplate::TemplateDictionary *conn_node_dict = dict->AddIncludeDictionary("CONNECTIVITYNODE_DICT");
-      conn_node_dict->SetFilename(this->configManager.ts.directory_path + "resource/ConnectiviyNode.tpl");
+      conn_node_dict->SetFilename(this->configManager.ts.directory_path + "resource/ConnectivityNode.tpl");
       conn_node.set_template_values(conn_node_dict);
     }
   }
