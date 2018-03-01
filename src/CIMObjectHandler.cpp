@@ -438,6 +438,18 @@ ConnectivityNode CIMObjectHandler::ConnectivityNodeHandler(const TPNodePtr tp_no
   conn_node.set_sequenceNumber(terminal->sequenceNumber);
   conn_node.set_connected(terminal->connected);
 
+  if(connectivity_node->DiagramObjects.begin() == connectivity_node->DiagramObjects.end()){
+      std::cerr << "Missing Diagram Object for " << connectivity_node->name << " Default Position 0,0 \n";
+      conn_node.annotation.placement.transformation.origin.x = 0;
+      conn_node.annotation.placement.transformation.origin.y = 0;
+      conn_node.annotation.placement.transformation.rotation = 0;
+
+      if (conn_node.sequenceNumber()==0 || conn_node.sequenceNumber()==1) {
+          ctemplate::TemplateDictionary *conn_node_dict = dict->AddIncludeDictionary("CONNECTIVITYNODE_DICT");
+          conn_node_dict->SetFilename(this->configManager.ts.directory_path + "resource/ConnectivityNode.tpl");
+          conn_node.set_template_values(conn_node_dict);
+      }
+  }
   for (diagram_it = connectivity_node->DiagramObjects.begin();
        diagram_it!=connectivity_node->DiagramObjects.end();
        ++diagram_it) {
@@ -477,6 +489,18 @@ Slack CIMObjectHandler::ExternalNIHandler(const TPNodePtr tp_node, const Termina
   if (this->configManager.slack_parameters.enable) {
     SET_TRANS_EXTENT(slack,slack);
     slack.annotation.placement.visible = configManager.slack_parameters.annotation.visible;
+  }
+  if (externalNI->DiagramObjects.begin() == externalNI->DiagramObjects.end()){
+      std::cerr << "Missing Diagram Object for " << externalNI->name << " Default Position 0,0 \n";
+      slack.annotation.placement.transformation.origin.x = 0;
+      slack.annotation.placement.transformation.origin.y = 0;
+      slack.annotation.placement.transformation.rotation = 0;
+
+      if (slack.sequenceNumber()==0 || slack.sequenceNumber()==1) {
+          ctemplate::TemplateDictionary *slack_dict = dict->AddIncludeDictionary("SLACK_DICT");
+          slack_dict->SetFilename(this->configManager.ts.directory_path + "resource/Slack.tpl");
+          slack.set_template_values(slack_dict);
+      }
   }
 
   for (diagram_it = externalNI->DiagramObjects.begin(); diagram_it!=externalNI->DiagramObjects.end(); ++diagram_it) {
@@ -542,6 +566,19 @@ CIMObjectHandler::ACLineSegmentHandler(const TPNodePtr tp_node, const TerminalPt
 
     SET_TRANS_EXTENT(piline,piline);
     piline.annotation.placement.visible = configManager.piline_parameters.annotation.visible;
+  }
+
+  if (ac_line->DiagramObjects.begin() == ac_line->DiagramObjects.end()){
+      std::cerr << "Missing Diagram Object for " << ac_line->name << " Default Position 0,0 \n";
+      piline.annotation.placement.transformation.origin.x = 0;
+      piline.annotation.placement.transformation.origin.y = 0;
+      piline.annotation.placement.transformation.rotation = 0;
+
+      if (piline.sequenceNumber()==0 || piline.sequenceNumber()==1) {
+          ctemplate::TemplateDictionary *piLine_dict = dict->AddIncludeDictionary("PILINE_DICT");
+          piLine_dict->SetFilename(this->configManager.ts.directory_path + "resource/PiLine.tpl");
+          piline.set_template_values(piLine_dict);
+      }
   }
 
   for (diagram_it = ac_line->DiagramObjects.begin(); diagram_it!=ac_line->DiagramObjects.end(); ++diagram_it) {
@@ -635,6 +672,19 @@ Transformer CIMObjectHandler::PowerTransformerHandler(const TPNodePtr tp_node, c
     trafo.annotation.placement.visible = configManager.trafo_parameters.annotation.visible;
   }
 
+  if(power_trafo->DiagramObjects.begin() == power_trafo->DiagramObjects.end()){
+      std::cerr << "Missing Diagram Object for " << power_trafo->name << " Default Position 0,0 \n";
+      trafo.annotation.placement.transformation.origin.x = 0;
+      trafo.annotation.placement.transformation.origin.y = 0;
+      trafo.annotation.placement.transformation.rotation = 0;
+
+      if (trafo.sequenceNumber()==0 || trafo.sequenceNumber()==1) {
+          ctemplate::TemplateDictionary *powerTrafo_dict = dict->AddIncludeDictionary("TRANSFORMER_DICT");
+          powerTrafo_dict->SetFilename(this->configManager.ts.directory_path + "resource/Transformer.tpl");
+          trafo.set_template_values(powerTrafo_dict);
+      }
+  }
+
   for (diagram_it = power_trafo->DiagramObjects.begin();
        diagram_it!=power_trafo->DiagramObjects.end();
        ++diagram_it) {
@@ -721,6 +771,34 @@ PQLoad CIMObjectHandler::EnergyConsumerHandler(const TPNodePtr tp_node, const Te
     pqload.annotation.placement.visible = configManager.pqload_parameters.annotation.visible;
     pqload.set_profileName(configManager.pqload_parameters.profile_name);
     pqload.set_profileFileName(configManager.pqload_parameters.profile_filename);
+  }
+
+  if(energy_consumer->DiagramObjects.begin() == energy_consumer->DiagramObjects.end()){
+      std::cerr << "Missing Diagram Object for " << energy_consumer->name << " Default Position 0,0 \n";
+      pqload.annotation.placement.transformation.origin.x = 0;
+      pqload.annotation.placement.transformation.origin.y = 0;
+      pqload.annotation.placement.transformation.rotation = 0;
+
+      if(this->configManager.household_parameters.use_households == false){
+          if (pqload.sequenceNumber() == 0 || pqload.sequenceNumber() == 1) {
+
+              if (this->configManager.pqload_parameters.type == 1 && pqload.PQLoadType() == PQLoadType::Standard) {
+                  ctemplate::TemplateDictionary *pqLoad_dict = dict->AddIncludeDictionary("PQLOAD_DICT");
+                  pqLoad_dict->SetFilename(this->configManager.ts.directory_path + "resource/PQLoad.tpl");
+                  pqload.set_template_values(pqLoad_dict);
+
+              } else if(this->configManager.pqload_parameters.type == 2 && pqload.PQLoadType() == PQLoadType::Profile){
+                  ctemplate::TemplateDictionary *pqLoad_dict = dict->AddIncludeDictionary("PQLOAD_PROFILE_DICT");
+                  pqLoad_dict->SetFilename(this->configManager.ts.directory_path + "resource/PQLoadProfile.tpl");
+                  pqload.set_template_values(pqLoad_dict);
+
+              } else if(this->configManager.pqload_parameters.type == 3 && pqload.PQLoadType() == PQLoadType::NormProfile){
+                  ctemplate::TemplateDictionary *pqLoad_dict = dict->AddIncludeDictionary("PQLOAD_NORM_PROFILE_DICT");
+                  pqLoad_dict->SetFilename(this->configManager.ts.directory_path + "resource/PQLoadNormProfile.tpl");
+                  pqload.set_template_values(pqLoad_dict);
+              }
+          }
+      }
   }
 
   for (diagram_it = energy_consumer->DiagramObjects.begin(); diagram_it!=energy_consumer->DiagramObjects.end();
@@ -812,7 +890,25 @@ SolarGenerator CIMObjectHandler::SynchronousMachineHandlerType2(const TPNodePtr 
     SET_TRANS_EXTENT(solar_generator,wind_gen);
     solar_generator.annotation.placement.visible = configManager.wind_gen_parameters.annotation.visible;
   }
+  if(syn_machine->DiagramObjects.begin() == syn_machine->DiagramObjects.end()){
+      std::cerr << "Missing Diagram Object for " << syn_machine->name << " Default Position 0,0 \n";
+      solar_generator.annotation.placement.transformation.origin.x = 0;
+      solar_generator.annotation.placement.transformation.origin.y = 0;
+      solar_generator.annotation.placement.transformation.rotation = 0;
 
+      if (this->configManager.wind_gen_parameters.enable) {
+          if (this->configManager.household_parameters.use_households == false) {
+
+              if (solar_generator.sequenceNumber()==0 || solar_generator.sequenceNumber()==1) {
+                  ctemplate::TemplateDictionary *solar_generator_dict = dict->AddIncludeDictionary(
+                          "SOLARGENERATOR_DICT");
+                  solar_generator_dict->SetFilename(
+                          this->configManager.ts.directory_path + "resource/SolarGenerator.tpl");
+                  solar_generator.set_template_values(solar_generator_dict);
+              }
+          }
+      }
+  }
   for (diagram_it = syn_machine->DiagramObjects.begin();
        diagram_it!=syn_machine->DiagramObjects.end();
        ++diagram_it) {
@@ -847,7 +943,7 @@ Battery CIMObjectHandler::BatteryStorageHandler(const TPNodePtr tp_node, const T
     battery.set_BatteryType(BatteryType::Type0);
   } else if(this->configManager.pqload_parameters.type == 1){
     battery.set_BatteryType(BatteryType::Type1);
- }
+  }
 
   battery.set_name(name_in_modelica(battery_storge->name));
   battery.set_sequenceNumber(terminal->sequenceNumber);
@@ -859,9 +955,30 @@ Battery CIMObjectHandler::BatteryStorageHandler(const TPNodePtr tp_node, const T
     battery.annotation.placement.visible = configManager.battery_parameters.annotation.visible;
   }
 
+    if (battery_storge->DiagramObjects.begin() == battery_storge->DiagramObjects.end()) {
+
+        std::cerr << "Missing Diagram Object for " << battery_storge->name << " Default Position 0,0 \n";
+        battery.annotation.placement.transformation.origin.x = 0;
+        battery.annotation.placement.transformation.origin.y = 0;
+        battery.annotation.placement.transformation.rotation = 0;
+
+        if (battery.sequenceNumber() == 0 || battery.sequenceNumber() == 1) {
+            if (this->configManager.pqload_parameters.type == 0 && battery.BatteryType() == BatteryType::Type0) {
+                ctemplate::TemplateDictionary *battery_dict = dict->AddIncludeDictionary("BATTERY_TYPE0_DICT");
+                battery_dict->SetFilename(this->configManager.ts.directory_path + "resource/BatteryType0.tpl");
+                battery.set_template_values(battery_dict);
+
+            } else if (this->configManager.pqload_parameters.type == 1 && battery.BatteryType() == BatteryType::Type1) {
+                ctemplate::TemplateDictionary *battery_dict = dict->AddIncludeDictionary("BATTERY_TYPE1_DICT");
+                battery_dict->SetFilename(this->configManager.ts.directory_path + "resource/BatteryType1.tpl");
+                battery.set_template_values(battery_dict);
+            }
+        }
+    }
   for (diagram_it = battery_storge->DiagramObjects.begin();
-       diagram_it!=battery_storge->DiagramObjects.end();
+       diagram_it != battery_storge->DiagramObjects.end();
        ++diagram_it) {
+
     _t_points = this->calculate_average_position();
     battery.annotation.placement.transformation.origin.x = _t_points.xPosition;
     battery.annotation.placement.transformation.origin.y = _t_points.yPosition;
