@@ -322,6 +322,17 @@ BusBar CIMObjectHandler::TopologicalNodeHandler(const TPNodePtr tp_node, ctempla
   }
   busbar.set_Vnom_displayUnit(busbar.Vnom_displayUnit());
   // std::list<DiagramObjectPtr>::iterator diagram_it is class member!
+    if (tp_node->DiagramObjects.begin() == tp_node->DiagramObjects.end()){
+        std::cerr << "Missing Diagram Object for TpNode:  " << tp_node->name << " Default Position 0,0 \n";
+
+        busbar.annotation.placement.transformation.origin.x = 0;
+        busbar.annotation.placement.transformation.origin.y = 0;
+        busbar.annotation.placement.transformation.rotation = 0;
+
+        ctemplate::TemplateDictionary *busbar_dict = dict->AddIncludeDictionary("BUSBAR_DICT");
+        busbar_dict->SetFilename(this->configManager.ts.directory_path + "resource/BusBar.tpl");
+        busbar.set_template_values(busbar_dict);
+    }
   for (diagram_it = tp_node->DiagramObjects.begin(); diagram_it!=tp_node->DiagramObjects.end(); ++diagram_it) {
     _t_points = this->calculate_average_position();
     busbar.annotation.placement.transformation.origin.x = _t_points.xPosition;
@@ -405,6 +416,17 @@ bool CIMObjectHandler::HouseholdComponetsHandler(const TPNodePtr tp_node, ctempl
 bool CIMObjectHandler::BusBarSectionHandler(const BusBarSectionPtr busbar_section, BusBar &busbar,
                                             ctemplate::TemplateDictionary *dict) {
 
+  if(busbar_section->DiagramObjects.begin() == busbar_section->DiagramObjects.end()){
+      std::cerr << "Missing Diagram Object for Bus: " << busbar_section->name << " Default Position 0,0 \n";
+      busbar.annotation.placement.transformation.origin.x = 0;
+      busbar.annotation.placement.transformation.origin.y = 0;
+      busbar.annotation.placement.transformation.rotation = 0;
+
+      ctemplate::TemplateDictionary *busbar_dict = dict->AddIncludeDictionary("BUSBAR_DICT");
+      busbar_dict->SetFilename(this->configManager.ts.directory_path + "resource/BusBar.tpl");
+      busbar.set_template_values(busbar_dict);
+  }
+
   for (diagram_it = busbar_section->DiagramObjects.begin();
        diagram_it!=busbar_section->DiagramObjects.end();
        ++diagram_it) {
@@ -439,7 +461,7 @@ ConnectivityNode CIMObjectHandler::ConnectivityNodeHandler(const TPNodePtr tp_no
   conn_node.set_connected(terminal->connected);
 
   if(connectivity_node->DiagramObjects.begin() == connectivity_node->DiagramObjects.end()){
-      std::cerr << "Missing Diagram Object for " << connectivity_node->name << " Default Position 0,0 \n";
+      std::cerr << "Missing Diagram Object for Connectivity Node: " << connectivity_node->name << " Default Position 0,0 \n";
       conn_node.annotation.placement.transformation.origin.x = 0;
       conn_node.annotation.placement.transformation.origin.y = 0;
       conn_node.annotation.placement.transformation.rotation = 0;
@@ -491,7 +513,7 @@ Slack CIMObjectHandler::ExternalNIHandler(const TPNodePtr tp_node, const Termina
     slack.annotation.placement.visible = configManager.slack_parameters.annotation.visible;
   }
   if (externalNI->DiagramObjects.begin() == externalNI->DiagramObjects.end()){
-      std::cerr << "Missing Diagram Object for " << externalNI->name << " Default Position 0,0 \n";
+      std::cerr << "Missing Diagram Object for ExternalNIHandler: " << externalNI->name << " Default Position 0,0 \n";
       slack.annotation.placement.transformation.origin.x = 0;
       slack.annotation.placement.transformation.origin.y = 0;
       slack.annotation.placement.transformation.rotation = 0;
@@ -569,7 +591,7 @@ CIMObjectHandler::ACLineSegmentHandler(const TPNodePtr tp_node, const TerminalPt
   }
 
   if (ac_line->DiagramObjects.begin() == ac_line->DiagramObjects.end()){
-      std::cerr << "Missing Diagram Object for " << ac_line->name << " Default Position 0,0 \n";
+      std::cerr << "Missing Diagram Object for acLine: " << ac_line->name << " Default Position 0,0 \n";
       piline.annotation.placement.transformation.origin.x = 0;
       piline.annotation.placement.transformation.origin.y = 0;
       piline.annotation.placement.transformation.rotation = 0;
@@ -673,7 +695,7 @@ Transformer CIMObjectHandler::PowerTransformerHandler(const TPNodePtr tp_node, c
   }
 
   if(power_trafo->DiagramObjects.begin() == power_trafo->DiagramObjects.end()){
-      std::cerr << "Missing Diagram Object for " << power_trafo->name << " Default Position 0,0 \n";
+      std::cerr << "Missing Diagram Object for PowerTrafo: " << power_trafo->name << " Default Position 0,0 \n";
       trafo.annotation.placement.transformation.origin.x = 0;
       trafo.annotation.placement.transformation.origin.y = 0;
       trafo.annotation.placement.transformation.rotation = 0;
@@ -774,7 +796,7 @@ PQLoad CIMObjectHandler::EnergyConsumerHandler(const TPNodePtr tp_node, const Te
   }
 
   if(energy_consumer->DiagramObjects.begin() == energy_consumer->DiagramObjects.end()){
-      std::cerr << "Missing Diagram Object for " << energy_consumer->name << " Default Position 0,0 \n";
+      std::cerr << "Missing Diagram Object for EnergyConsumer: " << energy_consumer->name << " Default Position 0,0 \n";
       pqload.annotation.placement.transformation.origin.x = 0;
       pqload.annotation.placement.transformation.origin.y = 0;
       pqload.annotation.placement.transformation.rotation = 0;
@@ -853,6 +875,19 @@ WindGenerator CIMObjectHandler::SynchronousMachineHandlerType1(const TPNodePtr t
     wind_generator.annotation.placement.visible = configManager.wind_gen_parameters.annotation.visible;
   }
 
+  if(syn_machine->DiagramObjects.begin() == syn_machine->DiagramObjects.end()){
+      std::cerr << "Missing Diagram Object for SynchronousMachine: " << syn_machine->name << " Default Position 0,0 \n";
+      wind_generator.annotation.placement.transformation.origin.x = 0;
+      wind_generator.annotation.placement.transformation.origin.y = 0;
+      wind_generator.annotation.placement.transformation.rotation = 0;
+
+      if (wind_generator.sequenceNumber()==0 || wind_generator.sequenceNumber()==1) {
+          ctemplate::TemplateDictionary *wind_generator_dict = dict->AddIncludeDictionary("WINDGENERATOR_DICT");
+          wind_generator_dict->SetFilename(this->configManager.ts.directory_path + "resource/WindGenerator.tpl");
+          wind_generator.set_template_values(wind_generator_dict);
+      }
+  }
+
   for (diagram_it = syn_machine->DiagramObjects.begin();
        diagram_it!=syn_machine->DiagramObjects.end();
        ++diagram_it) {
@@ -891,7 +926,7 @@ SolarGenerator CIMObjectHandler::SynchronousMachineHandlerType2(const TPNodePtr 
     solar_generator.annotation.placement.visible = configManager.wind_gen_parameters.annotation.visible;
   }
   if(syn_machine->DiagramObjects.begin() == syn_machine->DiagramObjects.end()){
-      std::cerr << "Missing Diagram Object for " << syn_machine->name << " Default Position 0,0 \n";
+      std::cerr << "Missing Diagram Object for SyncronousMachine2: " << syn_machine->name << " Default Position 0,0 \n";
       solar_generator.annotation.placement.transformation.origin.x = 0;
       solar_generator.annotation.placement.transformation.origin.y = 0;
       solar_generator.annotation.placement.transformation.rotation = 0;
@@ -957,7 +992,7 @@ Battery CIMObjectHandler::BatteryStorageHandler(const TPNodePtr tp_node, const T
 
     if (battery_storge->DiagramObjects.begin() == battery_storge->DiagramObjects.end()) {
 
-        std::cerr << "Missing Diagram Object for " << battery_storge->name << " Default Position 0,0 \n";
+        std::cerr << "Missing Diagram Object for BatteryStorage: " << battery_storge->name << " Default Position 0,0 \n";
         battery.annotation.placement.transformation.origin.x = 0;
         battery.annotation.placement.transformation.origin.y = 0;
         battery.annotation.placement.transformation.rotation = 0;
