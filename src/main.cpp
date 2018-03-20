@@ -46,17 +46,21 @@ std::vector<std::string> search_folder(const char *path) {
  */
 void print_argument_help(){
   std::cout << "usage:" << std::endl;
-  std::cout << "Parse the separated files:" << std::endl;
-  std::cout << "./CIM2Mod -f <file2.xml> <file2.xml>... [modelica_output_file_name]" << std::endl;
+  std::cout << "Parse the separated files by option -f:" << std::endl;
+  std::cout << "./CIM2Mod -f <file2.xml> <file2.xml>" << std::endl;
   std::cout << std::endl;
-  std::cout << "Parse the separated files using verbose option:" << std::endl;
-  std::cout << "./CIM2Mod -f --verbose <file2.xml> <file2.xml>... [modelica_output_file_name]" << std::endl;
+  std::cout << "Parse all files in a folder by option -a:" << std::endl;
+  std::cout << "./CIM2Mod -a <xml_directory/>" << std::endl;
   std::cout << std::endl;
-  std::cout << "Parse all files in a folder:" << std::endl;
-  std::cout << "./CIM2Mod -a <xml_directory/> [modelica_output_file_name]" << std::endl;
+  std::cout << "Use verbose option for more information by using --verbose:" << std::endl;
+  std::cout << "./CIM2Mod --verbose" << std::endl;
   std::cout << std::endl;
-  std::cout << "Parse all files in a folder using verbose option" << std::endl;
-  std::cout << "./CIM2Mod -a --verbose <xml_directory/> [modelica_output_file_name]" << std::endl;
+  std::cout << "Change Output File Name by using option -o:" << std::endl;
+  std::cout << "./CIM2Mod -o [modelica_output_file_name]" << std::endl;
+  std::cout << std::endl;
+  std::cout << "Complete example to parse all files in a directory using"
+          " verbose for more information and using a custom output file name" << std::endl;
+  std::cout << "./CIM2Mod -a <xml_directory/> --verbose -o [modelica_output_file_name]" << std::endl;
   exit(1);
 }
 
@@ -148,7 +152,7 @@ int main(int argc, char *argv[]) {
       std::cout << "verbose activated \n";
       args.push_back("--verbose");
   }
-   
+
 
   // Timer start
   std::chrono::time_point<std::chrono::high_resolution_clock> start, stop;
