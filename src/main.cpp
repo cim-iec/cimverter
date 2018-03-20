@@ -148,52 +148,7 @@ int main(int argc, char *argv[]) {
       std::cout << "verbose activated \n";
       args.push_back("--verbose");
   }
-    /*
-  if (argc > 2) {
-
-    args.push_back(std::string(argv[argc - 1]));// Push output modelica filesname
-
-    file_size = 0;
-    if (strcmp(argv[1], "-f") == 0) {
-
-      if(strcmp(argv[2], "--verbose") == 0){
-        args.push_back("--verbose");
-        for (int i = 3; i < argc - 1; i++) {
-          std::cout << "CIM-XML file is:" << argv[i] << std::endl;
-          file_size += filesize(argv[i]);
-          cimModel.addCIMFile(argv[i]);
-        }
-      } else {
-        for (int i = 2; i < argc - 1; i++) {
-          std::cout << "CIM-XML file is:" << argv[i] << std::endl;
-          file_size += filesize(argv[i]);
-          cimModel.addCIMFile(argv[i]);
-        }
-      }
-    } else if (strcmp(argv[1], "-a") == 0) {
-        std::vector<std::string> files;
-        if(strcmp(argv[2], "--verbose") == 0) {
-          files = search_folder(argv[3]);// Find all relevant files
-          args.push_back("--verbose");
-        } else {
-          files = search_folder(argv[2]);
-        }
-
-        for (auto f : files) {
-          std::cout << "CIM-XML file is:" << f << std::endl;
-          file_size += filesize(f.c_str());
-          cimModel.addCIMFile(f);
-        }
-      } else {
-        std::cerr << "Wrong arguments:" << std::endl;
-        print_argument_help();
-      }
-    } else {
-      std::cerr << "Wrong arguments:" << std::endl;
-      print_argument_help();
-    }*/
-
-
+   
 
   // Timer start
   std::chrono::time_point<std::chrono::high_resolution_clock> start, stop;
