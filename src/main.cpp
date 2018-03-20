@@ -1,6 +1,8 @@
 #include <chrono>
 #include "CIMObjectHandler.h"
 #include <dirent.h>
+#include <getopt.h>
+#include <unistd.h>
 
 /**
  * Get File size
@@ -58,29 +60,95 @@ void print_argument_help(){
   exit(1);
 }
 
-int main(int argc, const char **argv) {
-  std::vector<std::string> args;// Arguments for the ObjectHandler
+int main(int argc, char *argv[]) {
+    std::vector <std::string> args;// Arguments for the ObjectHandler
 
-  long file_size;// File size
-  long secs;// Time in seconds
+    long file_size;// File size
+    long secs;// Time in seconds
 
-  // Check for arguments
-  if (argc <= 2) {
-    if(argc == 1){
-      std::cerr << "Too few arguments:" << std::endl;
-      print_argument_help();
-    } else if (strcmp(argv[1], "--help") == 0) {
-      print_argument_help();
-    } else {
-      std::cerr << "Too few arguments:" << std::endl;
-      print_argument_help();
+    // Check for arguments
+    print_separator();
+
+    CIMModel cimModel;
+    static int verbose_flag = 0;
+    if (argc <= 2) {
+        std::cerr << "Too few arguments:" << std::endl;
+        print_argument_help();
+    }else{
+
+        args.push_back("default_output_name");// Push output modelica filesname
+        int c;
+
+
+        while (1){
+              static struct option long_options[] =
+                    {
+                            /* These options set a flag. */
+                            {"verbose", no_argument,       &verbose_flag, 1},
+                            {"all",     required_argument,       0, 'a'},
+                            {"file",  required_argument,       0, 'f'},
+                            {"output",  required_argument,       0, 'o'},
+                            {0, 0, 0, 0}
+                    };
+            /* getopt_long stores the option index here. */
+            int option_index = 0;
+
+            //c = getopt (argc, argv, "abc");
+            c = getopt_long(argc, argv, "a:f:o:",long_options, &option_index);
+
+            std::vector<std::string> files;
+            if (c == -1)
+                break;
+
+            switch (c)
+            {
+                case 'f':
+                    optind--;
+                    for( ;optind < argc && *argv[optind] != '-'; optind++){
+                        std::cout << "CIM-XML file is:" << ( argv[optind] ) << std::endl;
+                        file_size += filesize(( argv[optind] ));
+                        cimModel.addCIMFile(( argv[optind] ));
+                    }
+                    break;
+
+                case 'o':
+                    args[0] = optarg;
+                    break;
+
+                case 'a':
+                    files = search_folder(optarg);
+
+                    for (auto f : files)
+                    {
+                        std::cout << "CIM-XML file is:" << f << std::endl;
+                        file_size += filesize(f.c_str());
+                        cimModel.addCIMFile(f);
+                    }
+                    break;
+
+                case '?':
+                    std::cerr << "unknown argument " << c << "\n";
+                    print_argument_help();
+                    break;
+
+            }
+        }
     }
+
+    if (optind < argc)
+    {
+        printf ("non-option ARGV-elements: ");
+        while (optind < argc)
+            printf ("%s ", argv[optind++]);
+        putchar ('\n');
+    }
+
+  if(verbose_flag)
+  {
+      std::cout << "verbose activated \n";
+      args.push_back("--verbose");
   }
-
-  print_separator();
-
-  CIMModel cimModel;
-
+    /*
   if (argc > 2) {
 
     args.push_back(std::string(argv[argc - 1]));// Push output modelica filesname
@@ -123,7 +191,9 @@ int main(int argc, const char **argv) {
     } else {
       std::cerr << "Wrong arguments:" << std::endl;
       print_argument_help();
-    }
+    }*/
+
+
 
   // Timer start
   std::chrono::time_point<std::chrono::high_resolution_clock> start, stop;
