@@ -106,6 +106,7 @@ int main(int argc, char *argv[]) {
 
             switch (c)
             {
+                // Read files with -f
                 case 'f':
                     optind--;
                     for( ;optind < argc && *argv[optind] != '-'; optind++){
@@ -114,11 +115,11 @@ int main(int argc, char *argv[]) {
                         cimModel.addCIMFile(( argv[optind] ));
                     }
                     break;
-
+                // Define the name of the output files with -o
                 case 'o':
                     args[0] = optarg;
                     break;
-
+                // Read folders with -a
                 case 'a':
                     files = search_folder(optarg);
 
@@ -138,7 +139,7 @@ int main(int argc, char *argv[]) {
             }
         }
     }
-
+    // Print unused Arguments
     if (optind < argc)
     {
         printf ("non-option ARGV-elements: ");
@@ -146,7 +147,7 @@ int main(int argc, char *argv[]) {
             printf ("%s ", argv[optind++]);
         putchar ('\n');
     }
-
+  // Check if verbose mode is used
   if(verbose_flag)
   {
       std::cout << "verbose activated \n";
