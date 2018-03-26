@@ -6,6 +6,7 @@
 #ifndef SRC_CIMOBJECTHANDLER_H_
 #define SRC_CIMOBJECTHANDLER_H_
 
+
 #include <queue>
 #include <boost/lexical_cast.hpp>
 #include "IEC61970.hpp"
@@ -32,7 +33,7 @@ typedef IEC61970::Base::StateVariables::SvPowerFlow* SVPowerFlowPtr;
 typedef IEC61970::Base::OperationalLimits::OperationalLimitSet* OpLimitSetPtr;
 typedef IEC61970::Base::OperationalLimits::CurrentLimit* CurrentLimitPtr;
 typedef IEC61970::Base::OperationalLimits::OperationalLimit* OpLimitPtr;
-//typedef Sinergien::EnergyGrid::EnergyStorage::BatteryStorage* BatteryStoragePtr;
+typedef Sinergien::EnergyGrid::EnergyStorage::BatteryStorage* BatteryStoragePtr;
 
 
 void static print_separator() {
@@ -60,14 +61,14 @@ class CIMObjectHandler {
   bool SystemSettingsHandler(const std::string filename, ctemplate::TemplateDictionary* dict);
   BusBar TopologicalNodeHandler(const TPNodePtr tp_node, ctemplate::TemplateDictionary* dict);
   bool BusBarSectionHandler(const BusBarSectionPtr busbar_section, BusBar &busbar, ctemplate::TemplateDictionary* dict);
-  ConnectivityNode ConnectiviyNodeHandler(const TPNodePtr tp_node, const TerminalPtr terminal, const ConnectivityNodePtr connectivity_node, ctemplate::TemplateDictionary* dict);
+  ConnectivityNode ConnectivityNodeHandler(const TPNodePtr tp_node, const TerminalPtr terminal, const ConnectivityNodePtr connectivity_node, ctemplate::TemplateDictionary* dict);
   Slack ExternalNIHandler(const TPNodePtr tp_node, const TerminalPtr terminal, const ExNIPtr externalNI, ctemplate::TemplateDictionary* dict);
   PiLine ACLineSegmentHandler(const TPNodePtr tp_node, const TerminalPtr terminal, const AcLinePtr ac_line, ctemplate::TemplateDictionary* dict);
   Transformer PowerTransformerHandler(const TPNodePtr tp_node, const TerminalPtr terminal, const PowerTrafoPtr power_trafo, ctemplate::TemplateDictionary* dict);
   PQLoad EnergyConsumerHandler(const TPNodePtr tp_node, const TerminalPtr terminal, const EnergyConsumerPtr energy_consumer, ctemplate::TemplateDictionary* dict);
   WindGenerator SynchronousMachineHandlerType1(const TPNodePtr tp_node, const TerminalPtr terminal, const SynMachinePtr syn_machine, ctemplate::TemplateDictionary* dict);
   SolarGenerator SynchronousMachineHandlerType2(const TPNodePtr tp_node, const TerminalPtr terminal, const SynMachinePtr syn_machine,ctemplate::TemplateDictionary* dict);
-  //Battery BatteryStorageHandler(const TPNodePtr tp_node, const TerminalPtr terminal, const BatteryStoragePtr battery_storge, ctemplate::TemplateDictionary* dict);
+  Battery BatteryStorageHandler(const TPNodePtr tp_node, const TerminalPtr terminal, const BatteryStoragePtr battery_storge, ctemplate::TemplateDictionary* dict);
   bool HouseholdComponetsHandler(const TPNodePtr tp_node, ctemplate::TemplateDictionary* dict);  //to find household Componets
   bool ConnectionHandler(ctemplate::TemplateDictionary* dict);
 
