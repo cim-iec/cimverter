@@ -31,13 +31,24 @@ set(BOOST_LINKER_FLAGS "-lboost_filesystem -lboost_system")
 set(CTEMPLATE_LINKER_FLAGS "-lctemplate")
 set(CONFIG++_LINKER_FLAGS "-lconfig++")
 set(CMAKE_SHARED_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} ${BOOST_LINKER_FLAGS} ${CTEMPLATE_LINKER_FLAGS} ${CONFIG++_LINKER_FLAGS} " )
+set(USE_CIM_TEMPLATE "ModPowerSystems_templates" CACHE STRING "User-specified template")
 
 # Add combined flag to avoid warnings with C++11
 set(CMAKE_CXX_FLAGS_RELEASE  "${CMAKE_CXX_FLAGS_RELEASE} -Wall -Wno-inconsistent-missing-override")
 
 # copy directories
+
 file(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/bin/resource)
-file(COPY ${PROJECT_SOURCE_DIR}/modelica_templates/ DESTINATION ${PROJECT_BINARY_DIR}/bin/resource)
+
+if(USE_CIM_TEMPLATE STREQUAL "ModPowerSystems_templates")
+file(COPY ${PROJECT_SOURCE_DIR}/PowerSystem_templates/ModPowerSystems_templates/ DESTINATION 
+${PROJECT_BINARY_DIR}/bin/resource)
+message("-- Using template: "${USE_CIM_TEMPLATE})
+endif()
+if(USE_CIM_TEMPLATE STREQUAL "SOMETHING")
+message("-- Using template: " ${USE_CIM_TEMPLATE})
+endif()
+
 file(COPY ${PROJECT_SOURCE_DIR}/src/config.cfg DESTINATION ${PROJECT_BINARY_DIR}/bin)
 file(COPY ${PROJECT_SOURCE_DIR}/src/task_alias.csv ${PROJECT_SOURCE_DIR}/src/assignment_alias.csv DESTINATION ${PROJECT_BINARY_DIR}/bin)
 
