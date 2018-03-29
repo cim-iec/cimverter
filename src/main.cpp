@@ -15,6 +15,11 @@ unsigned int filesize(const char *filename) {
   in.close();
   return size;
 }
+inline bool ends_with(std::string const & value, std::string const & ending)
+{
+    if (ending.size() > value.size()) return false;
+    return std::equal(ending.rbegin(), ending.rend(), value.rbegin());
+}
 /**
  * Find all files in the folder
  * @param path
@@ -103,7 +108,6 @@ int main(int argc, char *argv[]) {
             std::vector<std::string> files;
             if (c == -1)
                 break;
-
             switch (c)
             {
                 // Read files with -f
@@ -121,7 +125,12 @@ int main(int argc, char *argv[]) {
                     break;
                 // Read folders with -a
                 case 'a':
-                    files = search_folder(optarg);
+                    if(!ends_with(optarg, "/")){
+                        files = search_folder(strcat(optarg, "/"));
+                    }
+                    else{
+                        files = search_folder(optarg);
+                    }
 
                     for (auto f : files)
                     {
