@@ -70,7 +70,10 @@ void print_argument_help(){
 }
 
 int main(int argc, char *argv[]) {
-    std::vector <std::string> args;// Arguments for the ObjectHandler
+    std::string output_file_name;// Arguments for the ObjectHandler
+    std::string template_folder = "ModPowerSystems_templates";
+
+    static int verbose_flag = 0;
 
     long file_size;// File size
     long secs;// Time in seconds
@@ -79,13 +82,12 @@ int main(int argc, char *argv[]) {
     print_separator();
 
     CIMModel cimModel;
-    static int verbose_flag = 0;
     if (argc <= 2) {
         std::cerr << "Too few arguments:" << std::endl;
         print_argument_help();
     }else{
 
-        args.push_back("default_output_name");// Push output modelica filesname
+        output_file_name = "default_output_name";// Push output modelica filesname
         int c;
 
 
@@ -121,7 +123,7 @@ int main(int argc, char *argv[]) {
                     break;
                 // Define the name of the output files with -o
                 case 'o':
-                    args[0] = optarg;
+                    output_file_name = optarg;
                     break;
                 // Read folders with -a
                 case 'a':
@@ -160,7 +162,6 @@ int main(int argc, char *argv[]) {
   if(verbose_flag)
   {
       std::cout << "verbose activated \n";
-      args.push_back("--verbose");
   }
 
 
@@ -175,7 +176,7 @@ int main(int argc, char *argv[]) {
   CIMObjectHandler ObjectHandler(std::move(cimModel.Objects));// r-value
   ObjectHandler.get_config();// Get configuration files
 
-  ObjectHandler.ModelicaCodeGenerator(args);
+  ObjectHandler.ModelicaCodeGenerator(output_file_name, verbose_flag, template_folder);
 
   // Timer stop
   stop = std::chrono::high_resolution_clock::now();

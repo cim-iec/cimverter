@@ -57,7 +57,7 @@ class CIMObjectHandler {
   CIMObjectHandler& operator=(const CIMObjectHandler&) = delete;
   virtual ~CIMObjectHandler();
 
-  bool ModelicaCodeGenerator(std::vector<std::string> args);
+  bool ModelicaCodeGenerator(std::string output_file_name, int verbose_flag, std::string template_foler);
   bool SystemSettingsHandler(const std::string filename, ctemplate::TemplateDictionary* dict);
   BusBar TopologicalNodeHandler(const TPNodePtr tp_node, ctemplate::TemplateDictionary* dict);
   bool BusBarSectionHandler(const BusBarSectionPtr busbar_section, BusBar &busbar, ctemplate::TemplateDictionary* dict);

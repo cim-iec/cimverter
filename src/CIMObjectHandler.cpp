@@ -113,9 +113,9 @@ bool CIMObjectHandler::pre_process() {
  * Generate the modelica code
  * by parsering the _CIMObjects
  */
-bool CIMObjectHandler::ModelicaCodeGenerator(std::vector<std::string> args) {
+bool CIMObjectHandler::ModelicaCodeGenerator(std::string output_file_name, int verbose_flag, std::string template_foler) {
 
-  const std::string filename = args[0];
+  const std::string filename = output_file_name;
   ctemplate::TemplateDictionary *dict = new ctemplate::TemplateDictionary("MODELICA");///set the main tpl file
   this->SystemSettingsHandler(filename, dict);
 
@@ -183,7 +183,7 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::vector<std::string> args) {
            connectionQueue.push(conn);
 
         } else {
-          if(args.size() == 2 && strcmp(args[1].c_str(), "--verbose") == 0) {
+          if(verbose_flag == 1) {
             print_RTTI((*terminal_it)->ConductingEquipment); /// In verbose module to show the no used object information
           }
         }
