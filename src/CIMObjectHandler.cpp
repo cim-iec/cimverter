@@ -113,7 +113,7 @@ bool CIMObjectHandler::pre_process() {
  * Generate the modelica code
  * by parsering the _CIMObjects
  */
-bool CIMObjectHandler::ModelicaCodeGenerator(std::string output_file_name, int verbose_flag, std::string template_foler) {
+bool CIMObjectHandler::ModelicaCodeGenerator(std::string output_file_name, int verbose_flag, std::string template_folder) {
 
   const std::string filename = output_file_name;
   ctemplate::TemplateDictionary *dict = new ctemplate::TemplateDictionary("MODELICA");///set the main tpl file
@@ -200,7 +200,7 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::string output_file_name, int v
                 ctemplate::TemplateDictionary *household_dict = dict->AddIncludeDictionary(
                     "HOUSEHOLD_TYPE1_DICT");
                 household_dict->SetFilename(
-                    this->configManager.ts.directory_path + "resource/HouseholdType1.tpl");
+                    this->configManager.ts.directory_path + "resource" + template_folder + "/HouseholdType1.tpl");
                 this->householdQueue.front().set_template_values(household_dict);
               }
               break;
