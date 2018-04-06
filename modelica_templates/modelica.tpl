@@ -3,7 +3,6 @@
 {{!-----Global Grid Settings-------}}
 
 {{#SYSTEM_SETTINGS_SECTION}}
-annotation(Diagram(coordinateSystem(extent = {{DIAGRAM_EXTENT_POINTS}})), Icon(coordinateSystem(extent = {{ICON_EXTENT_POINTS}})));  
 
 inner ModPowerSystems.System {{NAME}}(f_nom(displayUnit = "{{FNOM_DISPLAYUNIT}}") = {{FNOM}}) 
 annotation(Placement(visible = {{VISIBLE}}, transformation(extent = {{TRANS_EXTENT_POINTS}}, rotation = {{ROTATION}})));
@@ -52,4 +51,7 @@ equation
 
 {{>CONNECTIONS_DICT}}
 
-{{#HEADER_FOOTER_SECTION}}end {{GRID_NAME}}; {{/HEADER_FOOTER_SECTION}}
+{{#HEADER_FOOTER_SECTION}}
+annotation(Diagram(coordinateSystem(extent = {{DIAGRAM_EXTENT_POINTS}})), Icon(coordinateSystem(extent = {{ICON_EXTENT_POINTS}})));  
+
+end {{GRID_NAME}}; {{/HEADER_FOOTER_SECTION}}

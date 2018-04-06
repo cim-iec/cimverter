@@ -180,7 +180,7 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::vector<std::string> args) {
         } else if (auto *battery_storage = dynamic_cast<BatteryStoragePtr>((*terminal_it)->ConductingEquipment)){
             Battery battery = this->BatteryStorageHandler(tp_node, (*terminal_it), battery_storage, dict);
             Connection conn(&busbar, &battery);
-           connectionQueue.push(conn);
+            connectionQueue.push(conn);
 
         } else {
           if(args.size() == 2 && strcmp(args[1].c_str(), "--verbose") == 0) {
@@ -921,9 +921,9 @@ SolarGenerator CIMObjectHandler::SynchronousMachineHandlerType2(const TPNodePtr 
   solar_generator.set_connected(terminal->connected);
   solar_generator.set_sequenceNumber(terminal->sequenceNumber);
 
-  if (this->configManager.wind_gen_parameters.enable) {
-    SET_TRANS_EXTENT(solar_generator,wind_gen);
-    solar_generator.annotation.placement.visible = configManager.wind_gen_parameters.annotation.visible;
+  if (this->configManager.solar_gen_parameters.enable) {
+    SET_TRANS_EXTENT(solar_generator,solar_gen);
+    solar_generator.annotation.placement.visible = configManager.solar_gen_parameters.annotation.visible;
   }
   if(syn_machine->DiagramObjects.begin() == syn_machine->DiagramObjects.end()){
       std::cerr << "Missing Diagram Object for SyncronousMachine2: " << syn_machine->name << " Default Position 0,0 \n";
@@ -931,7 +931,7 @@ SolarGenerator CIMObjectHandler::SynchronousMachineHandlerType2(const TPNodePtr 
       solar_generator.annotation.placement.transformation.origin.y = 0;
       solar_generator.annotation.placement.transformation.rotation = 0;
 
-      if (this->configManager.wind_gen_parameters.enable) {
+      if (this->configManager.solar_gen_parameters.enable) {
           if (this->configManager.household_parameters.use_households == false) {
 
               if (solar_generator.sequenceNumber()==0 || solar_generator.sequenceNumber()==1) {
@@ -952,7 +952,7 @@ SolarGenerator CIMObjectHandler::SynchronousMachineHandlerType2(const TPNodePtr 
     solar_generator.annotation.placement.transformation.origin.y = _t_points.yPosition;
     solar_generator.annotation.placement.transformation.rotation = (*diagram_it)->rotation.value;
 
-    if (this->configManager.wind_gen_parameters.enable) {
+    if (this->configManager.solar_gen_parameters.enable) {
       if (this->configManager.household_parameters.use_households == false) {
 
         if (solar_generator.sequenceNumber()==0 || solar_generator.sequenceNumber()==1) {
@@ -979,7 +979,6 @@ Battery CIMObjectHandler::BatteryStorageHandler(const TPNodePtr tp_node, const T
   } else if(this->configManager.pqload_parameters.type == 1){
     battery.set_BatteryType(BatteryType::Type1);
   }
-
   battery.set_name(name_in_modelica(battery_storge->name));
   battery.set_sequenceNumber(terminal->sequenceNumber);
   battery.set_connected(terminal->connected);
