@@ -63,6 +63,9 @@ void print_argument_help(){
   std::cout << "Change Output File Name by using option -o:" << std::endl;
   std::cout << "./CIM2Mod -o [modelica_output_file_name]" << std::endl;
   std::cout << std::endl;
+  std::cout << "Change Template Folder by using option -t:" << std::endl;
+  std::cout << "./CIM2Mod -t [template_folder_name]" << std::endl;
+  std::cout << std::endl;
   std::cout << "Complete example to parse all files in a directory using"
           " verbose for more information and using a custom output file name" << std::endl;
   std::cout << "./CIM2Mod -a <xml_directory/> --verbose -o [modelica_output_file_name]" << std::endl;
@@ -99,13 +102,14 @@ int main(int argc, char *argv[]) {
                             {"all",     required_argument,       0, 'a'},
                             {"file",  required_argument,       0, 'f'},
                             {"output",  required_argument,       0, 'o'},
+                            {"template",  required_argument,       0, 't'},
                             {0, 0, 0, 0}
                     };
             /* getopt_long stores the option index here. */
             int option_index = 0;
 
             //c = getopt (argc, argv, "abc");
-            c = getopt_long(argc, argv, "a:f:o:",long_options, &option_index);
+            c = getopt_long(argc, argv, "a:f:o:t:",long_options, &option_index);
 
             std::vector<std::string> files;
             if (c == -1)
@@ -141,7 +145,9 @@ int main(int argc, char *argv[]) {
                         cimModel.addCIMFile(f);
                     }
                     break;
-
+                case 't':
+                    template_folder = optarg;
+                    break;
                 case '?':
                     std::cerr << "unknown argument " << c << "\n";
                     print_argument_help();
