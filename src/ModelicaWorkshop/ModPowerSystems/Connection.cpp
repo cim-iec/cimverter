@@ -6,12 +6,14 @@
 #include "Connection.h"
 
 namespace ModelicaWorkshop {
+    
+  ConfigManager *Connection::configManager = nullptr;
 
-/** \brief Connection to BusBar
+    /** \brief Connection to BusBar
  *
  * All model components connect BusBar(TopologyNode)!
 */
-Connection::Connection(const BusBar* busbar):_port1(busbar->name()),_terminalId1("T"),_p1(Point{busbar->annotation.placement.transformation.origin.x,
+Connection::Connection(const BusBar* busbar):_port1(busbar->name()),_terminalId1(configManager->cs.BusBarName),_p1(Point{busbar->annotation.placement.transformation.origin.x,
                                                                                            busbar->annotation.placement.transformation.origin.y}) ,_p2(Point{0,0}){
   _port1.append(".");
   _port1.append(_terminalId1);
@@ -26,13 +28,14 @@ Connection::Connection(const BusBar* busbar, const Slack* slack): Connection(bus
   this->set_connected(slack->is_connected());//electrical connected?
 
   _port2 = slack->name();
-  _terminalId2 = "T";
+  _terminalId2 = Connection::configManager->cs.SlackName;
   _port2.append(".");
   _port2.append(_terminalId2);
   _p2.x = slack->annotation.placement.transformation.origin.x;
   _p2.y = slack->annotation.placement.transformation.origin.y;
   this->cal_middle_points(slack);
 }
+
 
 /** \brief Connection between BusBar and PQLoad
  *
@@ -59,7 +62,7 @@ Connection::Connection(const BusBar* busbar, const PQLoad* pq_load): Connection(
   }
 
   _port2 = pq_load->name();
-  _terminalId2 = "T";
+  _terminalId2 = Connection::configManager->cs.PQLoadName;
   _port2.append(".");
   _port2.append(_terminalId2);
 
@@ -91,7 +94,7 @@ Connection::Connection(const BusBar* busbar, const Household* household): Connec
   }
 
   _port2 = household->name();
-  _terminalId2 = "PCC";
+  _terminalId2 = Connection::configManager->cs.HouseholdName;
   _port2.append(".");
   _port2.append(_terminalId2);
 
@@ -108,7 +111,7 @@ Connection::Connection(const BusBar* busbar, const ConnectivityNode* connectivit
   this->set_connected(connectivity_node->is_connected());//electrical connected?
 
   _port2 = connectivity_node->name();
-  _terminalId2 = "T";
+  _terminalId2 = this->configManager->cs.ConnectivityNodeName;
   _port2.append(".");
   _port2.append(_terminalId2);
   _p2.x = connectivity_node->annotation.placement.transformation.origin.x;
@@ -125,7 +128,7 @@ Connection::Connection(const BusBar* busbar, const PiLine* pi_line): Connection(
   this->set_connected(pi_line->is_connected());//electrical connected?
 
   if (pi_line->sequenceNumber() == 0 || pi_line->sequenceNumber() == 1) {
-    _terminalId2 = "T1";
+    _terminalId2 = this->configManager->cs.PiLineName + "1";
     if (pi_line->annotation.placement.transformation.rotation == 90 || pi_line->annotation.placement.transformation.rotation == -90) {
       _p2.x = pi_line->annotation.placement.transformation.origin.x;
       _p2.y = pi_line->annotation.placement.transformation.origin.y + pi_line->annotation.placement.transformation.extent.first.y;
@@ -134,7 +137,7 @@ Connection::Connection(const BusBar* busbar, const PiLine* pi_line): Connection(
       _p2.y = pi_line->annotation.placement.transformation.origin.y;
     }
   } else if (pi_line->sequenceNumber() == 2) {
-    _terminalId2 = "T2";
+    _terminalId2 = this->configManager->cs.PiLineName + "2";
     if (busbar->annotation.placement.transformation.rotation == 90 || pi_line->annotation.placement.transformation.rotation == -90) {
       _p2.x = pi_line->annotation.placement.transformation.origin.x;
       _p2.y = pi_line->annotation.placement.transformation.origin.y + pi_line->annotation.placement.transformation.extent.second.y;
@@ -143,7 +146,7 @@ Connection::Connection(const BusBar* busbar, const PiLine* pi_line): Connection(
       _p2.y = pi_line->annotation.placement.transformation.origin.y;
     }
   } else {
-    _terminalId2 = "T1";
+    _terminalId2 = this->configManager->cs.PiLineName + "1";
   }
   _port2 = pi_line->name();
   _port2.append(".");
@@ -160,7 +163,7 @@ Connection::Connection(const BusBar* busbar, const Transformer* transformer): Co
 
   this->set_connected(transformer->is_connected());//electrical connected?
   if (transformer->sequenceNumber() == 0 || transformer->sequenceNumber() == 1) {
-    _terminalId2 = "T1";
+    _terminalId2 = this->configManager->cs.TransformerName + "1";
     if (transformer->annotation.placement.transformation.rotation == 90 || transformer->annotation.placement.transformation.rotation == -90) {
       _p2.x = transformer->annotation.placement.transformation.origin.x;
       _p2.y = transformer->annotation.placement.transformation.origin.y + transformer->annotation.placement.transformation.extent.first.y;
@@ -169,7 +172,7 @@ Connection::Connection(const BusBar* busbar, const Transformer* transformer): Co
       _p2.y = transformer->annotation.placement.transformation.origin.y;
     }
   } else if (transformer->sequenceNumber() == 2) {
-    _terminalId2 = "T2";
+    _terminalId2 = this->configManager->cs.TransformerName + "2";
     if (transformer->annotation.placement.transformation.rotation == 90 || transformer->annotation.placement.transformation.rotation == -90) {
       _p2.x = transformer->annotation.placement.transformation.origin.x;
       _p2.y = transformer->annotation.placement.transformation.origin.y + transformer->annotation.placement.transformation.extent.second.y;
@@ -178,7 +181,7 @@ Connection::Connection(const BusBar* busbar, const Transformer* transformer): Co
       _p2.y = transformer->annotation.placement.transformation.origin.y;
     }
   } else {
-    _terminalId2 = "T1";
+    _terminalId2 = this->configManager->cs.TransformerName + "1";
   }
   _port2 = transformer->name();
   _port2.append(".");
@@ -196,7 +199,7 @@ Connection::Connection(const BusBar* busbar, const WindGenerator* wind_generator
   this->set_connected(wind_generator->is_connected());//electrical connected?
 
   _port2 = wind_generator->name();
-  _terminalId2 = "T";
+  _terminalId2 = this->configManager->cs.WindGeneratorName;
   _port2.append(".");
   _port2.append(_terminalId2);
   _p2.x = wind_generator->annotation.placement.transformation.origin.x;
@@ -214,7 +217,7 @@ Connection::Connection(const BusBar* busbar, const SolarGenerator* solar_generat
   this->set_connected(solar_generator->is_connected());//electrical connected?
 
   _port2 = solar_generator->name();
-  _terminalId2 = "T";
+  _terminalId2 = this->configManager->cs.SolarGeneratorName;
   _port2.append(".");
   _port2.append(_terminalId2);
   _p2.x = solar_generator->annotation.placement.transformation.origin.x;
@@ -232,7 +235,7 @@ Connection::Connection(const BusBar* busbar, const Battery* battery): Connection
   this->set_connected(battery->is_connected());//electrical connected?
 
   _port2 = battery->name();
-  _terminalId2 = "T";
+  _terminalId2 = this->configManager->cs.BatteryName;
   _port2.append(".");
   _port2.append(_terminalId2);
   _p2.x = battery->annotation.placement.transformation.origin.x;
@@ -356,5 +359,10 @@ void Connection::error_log() {
   std::cerr << "Connection cannot be created! ";
 
 }
+
+void Connection::setConfigManager(ConfigManager *manager){
+    Connection::configManager = manager;
+}
+
 
 } /* namespace ModelicaWorkshop */
