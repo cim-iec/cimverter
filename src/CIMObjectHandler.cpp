@@ -69,7 +69,10 @@ void CIMObjectHandler::get_config(std::string templates) {
   print_separator();
   std::cout << "reading config files..." << std::endl;
   this->configManager.getAllSettings();
+  std::cout << "using templates: " << templates <<"\n";
   configManager.template_folder = templates;
+  this->configManager.getConnectionConfigFiles();
+  this->configManager.getConnectionNames();
   Connection::setConfigManager(&this->configManager);
   print_separator();
 }
@@ -256,9 +259,6 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::string output_file_name, int v
         }
       }
     }
-    this->configManager.getConnectionConfigFiles();
-    this->configManager.getConnectionNames();
-
   }
 
   this->ConnectionHandler(dict);
