@@ -43,10 +43,10 @@ void ConfigManager::getAllSettings() {
 void ConfigManager::getConnectionConfigFiles(){
 
     try {
-        this->conCfg.readFile((ts.directory_path + "resource/" + template_folder + "/config.cfg").c_str());         ///for release using CMake
+        this->conCfg.readFile((ts.directory_path + "resource/" + template_folder + "/connectors.cfg").c_str());         ///for release using CMake
     }
     catch (const FileIOException &fioex) {
-        std::cerr << "filepath: " << ts.directory_path + "resource/" + template_folder + "/config.cfg" << "\n";
+        std::cerr << "filepath: " << ts.directory_path + "resource/" + template_folder + "/connectors.cfg" << "\n";
         std::cerr << "I/O error while reading config file." << std::endl;
     }
     catch (const ParseException &pex) {
