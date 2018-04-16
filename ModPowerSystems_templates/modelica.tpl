@@ -4,7 +4,7 @@
 
 {{#SYSTEM_SETTINGS_SECTION}}
 
-inner ModPowerSystems.Base.System {{NAME}}(f_nom(displayUnit = "{{FNOM_DISPLAYUNIT}}") = {{FNOM}}) 
+inner ModPowerSystems.Base.System {{NAME}}(freq_nom(displayUnit = "{{FNOM_DISPLAYUNIT}}") = {{FNOM}}) 
 annotation(Placement(visible = {{VISIBLE}}, transformation(extent = {{TRANS_EXTENT_POINTS}}, rotation = {{ROTATION}})));
 
 {{/SYSTEM_SETTINGS_SECTION}}
