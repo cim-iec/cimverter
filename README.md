@@ -84,24 +84,25 @@ In case of **commercial** use you are required to negotiate a proper license mod
 
     cd build/bin
 
-##### To parse separate xml files:
+###
+  Parse the separated files by option -f:
+  ./CIM2Mod -f <file2.xml> <file2.xml>"
 
-    ./CIM2Mod -f <file2.xml> <file2.xml>... [output_file_name]
+  Parse all files in a folder by option -a:
+  ./CIM2Mod -a <xml_directory/>
+  
+  Use verbose option for more information by using --verbose:
+  ./CIM2Mod --verbose
+  
+  Change Output File Name by using option -o:
+  ./CIM2Mod -o [modelica_output_file_name]
 
-##### To parse separate xml files using verbose option:
+  Change Template Folder by using option -t:
+  ./CIM2Mod -t [template_folder_name]
 
-    ./CIM2Mod -f --verbose <file2.xml> <file2.xml>... [output_file_name]
-
-##### to parse all xml files in a folder:
-
-    ./CIM2Mod -a --verbose <xml_directory/> [output_file_name]
-
-##### to parse all xml files in a folder:
-
-    ./CIM2Mod -a <xml_directory/> [output_file_name]
-
-  The tool generates the modelica document: `output_file_name.mo`
-
+  Complete example to parse all files in a directory using verbose for more information and using a custom output file name:
+  ./CIM2Mod -a <xml_directory/> --verbose -o [modelica_output_file_name]
+###
 ##### Command help:
 
     ./CIM2Mod --help
