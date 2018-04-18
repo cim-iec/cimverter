@@ -13,6 +13,24 @@
 
 using namespace libconfig;
 
+/// ConnectionSettings in Template config.cfg
+
+typedef  struct ConnectionSettings{
+   std::string BusBarName;
+   std::string ConnectivityNodeName;
+   std::string SlackName;
+   std::string PQLoadName;
+   std::string ZLoadName;
+   std::string PiLineName;
+   std::string RxLineName;
+   std::string TransformerName;
+   std::string GenericGeneratorName;
+   std::string WindGeneratorName;
+   std::string SolarGeneratorName;
+   std::string BatteryName;
+   std::string HouseholdName;
+};
+
 /// global settings in Config.cfg
 typedef struct GlobalSettings{
   std::string source_tool_name;
@@ -160,6 +178,7 @@ class ConfigManager {
 
   virtual ~ConfigManager();
 
+  ConnectionSettings cs;
   GlobalSettings  gs;
   UnitSettings us;
   TemplateSettings ts;
@@ -178,6 +197,11 @@ class ConfigManager {
   HouseholdSettings household_parameters;
 
  public:
+  std::string template_folder;
+
+  void getConnectionNames();
+
+  void getConnectionConfigFiles();
 
   void getAllSettings();
 
@@ -214,6 +238,7 @@ class ConfigManager {
   void getHouseholdSettings();
 
  private:
+  Config conCfg;
   Config cfg;
 
 };

@@ -4,6 +4,7 @@
  */
 
 #include "CIMObjectHandler.h"
+#include "ModelicaWorkshop/ModPowerSystems/Connection.h"
 
 /**\brief Macro for transformation.extent setting
  */
@@ -62,11 +63,17 @@ CIMObjectHandler::~CIMObjectHandler() {
 /**
  * Get all settings from config.cfg.
  */
-void CIMObjectHandler::get_config() {
+void CIMObjectHandler::get_config(std::string templates) {
 
+  template_folder = templates;
   print_separator();
   std::cout << "reading config files..." << std::endl;
   this->configManager.getAllSettings();
+  std::cout << "using templates: " << templates <<"\n";
+  configManager.template_folder = templates;
+  this->configManager.getConnectionConfigFiles();
+  this->configManager.getConnectionNames();
+  Connection::setConfigManager(&this->configManager);
   print_separator();
 }
 
@@ -113,9 +120,8 @@ bool CIMObjectHandler::pre_process() {
  * Generate the modelica code
  * by parsering the _CIMObjects
  */
-bool CIMObjectHandler::ModelicaCodeGenerator(std::string output_file_name, int verbose_flag, std::string templates) {
+bool CIMObjectHandler::ModelicaCodeGenerator(std::string output_file_name, int verbose_flag) {
 
-  template_folder = templates;
   const std::string filename = output_file_name;
   ctemplate::TemplateDictionary *dict = new ctemplate::TemplateDictionary("MODELICA");///set the main tpl file
   this->SystemSettingsHandler(filename, dict);

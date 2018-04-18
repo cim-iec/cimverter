@@ -8,6 +8,7 @@
 
 #include "../ModBaseClass.h"
 #include "../ModelicaClass.h"
+//#include "../../ConfigManager.h"
 
 #include <cmath>
 
@@ -47,6 +48,7 @@ class Connection : public ModBaseClass {
   virtual ~Connection();
 
  public:
+  static void setConfigManager(ConfigManager* manager);
   template<typename T> void cal_middle_points(T *Componet);
   std::string output_points() const;
   void set_lineColor(color lineColor) {
@@ -59,6 +61,7 @@ class Connection : public ModBaseClass {
   void error_log();
 
  private:
+  static ConfigManager *configManager;
   std::string _port1, _port2;  //port
   Point _p1, _p2;
   std::string _terminalId1, _terminalId2;  //terminal

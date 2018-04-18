@@ -180,9 +180,9 @@ int main(int argc, char *argv[]) {
 
   cimModel.parseFiles();// Parser begin!
   CIMObjectHandler ObjectHandler(std::move(cimModel.Objects));// r-value
-  ObjectHandler.get_config();// Get configuration files
+  ObjectHandler.get_config(template_folder);// Get configuration files
 
-  ObjectHandler.ModelicaCodeGenerator(output_file_name, verbose_flag, template_folder);
+  ObjectHandler.ModelicaCodeGenerator(output_file_name, verbose_flag);
 
   // Timer stop
   stop = std::chrono::high_resolution_clock::now();
