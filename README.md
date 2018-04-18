@@ -84,7 +84,6 @@ In case of **commercial** use you are required to negotiate a proper license mod
 
     cd build/bin
 
-###
   Parse the separated files by option -f:
   ./CIM2Mod -f <file2.xml> <file2.xml>"
 
@@ -102,7 +101,7 @@ In case of **commercial** use you are required to negotiate a proper license mod
 
   Complete example to parse all files in a directory using verbose for more information and using a custom output file name:
   ./CIM2Mod -a <xml_directory/> --verbose -o [modelica_output_file_name]
-###
+
 ##### Command help:
 
     ./CIM2Mod --help
