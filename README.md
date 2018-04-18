@@ -83,23 +83,17 @@ In case of **commercial** use you are required to negotiate a proper license mod
 #### Usage:
 
     cd build/bin
-
-  Parse the separated files by option -f:
-    ./CIM2Mod -f <file2.xml> <file2.xml>"
-
-  Parse all files in a folder by option -a:
+    Parse the separated files by option -f:
+    ./CIM2Mod -f <file2.xml> <file2.xml>
+    Parse all files in a folder by option -a:
     ./CIM2Mod -a <xml_directory/>
-  
-  Use verbose option for more information by using --verbose:
+    Use verbose option for more information by using --verbose:
     ./CIM2Mod --verbose
-  
-  Change Output File Name by using option -o:
+    Change Output File Name by using option -o:
     ./CIM2Mod -o [modelica_output_file_name]
-
-  Change Template Folder by using option -t:
+    Change Template Folder by using option -t:
     ./CIM2Mod -t [template_folder_name]
-
-  Complete example to parse all files in a directory using verbose for more information and using a custom output file name:
+    Complete example to parse all files in a directory using verbose for more information and using a custom output file name:
     ./CIM2Mod -a <xml_directory/> --verbose -o [modelica_output_file_name]
 
 ##### Command help:
