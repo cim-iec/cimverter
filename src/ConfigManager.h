@@ -22,8 +22,12 @@ typedef  struct ConnectionSettings{
    std::string PQLoadName;
    std::string ZLoadName;
    std::string PiLineName;
+   std::string PiLineSuffix1;
+   std::string PiLineSuffix2;
    std::string RxLineName;
    std::string TransformerName;
+   std::string TransformerSuffix1;
+   std::string TransformerSuffix2;
    std::string GenericGeneratorName;
    std::string WindGeneratorName;
    std::string SolarGeneratorName;
