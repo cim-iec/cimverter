@@ -41,8 +41,8 @@ set(CMAKE_CXX_FLAGS_RELEASE  "${CMAKE_CXX_FLAGS_RELEASE} -Wall -Wno-inconsistent
 file(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/bin/resource)
 file(COPY ${PROJECT_SOURCE_DIR}/ModPowerSystems_templates/ DESTINATION 
 ${PROJECT_BINARY_DIR}/bin/resource/ModPowerSystems_templates)
-file(COPY ${PROJECT_SOURCE_DIR}/PowerSystem_templates/ DESTINATION 
-${PROJECT_BINARY_DIR}/bin/resource/PowerSystem_templates)
+file(COPY ${PROJECT_SOURCE_DIR}/PowerSystems_templates/ DESTINATION 
+${PROJECT_BINARY_DIR}/bin/resource/PowerSystems_templates)
 file(COPY ${PROJECT_SOURCE_DIR}/src/config.cfg DESTINATION ${PROJECT_BINARY_DIR}/bin)
 file(COPY ${PROJECT_SOURCE_DIR}/src/task_alias.csv ${PROJECT_SOURCE_DIR}/src/assignment_alias.csv DESTINATION ${PROJECT_BINARY_DIR}/bin)
 
