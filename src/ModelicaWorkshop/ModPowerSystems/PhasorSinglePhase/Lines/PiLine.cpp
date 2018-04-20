@@ -62,7 +62,7 @@ PiLine::~PiLine() {
 bool PiLine::set_template_values(ctemplate::TemplateDictionary *dictionary) {
 
   dictionary->SetValue("NAME", this->name());
-  dictionary->SetFormattedValue("LENGTH", "%.6f", this->length());
+  dictionary->SetFormattedValue("LENGTH_KM", "%.6f", this->length());
   dictionary->SetFormattedValue("LENGTH_M", "%.6f", this->length() * 1000);
   dictionary->SetFormattedValue("IMAX", "%.3f", this->Imax());
   dictionary->SetFormattedValue("R", "%.6f", this->r());
