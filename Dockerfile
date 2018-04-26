@@ -12,4 +12,4 @@ LABEL \
 RUN apt-get update
 
 # Toolchain
-RUN apt-get install -y git cmake clang build-essential g++ python-dev autotools-dev libicu-dev build-essential libbz2-dev libboost-all-dev libctemplate-dev libconfig++-dev
+RUN apt-get install -y git cmake clang build-essential g++ python-dev autotools-dev libicu-dev build-essential libbz2-dev libboost-all-dev libctemplate-dev libconfig++-dev doxygen libxml2
