@@ -18,7 +18,7 @@ RUN dnf -y install \
 	make cmake \
 	doxygen graphviz \
 	rpmdevtools \
-	install clang \
+	clang \
 	build-essential \
 	g++ \
 	python-dev \
