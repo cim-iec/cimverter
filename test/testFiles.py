@@ -13,7 +13,9 @@ testedFiles = []
 # Locate all dirs and files in rootdir
 dirs = [f for f in os.listdir(rootdir) if not isfile(join(rootdir, f))]
 files = [f for f in listdir(rootdir) if isfile(join(rootdir, f))]
-
+if not (os.path.isdir("outputs/")):
+    bashCommand = "mkdir outputs"
+    process = subprocess.call(bashCommand.split(), stdout=subprocess.PIPE)
 # In case of dirs, pass -a to CIM2Mod
 for dir in dirs:
     bashCommand = "./create_output.bash a " + dir + " " + dir
@@ -45,8 +47,8 @@ if diffs == 0 and errors == 0:
     print "Everything fine"
     exit(0)
 else:
-    print (diffs + " diffs occured")
-    print (errors + " errors occured")
+    print diffs, " diffs occured"
+    print errors, " errors occured"
     exit(1)
 
 
