@@ -1,7 +1,6 @@
 variables:
   DOCKER_TAG_DEV: ${CI_COMMIT_REF_NAME}
   DOCKER_IMAGE_DEV: cim2mod-dev
-  GIT_SUBMODULE_STRATEGY: recursive
 
 stages:
   - prepare
@@ -23,6 +22,7 @@ docker:
   tags:
     - docker
   script:
+    - git clone https://${GITLAB_USER}:${GITLAB_TOKEN}@git.rwth-aachen.de/acs/core/cim/cimpp/libcimpp.git/
     - mkdir -p build && cd build
     - cmake ..
     - make -j8
@@ -31,7 +31,7 @@ test:
   image: docker:git
   stage: test
   script:
-    - cd test
+    - cd test/
     - ./testFiles.py
   tags:
     - docker
