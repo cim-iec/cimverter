@@ -21,7 +21,7 @@ build:
   tags:
     - docker
   script:
-    - git clone https://${GITLAB_USER}:${GITLAB_TOKEN}@git.rwth-aachen.de/acs/core/cim/cimpp/libcimpp.git/
+    - git clone --recursive https://${GITLAB_USER}:${GITLAB_TOKEN}@git.rwth-aachen.de/acs/core/cim/cimpp/libcimpp.git/
     - mkdir -p build && cd build
     - cmake ..
     - make -j8
