@@ -4,7 +4,7 @@ import filecmp
 import os
 from os import listdir
 from os.path import isfile, join
-rootdir = '/home/achim/acs/CIM2Mod/test/xml'
+rootdir = './xml'
 
 diffs = 0
 errors = 0
