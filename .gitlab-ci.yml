@@ -23,7 +23,7 @@ test:
     - rm -rf libcimpp/
     - git clone --recursive https://${GITLAB_USER}:${GITLAB_TOKEN}@git.rwth-aachen.de/acs/core/cim/cimpp/libcimpp.git/ libcimpp/
     - mkdir -p build && cd build
-    - cmake ..
+    - cmake ..-DUSE_CIM_VERSION:STRING=IEC61970_16v29a_SINERGIEN
     - make -j8
   script:
     - cd test/
