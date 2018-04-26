@@ -45,8 +45,8 @@ if diffs == 0 and errors == 0:
     print "Everything fine"
     exit(0)
 else:
-    print diffs + " diffs occured"
-    print errors + " errors occured"
+    print (diffs + " diffs occured")
+    print (errors + " errors occured")
     exit(1)
 
 
