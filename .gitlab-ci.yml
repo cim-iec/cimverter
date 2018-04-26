@@ -4,7 +4,6 @@ variables:
 
 stages:
   - prepare
-  - build
   - test
 
 docker:
@@ -15,12 +14,13 @@ docker:
   tags:
     - shell
 
-build: 
+test: 
   stage: test
   image: ${DOCKER_IMAGE_DEV}:${DOCKER_TAG_DEV}
   tags:
     - docker
   before_script:
+    - rm -rf libcimpp/
     - git clone --recursive https://${GITLAB_USER}:${GITLAB_TOKEN}@git.rwth-aachen.de/acs/core/cim/cimpp/libcimpp.git/ libcimpp/
     - mkdir -p build && cd build
     - cmake ..
