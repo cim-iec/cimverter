@@ -5,7 +5,7 @@ variables:
 stages:
   - prepare
   - test
-
+# build the docker img in which we want to test. normally we want a dockerfile with all dependencies which we just include
 docker:
   stage: prepare
   script:
@@ -13,7 +13,7 @@ docker:
     - docker images
   tags:
     - shell
-
+# clone libcimpp in our projekt. compile and run the tests.
 test: 
   stage: test
   image: ${DOCKER_IMAGE_DEV}:${DOCKER_TAG_DEV}

@@ -1,3 +1,4 @@
+# define on which img our img should be based
 FROM debian:latest
 
 LABEL \
@@ -11,5 +12,5 @@ LABEL \
 
 RUN apt-get update
 
-# Toolchain
+# Define which libaries should be included in the dockerimg
 RUN apt-get install -y git cmake clang build-essential g++ python-dev autotools-dev libicu-dev build-essential libbz2-dev libboost-all-dev libctemplate-dev libconfig++-dev doxygen libxml2 libxml2-dev
