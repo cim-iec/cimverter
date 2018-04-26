@@ -1,4 +1,4 @@
-FROM fedora:27
+FROM debian:latest
 
 LABEL \
 	org.label-schema.schema-version = "2.1.0" \
@@ -9,31 +9,7 @@ LABEL \
 	org.label-schema.author.email = "lrazik@eonerc.rwth-aachen.org" \
 	org.label-schema.vcs-url = "https://git.rwth-aachen.de/acs/core/cim/CIM2Mod"
 
-RUN dnf -y update
+RUN apt-get update
 
 # Toolchain
-RUN dnf -y install \
-	git \
-	gcc-c++ \
-	make cmake \
-	doxygen graphviz \
-	rpmdevtools \
-	clang \
-	build-essential \
-	g++ \
-	python-dev \
-	autotools-dev \
-	libicu-dev \
-	build-essential \
-	libbz2-dev \
-	libboost-all-dev \
-	libctemplate-dev \
-	libconfig++-dev
-
-# Some of the dependencies are only available in our own repo
-ADD https://packages.fein-aachen.org/redhat/fein.repo /etc/yum.repos.d/
-
-# Dependencies
-RUN dnf -y install \
-	libarabica
-
+RUN apt-get install -y git cmake clang build-essential g++ python-dev autotools-dev libicu-dev build-essential libbz2-dev libboost-all-dev libctemplate-dev libconfig++-dev
