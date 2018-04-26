@@ -26,7 +26,7 @@ test:
     - cmake .. -DUSE_CIM_VERSION:STRING=IEC61970_16v29a_SINERGIEN
     - make -j8
   script:
-    - cd test/
+    - cd ../test/
     - ./testFiles.py
 
 
