@@ -15,8 +15,7 @@ docker:
   tags:
     - shell
 
-# Template
-.build: &build
+build: 
   stage: build
   image: ${DOCKER_IMAGE_DEV}:${DOCKER_TAG_DEV}
   tags:
