@@ -1,0 +1,39 @@
+variables:
+  DOCKER_TAG_DEV: ${CI_COMMIT_REF_NAME}
+  DOCKER_IMAGE_DEV: cim2mod-dev
+  GIT_SUBMODULE_STRATEGY: recursive
+
+stages:
+  - prepare
+  - build
+  - test
+
+docker:
+  stage: prepare
+  script:
+    - docker build -t ${DOCKER_IMAGE_DEV}:${DOCKER_TAG_DEV} .
+    - docker images
+  tags:
+    - shell
+
+# Template
+.build: &build
+  stage: build
+  image: ${DOCKER_IMAGE_DEV}:${DOCKER_TAG_DEV}
+  tags:
+    - docker
+  script:
+    - mkdir -p build && cd build
+    - cmake ..
+    - make -j8
+
+test:
+  image: docker:git
+  stage: test
+  script:
+    - cd test
+    - ./testFiles.py
+  tags:
+    - docker
+
+
