@@ -17,7 +17,18 @@ RUN dnf -y install \
 	gcc-c++ \
 	make cmake \
 	doxygen graphviz \
-	rpmdevtools
+	rpmdevtools \
+	install clang \
+	build-essential \
+	g++ \
+	python-dev \
+	autotools-dev \
+	libicu-dev \
+	build-essential \
+	libbz2-dev \
+	libboost-all-dev \
+	libctemplate-dev \
+	libconfig++-dev
 
 # Some of the dependencies are only available in our own repo
 ADD https://packages.fein-aachen.org/redhat/fein.repo /etc/yum.repos.d/
