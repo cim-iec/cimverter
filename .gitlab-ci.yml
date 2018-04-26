@@ -16,23 +16,17 @@ docker:
     - shell
 
 build: 
-  stage: build
+  stage: test
   image: ${DOCKER_IMAGE_DEV}:${DOCKER_TAG_DEV}
   tags:
     - docker
-  script:
-    - git clone --recursive https://${GITLAB_USER}:${GITLAB_TOKEN}@git.rwth-aachen.de/acs/core/cim/cimpp/libcimpp.git/
+  before_script:
+    - git clone --recursive https://${GITLAB_USER}:${GITLAB_TOKEN}@git.rwth-aachen.de/acs/core/cim/cimpp/libcimpp.git/ libcimpp/
     - mkdir -p build && cd build
     - cmake ..
     - make -j8
-
-test:
-  image: docker:git
-  stage: test
   script:
     - cd test/
     - ./testFiles.py
-  tags:
-    - docker
 
 
