@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:cim="http://iec.ch/TC57/2012/CIM-schema-cim16#" xmlns:md="http://iec.ch/TC57/61970-552/ModelDescription/1#" xmlns:entsoe="http://entsoe.eu/Secretariat/ProfileExtension/2#" xmlns:neplan="http://www.neplan.ch#">
+  <md:FullModel rdf:about="urn:uuid:63fd1624-6544-47b9-8f86-fa6d9d41bb2a">
+    <md:Model.created>2018-05-15T15:37:16</md:Model.created>
+    <neplan:Model.createdBy>NEPLAN by Busarello + Cott + Partner AG, Switzerland</neplan:Model.createdBy>
+    <md:Model.scenarioTime>2018-05-15T15:37:08</md:Model.scenarioTime>
+    <md:Model.version>7</md:Model.version>
+    <md:Model.DependentOn rdf:resource="urn:uuid:1a39385b-b215-4f99-af24-d4266d410304"/>
+    <md:Model.DependentOn rdf:resource="urn:uuid:15fa8de2-13a0-4f14-848e-30b01e4dc1cf"/>
+    <md:Model.description>NEPLAN</md:Model.description>
+    <md:Model.modelingAuthoritySet>FULL</md:Model.modelingAuthoritySet>
+    <md:Model.profile>http://iec.ch/TC57/61970-456/StateVariables/3</md:Model.profile>
+  </md:FullModel>
+  <cim:SvVoltage rdf:ID="N0_5B20">
+    <cim:SvVoltage.v>20.000000</cim:SvVoltage.v>
+    <cim:SvVoltage.angle>0e+000</cim:SvVoltage.angle>
+    <cim:SvVoltage.TopologicalNode rdf:resource="#N0"/>
+  </cim:SvVoltage>
+  <cim:SvVoltage rdf:ID="N1_5B20">
+    <cim:SvVoltage.v>19.959138</cim:SvVoltage.v>
+    <cim:SvVoltage.angle>-0.046210</cim:SvVoltage.angle>
+    <cim:SvVoltage.TopologicalNode rdf:resource="#N1"/>
+  </cim:SvVoltage>
+  <cim:SvPowerFlow rdf:ID="PQ0-sv">
+    <cim:SvPowerFlow.p>0.330000</cim:SvPowerFlow.p>
+    <cim:SvPowerFlow.q>0.205000</cim:SvPowerFlow.q>
+    <cim:SvPowerFlow.Terminal rdf:resource="#E-1229789412"/>
+  </cim:SvPowerFlow>
+</rdf:RDF>
