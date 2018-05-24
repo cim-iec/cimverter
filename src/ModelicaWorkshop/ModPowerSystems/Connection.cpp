@@ -249,7 +249,7 @@ Connection::~Connection() {
  *  4 position cases
 */
 template<typename T>
-void Connection::cal_middle_points(T *Componet) {
+void Connection::cal_middle_points(T *Componet) { // Lukas: TODO FIXME: component statt Componet!
   if (_p1.x == _p2.x || _p1.y == _p2.y) {
     _points.push_back(_p1);
     _points.push_back(_p2);
