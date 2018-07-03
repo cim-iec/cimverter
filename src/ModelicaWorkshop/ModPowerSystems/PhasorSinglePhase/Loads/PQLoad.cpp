@@ -4,6 +4,7 @@
  */
 
 #include "PQLoad.h"
+#include <math.h>
 
 namespace ModPowerSystems {
 
@@ -105,6 +106,7 @@ bool PQLoad::set_template_values(ctemplate::TemplateDictionary *dictionary) {
     dictionary->SetFormattedValue("PNOM", "%.3f", this->Pnom());
     dictionary->SetFormattedValue("QNOM", "%.3f", this->Qnom());
     dictionary->SetFormattedValue("VNOM", "%.3f", this->Vnom());
+    dictionary->SetFormattedValue("SNOM", "%.3f", sqrt(this->Pnom()*this->Pnom() + this->Qnom()*this->Qnom()));
     dictionary->SetValue("PNOM_DISPLAYUNIT", (ModelicaUnit[this->Pnom_displayUnit()]));
     dictionary->SetValue("QNOM_DISPLAYUNIT", (ModelicaUnit[this->Qnom_displayUnit()]));
     dictionary->SetValue("VNOM_DISPLAYUNIT", (ModelicaUnit[this->Vnom_displayUnit()]));
