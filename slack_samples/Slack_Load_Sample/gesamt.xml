@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:cim="http://iec.ch/TC57/2012/CIM-schema-cim16#" xmlns:md="http://iec.ch/TC57/61970-552/ModelDescription/1#" xmlns:entsoe="http://entsoe.eu/Secretariat/ProfileExtension/2#" xmlns:neplan="http://www.neplan.ch#">
+  <md:FullModel rdf:about="urn:uuid:6b7ef9d7-31ec-4984-adfa-5f68fcb29496">
+    <md:Model.created>2017-10-19T17:34:29</md:Model.created>
+    <neplan:Model.createdBy>NEPLAN by Busarello + Cott + Partner AG, Switzerland</neplan:Model.createdBy>
+    <md:Model.scenarioTime>2017-10-19T17:34:28</md:Model.scenarioTime>
+    <md:Model.version>7</md:Model.version>
+    <md:Model.DependentOn rdf:resource="urn:uuid:e986dcb1-bb29-4506-bf47-c00b80d20498"/>
+    <md:Model.DependentOn rdf:resource="urn:uuid:f3632954-9bf6-4037-8a3b-81dfd978dde0"/>
+    <md:Model.description>NEPLAN</md:Model.description>
+    <md:Model.modelingAuthoritySet>FULL</md:Model.modelingAuthoritySet>
+    <md:Model.profile>http://iec.ch/TC57/61970-453/DiagramLayout/2</md:Model.profile>
+  </md:FullModel>
+  <cim:Diagram rdf:ID="_eeb2a482-0770-41b7-9456-5c0f7e52694b">
+    <cim:IdentifiedObject.name>Diagram 0</cim:IdentifiedObject.name>
+    <cim:Diagram.orientation rdf:resource="http://iec.ch/TC57/2010/CIM-schema-cim16#OrientationKind.negative"/>
+  </cim:Diagram>
+  <cim:DiagramObject rdf:ID="_2f047254-788b-4801-a12d-2b1852fcc56e">
+    <cim:DiagramObject.rotation>0</cim:DiagramObject.rotation>
+    <cim:DiagramObject.IdentifiedObject rdf:resource="#E-1229789291"/>
+    <cim:DiagramObject.Diagram rdf:resource="#_eeb2a482-0770-41b7-9456-5c0f7e52694b"/>
+  </cim:DiagramObject>
+  <cim:DiagramObjectPoint rdf:ID="_b1b97cbf-1caf-45c0-a60f-1056f7de9130">
+    <cim:DiagramObjectPoint.sequenceNumber>1</cim:DiagramObjectPoint.sequenceNumber>
+    <cim:DiagramObjectPoint.DiagramObject rdf:resource="#_2f047254-788b-4801-a12d-2b1852fcc56e"/>
+    <cim:DiagramObjectPoint.xPosition>88.000000</cim:DiagramObjectPoint.xPosition>
+    <cim:DiagramObjectPoint.yPosition>82.000000</cim:DiagramObjectPoint.yPosition>
+  </cim:DiagramObjectPoint>
+  <cim:DiagramObjectPoint rdf:ID="_5e444dbd-40f7-4e0b-93fb-adbb5584caf6">
+    <cim:DiagramObjectPoint.sequenceNumber>2</cim:DiagramObjectPoint.sequenceNumber>
+    <cim:DiagramObjectPoint.DiagramObject rdf:resource="#_2f047254-788b-4801-a12d-2b1852fcc56e"/>
+    <cim:DiagramObjectPoint.xPosition>88.000000</cim:DiagramObjectPoint.xPosition>
+    <cim:DiagramObjectPoint.yPosition>70.000000</cim:DiagramObjectPoint.yPosition>
+  </cim:DiagramObjectPoint>
+  <cim:DiagramObject rdf:ID="_1d3ffdee-361c-492c-adf9-716324eefe04">
+    <cim:DiagramObject.rotation>0</cim:DiagramObject.rotation>
+    <cim:DiagramObject.IdentifiedObject rdf:resource="#E-1229789294"/>
+    <cim:DiagramObject.Diagram rdf:resource="#_eeb2a482-0770-41b7-9456-5c0f7e52694b"/>
+  </cim:DiagramObject>
+  <cim:DiagramObjectPoint rdf:ID="_1c332115-982f-4d02-b4b5-b904e453307c">
+    <cim:DiagramObjectPoint.sequenceNumber>1</cim:DiagramObjectPoint.sequenceNumber>
+    <cim:DiagramObjectPoint.DiagramObject rdf:resource="#_1d3ffdee-361c-492c-adf9-716324eefe04"/>
+    <cim:DiagramObjectPoint.xPosition>88.000000</cim:DiagramObjectPoint.xPosition>
+    <cim:DiagramObjectPoint.yPosition>66.000000</cim:DiagramObjectPoint.yPosition>
+  </cim:DiagramObjectPoint>
+  <cim:DiagramObjectPoint rdf:ID="_9a4fba3f-3376-4396-af73-d24ea3ba7b27">
+    <cim:DiagramObjectPoint.sequenceNumber>2</cim:DiagramObjectPoint.sequenceNumber>
+    <cim:DiagramObjectPoint.DiagramObject rdf:resource="#_1d3ffdee-361c-492c-adf9-716324eefe04"/>
+    <cim:DiagramObjectPoint.xPosition>88.000000</cim:DiagramObjectPoint.xPosition>
+    <cim:DiagramObjectPoint.yPosition>70.000000</cim:DiagramObjectPoint.yPosition>
+  </cim:DiagramObjectPoint>
+  <cim:DiagramObject rdf:ID="_d28ee8d0-cc0e-4edd-b315-356b293f453d">
+    <cim:DiagramObject.rotation>0</cim:DiagramObject.rotation>
+    <cim:DiagramObject.IdentifiedObject rdf:resource="#N0"/>
+    <cim:DiagramObject.Diagram rdf:resource="#_eeb2a482-0770-41b7-9456-5c0f7e52694b"/>
+  </cim:DiagramObject>
+  <cim:DiagramObjectPoint rdf:ID="_770f6682-a7ce-4b24-a9f4-377554d26659">
+    <cim:DiagramObjectPoint.sequenceNumber>1</cim:DiagramObjectPoint.sequenceNumber>
+    <cim:DiagramObjectPoint.DiagramObject rdf:resource="#_d28ee8d0-cc0e-4edd-b315-356b293f453d"/>
+    <cim:DiagramObjectPoint.xPosition>76.000000</cim:DiagramObjectPoint.xPosition>
+    <cim:DiagramObjectPoint.yPosition>70.000000</cim:DiagramObjectPoint.yPosition>
+  </cim:DiagramObjectPoint>
+  <cim:DiagramObjectPoint rdf:ID="_2cbcbdc4-f70f-4fcd-9ccf-fca58a8fef10">
+    <cim:DiagramObjectPoint.sequenceNumber>2</cim:DiagramObjectPoint.sequenceNumber>
+    <cim:DiagramObjectPoint.DiagramObject rdf:resource="#_d28ee8d0-cc0e-4edd-b315-356b293f453d"/>
+    <cim:DiagramObjectPoint.xPosition>98.000000</cim:DiagramObjectPoint.xPosition>
+    <cim:DiagramObjectPoint.yPosition>70.000000</cim:DiagramObjectPoint.yPosition>
+  </cim:DiagramObjectPoint>
+  <cim:DiagramObject rdf:ID="_3d461902-d702-423d-b129-5a4e908cc6dd">
+    <cim:DiagramObject.rotation>-90.000000</cim:DiagramObject.rotation>
+    <cim:DiagramObject.IdentifiedObject rdf:resource="#SL"/>
+    <cim:DiagramObject.Diagram rdf:resource="#_eeb2a482-0770-41b7-9456-5c0f7e52694b"/>
+  </cim:DiagramObject>
+  <cim:DiagramObjectPoint rdf:ID="_8f70d0d3-c688-43f0-842f-12e330e49994">
+    <cim:DiagramObjectPoint.sequenceNumber>1</cim:DiagramObjectPoint.sequenceNumber>
+    <cim:DiagramObjectPoint.DiagramObject rdf:resource="#_3d461902-d702-423d-b129-5a4e908cc6dd"/>
+    <cim:DiagramObjectPoint.xPosition>88.000000</cim:DiagramObjectPoint.xPosition>
+    <cim:DiagramObjectPoint.yPosition>55.200000</cim:DiagramObjectPoint.yPosition>
+  </cim:DiagramObjectPoint>
+  <cim:DiagramObject rdf:ID="_b213e284-5a25-49f5-b6b2-bff8053f7d84">
+    <cim:DiagramObject.rotation>0</cim:DiagramObject.rotation>
+    <cim:DiagramObject.IdentifiedObject rdf:resource="#PQ0"/>
+    <cim:DiagramObject.Diagram rdf:resource="#_eeb2a482-0770-41b7-9456-5c0f7e52694b"/>
+  </cim:DiagramObject>
+  <cim:DiagramObjectPoint rdf:ID="_9deba1c7-5cb4-4bd9-834a-196bd9adfcc2">
+    <cim:DiagramObjectPoint.sequenceNumber>1</cim:DiagramObjectPoint.sequenceNumber>
+    <cim:DiagramObjectPoint.DiagramObject rdf:resource="#_b213e284-5a25-49f5-b6b2-bff8053f7d84"/>
+    <cim:DiagramObjectPoint.xPosition>88.000000</cim:DiagramObjectPoint.xPosition>
+    <cim:DiagramObjectPoint.yPosition>85.800000</cim:DiagramObjectPoint.yPosition>
+  </cim:DiagramObjectPoint>
+
+  <cim:NameType rdf:ID="_6975c5da-a0ff-46a2-88b6-e964237e6433">
+    <cim:NameType.name>description</cim:NameType.name>
+  </cim:NameType>
+  <cim:BaseVoltage rdf:ID="_4201aaae-3116-461a-90ec-7eeffd9340be">
+    <cim:BaseVoltage.nominalVoltage>20.00</cim:BaseVoltage.nominalVoltage>
+  </cim:BaseVoltage>
+  
+  
+  <cim:VoltageLevel rdf:ID="_d56d1acc-b7b4-4391-987a-6cc7dcab9d59">
+    <cim:IdentifiedObject.name>41</cim:IdentifiedObject.name>
+    <cim:VoltageLevel.Substation rdf:resource="#_3FA2-2E-F1-31323239373839323835"/>
+    <cim:VoltageLevel.BaseVoltage rdf:resource="#_4201aaae-3116-461a-90ec-7eeffd9340be"/>
+  </cim:VoltageLevel>
+  
+  
+  <cim:Substation rdf:ID="_3FA2-2E-F1-31323239373839323835">
+    <cim:IdentifiedObject.name>N0</cim:IdentifiedObject.name>
+    <cim:Substation.Region rdf:resource="#_2e7dc594-f8f6-4446-a778-e3af1844a19e"/>
+  </cim:Substation>
+  <cim:GeographicalRegion rdf:ID="_7568ac03-167d-483e-9782-ef6dbab59566">
+    <cim:IdentifiedObject.name>Area 1</cim:IdentifiedObject.name>
+  </cim:GeographicalRegion>
+  <cim:SubGeographicalRegion rdf:ID="_2e7dc594-f8f6-4446-a778-e3af1844a19e">
+    <cim:IdentifiedObject.name>Zone 1</cim:IdentifiedObject.name>
+    <cim:SubGeographicalRegion.Region rdf:resource="#_7568ac03-167d-483e-9782-ef6dbab59566"/>
+  </cim:SubGeographicalRegion>
+  <cim:OperationalLimitType rdf:ID="_b8118dc8-73c8-4865-a744-5efe1fdbdd7b">
+    <cim:IdentifiedObject.name>PATL</cim:IdentifiedObject.name>
+    <cim:OperationalLimitType.acceptableDuration>45000</cim:OperationalLimitType.acceptableDuration>
+    <cim:OperationalLimitType.direction rdf:resource="http://iec.ch/TC57/2012/CIM-schema-cim16#OperationalLimitDirectionKind.absoluteValue"/>
+  </cim:OperationalLimitType>
+  <cim:OperationalLimitType rdf:ID="_aa5bda7a-aae1-4188-8af2-5fdf84da6141">
+    <cim:IdentifiedObject.name>TATL</cim:IdentifiedObject.name>
+    <cim:OperationalLimitType.acceptableDuration>180</cim:OperationalLimitType.acceptableDuration>
+    <cim:OperationalLimitType.direction rdf:resource="http://iec.ch/TC57/2012/CIM-schema-cim16#OperationalLimitDirectionKind.absoluteValue"/>
+  </cim:OperationalLimitType>
+  <cim:OperationalLimitType rdf:ID="_2ee97bd1-0de5-45c8-8a42-7e582ec12de7">
+    <cim:IdentifiedObject.name>TATL</cim:IdentifiedObject.name>
+    <cim:OperationalLimitType.acceptableDuration>60</cim:OperationalLimitType.acceptableDuration>
+    <cim:OperationalLimitType.direction rdf:resource="http://iec.ch/TC57/2012/CIM-schema-cim16#OperationalLimitDirectionKind.absoluteValue"/>
+  </cim:OperationalLimitType>
+  
+  <!-- Last1 (Englisch: PQ-Load 0) -->
+  <cim:EnergyConsumer rdf:ID="PQ0">
+    <cim:IdentifiedObject.name>PQ0</cim:IdentifiedObject.name>
+    <cim:Equipment.aggregate>false</cim:Equipment.aggregate>
+    <cim:Equipment.EquipmentContainer rdf:resource="#_d56d1acc-b7b4-4391-987a-6cc7dcab9d59"/>
+  </cim:EnergyConsumer>
+  <!-- Terminal von PQ-Load 0 -->
+  <cim:Terminal rdf:ID="E-1229789291">
+    <cim:IdentifiedObject.name>PQ0_0</cim:IdentifiedObject.name>
+    <cim:Terminal.sequenceNumber>1</cim:Terminal.sequenceNumber>
+    <cim:Terminal.ConductingEquipment rdf:resource="#PQ0"/>
+  </cim:Terminal>
+  
+  <!-- Hier ist der Slack Knoten (in CIM als ExternalNetworkInjection bezeichnet) -->
+  <cim:Name rdf:ID="_a6a805bb-44fd-482c-9556-07a489fe1e2b">
+    <cim:Name.name>NETWORK-FEEDER:</cim:Name.name>
+    <cim:Name.NameType rdf:resource="#_6975c5da-a0ff-46a2-88b6-e964237e6433"/>
+    <cim:Name.IdentifiedObject rdf:resource="#SL"/>
+  </cim:Name>
+  <cim:ExternalNetworkInjection rdf:ID="SL">
+    <cim:IdentifiedObject.name>SL</cim:IdentifiedObject.name>
+    <cim:Equipment.aggregate>false</cim:Equipment.aggregate>
+    <cim:Equipment.EquipmentContainer rdf:resource="#_d56d1acc-b7b4-4391-987a-6cc7dcab9d59"/>
+    <cim:ExternalNetworkInjection.ikSecond>true</cim:ExternalNetworkInjection.ikSecond>
+    <cim:ExternalNetworkInjection.maxInitialSymShCCurrent>43301.000000</cim:ExternalNetworkInjection.maxInitialSymShCCurrent>
+    <cim:ExternalNetworkInjection.maxR0ToX0Ratio>0e+000</cim:ExternalNetworkInjection.maxR0ToX0Ratio>
+    <cim:ExternalNetworkInjection.maxR1ToX1Ratio>0e+000</cim:ExternalNetworkInjection.maxR1ToX1Ratio>
+    <cim:ExternalNetworkInjection.maxZ0ToZ1Ratio>0e+000</cim:ExternalNetworkInjection.maxZ0ToZ1Ratio>
+    <cim:ExternalNetworkInjection.minInitialSymShCCurrent>0e+000</cim:ExternalNetworkInjection.minInitialSymShCCurrent>
+    <cim:ExternalNetworkInjection.minR0ToX0Ratio>0e+000</cim:ExternalNetworkInjection.minR0ToX0Ratio>
+    <cim:ExternalNetworkInjection.minR1ToX1Ratio>0e+000</cim:ExternalNetworkInjection.minR1ToX1Ratio>
+    <cim:ExternalNetworkInjection.minZ0ToZ1Ratio>0e+000</cim:ExternalNetworkInjection.minZ0ToZ1Ratio>
+    <cim:ExternalNetworkInjection.voltageFactor>1.000000</cim:ExternalNetworkInjection.voltageFactor>
+    <cim:ExternalNetworkInjection.referencePriority>1</cim:ExternalNetworkInjection.referencePriority>
+  </cim:ExternalNetworkInjection>
+  <!-- Hier ist der Terminal vom Slack-->
+  <cim:Terminal rdf:ID="E-1229789294">
+    <cim:IdentifiedObject.name>SL_0</cim:IdentifiedObject.name>
+    <cim:Terminal.sequenceNumber>1</cim:Terminal.sequenceNumber>
+    <cim:Terminal.ConductingEquipment rdf:resource="#SL"/>
+  </cim:Terminal>
+  
+  <!-- State variable für die Spannung des TopologicalNode 0 (d.h. der Busbar) -->
+  <!-- Mehr dazu hier: http://fine-aachen.rwth-aachen.de/ict/CIMpp/html/IEC61970_16v29a_IEC61968_12v08/classIEC61970_1_1Base_1_1StateVariables_1_1SvVoltage.html -->
+  <cim:SvVoltage rdf:ID="N0_5B20">
+    <cim:SvVoltage.v>20.000000</cim:SvVoltage.v>
+    <cim:SvVoltage.angle>0e+000</cim:SvVoltage.angle>
+    <cim:SvVoltage.TopologicalNode rdf:resource="#N0"/>
+  </cim:SvVoltage>
+  <!-- State variable für den Leistungsfluss vom TopologicalNode 0 (d.h. der Busbar) zur Last0 (PQ-Load 0) -->
+  <!-- Mehr dazu hier: http://fine-aachen.rwth-aachen.de/ict/CIMpp/html/IEC61970_16v29a_IEC61968_12v08/classIEC61970_1_1Base_1_1StateVariables_1_1SvPowerFlow.html -->
+  <cim:SvPowerFlow rdf:ID="PQ0-sv">
+    <cim:SvPowerFlow.p>0e+000</cim:SvPowerFlow.p>
+    <cim:SvPowerFlow.q>0e+000</cim:SvPowerFlow.q>
+    <cim:SvPowerFlow.Terminal rdf:resource="#E-1229789291"/>
+  </cim:SvPowerFlow>
+  
+  <!-- Dies ist der TopologicalNode N0 (d.h. die Busbar) -->
+  <cim:NameType rdf:ID="_945ef2f2-80d3-4800-b081-30ca1c3607b4">
+    <cim:NameType.name>description</cim:NameType.name>
+  </cim:NameType>
+  <cim:TopologicalNode rdf:ID="N0">
+    <cim:IdentifiedObject.name>N0</cim:IdentifiedObject.name>
+    <cim:TopologicalNode.BaseVoltage rdf:resource="#_4201aaae-3116-461a-90ec-7eeffd9340be"/>
+    <cim:TopologicalNode.ConnectivityNodeContainer rdf:resource="#_d56d1acc-b7b4-4391-987a-6cc7dcab9d59"/>
+  </cim:TopologicalNode>
+  <!-- An diesem zur Busbar gehörigen Terminal hängt die Last 0 (d.h. PQ-Load 0) -->
+  <cim:Terminal rdf:about="#E-1229789291">
+    <cim:Terminal.connected>true</cim:Terminal.connected>
+    <cim:Terminal.TopologicalNode rdf:resource="#N0"/>
+  </cim:Terminal>
+  <!-- An diesem zur Busbar gehörigen Terminal hängt der Slack Knoten (d.h. die ExternalNetworkInjection) -->
+  <cim:Terminal rdf:about="#E-1229789294">
+    <cim:Terminal.connected>true</cim:Terminal.connected>
+    <cim:Terminal.TopologicalNode rdf:resource="#N0"/>
+  </cim:Terminal>
+  
+  
+</rdf:RDF>
