@@ -8,6 +8,8 @@
 
 
 #include <queue>
+#include <map>
+#include <list>
 #include <boost/lexical_cast.hpp>
 #include "IEC61970.hpp"
 #include "ConfigManager.h"
@@ -92,6 +94,8 @@ class CIMObjectHandler {
 
   std::list<DiagramObjectPtr>::iterator diagram_it;
   DiagramObjectPoint calculate_average_position();//using this->diagram_it
+
+  std::map<intptr_t,std::list<std::string>> piLineIdMap;
 
 };
 

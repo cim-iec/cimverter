@@ -158,9 +158,31 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::vector<std::string> args) {
           connectionQueue.push(conn);
 
         } else if (auto *ac_line = dynamic_cast<AcLinePtr>((*terminal_it)->ConductingEquipment)) {
+          
           PiLine pi_line = this->ACLineSegmentHandler(tp_node, (*terminal_it), ac_line, dict);
-          Connection conn(&busbar, &pi_line);
-          connectionQueue.push(conn);
+
+          auto searchIt = piLineIdMap.find(reinterpret_cast<intptr_t>(ac_line));
+          if(searchIt != piLineIdMap.end()) {
+            std::cout<<"found..." << std::endl;
+            std::cout<<searchIt->second.front()<<std::endl;
+          }
+          else {
+            std::cout << "NOT found..." << std::endl;
+            std::list<std::string> list;
+            std::string terminalName = pi_line.name();
+            terminalName.append(".T");
+            if(pi_line.sequenceNumber() == 2) {
+              terminalName.append("2");
+            }
+            else {
+              terminalName.append("1");
+            }
+            list.push_front(terminalName);
+            piLineIdMap[reinterpret_cast<intptr_t>(ac_line)] = list;
+          }
+          // PiLine pi_line = this->ACLineSegmentHandler(tp_node, (*terminal_it), ac_line, dict);
+          // Connection conn(&busbar, &pi_line);
+          // connectionQueue.push(conn);
 
         } else if (auto *energy_consumer = dynamic_cast<EnergyConsumerPtr>((*terminal_it)->ConductingEquipment)) {
 
