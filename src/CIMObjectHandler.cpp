@@ -159,27 +159,55 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::vector<std::string> args) {
 
         } else if (auto *ac_line = dynamic_cast<AcLinePtr>((*terminal_it)->ConductingEquipment)) {
           
-          PiLine pi_line = this->ACLineSegmentHandler(tp_node, (*terminal_it), ac_line, dict);
+          //PiLine pi_line = this->ACLineSegmentHandler(tp_node, (*terminal_it), ac_line, dict);
 
           auto searchIt = piLineIdMap.find(reinterpret_cast<intptr_t>(ac_line));
           if(searchIt != piLineIdMap.end()) {
             std::cout<<"found..." << std::endl;
-            std::cout<<searchIt->second.front()<<std::endl;
-          }
-          else {
-            std::cout << "NOT found..." << std::endl;
-            std::list<std::string> list;
-            std::string terminalName = pi_line.name();
+
+            std::string terminalName = ac_line->name;
             terminalName.append(".T");
-            if(pi_line.sequenceNumber() == 2) {
+
+            if((*terminal_it)->sequenceNumber == 2) {
               terminalName.append("2");
             }
             else {
               terminalName.append("1");
             }
-            list.push_front(terminalName);
-            piLineIdMap[reinterpret_cast<intptr_t>(ac_line)] = list;
+            
+            PiLine pi_line = this->ACLineSegmentHandler(tp_node, (*terminal_it), ac_line, dict, piLineIdMap[reinterpret_cast<intptr_t>(ac_line)], terminalName);
+
           }
+          else {
+            std::cout << "NOT found..." << std::endl;
+        
+            std::string terminalName = ac_line->name;
+            terminalName.append(".T");
+
+            if((*terminal_it)->sequenceNumber == 2) {
+              terminalName.append("2");
+            }
+            else {
+              terminalName.append("1");
+            }
+
+            piLineIdMap[reinterpret_cast<intptr_t>(ac_line)] = terminalName;
+            std::cout << terminalName << std::endl;
+          }
+          // else {
+          //   std::cout << "NOT found..." << std::endl;
+          //   std::list<std::string> list;
+          //   std::string terminalName = pi_line.name();
+          //   terminalName.append(".T");
+          //   if(pi_line.sequenceNumber() == 2) {
+          //     terminalName.append("2");
+          //   }
+          //   else {
+          //     terminalName.append("1");
+          //   }
+          //   list.push_front(terminalName);
+          //   piLineIdMap[reinterpret_cast<intptr_t>(ac_line)] = list;
+          // }
           // PiLine pi_line = this->ACLineSegmentHandler(tp_node, (*terminal_it), ac_line, dict);
           // Connection conn(&busbar, &pi_line);
           // connectionQueue.push(conn);
@@ -571,7 +599,7 @@ Slack CIMObjectHandler::ExternalNIHandler(const TPNodePtr tp_node, const Termina
  */
 PiLine
 CIMObjectHandler::ACLineSegmentHandler(const TPNodePtr tp_node, const TerminalPtr terminal, const AcLinePtr ac_line,
-                                       ctemplate::TemplateDictionary *dict) {
+                                       ctemplate::TemplateDictionary *dict, std::string terminal1Name /* = "" */, std::string terminal2Name /* = "" */) {
   PiLine piline;
   piline.set_name(name_in_modelica(ac_line->name));
   piline.set_length(ac_line->length.value);
@@ -579,6 +607,11 @@ CIMObjectHandler::ACLineSegmentHandler(const TPNodePtr tp_node, const TerminalPt
   piline.set_x(ac_line->x.value/ac_line->length.value);
   piline.set_b(ac_line->bch.value/ac_line->length.value);
   piline.set_g(ac_line->gch.value/ac_line->length.value);
+
+  if (!terminal1Name.empty() && !terminal2Name.empty()) {
+    piline.set_terminal1(terminal1Name);
+    piline.set_terminal2(terminal2Name);
+  }
 
   //find I_Max
   if(OpLimitMap[ac_line]){
@@ -600,7 +633,6 @@ CIMObjectHandler::ACLineSegmentHandler(const TPNodePtr tp_node, const TerminalPt
       piline.set_Imax(piline.Imax()*1000000);
     }
   }
-
 
   piline.set_sequenceNumber(terminal->sequenceNumber);
   piline.set_connected(terminal->connected);
@@ -632,7 +664,8 @@ CIMObjectHandler::ACLineSegmentHandler(const TPNodePtr tp_node, const TerminalPt
     piline.annotation.placement.transformation.origin.y = _t_points.yPosition;
     piline.annotation.placement.transformation.rotation = (*diagram_it)->rotation.value - 90;
 
-    if (piline.sequenceNumber()==0 || piline.sequenceNumber()==1) {
+    if (piline.sequenceNumber()==0 || piline.sequenceNumber()==1 || piline.sequenceNumber() == 2 /* last term needed */) {
+      std::cout << "STage3" << std::endl;
       ctemplate::TemplateDictionary *piLine_dict = dict->AddIncludeDictionary("PILINE_DICT");
       piLine_dict->SetFilename(this->configManager.ts.directory_path + "resource/PiLine.tpl");
       piline.set_template_values(piLine_dict);

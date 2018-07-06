@@ -65,7 +65,7 @@ class CIMObjectHandler {
   bool BusBarSectionHandler(const BusBarSectionPtr busbar_section, BusBar &busbar, ctemplate::TemplateDictionary* dict);
   ConnectivityNode ConnectivityNodeHandler(const TPNodePtr tp_node, const TerminalPtr terminal, const ConnectivityNodePtr connectivity_node, ctemplate::TemplateDictionary* dict);
   Slack ExternalNIHandler(const TPNodePtr tp_node, const TerminalPtr terminal, const ExNIPtr externalNI, ctemplate::TemplateDictionary* dict);
-  PiLine ACLineSegmentHandler(const TPNodePtr tp_node, const TerminalPtr terminal, const AcLinePtr ac_line, ctemplate::TemplateDictionary* dict);
+  PiLine ACLineSegmentHandler(const TPNodePtr tp_node, const TerminalPtr terminal, const AcLinePtr ac_line, ctemplate::TemplateDictionary* dict, std::string terminal1Name = "", std::string terminal2Name = "");
   Transformer PowerTransformerHandler(const TPNodePtr tp_node, const TerminalPtr terminal, const PowerTrafoPtr power_trafo, ctemplate::TemplateDictionary* dict);
   PQLoad EnergyConsumerHandler(const TPNodePtr tp_node, const TerminalPtr terminal, const EnergyConsumerPtr energy_consumer, ctemplate::TemplateDictionary* dict);
   WindGenerator SynchronousMachineHandlerType1(const TPNodePtr tp_node, const TerminalPtr terminal, const SynMachinePtr syn_machine, ctemplate::TemplateDictionary* dict);
@@ -95,7 +95,7 @@ class CIMObjectHandler {
   std::list<DiagramObjectPtr>::iterator diagram_it;
   DiagramObjectPoint calculate_average_position();//using this->diagram_it
 
-  std::map<intptr_t,std::list<std::string>> piLineIdMap;
+  std::map<intptr_t,std::string> piLineIdMap;
 
 };
 
