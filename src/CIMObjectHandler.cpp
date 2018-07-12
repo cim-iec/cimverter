@@ -158,60 +158,33 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::vector<std::string> args) {
           connectionQueue.push(conn);
 
         } else if (auto *ac_line = dynamic_cast<AcLinePtr>((*terminal_it)->ConductingEquipment)) {
-          
+         
+	  /* Changed implementation to enable creation of lossy cables for distaix format.
+	   * Instead of creating "connections", the name of the busbar is stored when visited for the first time.
+	   * When visiting the pi_line for the second time, the name of the current busbar, as well as the name of the busbbar
+	   * stored during the first visit are passed as optional arguments to the ACLineSegmentHandler.
+	   * This handler was modified in such a way, that those additional arguments are stores as dictionary values
+	   * used in the distaix templates.
+	   */
+
           //PiLine pi_line = this->ACLineSegmentHandler(tp_node, (*terminal_it), ac_line, dict);
 
           auto searchIt = piLineIdMap.find(reinterpret_cast<intptr_t>(ac_line));
           if(searchIt != piLineIdMap.end()) {
-            std::cout<<"found..." << std::endl;
-
-            std::string terminalName = ac_line->name;
-            terminalName.append(".T");
-
-            if((*terminal_it)->sequenceNumber == 2) {
-              terminalName.append("2");
-            }
-            else {
-              terminalName.append("1");
-            }
+            // TODO: Debug message - remove when finished!
+	    std::cout<<"found..." << std::endl;
             
-            PiLine pi_line = this->ACLineSegmentHandler(tp_node, (*terminal_it), ac_line, dict, piLineIdMap[reinterpret_cast<intptr_t>(ac_line)], terminalName);
+            PiLine pi_line = this->ACLineSegmentHandler(tp_node, (*terminal_it), ac_line, dict, piLineIdMap[reinterpret_cast<intptr_t>(ac_line)], busbar.name());
 
           }
           else {
+	    // TODO: Debug message - remove when finished!!   	  
             std::cout << "NOT found..." << std::endl;
-        
-            std::string terminalName = ac_line->name;
-            terminalName.append(".T");
 
-            if((*terminal_it)->sequenceNumber == 2) {
-              terminalName.append("2");
-            }
-            else {
-              terminalName.append("1");
-            }
-
-            piLineIdMap[reinterpret_cast<intptr_t>(ac_line)] = terminalName;
-            std::cout << terminalName << std::endl;
+            piLineIdMap[reinterpret_cast<intptr_t>(ac_line)] = busbar.name();
+            
           }
-          // else {
-          //   std::cout << "NOT found..." << std::endl;
-          //   std::list<std::string> list;
-          //   std::string terminalName = pi_line.name();
-          //   terminalName.append(".T");
-          //   if(pi_line.sequenceNumber() == 2) {
-          //     terminalName.append("2");
-          //   }
-          //   else {
-          //     terminalName.append("1");
-          //   }
-          //   list.push_front(terminalName);
-          //   piLineIdMap[reinterpret_cast<intptr_t>(ac_line)] = list;
-          // }
-          // PiLine pi_line = this->ACLineSegmentHandler(tp_node, (*terminal_it), ac_line, dict);
-          // Connection conn(&busbar, &pi_line);
-          // connectionQueue.push(conn);
-
+          
         } else if (auto *energy_consumer = dynamic_cast<EnergyConsumerPtr>((*terminal_it)->ConductingEquipment)) {
 
           if (this->configManager.household_parameters.use_households == false ) {
