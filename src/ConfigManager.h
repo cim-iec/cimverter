@@ -17,6 +17,7 @@ using namespace libconfig;
 typedef struct GlobalSettings{
   std::string source_tool_name;
   bool apply_Neplan_fix;
+  bool create_distaix_format;
 
 } GlobalSettings;
 
