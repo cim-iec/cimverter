@@ -116,7 +116,17 @@ bool CIMObjectHandler::pre_process() {
 bool CIMObjectHandler::ModelicaCodeGenerator(std::vector<std::string> args) {
 
   const std::string filename = args[0];
-  ctemplate::TemplateDictionary *dict = new ctemplate::TemplateDictionary("MODELICA");///set the main tpl file
+
+  // TODO: Not sure if the dictionary should be changed to DISTAIX?
+  // ctemplate::TemplateDictionary *dict;
+  // if(this->configManager.gs.create_distaix_format == true) {
+  //   dict = new ctemplate::TemplateDictionary("DISTAIX");///set the main tpl file for distaix format
+  // } else {
+  //   dict = new ctemplate::TemplateDictionary("MODELICA");///set the main tpl file for modelica format
+  // }
+
+  ctemplate::TemplateDictionary *dict = new ctemplate::TemplateDictionary("MODELICA");///set the main tpl file for modelica format
+
   this->SystemSettingsHandler(filename, dict);
 
   ///frist searching loop, to find I_max of ACLineSegment, SvPowerFlow of Terminal for PQLoad
@@ -171,15 +181,11 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::vector<std::string> args) {
 
           auto searchIt = piLineIdMap.find(reinterpret_cast<intptr_t>(ac_line));
           if(searchIt != piLineIdMap.end()) {
-            // TODO: Debug message - remove when finished!
-	          std::cout<<"found..." << std::endl;
-            
+           
             PiLine pi_line = this->ACLineSegmentHandler(tp_node, (*terminal_it), ac_line, dict, piLineIdMap[reinterpret_cast<intptr_t>(ac_line)], busbar.name());
 
           }
           else {
-	          // TODO: Debug message - remove when finished!!   	  
-            std::cout << "NOT found..." << std::endl;
 
             piLineIdMap[reinterpret_cast<intptr_t>(ac_line)] = busbar.name();
             
@@ -280,8 +286,14 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::vector<std::string> args) {
   this->ConnectionHandler(dict);
 
   std::string modelica_output;
-  ctemplate::ExpandTemplate(this->configManager.ts.directory_path + "resource/modelica.tpl",
+  if(this->configManager.gs.create_distaix_format == true) {
+    ctemplate::ExpandTemplate(this->configManager.ts.directory_path + "resource/distaix.tpl",
+                              ctemplate::STRIP_BLANK_LINES, dict, &modelica_output);
+  } else {
+    ctemplate::ExpandTemplate(this->configManager.ts.directory_path + "resource/modelica.tpl",
                             ctemplate::STRIP_BLANK_LINES, dict, &modelica_output);
+  }
+
 #ifdef DEBUG
 #pragma message("DEBUG model activated!")
   std::cout << modelica_output;
@@ -581,7 +593,7 @@ CIMObjectHandler::ACLineSegmentHandler(const TPNodePtr tp_node, const TerminalPt
   piline.set_b(ac_line->bch.value/ac_line->length.value);
   piline.set_g(ac_line->gch.value/ac_line->length.value);
 
-  if (!node1Name.empty() && !node2Name.empty()) {
+  if (this->configManager.gs.create_distaix_format == true && !node1Name.empty() && !node2Name.empty()) {
     piline.set_node1(node1Name);
     piline.set_node2(node2Name);
   }
