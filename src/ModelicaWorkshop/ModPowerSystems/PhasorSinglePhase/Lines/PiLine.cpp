@@ -71,8 +71,8 @@ bool PiLine::set_template_values(ctemplate::TemplateDictionary *dictionary) {
   dictionary->SetFormattedValue("SR", "%.6f", this->Sr());
   dictionary->SetValue("IMAX_DISPLAYUNIT", (ModelicaUnit[this->Imax_displayUnit()]));
   dictionary->SetValue("SR_DISPLAYUNIT", (ModelicaUnit[this->Sr_displayUnit()]));
-  dictionary->SetValue("TERMINAL1", this->terminal1());
-  dictionary->SetValue("TERMINAL2", this->terminal2());
+  dictionary->SetValue("NODE1", this->node1());
+  dictionary->SetValue("NODE2", this->node2());
 
   this->set_template_annotation_values(dictionary);
 

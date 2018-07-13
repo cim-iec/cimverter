@@ -159,26 +159,26 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::vector<std::string> args) {
 
         } else if (auto *ac_line = dynamic_cast<AcLinePtr>((*terminal_it)->ConductingEquipment)) {
          
-	  /* Changed implementation to enable creation of lossy cables for distaix format.
-	   * Instead of creating "connections", the name of the busbar is stored when visited for the first time.
-	   * When visiting the pi_line for the second time, the name of the current busbar, as well as the name of the busbbar
-	   * stored during the first visit are passed as optional arguments to the ACLineSegmentHandler.
-	   * This handler was modified in such a way, that those additional arguments are stores as dictionary values
-	   * used in the distaix templates.
-	   */
+          /* Changed implementation to enable creation of lossy cables for distaix format.
+          * Instead of creating "connections", the name of the busbar is stored when visited for the first time.
+          * When visiting the pi_line for the second time, the name of the current busbar, as well as the name of the busbbar
+          * stored during the first visit are passed as optional arguments to the ACLineSegmentHandler.
+          * This handler was modified in such a way, that those additional arguments are stores as dictionary values
+          * used in the distaix templates.
+          */
 
           //PiLine pi_line = this->ACLineSegmentHandler(tp_node, (*terminal_it), ac_line, dict);
 
           auto searchIt = piLineIdMap.find(reinterpret_cast<intptr_t>(ac_line));
           if(searchIt != piLineIdMap.end()) {
             // TODO: Debug message - remove when finished!
-	    std::cout<<"found..." << std::endl;
+	          std::cout<<"found..." << std::endl;
             
             PiLine pi_line = this->ACLineSegmentHandler(tp_node, (*terminal_it), ac_line, dict, piLineIdMap[reinterpret_cast<intptr_t>(ac_line)], busbar.name());
 
           }
           else {
-	    // TODO: Debug message - remove when finished!!   	  
+	          // TODO: Debug message - remove when finished!!   	  
             std::cout << "NOT found..." << std::endl;
 
             piLineIdMap[reinterpret_cast<intptr_t>(ac_line)] = busbar.name();
@@ -572,7 +572,7 @@ Slack CIMObjectHandler::ExternalNIHandler(const TPNodePtr tp_node, const Termina
  */
 PiLine
 CIMObjectHandler::ACLineSegmentHandler(const TPNodePtr tp_node, const TerminalPtr terminal, const AcLinePtr ac_line,
-                                       ctemplate::TemplateDictionary *dict, std::string terminal1Name /* = "" */, std::string terminal2Name /* = "" */) {
+                                       ctemplate::TemplateDictionary *dict, std::string node1Name /* = "" */, std::string node2Name /* = "" */) {
   PiLine piline;
   piline.set_name(name_in_modelica(ac_line->name));
   piline.set_length(ac_line->length.value);
@@ -581,9 +581,9 @@ CIMObjectHandler::ACLineSegmentHandler(const TPNodePtr tp_node, const TerminalPt
   piline.set_b(ac_line->bch.value/ac_line->length.value);
   piline.set_g(ac_line->gch.value/ac_line->length.value);
 
-  if (!terminal1Name.empty() && !terminal2Name.empty()) {
-    piline.set_terminal1(terminal1Name);
-    piline.set_terminal2(terminal2Name);
+  if (!node1Name.empty() && !node2Name.empty()) {
+    piline.set_node1(node1Name);
+    piline.set_node2(node2Name);
   }
 
   //find I_Max
