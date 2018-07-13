@@ -650,7 +650,6 @@ CIMObjectHandler::ACLineSegmentHandler(const TPNodePtr tp_node, const TerminalPt
     piline.annotation.placement.transformation.rotation = (*diagram_it)->rotation.value - 90;
 
     if (piline.sequenceNumber()==0 || piline.sequenceNumber()==1 || piline.sequenceNumber() == 2 /* last term needed */) {
-      std::cout << "STage3" << std::endl;
       ctemplate::TemplateDictionary *piLine_dict = dict->AddIncludeDictionary("PILINE_DICT");
       piLine_dict->SetFilename(this->configManager.ts.directory_path + "resource/PiLine.tpl");
       piline.set_template_values(piLine_dict);

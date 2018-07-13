@@ -60,7 +60,6 @@ PiLine::~PiLine() {
 }
 
 bool PiLine::set_template_values(ctemplate::TemplateDictionary *dictionary) {
-  std::cout<<"YES"<<std::endl;
   dictionary->SetValue("NAME", this->name());
   dictionary->SetFormattedValue("LENGTH", "%.6f", this->length());
   dictionary->SetFormattedValue("IMAX", "%.3f", this->Imax());
