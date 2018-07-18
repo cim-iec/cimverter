@@ -2,14 +2,14 @@ import os
 import csv
 from shutil import copyfile
 
-def modelicaToCSVConversion(path):
+def _modelicaToCSVConversion(path):
     root = os.path.splitext(path)[0]
     #os.rename(path, root + ".csv")
     copyfile(path,root + ".csv")
 
     return root + ".csv"
 
-def splitCSVFile(path):
+def _splitCSVFile(path):
 
     print('Splitting csv file...')
 
@@ -40,6 +40,6 @@ def splitCSVFile(path):
             writer.writerow(cable)
 
 def convertFile(path):
-    tempCSV = modelicaToCSVConversion(path)
-    splitCSVFile(tempCSV)
+    tempCSV = _modelicaToCSVConversion(path)
+    _splitCSVFile(tempCSV)
     os.remove(tempCSV)

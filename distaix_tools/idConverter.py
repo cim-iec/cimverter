@@ -1,7 +1,7 @@
 import os
 import csv
 
-def componentsIdConversion(componentsPath, idMappingDct):
+def _componentsIdConversion(componentsPath, idMappingDct):
     
     print('Converting component ids...')
 
@@ -26,7 +26,7 @@ def componentsIdConversion(componentsPath, idMappingDct):
         for component in componentsList:
             writer.writerow(component)
 
-def electricalGridIdConversion(elGridPath, idMappingDct):
+def _electricalGridIdConversion(elGridPath, idMappingDct):
 
     print('Converting electrical grid ids...')
 
@@ -56,5 +56,5 @@ def electricalGridIdConversion(elGridPath, idMappingDct):
             writer.writerow(cable)
 
 def convertIDs(path, idMappingDct):
-    componentsIdConversion('/'.join([path, 'components.csv']),idMappingDct)
-    electricalGridIdConversion('/'.join([path, 'el_grid.csv']), idMappingDct)
+    _componentsIdConversion('/'.join([path, 'components.csv']),idMappingDct)
+    _electricalGridIdConversion('/'.join([path, 'el_grid.csv']), idMappingDct)
