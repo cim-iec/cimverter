@@ -1,1 +1,1 @@
-{{NODE1}},{{NODE2}},LOSSY_SUBTYPE,{{LENGTH}},{{R}},{{X}},{{B}},{{G}},{{SR}},{{SR}}
+{{NODE1}},{{NODE2}},lossySubtype_default,{{LENGTH}},{{R}},{{X}},{{B}},{{G}},{{SR}},{{SR}}

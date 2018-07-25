@@ -1,51 +1,22 @@
-{{#HEADER_FOOTER_SECTION}}model {{GRID_NAME}} {{/HEADER_FOOTER_SECTION}}
-
-{{!-----Global Grid Settings-------}}
-
-{{#SYSTEM_SETTINGS_SECTION}}
-
-{{/SYSTEM_SETTINGS_SECTION}}
-
 {{!----ModPowerSystems Components-------}}
-
-{{>BUSBAR_DICT}}
-
-{{>CONNECTIVITYNODE_DICT}}
+components.csv
 
 {{>SLACK_DICT}}
 
-{{>GENERICGENERATOR_DICT}}
+{{>TRANSFORMER_DICT}}
+
+{{>BUSBAR_DICT}}
+
+{{>PQLOAD_DICT}}
 
 {{>WINDGENERATOR_DICT}}
 
 {{>SOLARGENERATOR_DICT}}
 
-{{>PQLOAD_DICT}}
-
-{{>PQLOAD_PROFILE_DICT}}
-
-{{>PQLOAD_NORM_PROFILE_DICT}}
-
-{{>ZLOAD_DICT}}
-
-{{>PILINE_DICT}}
-
-{{>RXLINE_DICT}}
-
-{{>TRANSFORMER_DICT}}
-
-{{>BATTERY_TYPE0_DICT}}
-
-{{>BATTERY_TYPE1_DICT}}
-
-{{>HOUSEHOLD_TYPE1_DICT}}
-
-{{>HOUSEHOLD_TYPE2_DICT}}
-
-equation
 
 {{!----Connections-------}}
+el_grid.csv
 
 {{>CONNECTIONS_DICT}}
 
-{{#HEADER_FOOTER_SECTION}}end {{GRID_NAME}}; {{/HEADER_FOOTER_SECTION}}
+{{>PILINE_DICT}}

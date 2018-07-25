@@ -1,1 +1,1 @@
-{{NAME}},subtype_name,profile1_id,profile2_id,profile_scale,S_r[VA],pf_min
+{{NAME}},subtype_default,profile1_id_default,profile2_id_default,profile_scale_default,S_r_default,pf_min_default
