@@ -122,8 +122,23 @@ bool CIMObjectHandler::pre_process() {
  */
 bool CIMObjectHandler::ModelicaCodeGenerator(std::string output_file_name, int verbose_flag) {
 
+<<<<<<< HEAD
   const std::string filename = output_file_name;
   ctemplate::TemplateDictionary *dict = new ctemplate::TemplateDictionary("MODELICA");///set the main tpl file
+=======
+  const std::string filename = args[0];
+
+  // TODO: Not sure if the dictionary should be changed to DISTAIX?
+  // ctemplate::TemplateDictionary *dict;
+  // if(this->configManager.gs.create_distaix_format == true) {
+  //   dict = new ctemplate::TemplateDictionary("DISTAIX");///set the main tpl file for distaix format
+  // } else {
+  //   dict = new ctemplate::TemplateDictionary("MODELICA");///set the main tpl file for modelica format
+  // }
+
+  ctemplate::TemplateDictionary *dict = new ctemplate::TemplateDictionary("MODELICA");///set the main tpl file for modelica format
+
+>>>>>>> cim2distaix
   this->SystemSettingsHandler(filename, dict);
 
   ///frist searching loop, to find I_max of ACLineSegment, SvPowerFlow of Terminal for PQLoad
@@ -165,10 +180,29 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::string output_file_name, int v
           connectionQueue.push(conn);
 
         } else if (auto *ac_line = dynamic_cast<AcLinePtr>((*terminal_it)->ConductingEquipment)) {
-          PiLine pi_line = this->ACLineSegmentHandler(tp_node, (*terminal_it), ac_line, dict);
-          Connection conn(&busbar, &pi_line);
-          connectionQueue.push(conn);
+         
+          /* Changed implementation to enable creation of lossy cables for distaix format.
+          * Instead of creating "connections", the name of the busbar is stored when visited for the first time.
+          * When visiting the pi_line for the second time, the name of the current busbar, as well as the name of the busbbar
+          * stored during the first visit are passed as optional arguments to the ACLineSegmentHandler.
+          * This handler was modified in such a way, that those additional arguments are stores as dictionary values
+          * used in the distaix templates.
+          */
 
+          //PiLine pi_line = this->ACLineSegmentHandler(tp_node, (*terminal_it), ac_line, dict);
+
+          auto searchIt = piLineIdMap.find(reinterpret_cast<intptr_t>(ac_line));
+          if(searchIt != piLineIdMap.end()) {
+           
+            PiLine pi_line = this->ACLineSegmentHandler(tp_node, (*terminal_it), ac_line, dict, piLineIdMap[reinterpret_cast<intptr_t>(ac_line)], busbar.name());
+
+          }
+          else {
+
+            piLineIdMap[reinterpret_cast<intptr_t>(ac_line)] = busbar.name();
+            
+          }
+          
         } else if (auto *energy_consumer = dynamic_cast<EnergyConsumerPtr>((*terminal_it)->ConductingEquipment)) {
 
           if (this->configManager.household_parameters.use_households == false ) {
@@ -264,8 +298,18 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::string output_file_name, int v
   this->ConnectionHandler(dict);
 
   std::string modelica_output;
+<<<<<<< HEAD
   ctemplate::ExpandTemplate(this->configManager.ts.directory_path + "resource/" + template_folder + "/modelica.tpl",
+=======
+  if(this->configManager.gs.create_distaix_format == true) {
+    ctemplate::ExpandTemplate(this->configManager.ts.directory_path + "resource/distaix.tpl",
+                              ctemplate::STRIP_BLANK_LINES, dict, &modelica_output);
+  } else {
+    ctemplate::ExpandTemplate(this->configManager.ts.directory_path + "resource/modelica.tpl",
+>>>>>>> cim2distaix
                             ctemplate::STRIP_BLANK_LINES, dict, &modelica_output);
+  }
+
 #ifdef DEBUG
 #pragma message("DEBUG model activated!")
   std::cout << modelica_output;
@@ -556,7 +600,7 @@ Slack CIMObjectHandler::ExternalNIHandler(const TPNodePtr tp_node, const Termina
  */
 PiLine
 CIMObjectHandler::ACLineSegmentHandler(const TPNodePtr tp_node, const TerminalPtr terminal, const AcLinePtr ac_line,
-                                       ctemplate::TemplateDictionary *dict) {
+                                       ctemplate::TemplateDictionary *dict, std::string node1Name /* = "" */, std::string node2Name /* = "" */) {
   PiLine piline;
   piline.set_name(name_in_modelica(ac_line->name));
   piline.set_length(ac_line->length.value);
@@ -564,6 +608,11 @@ CIMObjectHandler::ACLineSegmentHandler(const TPNodePtr tp_node, const TerminalPt
   piline.set_x(ac_line->x.value/ac_line->length.value);
   piline.set_b(ac_line->bch.value/ac_line->length.value);
   piline.set_g(ac_line->gch.value/ac_line->length.value);
+
+  if (this->configManager.gs.create_distaix_format == true && !node1Name.empty() && !node2Name.empty()) {
+    piline.set_node1(node1Name);
+    piline.set_node2(node2Name);
+  }
 
   //find I_Max
   if(OpLimitMap[ac_line]){
@@ -585,7 +634,6 @@ CIMObjectHandler::ACLineSegmentHandler(const TPNodePtr tp_node, const TerminalPt
       piline.set_Imax(piline.Imax()*1000000);
     }
   }
-
 
   piline.set_sequenceNumber(terminal->sequenceNumber);
   piline.set_connected(terminal->connected);
@@ -617,7 +665,7 @@ CIMObjectHandler::ACLineSegmentHandler(const TPNodePtr tp_node, const TerminalPt
     piline.annotation.placement.transformation.origin.y = _t_points.yPosition;
     piline.annotation.placement.transformation.rotation = (*diagram_it)->rotation.value - 90;
 
-    if (piline.sequenceNumber()==0 || piline.sequenceNumber()==1) {
+    if (piline.sequenceNumber()==0 || piline.sequenceNumber()==1 || piline.sequenceNumber() == 2 /* last term needed */) {
       ctemplate::TemplateDictionary *piLine_dict = dict->AddIncludeDictionary("PILINE_DICT");
       piLine_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/PiLine.tpl");
       piline.set_template_values(piLine_dict);
@@ -648,7 +696,7 @@ Transformer CIMObjectHandler::PowerTransformerHandler(const TPNodePtr tp_node, c
        ++transformer_end_it) {
     if ((*transformer_end_it)->endNumber==1) {
 
-      trafo.set_Sr((*transformer_end_it)->ratedS.value*1000000);
+      trafo.set_Sr((*transformer_end_it)->ratedS.value*1000000); // Lukas FIXME TODO: Hier muss wohl configManager.us.active_power_unit ausgewertet werden!
       trafo.set_r((*transformer_end_it)->r.value);
       trafo.set_x((*transformer_end_it)->x.value);
       trafo.set_b((*transformer_end_it)->b.value);
