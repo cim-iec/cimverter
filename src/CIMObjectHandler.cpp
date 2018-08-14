@@ -122,11 +122,8 @@ bool CIMObjectHandler::pre_process() {
  */
 bool CIMObjectHandler::ModelicaCodeGenerator(std::string output_file_name, int verbose_flag) {
 
-<<<<<<< HEAD
   const std::string filename = output_file_name;
   ctemplate::TemplateDictionary *dict = new ctemplate::TemplateDictionary("MODELICA");///set the main tpl file
-=======
-  const std::string filename = args[0];
 
   // TODO: Not sure if the dictionary should be changed to DISTAIX?
   // ctemplate::TemplateDictionary *dict;
@@ -136,9 +133,7 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::string output_file_name, int v
   //   dict = new ctemplate::TemplateDictionary("MODELICA");///set the main tpl file for modelica format
   // }
 
-  ctemplate::TemplateDictionary *dict = new ctemplate::TemplateDictionary("MODELICA");///set the main tpl file for modelica format
 
->>>>>>> cim2distaix
   this->SystemSettingsHandler(filename, dict);
 
   ///frist searching loop, to find I_max of ACLineSegment, SvPowerFlow of Terminal for PQLoad
@@ -298,16 +293,13 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::string output_file_name, int v
   this->ConnectionHandler(dict);
 
   std::string modelica_output;
-<<<<<<< HEAD
-  ctemplate::ExpandTemplate(this->configManager.ts.directory_path + "resource/" + template_folder + "/modelica.tpl",
-=======
+
   if(this->configManager.gs.create_distaix_format == true) {
     ctemplate::ExpandTemplate(this->configManager.ts.directory_path + "resource/distaix.tpl",
                               ctemplate::STRIP_BLANK_LINES, dict, &modelica_output);
   } else {
     ctemplate::ExpandTemplate(this->configManager.ts.directory_path + "resource/modelica.tpl",
->>>>>>> cim2distaix
-                            ctemplate::STRIP_BLANK_LINES, dict, &modelica_output);
+                              ctemplate::STRIP_BLANK_LINES, dict, &modelica_output);
   }
 
 #ifdef DEBUG
