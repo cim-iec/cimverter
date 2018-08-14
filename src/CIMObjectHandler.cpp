@@ -294,7 +294,8 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::string output_file_name, int v
 
   std::string modelica_output;
 
-  if(this->configManager.gs.create_distaix_format == true) {
+  if(template_folder == "Distaix_templates") {
+    this->configManager.gs.create_distaix_format = true;
     ctemplate::ExpandTemplate(this->configManager.ts.directory_path + "resource/" + template_folder + "/distaix.tpl",
                               ctemplate::STRIP_BLANK_LINES, dict, &modelica_output);
   } else {
