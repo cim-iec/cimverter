@@ -1,5 +1,6 @@
 #include <chrono>
 #include "CIMObjectHandler.h"
+#include "DistaixPostprocessor.h"
 #include <dirent.h>
 #include <getopt.h>
 #include <unistd.h>
@@ -183,6 +184,13 @@ int main(int argc, char *argv[]) {
   ObjectHandler.get_config(template_folder);// Get configuration files
 
   ObjectHandler.ModelicaCodeGenerator(output_file_name, verbose_flag);
+
+  DistaixPostprocessor *DP = new DistaixPostprocessor();
+  DP->convertInputFile(output_file_name);
+  DP->splitCSVFile("default_output_name.csv");
+  DP->convertIDs();
+
+  delete DP;
 
   // Timer stop
   stop = std::chrono::high_resolution_clock::now();
