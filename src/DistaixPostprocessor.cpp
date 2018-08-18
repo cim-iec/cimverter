@@ -6,7 +6,14 @@
 #include "DistaixPostprocessor.h"
 
 DistaixPostprocessor::DistaixPostprocessor(){
+    std::vector<std::string> vec;
+    
+    // Add corresponding names to vectors
+    vec.push_back("components");
+    components.push_back(vec);
 
+    vec[0] = "el_grid";
+    el_grid.push_back(vec);
 };
 
 DistaixPostprocessor::~DistaixPostprocessor(){
@@ -71,11 +78,26 @@ void DistaixPostprocessor::splitCSVFile(std::string filepath){
 void DistaixPostprocessor::convertComponentIDs(){
     int counter = 1;
 
-    for(auto component : components){
-        component[0] = std::to_string(counter);
+    bool first = true;
+    for(auto &component : components){
+        if (first) {
+            first = false;
+            continue;
+        }
+
+        auto searchIt = idConversionMap.find(component[0]);
+
+        if (searchIt == idConversionMap.end()) {
+            idConversionMap[component[0]] = counter;
+            component[0] = std::to_string(counter);
+        }
+        else {
+            std::cout << "ERROR: ID " << component[0] << " is not unique!" << std::endl;
+        }
 
         // TODO: Store ID in Dict/Map
         // TODO: Check if ID unique!
+        
 
         #ifdef DEBUG
             for (auto item : component) {
@@ -92,8 +114,68 @@ void DistaixPostprocessor::convertElGridIDs(){
     // For First and Second Element:
     //  ID in map? --> Replace
     //  Else --> Return Error
+    bool first = true;
+
+    for (auto &cable : el_grid) {
+        // Skip first element containing the name
+        if (first){
+            first = false;
+            continue;
+        }
+        // For first and second element of component:
+        for (auto i = 0; i <= 1; ++i) {
+            auto searchIt = idConversionMap.find(cable[i]);
+            if (searchIt != idConversionMap.end()) {
+                cable[i] = std::to_string(idConversionMap[cable[i]]);
+                
+            }
+            else {
+                std::cout << "Error: ID " << cable[i] << " is no valid ID!" << std::endl;
+            }
+        }
+    }
+}
+
+void DistaixPostprocessor::writeCSVFile(std::vector<std::vector<std::string> > dictionary) {
+    std::ofstream csvfile;
+
+    std::string name = dictionary[0][0] + ".csv";
+
+    csvfile.open(name.c_str());
+
+    bool first = true;
+
+    for (auto &entry : dictionary) {
+        // Skip name entry
+        if (first) {
+            first = false;
+            continue;
+        }
+        for (auto &parameter : entry) {
+           
+            if (!entry.empty()){
+    
+                csvfile << parameter.c_str();
+                 
+                if (&parameter == &entry.back()) {
+                    csvfile << std::endl;
+                }
+                else {
+                    csvfile << ",";
+                }
+            }
+        }
+
+    }
+
+    csvfile.close();
+
 }
 
 void DistaixPostprocessor::convertIDs(){
     DistaixPostprocessor::convertComponentIDs();
+    DistaixPostprocessor::convertElGridIDs();
+
+    DistaixPostprocessor::writeCSVFile(components);
+    DistaixPostprocessor::writeCSVFile(el_grid);
 }
