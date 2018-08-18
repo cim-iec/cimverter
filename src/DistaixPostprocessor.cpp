@@ -20,11 +20,13 @@ DistaixPostprocessor::~DistaixPostprocessor(){
 
 };
 
-void DistaixPostprocessor::convertInputFile(std::string filename){
-    std::string oldfilename =  filename + ".mo";
-    std::string newfilename =  filename + ".csv";
+std::string DistaixPostprocessor::convertInputFile(std::string output_file_name){
+    std::string oldfilename =  output_file_name + ".mo";
+    std::string newfilename =  output_file_name + ".csv";
 
     rename(oldfilename.c_str(),newfilename.c_str());
+
+    return newfilename;
 }
 
 void DistaixPostprocessor::splitCSVFile(std::string filepath){
@@ -172,10 +174,15 @@ void DistaixPostprocessor::writeCSVFile(std::vector<std::vector<std::string> > d
 
 }
 
-void DistaixPostprocessor::convertIDs(){
+
+void DistaixPostprocessor::postprocess(std::string output_file_name) {
+    // Convert and split modelica file
+    std::string newFileName = DistaixPostprocessor::convertInputFile(output_file_name);
+    DistaixPostprocessor::splitCSVFile(newFileName);
+    // Convert IDs
     DistaixPostprocessor::convertComponentIDs();
     DistaixPostprocessor::convertElGridIDs();
-
+    // Write new CSV Files
     DistaixPostprocessor::writeCSVFile(components);
     DistaixPostprocessor::writeCSVFile(el_grid);
 }

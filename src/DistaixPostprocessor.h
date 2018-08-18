@@ -21,15 +21,15 @@ class DistaixPostprocessor{
         DistaixPostprocessor();
         virtual ~DistaixPostprocessor();
 
-        void convertInputFile(std::string filename);
-        void splitCSVFile(std::string filepath);
-        void convertIDs();
+        void postprocess(std::string output_file_name);
 
     private:
         void convertComponentIDs();
         void convertElGridIDs();
         void writeCSVFile(std::vector<std::vector<std::string> > dictionary);
-
+        std::string convertInputFile(std::string output_file_name);
+        void splitCSVFile(std::string filepath);
+        
         std::vector<std::vector<std::string> > components;
         std::vector<std::vector<std::string> > el_grid;
 

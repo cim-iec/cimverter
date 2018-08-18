@@ -168,7 +168,7 @@ int main(int argc, char *argv[]) {
   // Check if verbose mode is used
   if(verbose_flag)
   {
-      std::cout << "verbose activated \n";
+        std::cout << "verbose activated \n";
   }
 
 
@@ -184,13 +184,13 @@ int main(int argc, char *argv[]) {
   ObjectHandler.get_config(template_folder);// Get configuration files
 
   ObjectHandler.ModelicaCodeGenerator(output_file_name, verbose_flag);
-
-  DistaixPostprocessor *DP = new DistaixPostprocessor();
-  DP->convertInputFile(output_file_name);
-  DP->splitCSVFile("default_output_name.csv");
-  DP->convertIDs();
-
-  delete DP;
+  
+  if(template_folder == "Distaix_templates") {
+        DistaixPostprocessor *DP = new DistaixPostprocessor();
+        DP->postprocess(output_file_name);
+        delete DP;
+  }
+  
 
   // Timer stop
   stop = std::chrono::high_resolution_clock::now();
