@@ -1,4 +1,4 @@
-/*
+  /*
  * CIMObjectHandler.h
  * Handle the CIMObject
  */
@@ -97,7 +97,7 @@ class CIMObjectHandler {
   std::list<DiagramObjectPtr>::iterator diagram_it;
   DiagramObjectPoint calculate_average_position();//using this->diagram_it
 
-  std::map<intptr_t,std::string> piLineIdMap;
+  std::map<AcLinePtr,std::string> piLineIdMap;
 
 };
 

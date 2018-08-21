@@ -186,15 +186,15 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::string output_file_name, int v
 
           //PiLine pi_line = this->ACLineSegmentHandler(tp_node, (*terminal_it), ac_line, dict);
 
-          auto searchIt = piLineIdMap.find(reinterpret_cast<intptr_t>(ac_line));
+          auto searchIt = piLineIdMap.find(ac_line);
           if(searchIt != piLineIdMap.end()) {
            
-            PiLine pi_line = this->ACLineSegmentHandler(tp_node, (*terminal_it), ac_line, dict, piLineIdMap[reinterpret_cast<intptr_t>(ac_line)], busbar.name());
+            PiLine pi_line = this->ACLineSegmentHandler(tp_node, (*terminal_it), ac_line, dict, piLineIdMap[ac_line], busbar.name());
 
           }
           else {
 
-            piLineIdMap[reinterpret_cast<intptr_t>(ac_line)] = busbar.name();
+            piLineIdMap[ac_line] = busbar.name();
             
           }
           
