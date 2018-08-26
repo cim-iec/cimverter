@@ -74,7 +74,6 @@ void DistaixPostprocessor::splitCSVFile(std::string filepath){
             }
         #endif
     }
-
 }
 
 void DistaixPostprocessor::convertComponentIDs(){
@@ -135,7 +134,18 @@ void DistaixPostprocessor::convertElGridIDs(){
                 std::cout << "Error: ID " << cable[i] << " is no valid ID!" << std::endl;
             }
         }
+        // Set first element to the smaller of both IDs
+        if(std::stoi(cable[1]) < std::stoi(cable[0])) {
+            std::string temp = cable[0];
+            cable[0] = cable[1];
+            cable[1] = temp;
+        }
     }
+    // Sort cable entries by first ID in ascending order
+    std::sort(std::next(el_grid.begin()), el_grid.end(),
+                [](const std::vector<std::string> &vec1, const std::vector<std::string> &vec2) {
+                    return(std::stoi(vec1[0]) < std::stoi(vec2[0]));
+                });
 }
 
 void DistaixPostprocessor::writeCSVFile(std::vector<std::vector<std::string> > dictionary) {
