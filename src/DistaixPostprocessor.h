@@ -29,11 +29,13 @@ class DistaixPostprocessor{
         void writeCSVFile(std::vector<std::vector<std::string> > dictionary);
         std::string convertInputFile(std::string output_file_name);
         void splitCSVFile(std::string filepath);
+        void setDefaultParameters();
         
         std::vector<std::vector<std::string> > components;
         std::vector<std::vector<std::string> > el_grid;
 
         std::map<std::string, unsigned int> idConversionMap;
+        std::map<std::string, std::string> defaultParameterConversionMap;
 
 };
 

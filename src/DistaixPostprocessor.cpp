@@ -111,10 +111,7 @@ void DistaixPostprocessor::convertComponentIDs(){
 }
 
 void DistaixPostprocessor::convertElGridIDs(){
-    // TODO: 
-    // For First and Second Element:
-    //  ID in map? --> Replace
-    //  Else --> Return Error
+
     bool first = true;
 
     for (auto &cable : el_grid) {
@@ -149,10 +146,9 @@ void DistaixPostprocessor::convertElGridIDs(){
 }
 
 void DistaixPostprocessor::writeCSVFile(std::vector<std::vector<std::string> > dictionary) {
+    // Open file
     std::ofstream csvfile;
-
     std::string name = dictionary[0][0] + ".csv";
-
     csvfile.open(name.c_str());
 
     bool first = true;
@@ -163,10 +159,11 @@ void DistaixPostprocessor::writeCSVFile(std::vector<std::vector<std::string> > d
             first = false;
             continue;
         }
+        // For each row, stored in the dictionary
         for (auto &parameter : entry) {
            
             if (!entry.empty()){
-    
+                // Write all values into csv, with respective delimiter "," or endline...
                 csvfile << parameter.c_str();
                  
                 if (&parameter == &entry.back()) {
@@ -179,19 +176,72 @@ void DistaixPostprocessor::writeCSVFile(std::vector<std::vector<std::string> > d
         }
 
     }
-
+    // Close file
     csvfile.close();
 
 }
 
+void DistaixPostprocessor::setDefaultParameters(){
+
+    // Read in default_parameters.csv
+    std::ifstream file("default_parameters.csv");
+    std::string line = "";
+
+    while(getline(file,line))
+    {        
+        std::vector<std::string> vec;
+        boost::algorithm::split(vec, line, boost::is_any_of(","));
+ 
+        // Store all default parameters with "ComponentType_parameterName" as key
+        for (auto it = std::next(vec.begin()); it != vec.end(); ++it) {
+            std::string key = it->substr(0, it->find("="));
+            defaultParameterConversionMap[vec[0] + "_" + key] = it->substr(key.length() + 1, it->find(","));
+
+        }
+    }
+
+    // Replace parameters
+    bool first = true;
+
+    for (auto &entry : components) {
+        // Skip first element
+        if (first) {
+            first = false;
+            continue;
+        }
+        
+        for (auto &element : entry) {
+            // Check if one of the elements of a components includes the keyword "default", indicating a default parameter placeholder
+            std::size_t found = element.find("default");
+            if (found != std::string::npos) {
+                // Check if a corresponding value was read and strored
+                auto searchIt = defaultParameterConversionMap.find(entry[1] + "_" + element);
+                if (searchIt != defaultParameterConversionMap.end()) {
+                    //std::cout << "Replace " << "\"" << element << "\" with \"" << defaultParameterConversionMap[entry[1] + "_" + element] << "\"" << std::endl;
+                    element = defaultParameterConversionMap[entry[1] + "_" + element];
+                }
+                else {
+                    #ifdef DEBUG
+                    std::cout << "No default parameter for " << entry[1] << ": \"" + element + "\" found..." << std::endl;
+                    #endif
+                }
+            }
+        }
+    }
+}
+
+
 
 void DistaixPostprocessor::postprocess(std::string output_file_name) {
+    std::cout << output_file_name << std::endl;
     // Convert and split modelica file
     std::string newFileName = DistaixPostprocessor::convertInputFile(output_file_name);
     DistaixPostprocessor::splitCSVFile(newFileName);
     // Convert IDs
     DistaixPostprocessor::convertComponentIDs();
     DistaixPostprocessor::convertElGridIDs();
+    // Replace default parameters
+    DistaixPostprocessor::setDefaultParameters();
     // Write new CSV Files
     DistaixPostprocessor::writeCSVFile(components);
     DistaixPostprocessor::writeCSVFile(el_grid);
