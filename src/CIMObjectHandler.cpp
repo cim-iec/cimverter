@@ -176,26 +176,29 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::string output_file_name, int v
 
         } else if (auto *ac_line = dynamic_cast<AcLinePtr>((*terminal_it)->ConductingEquipment)) {
          
-          /* Changed implementation to enable creation of lossy cables for distaix format.
-          * Instead of creating "connections", the name of the busbar is stored when visited for the first time.
-          * When visiting the pi_line for the second time, the name of the current busbar, as well as the name of the busbbar
-          * stored during the first visit are passed as optional arguments to the ACLineSegmentHandler.
-          * This handler was modified in such a way, that those additional arguments are stores as dictionary values
-          * used in the distaix templates.
-          */
+          if(template_folder == "Distaix_templates"){
+            /* Changed implementation to enable creation of lossy cables for distaix format.
+            * Instead of creating "connections", the name of the busbar is stored when visited for the first time.
+            * When visiting the pi_line for the second time, the name of the current busbar, as well as the name of the busbbar
+            * stored during the first visit are passed as optional arguments to the ACLineSegmentHandler.
+            * This handler was modified in such a way, that those additional arguments are stores as dictionary values
+            * used in the distaix templates.
+            */
 
-          //PiLine pi_line = this->ACLineSegmentHandler(tp_node, (*terminal_it), ac_line, dict);
+            auto searchIt = piLineIdMap.find(ac_line);
+            if(searchIt != piLineIdMap.end()) {
+            
+              PiLine pi_line = this->ACLineSegmentHandler(tp_node, (*terminal_it), ac_line, dict, piLineIdMap[ac_line], busbar.name());
 
-          auto searchIt = piLineIdMap.find(ac_line);
-          if(searchIt != piLineIdMap.end()) {
-           
-            PiLine pi_line = this->ACLineSegmentHandler(tp_node, (*terminal_it), ac_line, dict, piLineIdMap[ac_line], busbar.name());
+            }
+            else {
 
+              piLineIdMap[ac_line] = busbar.name();
+              
+            }
           }
           else {
-
-            piLineIdMap[ac_line] = busbar.name();
-            
+            PiLine pi_line = this->ACLineSegmentHandler(tp_node, (*terminal_it), ac_line, dict);
           }
           
         } else if (auto *energy_consumer = dynamic_cast<EnergyConsumerPtr>((*terminal_it)->ConductingEquipment)) {
