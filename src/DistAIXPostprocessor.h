@@ -1,6 +1,6 @@
 /*
- * DistaixPostprocessor.h
- * Postprocesses output file to fit distaix format
+ * DistAIXPostprocessor.h
+ * Postprocesses output file to fit DistAIX format
  */
 
 #ifndef SRC_DISTAIXPOSTPROCESSOR_H_
@@ -15,11 +15,11 @@
 #include <boost/algorithm/string.hpp>
 
 
-class DistaixPostprocessor{
+class DistAIXPostprocessor{
     
     public:
-        DistaixPostprocessor();
-        virtual ~DistaixPostprocessor();
+        DistAIXPostprocessor();
+        virtual ~DistAIXPostprocessor();
 
         void postprocess(std::string output_file_name);
 

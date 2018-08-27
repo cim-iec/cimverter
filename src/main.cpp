@@ -1,6 +1,6 @@
 #include <chrono>
 #include "CIMObjectHandler.h"
-#include "DistaixPostprocessor.h"
+#include "DistAIXPostprocessor.h"
 #include <dirent.h>
 #include <getopt.h>
 #include <unistd.h>
@@ -186,7 +186,7 @@ int main(int argc, char *argv[]) {
   ObjectHandler.ModelicaCodeGenerator(output_file_name, verbose_flag);
   
   if(template_folder == "Distaix_templates") {
-        DistaixPostprocessor *DP = new DistaixPostprocessor();
+        DistAIXPostprocessor *DP = new DistAIXPostprocessor();
         DP->postprocess(output_file_name);
         delete DP;
   }

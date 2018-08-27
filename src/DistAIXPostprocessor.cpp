@@ -1,11 +1,14 @@
 /*
- * DistaixPostprocessor.cpp
+ * DistAIXPostprocessor.cpp
  *
  */
 
-#include "DistaixPostprocessor.h"
+#include "DistAIXPostprocessor.h"
 
-DistaixPostprocessor::DistaixPostprocessor(){
+/**
+ * Constructor 
+ */
+DistAIXPostprocessor::DistAIXPostprocessor(){
     std::vector<std::string> vec;
     
     // Add corresponding names to vectors
@@ -16,11 +19,16 @@ DistaixPostprocessor::DistaixPostprocessor(){
     el_grid.push_back(vec);
 };
 
-DistaixPostprocessor::~DistaixPostprocessor(){
-
+/**
+ * Destructor 
+ */
+DistAIXPostprocessor::~DistAIXPostprocessor(){
 };
 
-std::string DistaixPostprocessor::convertInputFile(std::string output_file_name){
+/**
+ * Converts modelica file into CSV-file by renaming. 
+ */
+std::string DistAIXPostprocessor::convertInputFile(std::string output_file_name){
     std::string oldfilename =  output_file_name + ".mo";
     std::string newfilename =  output_file_name + ".csv";
 
@@ -29,21 +37,28 @@ std::string DistaixPostprocessor::convertInputFile(std::string output_file_name)
     return newfilename;
 }
 
-void DistaixPostprocessor::splitCSVFile(std::string filepath){
+/**
+ * Splits CSV-file into components and el_grid
+ */
+void DistAIXPostprocessor::splitCSVFile(std::string filepath){
     
     std::ifstream file(filepath);
     std::string line = "";
 
     bool is_component = true;
 
+    // Process file row-wise
     while(getline(file,line))
-    {        
+    {   
+        // If components flag is read, set destination vector to components        
         if (!strcmp(line.data(),"components.csv")){
             is_component = true;
         }
+        // If el_grid flag is read, set destination vector to components
         else if (!strcmp(line.data(), "el_grid.csv")){
             is_component = false;
         }
+        // If no flag, i.e. normal component/cable is read - split elements and store
         else {
             if (is_component) {
                 std::vector<std::string> vec;
@@ -76,19 +91,24 @@ void DistaixPostprocessor::splitCSVFile(std::string filepath){
     }
 }
 
-void DistaixPostprocessor::convertComponentIDs(){
+/**
+ * Converts component IDs to match DistAIX naming conventions
+ */
+void DistAIXPostprocessor::convertComponentIDs(){
     int counter = 1;
 
     bool first = true;
     for(auto &component : components){
+        // Skip first element
         if (first) {
             first = false;
             continue;
         }
-
+        // Check if ID already stored
         auto searchIt = idConversionMap.find(component[0]);
 
         if (searchIt == idConversionMap.end()) {
+            // Replace ID with increasing int variable and store value in corresp. map
             idConversionMap[component[0]] = counter;
             component[0] = std::to_string(counter);
         }
@@ -96,21 +116,21 @@ void DistaixPostprocessor::convertComponentIDs(){
             std::cout << "ERROR: ID " << component[0] << " is not unique!" << std::endl;
         }
 
-        // TODO: Store ID in Dict/Map
-        // TODO: Check if ID unique!
-        
-
         #ifdef DEBUG
             for (auto item : component) {
                 std::cout << item << " ";
             }
             std::cout << std::endl;
         #endif
+
         counter++;
     }
 }
 
-void DistaixPostprocessor::convertElGridIDs(){
+/**
+ * Converts electrical grid IDs to match DistAIX naming conventions
+ */
+void DistAIXPostprocessor::convertElGridIDs(){
 
     bool first = true;
 
@@ -145,7 +165,10 @@ void DistaixPostprocessor::convertElGridIDs(){
                 });
 }
 
-void DistaixPostprocessor::writeCSVFile(std::vector<std::vector<std::string> > dictionary) {
+/**
+ * Write resulting CSV-file 
+ */
+void DistAIXPostprocessor::writeCSVFile(std::vector<std::vector<std::string> > dictionary) {
     // Open file
     std::ofstream csvfile;
     std::string name = dictionary[0][0] + ".csv";
@@ -181,14 +204,24 @@ void DistaixPostprocessor::writeCSVFile(std::vector<std::vector<std::string> > d
 
 }
 
-void DistaixPostprocessor::setDefaultParameters(){
+/**
+ * Read in default parameters from CSV-file and replace all occurencies in stored values
+ */
+void DistAIXPostprocessor::setDefaultParameters(){
 
     // Read in default_parameters.csv
     std::ifstream file("default_parameters.csv");
     std::string line = "";
 
+    // If default_parameters.csv does not exist return
+    if (!file.is_open()) {
+        return;
+    }
+
+    // Read default_parameters.csv row-wise
     while(getline(file,line))
-    {        
+    {   
+        // Split elements at delimiter ","
         std::vector<std::string> vec;
         boost::algorithm::split(vec, line, boost::is_any_of(","));
  
@@ -230,19 +263,20 @@ void DistaixPostprocessor::setDefaultParameters(){
     }
 }
 
-
-
-void DistaixPostprocessor::postprocess(std::string output_file_name) {
+/**
+ * Postprocess files to match DistAIX convetions 
+ */
+void DistAIXPostprocessor::postprocess(std::string output_file_name) {
     std::cout << output_file_name << std::endl;
     // Convert and split modelica file
-    std::string newFileName = DistaixPostprocessor::convertInputFile(output_file_name);
-    DistaixPostprocessor::splitCSVFile(newFileName);
+    std::string newFileName = DistAIXPostprocessor::convertInputFile(output_file_name);
+    DistAIXPostprocessor::splitCSVFile(newFileName);
     // Convert IDs
-    DistaixPostprocessor::convertComponentIDs();
-    DistaixPostprocessor::convertElGridIDs();
+    DistAIXPostprocessor::convertComponentIDs();
+    DistAIXPostprocessor::convertElGridIDs();
     // Replace default parameters
-    DistaixPostprocessor::setDefaultParameters();
+    DistAIXPostprocessor::setDefaultParameters();
     // Write new CSV Files
-    DistaixPostprocessor::writeCSVFile(components);
-    DistaixPostprocessor::writeCSVFile(el_grid);
+    DistAIXPostprocessor::writeCSVFile(components);
+    DistAIXPostprocessor::writeCSVFile(el_grid);
 }
