@@ -4,6 +4,7 @@
  */
 
 #include "DistAIXPostprocessor.h"
+#include <typeinfo>
 
 /**
  * Constructor 
@@ -125,6 +126,59 @@ void DistAIXPostprocessor::convertComponentIDs(){
 
         counter++;
     }
+}
+
+void DistAIXPostprocessor::convertComponentIDsNew() {
+    std::vector<std::string> temp;
+    std::string id;
+
+    for(unsigned int i = 1; i < components.size(); ++i){
+        temp = components[i];
+        id = temp[0];
+        //std::cout << id << std::endl;
+        //std::cout << temp[1] << std::endl;        
+        //std::cout << typeid(temp[1]).name() << std::endl;
+        
+        if (!(std::find(componentsOrdered.begin(), componentsOrdered.end(), temp)!= componentsOrdered.end())){
+            componentsOrdered.push_back(temp);
+        }
+        // For each cable
+        for(auto cable : el_grid){
+            // Cable comes from id
+            if (cable[0] == id) {
+                for(auto component : components){
+                    if(component[0] == cable[1]){
+                        
+                        if (!(std::find(componentsOrdered.begin(), componentsOrdered.end(), component)!= componentsOrdered.end())){
+                            componentsOrdered.push_back(component);                                
+                        }
+                    }
+                    
+                }
+            }
+            // Cable goes to id
+            else if (cable[1] == id) {
+                for (auto component : components) {
+                    if(component[0] == cable[0]) {
+
+                        if (!(std::find(componentsOrdered.begin(), componentsOrdered.end(), component)!= componentsOrdered.end())){
+                            std::cout << temp[1] << std::endl;
+                            componentsOrdered.push_back(component);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    std::cout << componentsOrdered.size() << "ASDASD" << std::endl;
+    for (auto entry : componentsOrdered) {
+        for (auto element : entry) {
+            std::cout << element << ",";
+        }
+        std::cout<<std::endl;
+    }
+
 }
 
 /**
@@ -300,11 +354,13 @@ void DistAIXPostprocessor::setDefaultParameters(){
  * Postprocess files to match DistAIX convetions 
  */
 void DistAIXPostprocessor::postprocess(std::string output_file_name) {
-    
+
     // Convert and split modelica file
     std::string newFileName = DistAIXPostprocessor::convertInputFile(output_file_name);
     DistAIXPostprocessor::splitCSVFile(newFileName);
     // Convert IDs
+    DistAIXPostprocessor::convertComponentIDsNew();
+    components = componentsOrdered;
     DistAIXPostprocessor::convertComponentIDs();
     DistAIXPostprocessor::convertElGridIDs();
     // Replace default parameters

@@ -25,6 +25,7 @@ class DistAIXPostprocessor{
 
     private:
         void convertComponentIDs();
+        void convertComponentIDsNew();
         void convertElGridIDs();
         void writeCSVFile(std::vector<std::vector<std::string> > dictionary);
         std::string convertInputFile(std::string output_file_name);
@@ -33,6 +34,7 @@ class DistAIXPostprocessor{
         
         std::vector<std::vector<std::string> > components;
         std::vector<std::vector<std::string> > el_grid;
+        std::vector<std::vector<std::string> > componentsOrdered;
 
         std::map<std::string, unsigned int> idConversionMap;
         std::map<std::string, std::string> defaultParameterConversionMap;
