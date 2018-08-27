@@ -229,7 +229,9 @@ void DistAIXPostprocessor::setDefaultParameters(){
         for (auto it = std::next(vec.begin()); it != vec.end(); ++it) {
             std::string key = it->substr(0, it->find("="));
             defaultParameterConversionMap[vec[0] + "_" + key] = it->substr(key.length() + 1, it->find(","));
-
+            #ifdef DEBUG
+            std::cout << vec[0] + "_" + key << " = " << defaultParameterConversionMap[vec[0] + "_" + key] << std::endl;
+            #endif
         }
     }
 
@@ -257,6 +259,32 @@ void DistAIXPostprocessor::setDefaultParameters(){
                     #ifdef DEBUG
                     std::cout << "No default parameter for " << entry[1] << ": \"" + element + "\" found..." << std::endl;
                     #endif
+                }
+            }
+        }
+    }
+
+    first = true;
+
+    for (auto &entry : el_grid) {
+        // Skip first element
+        if (first) {
+            first =false;
+            continue;
+        }
+
+        for (auto &element : entry) {
+            // Check if one of the elements of a components includes the keyword "default", indicating a default parameter placeholder
+            std::size_t found = element.find("default");
+            if (found != std::string::npos) {
+                auto searchIt = defaultParameterConversionMap.find(element);
+                if (searchIt != defaultParameterConversionMap.end()) {
+                    element = defaultParameterConversionMap[element];
+                }
+                else {
+                    //#ifdef DEBUG
+                    std::cout << "No default parameter for " << element << " found..." << std::endl;
+                    //#endif
                 }
             }
         }
