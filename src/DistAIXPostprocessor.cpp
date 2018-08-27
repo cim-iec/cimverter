@@ -229,13 +229,14 @@ void DistAIXPostprocessor::setDefaultParameters(){
         for (auto it = std::next(vec.begin()); it != vec.end(); ++it) {
             std::string key = it->substr(0, it->find("="));
             defaultParameterConversionMap[vec[0] + "_" + key] = it->substr(key.length() + 1, it->find(","));
+
             #ifdef DEBUG
             std::cout << vec[0] + "_" + key << " = " << defaultParameterConversionMap[vec[0] + "_" + key] << std::endl;
             #endif
         }
     }
 
-    // Replace parameters
+    // Replace default_parameters for components
     bool first = true;
 
     for (auto &entry : components) {
@@ -249,10 +250,9 @@ void DistAIXPostprocessor::setDefaultParameters(){
             // Check if one of the elements of a components includes the keyword "default", indicating a default parameter placeholder
             std::size_t found = element.find("default");
             if (found != std::string::npos) {
-                // Check if a corresponding value was read and strored
+                // Check if a corresponding value was read and stored
                 auto searchIt = defaultParameterConversionMap.find(entry[1] + "_" + element);
                 if (searchIt != defaultParameterConversionMap.end()) {
-                    //std::cout << "Replace " << "\"" << element << "\" with \"" << defaultParameterConversionMap[entry[1] + "_" + element] << "\"" << std::endl;
                     element = defaultParameterConversionMap[entry[1] + "_" + element];
                 }
                 else {
@@ -263,6 +263,8 @@ void DistAIXPostprocessor::setDefaultParameters(){
             }
         }
     }
+
+    // Replace default_parameters for el_grid
 
     first = true;
 
@@ -277,14 +279,17 @@ void DistAIXPostprocessor::setDefaultParameters(){
             // Check if one of the elements of a components includes the keyword "default", indicating a default parameter placeholder
             std::size_t found = element.find("default");
             if (found != std::string::npos) {
+                // Check if corresponding values was read and stored
+                // Care: In comparison to components, cables have no "identifier" at vec[0]! (e.g. "Load")
+                // --> Here only element is used as key
                 auto searchIt = defaultParameterConversionMap.find(element);
                 if (searchIt != defaultParameterConversionMap.end()) {
                     element = defaultParameterConversionMap[element];
                 }
                 else {
-                    //#ifdef DEBUG
+                    #ifdef DEBUG
                     std::cout << "No default parameter for " << element << " found..." << std::endl;
-                    //#endif
+                    #endif
                 }
             }
         }
@@ -295,7 +300,7 @@ void DistAIXPostprocessor::setDefaultParameters(){
  * Postprocess files to match DistAIX convetions 
  */
 void DistAIXPostprocessor::postprocess(std::string output_file_name) {
-    std::cout << output_file_name << std::endl;
+    
     // Convert and split modelica file
     std::string newFileName = DistAIXPostprocessor::convertInputFile(output_file_name);
     DistAIXPostprocessor::splitCSVFile(newFileName);
