@@ -176,13 +176,13 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::string output_file_name, int v
 
         } else if (auto *ac_line = dynamic_cast<AcLinePtr>((*terminal_it)->ConductingEquipment)) {
          
-          if(template_folder == "Distaix_templates"){
-            /* Changed implementation to enable creation of lossy cables for distaix format.
+          if(template_folder == "DistAIX_templates"){
+            /* Changed implementation to enable creation of lossy cables for DistAIX format.
             * Instead of creating "connections", the name of the busbar is stored when visited for the first time.
             * When visiting the pi_line for the second time, the name of the current busbar, as well as the name of the busbbar
             * stored during the first visit are passed as optional arguments to the ACLineSegmentHandler.
             * This handler was modified in such a way, that those additional arguments are stores as dictionary values
-            * used in the distaix templates.
+            * used in the DistAIX templates.
             */
 
             auto searchIt = piLineIdMap.find(ac_line);
@@ -297,7 +297,7 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::string output_file_name, int v
 
   std::string modelica_output;
 
-  if(template_folder == "Distaix_templates") {
+  if(template_folder == "DistAIX_templates") {
     this->configManager.gs.create_distaix_format = true;
     ctemplate::ExpandTemplate(this->configManager.ts.directory_path + "resource/" + template_folder + "/distaix.tpl",
                               ctemplate::STRIP_BLANK_LINES, dict, &modelica_output);

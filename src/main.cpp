@@ -185,7 +185,7 @@ int main(int argc, char *argv[]) {
 
   ObjectHandler.ModelicaCodeGenerator(output_file_name, verbose_flag);
   
-  if(template_folder == "Distaix_templates") {
+  if(template_folder == "DistAIX_templates") {
         DistAIXPostprocessor *DP = new DistAIXPostprocessor();
         DP->postprocess(output_file_name);
         delete DP;
