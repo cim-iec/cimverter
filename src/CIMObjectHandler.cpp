@@ -199,6 +199,8 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::string output_file_name, int v
           }
           else {
             PiLine pi_line = this->ACLineSegmentHandler(tp_node, (*terminal_it), ac_line, dict);
+            Connection conn(&busbar, &pi_line);
+            connectionQueue.push(conn);
           }
           
         } else if (auto *energy_consumer = dynamic_cast<EnergyConsumerPtr>((*terminal_it)->ConductingEquipment)) {
@@ -661,7 +663,7 @@ CIMObjectHandler::ACLineSegmentHandler(const TPNodePtr tp_node, const TerminalPt
     piline.annotation.placement.transformation.origin.y = _t_points.yPosition;
     piline.annotation.placement.transformation.rotation = (*diagram_it)->rotation.value - 90;
 
-    if (piline.sequenceNumber()==0 || piline.sequenceNumber()==1 || piline.sequenceNumber() == 2 /* last term needed */) {
+    if (piline.sequenceNumber()==0 || piline.sequenceNumber()==1 || (template_folder == "DistAIX_templates" && piline.sequenceNumber() == 2) /* last term needed */) {
       ctemplate::TemplateDictionary *piLine_dict = dict->AddIncludeDictionary("PILINE_DICT");
       piLine_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/PiLine.tpl");
       piline.set_template_values(piLine_dict);
