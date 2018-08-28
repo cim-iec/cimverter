@@ -15,9 +15,11 @@ DistAIXPostprocessor::DistAIXPostprocessor(){
     // Add corresponding names to vectors
     vec.push_back("components");
     components.push_back(vec);
+    componentsOrdered.push_back(vec);
 
     vec[0] = "el_grid";
     el_grid.push_back(vec);
+
 };
 
 /**
@@ -117,68 +119,55 @@ void DistAIXPostprocessor::convertComponentIDs(){
             std::cout << "ERROR: ID " << component[0] << " is not unique!" << std::endl;
         }
 
-        #ifdef DEBUG
+        //#ifdef DEBUG
             for (auto item : component) {
                 std::cout << item << " ";
             }
             std::cout << std::endl;
-        #endif
+        //#endif
 
         counter++;
     }
 }
 
-void DistAIXPostprocessor::convertComponentIDsNew() {
-    std::vector<std::string> temp;
-    std::string id;
+void DistAIXPostprocessor::orderComponents(std::vector<std::string> component) {
+    
 
-    for(unsigned int i = 1; i < components.size(); ++i){
-        temp = components[i];
-        id = temp[0];
-        //std::cout << id << std::endl;
-        //std::cout << temp[1] << std::endl;        
-        //std::cout << typeid(temp[1]).name() << std::endl;
-        
-        if (!(std::find(componentsOrdered.begin(), componentsOrdered.end(), temp)!= componentsOrdered.end())){
-            componentsOrdered.push_back(temp);
+
+    std::string id = component[0];
+    std::string searchId;
+
+    bool cableFound = false;
+
+    for (auto cable : el_grid) {
+        if (cable[0] == id) {
+            searchId = cable[1];
+            cableFound = true;
         }
-        // For each cable
-        for(auto cable : el_grid){
-            // Cable comes from id
-            if (cable[0] == id) {
-                for(auto component : components){
-                    if(component[0] == cable[1]){
-                        
+        else if (cable[1] == id) {
+            searchId = cable[0];
+            cableFound = true;
+        }
+        if (cableFound) {
+            cableFound = false;
+            for (auto component : components) {
+                if(component[0] == searchId) {
+                    if (component[1] == "Node" || component[1] == "Slack" || component[1] == "Transformer"){
                         if (!(std::find(componentsOrdered.begin(), componentsOrdered.end(), component)!= componentsOrdered.end())){
-                            componentsOrdered.push_back(component);                                
-                        }
-                    }
-                    
-                }
-            }
-            // Cable goes to id
-            else if (cable[1] == id) {
-                for (auto component : components) {
-                    if(component[0] == cable[0]) {
-
-                        if (!(std::find(componentsOrdered.begin(), componentsOrdered.end(), component)!= componentsOrdered.end())){
-                            std::cout << temp[1] << std::endl;
                             componentsOrdered.push_back(component);
+                            DistAIXPostprocessor::orderComponents(component);
                         }
+                    }
+                    else {
+                        if (!(std::find(nonTopologyComponents.begin(), nonTopologyComponents.end(), component)!= nonTopologyComponents.end())){
+                            nonTopologyComponents.push_back(component);
+                            DistAIXPostprocessor::orderComponents(component);
+                        }                         
                     }
                 }
             }
-        }
-    }
-
-    std::cout << componentsOrdered.size() << "ASDASD" << std::endl;
-    for (auto entry : componentsOrdered) {
-        for (auto element : entry) {
-            std::cout << element << ",";
-        }
-        std::cout<<std::endl;
-    }
-
+        }       
+    }   
 }
 
 /**
@@ -358,9 +347,28 @@ void DistAIXPostprocessor::postprocess(std::string output_file_name) {
     // Convert and split modelica file
     std::string newFileName = DistAIXPostprocessor::convertInputFile(output_file_name);
     DistAIXPostprocessor::splitCSVFile(newFileName);
-    // Convert IDs
-    DistAIXPostprocessor::convertComponentIDsNew();
+    
+    // Add slack to ordered components vector and start recursive DFS graph traversing
+    componentsOrdered.push_back(components[1]);
+    DistAIXPostprocessor::orderComponents(components[1]);
+
+    // Add non-topology components to ordered components
+    for (auto entry : nonTopologyComponents) {
+        componentsOrdered.push_back(entry);
+    }
+
+    #ifdef DEBUG
+    std::cout << "COMPONENTS ORDERED:" << std::endl;
+    for (auto component :componentsOrdered) {
+        for (auto entry : component) {
+            std::cout << entry << ",";
+        }
+        std::cout << std::endl;
+    }
+    #endif
+
     components = componentsOrdered;
+    // Convert IDs
     DistAIXPostprocessor::convertComponentIDs();
     DistAIXPostprocessor::convertElGridIDs();
     // Replace default parameters
