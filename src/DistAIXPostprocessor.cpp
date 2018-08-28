@@ -155,8 +155,7 @@ void DistAIXPostprocessor::orderComponents(std::vector<std::string> component) {
                     if (component[1] == "Node" || component[1] == "Slack" || component[1] == "Transformer"){
                         if (!(std::find(componentsOrdered.begin(), componentsOrdered.end(), component)!= componentsOrdered.end())){
                             componentsOrdered.push_back(component);
-                            DistAIXPostprocessor::orderComponents(component);
-                        }
+                            DistAIXPostprocessor::orderComponents(component);}
                     }
                     else {
                         if (!(std::find(nonTopologyComponents.begin(), nonTopologyComponents.end(), component)!= nonTopologyComponents.end())){
@@ -164,6 +163,7 @@ void DistAIXPostprocessor::orderComponents(std::vector<std::string> component) {
                             DistAIXPostprocessor::orderComponents(component);
                         }                         
                     }
+                break;
                 }
             }
         }       
