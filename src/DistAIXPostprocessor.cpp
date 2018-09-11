@@ -130,15 +130,17 @@ void DistAIXPostprocessor::convertComponentIDs(){
     }
 }
 
+/**
+ * Orders the components from slack to leaves in a depth-first sense, needed for proper id conversion.
+ */
 void DistAIXPostprocessor::orderComponents(std::vector<std::string> component) {
     
-
-
     std::string id = component[0];
     std::string searchId;
 
     bool cableFound = false;
 
+    // For all cables check if they are connected to current regarded node
     for (auto cable : el_grid) {
         if (cable[0] == id) {
             searchId = cable[1];
@@ -148,21 +150,29 @@ void DistAIXPostprocessor::orderComponents(std::vector<std::string> component) {
             searchId = cable[0];
             cableFound = true;
         }
+        // If cable that connects regarded node is found
         if (cableFound) {
             cableFound = false;
+            // Search component/node that is connected to it
             for (auto component : components) {
                 if(component[0] == searchId) {
+                    // If found component is a topology node, i.e. Node, Slack or Trafo
                     if (component[1] == "Node" || component[1] == "Slack" || component[1] == "Transformer"){
+                        // Add component to ordered topology vector, if it was not added earlier
                         if (!(std::find(componentsOrdered.begin(), componentsOrdered.end(), component)!= componentsOrdered.end())){
                             componentsOrdered.push_back(component);
+                            // Recursively call order function on found component
                             DistAIXPostprocessor::orderComponents(component);}
                     }
+                    // Else add found component to vector holding nontopology components, if not already added
                     else {
                         if (!(std::find(nonTopologyComponents.begin(), nonTopologyComponents.end(), component)!= nonTopologyComponents.end())){
                             nonTopologyComponents.push_back(component);
+                            // Recursively call order function on found component
                             DistAIXPostprocessor::orderComponents(component);
                         }                         
                     }
+                // If component was found, break for loop to avoid looking at all remaining components
                 break;
                 }
             }
