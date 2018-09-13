@@ -119,12 +119,12 @@ void DistAIXPostprocessor::convertComponentIDs(){
             std::cout << "ERROR: ID " << component[0] << " is not unique!" << std::endl;
         }
 
-        //#ifdef DEBUG
+        #ifdef DEBUG
             for (auto item : component) {
                 std::cout << item << " ";
             }
             std::cout << std::endl;
-        //#endif
+        #endif
 
         counter++;
     }
