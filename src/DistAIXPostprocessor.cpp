@@ -9,7 +9,7 @@
 /**
  * Constructor 
  */
-DistAIXPostprocessor::DistAIXPostprocessor(){
+DistAIXPostprocessor::DistAIXPostprocessor(std::string template_folder){
     std::vector<std::string> vec;
     
     // Add corresponding names to vectors
@@ -19,6 +19,9 @@ DistAIXPostprocessor::DistAIXPostprocessor(){
 
     vec[0] = "el_grid";
     el_grid.push_back(vec);
+
+    // Set template folder
+    this->template_folder = template_folder;
 
 };
 
@@ -269,11 +272,13 @@ void DistAIXPostprocessor::writeCSVFile(std::vector<std::vector<std::string> > d
 void DistAIXPostprocessor::setDefaultParameters(){
 
     // Read in default_parameters.csv
-    std::ifstream file("default_parameters.csv");
+    std::string filepath = "resource/" + template_folder + "/default_parameters.csv";
+    std::ifstream file(filepath);
     std::string line = "";
 
     // If default_parameters.csv does not exist return
     if (!file.is_open()) {
+        std::cout<<"Problem!" << std::endl;
         return;
     }
 

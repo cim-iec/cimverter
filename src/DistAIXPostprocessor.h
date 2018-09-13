@@ -18,7 +18,7 @@
 class DistAIXPostprocessor{
     
     public:
-        DistAIXPostprocessor();
+        DistAIXPostprocessor(std::string template_folder);
         virtual ~DistAIXPostprocessor();
 
         void postprocess(std::string output_file_name);
@@ -33,6 +33,8 @@ class DistAIXPostprocessor{
         void splitCSVFile(std::string filepath);
         void setDefaultParameters();
         
+        std::string template_folder;
+
         std::vector<std::vector<std::string> > components;
         std::vector<std::vector<std::string> > el_grid;
         std::vector<std::vector<std::string> > componentsOrdered;
