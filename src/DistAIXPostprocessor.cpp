@@ -259,6 +259,12 @@ void DistAIXPostprocessor::writeCSVFile(std::vector<std::vector<std::string> > d
 
 /**
  * Read in default parameters from CSV-file and replace all occurencies in stored values
+ * Parameters are read from "default_parameters.csv".
+ * "default_parameters.csv" has following structure:
+ * 
+ * ComponentType,parametername1=val,parametername2=val
+ * 
+ * e.g. Load,subtype_default=SFH,S_r_default=232323
  */
 void DistAIXPostprocessor::setDefaultParameters(){
 
