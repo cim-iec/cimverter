@@ -24,7 +24,7 @@ class DistAIXPostprocessor{
         void postprocess(std::string output_file_name);
 
     private:
-        void orderComponents(std::vector<std::string> component);
+        void orderComponents(std::vector<std::string> component, std::string transformerId);
         void convertComponentIDs();
         
         void convertElGridIDs();

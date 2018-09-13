@@ -1,3 +1,4 @@
+
 /*
  * DistAIXPostprocessor.cpp
  *
@@ -98,6 +99,74 @@ void DistAIXPostprocessor::splitCSVFile(std::string filepath){
 }
 
 /**
+ * Orders the components from slack to leaves in a depth-first sense, needed for proper id conversion.
+ */
+void DistAIXPostprocessor::orderComponents(std::vector<std::string> component, std::string transformerId) {
+    
+    std::string id = component[0];
+    std::string searchId;
+    std::string currentTransformerId = transformerId;
+
+    bool cableFound = false;
+
+    // For all cables check if they are connected to current regarded node
+    for (auto cable : el_grid) {
+        if (cable[0] == id) {
+            searchId = cable[1];
+            cableFound = true;
+        }
+        else if (cable[1] == id) {
+            searchId = cable[0];
+            cableFound = true;
+        }
+        // If cable that connects regarded node is found
+        if (cableFound) {
+            cableFound = false;
+            // Search component/node that is connected to it
+            for (auto component : components) {
+                if(component[0] == searchId) {
+                    // If found component is a topology node, i.e. Node, Slack or Trafo
+                    if (component[1] == "Node" || component[1] == "Slack" || component[1] == "Transformer"){
+                        
+                        if(component[1] == "Transformer"){
+                            currentTransformerId = component[0];
+                        }
+                        else if(component[1] == "Node"){
+                            component[2] = currentTransformerId;
+                        }
+
+                        // Add component to ordered topology vector, if it was not added earlier
+                        // Nodes might have experienced changes in parameter indicating the corresponding transformer, thus std::find() can not be used here...
+                        bool componentFound = false;
+                        for(auto orderedComponent : componentsOrdered){
+                            if (orderedComponent[0] == component[0]){
+                                componentFound = true;
+                            }
+                        }
+                        if(!componentFound){
+                            componentsOrdered.push_back(component);
+
+                            // Recursively call order function on found component
+                            DistAIXPostprocessor::orderComponents(component, currentTransformerId);
+                        }
+                    }
+                    // Else add found component to vector holding nontopology components, if not already added
+                    else {
+                        if (!(std::find(nonTopologyComponents.begin(), nonTopologyComponents.end(), component)!= nonTopologyComponents.end())){
+                            nonTopologyComponents.push_back(component);
+                            // Recursively call order function on found component
+                            DistAIXPostprocessor::orderComponents(component, currentTransformerId);
+                        }                         
+                    }
+                // If component was found, break for loop to avoid looking at all remaining components
+                break;
+                }
+            }
+        }       
+    }   
+}
+
+/**
  * Converts component IDs to match DistAIX naming conventions
  */
 void DistAIXPostprocessor::convertComponentIDs(){
@@ -122,6 +191,18 @@ void DistAIXPostprocessor::convertComponentIDs(){
             std::cout << "ERROR: ID " << component[0] << " is not unique!" << std::endl;
         }
 
+        // For nodes, the third parameter indicating the corresponding transformer has to be changed as well
+        if(component[1] == "Node"){
+            searchIt = idConversionMap.find(component[2]);
+
+            if (searchIt == idConversionMap.end()){
+                std::cout << "ERROR: " << component[2] << " is no valid transformer ID!" << std::endl;
+            }
+            else {
+                component[2] = std::to_string(idConversionMap[component[2]]); 
+            }
+        }
+
         #ifdef DEBUG
             for (auto item : component) {
                 std::cout << item << " ";
@@ -131,56 +212,6 @@ void DistAIXPostprocessor::convertComponentIDs(){
 
         counter++;
     }
-}
-
-/**
- * Orders the components from slack to leaves in a depth-first sense, needed for proper id conversion.
- */
-void DistAIXPostprocessor::orderComponents(std::vector<std::string> component) {
-    
-    std::string id = component[0];
-    std::string searchId;
-
-    bool cableFound = false;
-
-    // For all cables check if they are connected to current regarded node
-    for (auto cable : el_grid) {
-        if (cable[0] == id) {
-            searchId = cable[1];
-            cableFound = true;
-        }
-        else if (cable[1] == id) {
-            searchId = cable[0];
-            cableFound = true;
-        }
-        // If cable that connects regarded node is found
-        if (cableFound) {
-            cableFound = false;
-            // Search component/node that is connected to it
-            for (auto component : components) {
-                if(component[0] == searchId) {
-                    // If found component is a topology node, i.e. Node, Slack or Trafo
-                    if (component[1] == "Node" || component[1] == "Slack" || component[1] == "Transformer"){
-                        // Add component to ordered topology vector, if it was not added earlier
-                        if (!(std::find(componentsOrdered.begin(), componentsOrdered.end(), component)!= componentsOrdered.end())){
-                            componentsOrdered.push_back(component);
-                            // Recursively call order function on found component
-                            DistAIXPostprocessor::orderComponents(component);}
-                    }
-                    // Else add found component to vector holding nontopology components, if not already added
-                    else {
-                        if (!(std::find(nonTopologyComponents.begin(), nonTopologyComponents.end(), component)!= nonTopologyComponents.end())){
-                            nonTopologyComponents.push_back(component);
-                            // Recursively call order function on found component
-                            DistAIXPostprocessor::orderComponents(component);
-                        }                         
-                    }
-                // If component was found, break for loop to avoid looking at all remaining components
-                break;
-                }
-            }
-        }       
-    }   
 }
 
 /**
@@ -278,7 +309,7 @@ void DistAIXPostprocessor::setDefaultParameters(){
 
     // If default_parameters.csv does not exist return
     if (!file.is_open()) {
-        std::cout<<"Problem!" << std::endl;
+        std::cout << "resource/" << template_folder << "/default_parameters.csv was not found! Parameter replacement is skipped..." << std::endl; 
         return;
     }
 
@@ -371,7 +402,7 @@ void DistAIXPostprocessor::postprocess(std::string output_file_name) {
     
     // Add slack to ordered components vector and start recursive DFS graph traversing
     componentsOrdered.push_back(components[1]);
-    DistAIXPostprocessor::orderComponents(components[1]);
+    DistAIXPostprocessor::orderComponents(components[1], components[1][0]);
 
     // Add non-topology components to ordered components
     for (auto entry : nonTopologyComponents) {
