@@ -26,7 +26,7 @@ test:
     - docker
   before_script:
     - rm -rf libcimpp/
-    - git clone --recursive https://${GITLAB_USER}:${GITLAB_TOKEN}@git.rwth-aachen.de/acs/core/cim/cimpp/libcimpp.git/ libcimpp/
+    - git clone --recursive https://${GITLAB_USERLIBCIMPP}:${GITLAB_TOKENLIBCIMPP}@git.rwth-aachen.de/acs/core/cim/cimpp/libcimpp.git/ libcimpp/
     - mkdir -p build && cd build
     - cmake .. -DUSE_CIM_VERSION:STRING=IEC61970_16v29a_SINERGIEN
     - make -j8
