@@ -44,7 +44,7 @@ test:
 mirror:
   stage: mirror
   script:
-    - git clone --mirror https://${GITLAB_USER}:${GITLAB_TOKEN}@git.rwth-aachen.de/acs/core/cim/CIM2Mod/ 
+    - git clone --mirror https://${GITLAB_USERCIM2MOD}:${GITLAB_TOKENCIM2MOD}@git.rwth-aachen.de/acs/core/cim/CIM2Mod/ 
     - cd CIM2Mod.git
     - git push --mirror --prune https://${GITHUB_USER}:${GITHUB_TOKEN}@github.com/achim-voelker/testrepo.git 
   only: 
