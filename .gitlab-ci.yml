@@ -3,11 +3,11 @@ variables:
   DOCKER_IMAGE_DEV: cim2mod-dev
 
 stages:
-    only:
-        - master
-        - release
   - prepare
   - test
+  only:
+        - master
+        - release
 # build the docker img in which we want to test. normally we want a dockerfile with all dependencies which we just include
 docker:
   stage: prepare
