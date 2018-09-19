@@ -72,6 +72,8 @@ bool Transformer::set_template_values(ctemplate::TemplateDictionary *dictionary)
   dictionary->SetValue("SR_DISPLAYUNIT", (ModelicaUnit[this->Sr_displayUnit()]));
   dictionary->SetFormattedValue("URR", "%.5f", this->URr());
   dictionary->SetFormattedValue("UKR", "%.5f", this->Ukr());
+  dictionary->SetFormattedValue("R", "%.6f", this->r());
+  dictionary->SetFormattedValue("X", "%.6f", this->x());
 
   this->set_template_annotation_values(dictionary);
 

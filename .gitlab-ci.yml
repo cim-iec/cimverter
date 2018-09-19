@@ -1,0 +1,50 @@
+variables:
+  DOCKER_TAG_DEV: ${CI_COMMIT_REF_NAME}
+  DOCKER_IMAGE_DEV: cim2mod-dev
+
+stages:
+  - prepare
+  - test
+  - mirror
+# build the docker img in which we want to test. normally we want a dockerfile with all dependencies which we just include
+docker:
+  stage: prepare
+  script:
+    - docker build -t ${DOCKER_IMAGE_DEV}:${DOCKER_TAG_DEV} .
+    - docker images
+  only: 
+    - release
+    - master
+  tags:
+    - shell
+# clone libcimpp in our projekt. compile and run the tests.
+test: 
+  stage: test
+  image: ${DOCKER_IMAGE_DEV}:${DOCKER_TAG_DEV}
+  tags:
+    - docker
+  before_script:
+    - rm -rf libcimpp/
+    - git clone --recursive https://${GITLAB_USERLIBCIMPP}:${GITLAB_TOKENLIBCIMPP}@git.rwth-aachen.de/acs/core/cim/cimpp/libcimpp.git/ libcimpp/
+    - mkdir -p build && cd build
+    - cmake .. -DUSE_CIM_VERSION:STRING=IEC61970_16v29a_SINERGIEN
+    - make -j8
+
+
+
+  script:
+    - cd ../test/
+    - ./testFiles.py
+  only:
+    - master 
+    - release
+
+mirror:
+  stage: mirror
+  script:
+    - git clone --mirror https://${GITLAB_USERCIM2MOD}:${GITLAB_TOKENCIM2MOD}@git.rwth-aachen.de/acs/core/cim/CIM2Mod/ 
+    - cd CIM2Mod.git
+    - git push --mirror --prune https://${GITHUB_USER}:${GITHUB_TOKEN}@github.com/achim-voelker/testrepo.git 
+  only: 
+    - release
+

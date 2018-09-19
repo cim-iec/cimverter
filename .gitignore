@@ -9,3 +9,4 @@ obj
 .project
 .settings
 .idea
+test/outputs/*

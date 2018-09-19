@@ -128,7 +128,7 @@ Connection::Connection(const BusBar* busbar, const PiLine* pi_line): Connection(
   this->set_connected(pi_line->is_connected());//electrical connected?
 
   if (pi_line->sequenceNumber() == 0 || pi_line->sequenceNumber() == 1) {
-    _terminalId2 = this->configManager->cs.PiLineName + "1";
+    _terminalId2 = this->configManager->cs.PiLineName + configManager->cs.PiLineSuffix1;
     if (pi_line->annotation.placement.transformation.rotation == 90 || pi_line->annotation.placement.transformation.rotation == -90) {
       _p2.x = pi_line->annotation.placement.transformation.origin.x;
       _p2.y = pi_line->annotation.placement.transformation.origin.y + pi_line->annotation.placement.transformation.extent.first.y;
@@ -137,7 +137,7 @@ Connection::Connection(const BusBar* busbar, const PiLine* pi_line): Connection(
       _p2.y = pi_line->annotation.placement.transformation.origin.y;
     }
   } else if (pi_line->sequenceNumber() == 2) {
-    _terminalId2 = this->configManager->cs.PiLineName + "2";
+    _terminalId2 = this->configManager->cs.PiLineName + configManager->cs.PiLineSuffix2;
     if (busbar->annotation.placement.transformation.rotation == 90 || pi_line->annotation.placement.transformation.rotation == -90) {
       _p2.x = pi_line->annotation.placement.transformation.origin.x;
       _p2.y = pi_line->annotation.placement.transformation.origin.y + pi_line->annotation.placement.transformation.extent.second.y;
@@ -146,7 +146,7 @@ Connection::Connection(const BusBar* busbar, const PiLine* pi_line): Connection(
       _p2.y = pi_line->annotation.placement.transformation.origin.y;
     }
   } else {
-    _terminalId2 = this->configManager->cs.PiLineName + "1";
+    _terminalId2 = this->configManager->cs.PiLineName + configManager->cs.PiLineSuffix1;
   }
   _port2 = pi_line->name();
   _port2.append(".");
@@ -163,7 +163,7 @@ Connection::Connection(const BusBar* busbar, const Transformer* transformer): Co
 
   this->set_connected(transformer->is_connected());//electrical connected?
   if (transformer->sequenceNumber() == 0 || transformer->sequenceNumber() == 1) {
-    _terminalId2 = this->configManager->cs.TransformerName + "1";
+    _terminalId2 = this->configManager->cs.TransformerName + configManager->cs.TransformerSuffix1;
     if (transformer->annotation.placement.transformation.rotation == 90 || transformer->annotation.placement.transformation.rotation == -90) {
       _p2.x = transformer->annotation.placement.transformation.origin.x;
       _p2.y = transformer->annotation.placement.transformation.origin.y + transformer->annotation.placement.transformation.extent.first.y;
@@ -172,7 +172,7 @@ Connection::Connection(const BusBar* busbar, const Transformer* transformer): Co
       _p2.y = transformer->annotation.placement.transformation.origin.y;
     }
   } else if (transformer->sequenceNumber() == 2) {
-    _terminalId2 = this->configManager->cs.TransformerName + "2";
+    _terminalId2 = this->configManager->cs.TransformerName + configManager->cs.TransformerSuffix2;
     if (transformer->annotation.placement.transformation.rotation == 90 || transformer->annotation.placement.transformation.rotation == -90) {
       _p2.x = transformer->annotation.placement.transformation.origin.x;
       _p2.y = transformer->annotation.placement.transformation.origin.y + transformer->annotation.placement.transformation.extent.second.y;
@@ -181,7 +181,7 @@ Connection::Connection(const BusBar* busbar, const Transformer* transformer): Co
       _p2.y = transformer->annotation.placement.transformation.origin.y;
     }
   } else {
-    _terminalId2 = this->configManager->cs.TransformerName + "1";
+    _terminalId2 = this->configManager->cs.TransformerName + configManager->cs.TransformerSuffix1;
   }
   _port2 = transformer->name();
   _port2.append(".");

@@ -98,7 +98,35 @@ void ConfigManager::getConnectionNames(){
         std::cerr << "No system enable settings in configuration file." << std::endl;
     }
     try {
+        this->cs.PiLineSuffix1 = this->conCfg.lookup("connections.PiLine.suffix1").c_str();
+
+    }
+    catch (const SettingNotFoundException &nfex) {
+        std::cerr << "No system enable settings in configuration file." << std::endl;
+    }
+    try {
+        this->cs.PiLineSuffix2 = this->conCfg.lookup("connections.PiLine.suffix2").c_str();
+
+    }
+    catch (const SettingNotFoundException &nfex) {
+        std::cerr << "No system enable settings in configuration file." << std::endl;
+    }
+    try {
         this->cs.TransformerName = this->conCfg.lookup("connections.Transformer.name").c_str();
+
+    }
+    catch (const SettingNotFoundException &nfex) {
+        std::cerr << "No system enable settings in configuration file." << std::endl;
+    }
+    try {
+        this->cs.TransformerSuffix1 = this->conCfg.lookup("connections.Transformer.suffix1").c_str();
+
+    }
+    catch (const SettingNotFoundException &nfex) {
+        std::cerr << "No system enable settings in configuration file." << std::endl;
+    }
+    try {
+        this->cs.TransformerSuffix2 = this->conCfg.lookup("connections.Transformer.suffix2").c_str();
 
     }
     catch (const SettingNotFoundException &nfex) {

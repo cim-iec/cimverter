@@ -18,6 +18,11 @@ class System : public ModBaseClass {
   System();
   System(const ConfigManager & configManager);//using SystemSetting parameters from config
   System(double lx, double ly, double rx, double ry);
+  enum dyn_types{
+      SteadyState,
+      SteadyInitial,
+      FixedInitial,
+      FreeInitial };
 
   virtual ~System();
 
@@ -31,6 +36,22 @@ class System : public ModBaseClass {
   void set_f_nom_displayUnit(modelicaUnit f_nom_displayUnit) {
     this->_f_nom_displayUnit = f_nom_displayUnit;
   };
+
+  void set_dyn_type(dyn_types type) {
+    this->dyn_type = "PowerSystems.Types.Dynamics." + getStringFromDyn(type);
+  };
+
+  std::string getStringFromDyn(dyn_types type){
+    switch (type)
+    {
+      case FreeInitial: return "FreeInitial";
+      case FixedInitial: return "FixedInitial";
+      case SteadyInitial: return "SteadyInitial";
+      case SteadyState: return "SteadyState";
+
+    }
+  };
+
   modelicaUnit f_nom_displayUnit() const {
     return _f_nom_displayUnit;
   };
@@ -40,7 +61,7 @@ class System : public ModBaseClass {
   bool set_template_values(ctemplate::TemplateDictionary *dictionary) override;
 
  private:
-
+  std::string dyn_type = "PowerSystems.Types.Dynamics.SteadyState";
   double _f_nom = 50;  //nominal frequency
   modelicaUnit _f_nom_displayUnit = modelicaUnit::Hz;
 
