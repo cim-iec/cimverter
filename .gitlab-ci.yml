@@ -25,6 +25,11 @@ test:
     - mkdir -p build && cd build
     - cmake .. -DUSE_CIM_VERSION:STRING=IEC61970_16v29a_SINERGIEN
     - make -j8
+
+only:
+    - master
+    - release
+
   script:
     - cd ../test/
     - ./testFiles.py
