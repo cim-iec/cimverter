@@ -3,6 +3,9 @@ variables:
   DOCKER_IMAGE_DEV: cim2mod-dev
 
 stages:
+    only:
+        - master
+        - release
   - prepare
   - test
 # build the docker img in which we want to test. normally we want a dockerfile with all dependencies which we just include
@@ -26,9 +29,7 @@ test:
     - cmake .. -DUSE_CIM_VERSION:STRING=IEC61970_16v29a_SINERGIEN
     - make -j8
 
-only:
-    - master
-    - release
+
 
   script:
     - cd ../test/
