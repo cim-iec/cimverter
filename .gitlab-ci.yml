@@ -14,6 +14,7 @@ docker:
     - docker images
   only: 
     - release
+    - testing
     - master
   tags:
     - shell
@@ -37,6 +38,7 @@ test:
     - ./testFiles.py
   only:
     - master 
+    - testing
     - release
 
 mirror:
