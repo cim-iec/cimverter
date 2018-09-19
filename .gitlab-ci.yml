@@ -5,9 +5,6 @@ variables:
 stages:
   - prepare
   - test
-  only:
-    - master
-    - release
 # build the docker img in which we want to test. normally we want a dockerfile with all dependencies which we just include
 docker:
   stage: prepare
