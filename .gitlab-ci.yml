@@ -31,5 +31,8 @@ test:
   script:
     - cd ../test/
     - ./testFiles.py
+  only:
+    - master 
+    - release
 
 
