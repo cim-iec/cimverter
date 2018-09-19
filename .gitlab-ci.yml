@@ -5,6 +5,7 @@ variables:
 stages:
   - prepare
   - test
+  - mirror
 # build the docker img in which we want to test. normally we want a dockerfile with all dependencies which we just include
 docker:
   stage: prepare
@@ -35,4 +36,12 @@ test:
     - master 
     - release
 
+mirror:
+  stage: mirror
+  script:
+    - git clone --mirror https://${GITLAB_USER}:${GITLAB_TOKEN}@git.rwth-aachen.de/acs/core/cim/cimpp/libcimpp.git/
+    - cd libcimpp.git
+    - git push --mirror --prune https://${GITHUB_USER}:${GITHUB_TOKEN}@github.com/RWTH-ACS/libcimpp.git/
+  only: 
+    - release
 
