@@ -14,7 +14,6 @@ docker:
     - docker images
   only: 
     - release
-    - testing
     - master
   tags:
     - shell
@@ -38,7 +37,6 @@ test:
     - ./testFiles.py
   only:
     - master 
-    - testing
     - release
 
 mirror:
@@ -49,5 +47,4 @@ mirror:
     - git push --mirror --prune https://${GITHUB_USER}:${GITHUB_TOKEN}@github.com/achim-voelker/testrepo.git 
   only: 
     - release
-    - testing
 
