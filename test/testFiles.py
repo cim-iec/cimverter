@@ -16,14 +16,14 @@ files = [f for f in listdir(rootdir) if isfile(join(rootdir, f))]
 if not (os.path.isdir("outputs/")):
     bashCommand = "mkdir outputs"
     process = subprocess.call(bashCommand.split(), stdout=subprocess.PIPE)
-# In case of dirs, pass -a to CIM2Mod
+# In case of dirs, pass -a to CIMverter
 for dir in dirs:
     bashCommand = "./create_output.bash a " + dir + " " + dir
     process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
     output, error = process.communicate()
     testedFiles.append(dir + ".mo")
 
-# In case of files, pass -f to CIM2Mod
+# In case of files, pass -f to CIMverter
 for file in files:
     bashCommand = "./create_output.bash f " + file[0:len(file) - 4] + " " + file[0:len(file) - 4]
     process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
