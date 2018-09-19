@@ -1,10 +1,10 @@
 cmake_minimum_required(VERSION 3.5)
-project(CIM2Mod CXX)
+project(CIMverter CXX)
 
-set(CIM2Mod_MAJOR_VERSION 2)
-set(CIM2Mod_MINOR_VERSION 3)
-set(CIM2Mod_PATCH_VERSION 1)
-set(CIM2Mod_VERSION ${CIM2Mod_MAJOR_VERSION}.${CIM2Mod_MINOR_VERSION}.${CIM2Mod_PATCH_VERSION})
+set(CIMverter_MAJOR_VERSION 2)
+set(CIMverter_MINOR_VERSION 3)
+set(CIMverter_PATCH_VERSION 1)
+set(CIMverter_VERSION ${CIMverter_MAJOR_VERSION}.${CIMverter_MINOR_VERSION}.${CIMverter_PATCH_VERSION})
 
 # Find libcimpp
 add_subdirectory(${PROJECT_SOURCE_DIR}/libcimpp ${PROJECT_SOURCE_DIR}/build/libcimpp)
@@ -54,8 +54,8 @@ file(GLOB_RECURSE SRC_LIST ${PROJECT_SOURCE_DIR}/src/*.cpp)
 # compile and link
 set(CMAKE_CXX_COMPILER "clang++")
 add_executable(${PROJECT_NAME} ${SRC_LIST} src/main.cpp)
-target_link_libraries(CIM2Mod libcimpp ${Boost_LIBRARIES} ${CTEMPLATE_LIBRARIES} ${CONFIG++_LIBRARY})
-target_compile_features(CIM2Mod PUBLIC cxx_range_for)
+target_link_libraries(CIMverter libcimpp ${Boost_LIBRARIES} ${CTEMPLATE_LIBRARIES} ${CONFIG++_LIBRARY})
+target_compile_features(CIMverter PUBLIC cxx_range_for)
 
 # Configure Doxyfile
 find_package(Doxygen)
