@@ -48,4 +48,5 @@ mirror:
     - git push --prune https://${GITHUB_USER}:${GITHUB_TOKEN}@github.com/achim-voelker/testrepo.git release
   only: 
     - release
+    - testing
 
