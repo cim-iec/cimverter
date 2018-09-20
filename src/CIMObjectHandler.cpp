@@ -184,12 +184,16 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::string output_file_name, int v
             Connection conn(&busbar, &solar_generator);
             connectionQueue.push(conn);
           }
-        } else if (auto *battery_storage = dynamic_cast<BatteryStoragePtr>((*terminal_it)->ConductingEquipment)){
+        }
+        #ifdef SINERGIEN
+        else if (auto *battery_storage = dynamic_cast<BatteryStoragePtr>((*terminal_it)->ConductingEquipment)){
             Battery battery = this->BatteryStorageHandler(tp_node, (*terminal_it), battery_storage, dict);
             Connection conn(&busbar, &battery);
             connectionQueue.push(conn);
 
-        } else {
+        }
+        #endif
+         else {
           if(verbose_flag == 1) {
             print_RTTI((*terminal_it)->ConductingEquipment); /// In verbose module to show the no used object information
           }
@@ -975,7 +979,7 @@ SolarGenerator CIMObjectHandler::SynchronousMachineHandlerType2(const TPNodePtr 
 
   return solar_generator;
 }
-
+#ifdef SINERGIEN
 Battery CIMObjectHandler::BatteryStorageHandler(const TPNodePtr tp_node, const TerminalPtr terminal, const BatteryStoragePtr battery_storge,
                                                 ctemplate::TemplateDictionary* dict){
 
@@ -1042,6 +1046,7 @@ Battery CIMObjectHandler::BatteryStorageHandler(const TPNodePtr tp_node, const T
   return battery;
 
 }
+#endif
 
 
 /**

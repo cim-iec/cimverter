@@ -34,8 +34,9 @@ typedef IEC61970::Base::StateVariables::SvPowerFlow* SVPowerFlowPtr;
 typedef IEC61970::Base::OperationalLimits::OperationalLimitSet* OpLimitSetPtr;
 typedef IEC61970::Base::OperationalLimits::CurrentLimit* CurrentLimitPtr;
 typedef IEC61970::Base::OperationalLimits::OperationalLimit* OpLimitPtr;
+#ifdef SINERGIEN
 typedef Sinergien::EnergyGrid::EnergyStorage::BatteryStorage* BatteryStoragePtr;
-
+#endif
 
 void static print_separator() {
   std::string prefix_deco(200, '-');
@@ -69,8 +70,11 @@ class CIMObjectHandler {
   PQLoad EnergyConsumerHandler(const TPNodePtr tp_node, const TerminalPtr terminal, const EnergyConsumerPtr energy_consumer, ctemplate::TemplateDictionary* dict);
   WindGenerator SynchronousMachineHandlerType1(const TPNodePtr tp_node, const TerminalPtr terminal, const SynMachinePtr syn_machine, ctemplate::TemplateDictionary* dict);
   SolarGenerator SynchronousMachineHandlerType2(const TPNodePtr tp_node, const TerminalPtr terminal, const SynMachinePtr syn_machine,ctemplate::TemplateDictionary* dict);
-  Battery BatteryStorageHandler(const TPNodePtr tp_node, const TerminalPtr terminal, const BatteryStoragePtr battery_storge, ctemplate::TemplateDictionary* dict);
-  bool HouseholdComponetsHandler(const TPNodePtr tp_node, ctemplate::TemplateDictionary* dict);  //to find household Componets
+
+#ifdef SINERGIEN
+    Battery BatteryStorageHandler(const TPNodePtr tp_node, const TerminalPtr terminal, const BatteryStoragePtr battery_storge, ctemplate::TemplateDictionary* dict);
+#endif
+    bool HouseholdComponetsHandler(const TPNodePtr tp_node, ctemplate::TemplateDictionary* dict);  //to find household Componets
   bool ConnectionHandler(ctemplate::TemplateDictionary* dict);
 
   bool pre_process(); ///first loop

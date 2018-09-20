@@ -6,6 +6,12 @@ set(CIMverter_MINOR_VERSION 3)
 set(CIMverter_PATCH_VERSION 1)
 set(CIMverter_VERSION ${CIMverter_MAJOR_VERSION}.${CIMverter_MINOR_VERSION}.${CIMverter_PATCH_VERSION})
 
+set(USE_CIM_VERSION "IEC61970_16v29a_IEC61968_12v08" CACHE STRING "Define CIM Version")
+message(STATUS "Building ${PROJECT_NAME} with USE_CIM_VERSION=${USE_CIM_VERSION}")
+if(USE_CIM_VERSION STREQUAL "IEC61970_16v29a_SINERGIEN")
+ add_definitions(-DSINERGIEN)
+endif()
+
 # Find libcimpp
 add_subdirectory(${PROJECT_SOURCE_DIR}/libcimpp ${PROJECT_SOURCE_DIR}/build/libcimpp)
 # find_package(libcimpp REQUIRED)
@@ -36,6 +42,8 @@ set(USE_CIM_TEMPLATE "ModPowerSystems_templates" CACHE STRING "User-specified te
 # Add combined flag to avoid warnings with C++11
 set(CMAKE_CXX_FLAGS_RELEASE  "${CMAKE_CXX_FLAGS_RELEASE} -Wall -Wno-inconsistent-missing-override")
 
+
+
 # copy directories
 
 file(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/bin/resource)
@@ -56,6 +64,7 @@ set(CMAKE_CXX_COMPILER "clang++")
 add_executable(${PROJECT_NAME} ${SRC_LIST} src/main.cpp)
 target_link_libraries(CIMverter libcimpp ${Boost_LIBRARIES} ${CTEMPLATE_LIBRARIES} ${CONFIG++_LIBRARY})
 target_compile_features(CIMverter PUBLIC cxx_range_for)
+
 
 # Configure Doxyfile
 find_package(Doxygen)
