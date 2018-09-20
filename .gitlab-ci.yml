@@ -1,6 +1,6 @@
 variables:
   DOCKER_TAG_DEV: ${CI_COMMIT_REF_NAME}
-  DOCKER_IMAGE_DEV: cim2mod-dev
+  DOCKER_IMAGE_DEV: cimverter-dev
 
 stages:
   - prepare
@@ -42,7 +42,7 @@ test:
 mirror:
   stage: mirror
   script:
-    - git clone --mirror https://${GITLAB_USERCIM2MOD}:${GITLAB_TOKENCIM2MOD}@git.rwth-aachen.de/acs/core/cim/CIM2Mod/ 
+    - git clone --mirror https://${GITLAB_USERCIMVERTER}:${GITLAB_TOKENCIMVERTER}@git.rwth-aachen.de/acs/core/cim/CIM2Mod/ 
     - cd CIM2Mod.git
     - git push --mirror --prune https://${GITHUB_USER}:${GITHUB_TOKEN}@github.com/achim-voelker/testrepo.git 
   only: 
