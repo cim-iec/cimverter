@@ -3,12 +3,12 @@ FROM debian:latest
 
 LABEL \
 	org.label-schema.schema-version = "2.1.0" \
-	org.label-schema.name = "CIM2Mod" \
+	org.label-schema.name = "CIMverter" \
 	org.label-schema.license = "MPL" \
 	org.label-schema.vendor = "Institute for Automation of Complex Power Systems, RWTH Aachen University" \
 	org.label-schema.author.name = "Lukas Razik" \
 	org.label-schema.author.email = "lrazik@eonerc.rwth-aachen.org" \
-	org.label-schema.vcs-url = "https://git.rwth-aachen.de/acs/core/cim/CIM2Mod"
+	org.label-schema.vcs-url = "https://git.rwth-aachen.de/acs/core/cim/CIMverter"
 
 RUN apt-get update
 
