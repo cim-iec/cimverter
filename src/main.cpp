@@ -15,6 +15,11 @@ unsigned int filesize(const char *filename) {
   in.close();
   return size;
 }
+inline bool ends_with(std::string const & value, std::string const & ending)
+{
+    if (ending.size() > value.size()) return false;
+    return std::equal(ending.rbegin(), ending.rend(), value.rbegin());
+}
 /**
  * Find all files in the folder
  * @param path
@@ -47,25 +52,31 @@ std::vector<std::string> search_folder(const char *path) {
 void print_argument_help(){
   std::cout << "usage:" << std::endl;
   std::cout << "Parse the separated files by option -f:" << std::endl;
-  std::cout << "./CIM2Mod -f <file2.xml> <file2.xml>" << std::endl;
+  std::cout << "./CIMverter -f <file2.xml> <file2.xml>" << std::endl;
   std::cout << std::endl;
   std::cout << "Parse all files in a folder by option -a:" << std::endl;
-  std::cout << "./CIM2Mod -a <xml_directory/>" << std::endl;
+  std::cout << "./CIMverter -a <xml_directory/>" << std::endl;
   std::cout << std::endl;
   std::cout << "Use verbose option for more information by using --verbose:" << std::endl;
-  std::cout << "./CIM2Mod --verbose" << std::endl;
+  std::cout << "./CIMverter --verbose" << std::endl;
   std::cout << std::endl;
   std::cout << "Change Output File Name by using option -o:" << std::endl;
-  std::cout << "./CIM2Mod -o [modelica_output_file_name]" << std::endl;
+  std::cout << "./CIMverter -o [modelica_output_file_name]" << std::endl;
+  std::cout << std::endl;
+  std::cout << "Change Template Folder by using option -t:" << std::endl;
+  std::cout << "./CIMverter -t [template_folder_name]" << std::endl;
   std::cout << std::endl;
   std::cout << "Complete example to parse all files in a directory using"
           " verbose for more information and using a custom output file name" << std::endl;
-  std::cout << "./CIM2Mod -a <xml_directory/> --verbose -o [modelica_output_file_name]" << std::endl;
+  std::cout << "./CIMverter -a <xml_directory/> --verbose -o [modelica_output_file_name]" << std::endl;
   exit(1);
 }
 
 int main(int argc, char *argv[]) {
-    std::vector <std::string> args;// Arguments for the ObjectHandler
+    std::string output_file_name;// Arguments for the ObjectHandler
+    std::string template_folder = "ModPowerSystems_templates";
+
+    static int verbose_flag = 0;
 
     long file_size;// File size
     long secs;// Time in seconds
@@ -74,13 +85,12 @@ int main(int argc, char *argv[]) {
     print_separator();
 
     CIMModel cimModel;
-    static int verbose_flag = 0;
     if (argc <= 2) {
         std::cerr << "Too few arguments:" << std::endl;
         print_argument_help();
     }else{
 
-        args.push_back("default_output_name");// Push output modelica filesname
+        output_file_name = "default_output_name";// Push output modelica filesname
         int c;
 
 
@@ -92,18 +102,18 @@ int main(int argc, char *argv[]) {
                             {"all",     required_argument,       0, 'a'},
                             {"file",  required_argument,       0, 'f'},
                             {"output",  required_argument,       0, 'o'},
+                            {"template",  required_argument,       0, 't'},
                             {0, 0, 0, 0}
                     };
             /* getopt_long stores the option index here. */
             int option_index = 0;
 
             //c = getopt (argc, argv, "abc");
-            c = getopt_long(argc, argv, "a:f:o:",long_options, &option_index);
+            c = getopt_long(argc, argv, "a:f:o:t:",long_options, &option_index);
 
             std::vector<std::string> files;
             if (c == -1)
                 break;
-
             switch (c)
             {
                 // Read files with -f
@@ -117,11 +127,16 @@ int main(int argc, char *argv[]) {
                     break;
                 // Define the name of the output files with -o
                 case 'o':
-                    args[0] = optarg;
+                    output_file_name = optarg;
                     break;
                 // Read folders with -a
                 case 'a':
-                    files = search_folder(optarg);
+                    if(!ends_with(optarg, "/")){
+                        files = search_folder(strcat(optarg, "/"));
+                    }
+                    else{
+                        files = search_folder(optarg);
+                    }
 
                     for (auto f : files)
                     {
@@ -130,7 +145,9 @@ int main(int argc, char *argv[]) {
                         cimModel.addCIMFile(f);
                     }
                     break;
-
+                case 't':
+                    template_folder = optarg;
+                    break;
                 case '?':
                     std::cerr << "unknown argument " << c << "\n";
                     print_argument_help();
@@ -151,7 +168,6 @@ int main(int argc, char *argv[]) {
   if(verbose_flag)
   {
       std::cout << "verbose activated \n";
-      args.push_back("--verbose");
   }
 
 
@@ -164,9 +180,9 @@ int main(int argc, char *argv[]) {
 
   cimModel.parseFiles();// Parser begin!
   CIMObjectHandler ObjectHandler(std::move(cimModel.Objects));// r-value
-  ObjectHandler.get_config();// Get configuration files
+  ObjectHandler.get_config(template_folder);// Get configuration files
 
-  ObjectHandler.ModelicaCodeGenerator(args);
+  ObjectHandler.ModelicaCodeGenerator(output_file_name, verbose_flag);
 
   // Timer stop
   stop = std::chrono::high_resolution_clock::now();

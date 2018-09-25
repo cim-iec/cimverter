@@ -1,10 +1,16 @@
 cmake_minimum_required(VERSION 3.5)
-project(CIM2Mod CXX)
+project(CIMverter CXX)
 
-set(CIM2Mod_MAJOR_VERSION 2)
-set(CIM2Mod_MINOR_VERSION 3)
-set(CIM2Mod_PATCH_VERSION 1)
-set(CIM2Mod_VERSION ${CIM2Mod_MAJOR_VERSION}.${CIM2Mod_MINOR_VERSION}.${CIM2Mod_PATCH_VERSION})
+set(CIMverter_MAJOR_VERSION 2)
+set(CIMverter_MINOR_VERSION 3)
+set(CIMverter_PATCH_VERSION 1)
+set(CIMverter_VERSION ${CIMverter_MAJOR_VERSION}.${CIMverter_MINOR_VERSION}.${CIMverter_PATCH_VERSION})
+
+set(USE_CIM_VERSION "IEC61970_16v29a_IEC61968_12v08" CACHE STRING "Define CIM Version")
+message(STATUS "Building ${PROJECT_NAME} with USE_CIM_VERSION=${USE_CIM_VERSION}")
+if(USE_CIM_VERSION STREQUAL "IEC61970_16v29a_SINERGIEN")
+ add_definitions(-DSINERGIEN)
+endif()
 
 # Find libcimpp
 add_subdirectory(${PROJECT_SOURCE_DIR}/libcimpp ${PROJECT_SOURCE_DIR}/build/libcimpp)
@@ -31,13 +37,20 @@ set(BOOST_LINKER_FLAGS "-lboost_filesystem -lboost_system")
 set(CTEMPLATE_LINKER_FLAGS "-lctemplate")
 set(CONFIG++_LINKER_FLAGS "-lconfig++")
 set(CMAKE_SHARED_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} ${BOOST_LINKER_FLAGS} ${CTEMPLATE_LINKER_FLAGS} ${CONFIG++_LINKER_FLAGS} " )
+set(USE_CIM_TEMPLATE "ModPowerSystems_templates" CACHE STRING "User-specified template")
 
 # Add combined flag to avoid warnings with C++11
 set(CMAKE_CXX_FLAGS_RELEASE  "${CMAKE_CXX_FLAGS_RELEASE} -Wall -Wno-inconsistent-missing-override")
 
+
+
 # copy directories
+
 file(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/bin/resource)
-file(COPY ${PROJECT_SOURCE_DIR}/modelica_templates/ DESTINATION ${PROJECT_BINARY_DIR}/bin/resource)
+file(COPY ${PROJECT_SOURCE_DIR}/ModPowerSystems_templates/ DESTINATION 
+${PROJECT_BINARY_DIR}/bin/resource/ModPowerSystems_templates)
+file(COPY ${PROJECT_SOURCE_DIR}/PowerSystems_templates/ DESTINATION 
+${PROJECT_BINARY_DIR}/bin/resource/PowerSystems_templates)
 file(COPY ${PROJECT_SOURCE_DIR}/src/config.cfg DESTINATION ${PROJECT_BINARY_DIR}/bin)
 file(COPY ${PROJECT_SOURCE_DIR}/src/task_alias.csv ${PROJECT_SOURCE_DIR}/src/assignment_alias.csv DESTINATION ${PROJECT_BINARY_DIR}/bin)
 
@@ -49,8 +62,9 @@ file(GLOB_RECURSE SRC_LIST ${PROJECT_SOURCE_DIR}/src/*.cpp)
 # compile and link
 set(CMAKE_CXX_COMPILER "clang++")
 add_executable(${PROJECT_NAME} ${SRC_LIST} src/main.cpp)
-target_link_libraries(CIM2Mod libcimpp ${Boost_LIBRARIES} ${CTEMPLATE_LIBRARIES} ${CONFIG++_LIBRARY})
-target_compile_features(CIM2Mod PUBLIC cxx_range_for)
+target_link_libraries(CIMverter libcimpp ${Boost_LIBRARIES} ${CTEMPLATE_LIBRARIES} ${CONFIG++_LIBRARY})
+target_compile_features(CIMverter PUBLIC cxx_range_for)
+
 
 # Configure Doxyfile
 find_package(Doxygen)

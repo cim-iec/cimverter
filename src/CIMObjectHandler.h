@@ -15,6 +15,7 @@
 #include <ctemplate/template.h>
 #include "ModelicaWorkshop/ModelicaClass.h"
 
+
 typedef IEC61970::Base::Core::IdentifiedObject* IdentifiedObjectPtr;
 typedef IEC61970::Base::Wires::BusbarSection* BusBarSectionPtr;
 typedef IEC61970::Base::Topology::TopologicalNode* TPNodePtr;
@@ -33,8 +34,9 @@ typedef IEC61970::Base::StateVariables::SvPowerFlow* SVPowerFlowPtr;
 typedef IEC61970::Base::OperationalLimits::OperationalLimitSet* OpLimitSetPtr;
 typedef IEC61970::Base::OperationalLimits::CurrentLimit* CurrentLimitPtr;
 typedef IEC61970::Base::OperationalLimits::OperationalLimit* OpLimitPtr;
+#ifdef SINERGIEN
 typedef Sinergien::EnergyGrid::EnergyStorage::BatteryStorage* BatteryStoragePtr;
-
+#endif
 
 void static print_separator() {
   std::string prefix_deco(200, '-');
@@ -57,7 +59,7 @@ class CIMObjectHandler {
   CIMObjectHandler& operator=(const CIMObjectHandler&) = delete;
   virtual ~CIMObjectHandler();
 
-  bool ModelicaCodeGenerator(std::vector<std::string> args);
+  bool ModelicaCodeGenerator(std::string output_file_name, int verbose_flag);
   bool SystemSettingsHandler(const std::string filename, ctemplate::TemplateDictionary* dict);
   BusBar TopologicalNodeHandler(const TPNodePtr tp_node, ctemplate::TemplateDictionary* dict);
   bool BusBarSectionHandler(const BusBarSectionPtr busbar_section, BusBar &busbar, ctemplate::TemplateDictionary* dict);
@@ -68,17 +70,21 @@ class CIMObjectHandler {
   PQLoad EnergyConsumerHandler(const TPNodePtr tp_node, const TerminalPtr terminal, const EnergyConsumerPtr energy_consumer, ctemplate::TemplateDictionary* dict);
   WindGenerator SynchronousMachineHandlerType1(const TPNodePtr tp_node, const TerminalPtr terminal, const SynMachinePtr syn_machine, ctemplate::TemplateDictionary* dict);
   SolarGenerator SynchronousMachineHandlerType2(const TPNodePtr tp_node, const TerminalPtr terminal, const SynMachinePtr syn_machine,ctemplate::TemplateDictionary* dict);
-  Battery BatteryStorageHandler(const TPNodePtr tp_node, const TerminalPtr terminal, const BatteryStoragePtr battery_storge, ctemplate::TemplateDictionary* dict);
-  bool HouseholdComponetsHandler(const TPNodePtr tp_node, ctemplate::TemplateDictionary* dict);  //to find household Componets
+
+#ifdef SINERGIEN
+    Battery BatteryStorageHandler(const TPNodePtr tp_node, const TerminalPtr terminal, const BatteryStoragePtr battery_storge, ctemplate::TemplateDictionary* dict);
+#endif
+    bool HouseholdComponetsHandler(const TPNodePtr tp_node, ctemplate::TemplateDictionary* dict);  //to find household Componets
   bool ConnectionHandler(ctemplate::TemplateDictionary* dict);
 
   bool pre_process(); ///first loop
-  void get_config();  /// Get congiurations from config.cfg
+  void get_config(std::string templates);  /// Get congiurations from config.cfg
   void print_RTTI(BaseClass *Object);  /// Print component information
   static std::string name_in_modelica(std::string orginal_name);/// Modify illega modelica name
   static DiagramObjectPoint convert_coordinate(double x, double y, const ConfigManager & configManager);/// Tranfer the modelica components' coordinate
 
  private:
+  std::string template_folder;
   ConfigManager configManager;
   DiagramObjectPoint _t_points;
   std::vector<BaseClass*> _CIMObjects;

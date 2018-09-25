@@ -96,7 +96,6 @@ std::string System::output_icon_extent_points() const {
 
   return "{" + p1 + "," + p2 + "}";
 }
-
 /*
  * Fill the system setting part of modelica template
  */
@@ -114,7 +113,7 @@ bool System::set_system_label(ctemplate::TemplateDictionary *dictionary) {
   dictionary->SetFormattedValue("FNOM", "%.1f", this->f_nom());
   dictionary->SetValue("NAME", this->name());
   dictionary->SetValue("FNOM_DISPLAYUNIT", (ModelicaUnit[this->f_nom_displayUnit()]));
-
+  dictionary->SetValue("DYNTYPE", (this->dyn_type ));
   return true;
 }
 

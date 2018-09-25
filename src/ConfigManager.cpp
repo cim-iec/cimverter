@@ -39,6 +39,122 @@ void ConfigManager::getAllSettings() {
 /// \brief find config file.
 ///
 ///
+
+void ConfigManager::getConnectionConfigFiles(){
+
+    try {
+        this->conCfg.readFile((ts.directory_path + "resource/" + template_folder + "/connectors.cfg").c_str());         ///for release using CMake
+    }
+    catch (const FileIOException &fioex) {
+        std::cerr << "filepath: " << ts.directory_path + "resource/" + template_folder + "/connectors.cfg" << "\n";
+        std::cerr << "I/O error while reading config file." << std::endl;
+    }
+    catch (const ParseException &pex) {
+        std::cerr << "Parse error at " << pex.getFile() << ":" << pex.getLine() << " - " << pex.getError() << std::endl;
+    }
+}
+
+void ConfigManager::getConnectionNames(){
+    try {
+        this->cs.BusBarName = this->conCfg.lookup("connections.BusBar.name").c_str();
+
+    }
+    catch (const SettingNotFoundException &nfex) {
+        std::cerr << "No system enable settings in configuration file." << std::endl;
+    }
+    try {
+        this->cs.ConnectivityNodeName = this->conCfg.lookup("connections.ConnectivityNode.name").c_str();
+
+    }
+    catch (const SettingNotFoundException &nfex) {
+        std::cerr << "No system enable settings in configuration file." << std::endl;
+    }
+    try {
+        this->cs.SlackName = this->conCfg.lookup("connections.Slack.name").c_str();
+
+    }
+    catch (const SettingNotFoundException &nfex) {
+        std::cerr << "No system enable settings in configuration file." << std::endl;
+    }
+    try {
+        this->cs.PQLoadName = this->conCfg.lookup("connections.PQLoad.name").c_str();
+
+    }
+    catch (const SettingNotFoundException &nfex) {
+        std::cerr << "No system enable settings in configuration file." << std::endl;
+    }
+    try {
+        this->cs.HouseholdName = this->conCfg.lookup("connections.Household.name").c_str();
+
+    }
+    catch (const SettingNotFoundException &nfex) {
+        std::cerr << "No system enable settings in configuration file." << std::endl;
+    }
+    try {
+        this->cs.PiLineName = this->conCfg.lookup("connections.PiLine.name").c_str();
+
+    }
+    catch (const SettingNotFoundException &nfex) {
+        std::cerr << "No system enable settings in configuration file." << std::endl;
+    }
+    try {
+        this->cs.PiLineSuffix1 = this->conCfg.lookup("connections.PiLine.suffix1").c_str();
+
+    }
+    catch (const SettingNotFoundException &nfex) {
+        std::cerr << "No system enable settings in configuration file." << std::endl;
+    }
+    try {
+        this->cs.PiLineSuffix2 = this->conCfg.lookup("connections.PiLine.suffix2").c_str();
+
+    }
+    catch (const SettingNotFoundException &nfex) {
+        std::cerr << "No system enable settings in configuration file." << std::endl;
+    }
+    try {
+        this->cs.TransformerName = this->conCfg.lookup("connections.Transformer.name").c_str();
+
+    }
+    catch (const SettingNotFoundException &nfex) {
+        std::cerr << "No system enable settings in configuration file." << std::endl;
+    }
+    try {
+        this->cs.TransformerSuffix1 = this->conCfg.lookup("connections.Transformer.suffix1").c_str();
+
+    }
+    catch (const SettingNotFoundException &nfex) {
+        std::cerr << "No system enable settings in configuration file." << std::endl;
+    }
+    try {
+        this->cs.TransformerSuffix2 = this->conCfg.lookup("connections.Transformer.suffix2").c_str();
+
+    }
+    catch (const SettingNotFoundException &nfex) {
+        std::cerr << "No system enable settings in configuration file." << std::endl;
+    }
+    try {
+        this->cs.WindGeneratorName = this->conCfg.lookup("connections.WindGenerator.name").c_str();
+
+    }
+    catch (const SettingNotFoundException &nfex) {
+        std::cerr << "No system enable settings in configuration file." << std::endl;
+    }
+    try {
+        this->cs.SolarGeneratorName = this->conCfg.lookup("connections.SolarGenerator.name").c_str();
+
+    }
+    catch (const SettingNotFoundException &nfex) {
+        std::cerr << "No system enable settings in configuration file." << std::endl;
+    }
+    try {
+        this->cs.BatteryName = this->conCfg.lookup("connections.Battery.name").c_str();
+
+    }
+    catch (const SettingNotFoundException &nfex) {
+        std::cerr << "No system enable settings in configuration file." << std::endl;
+    }
+}
+
 void ConfigManager::getConfigFiles() {
   try {
     this->cfg.readFile("config.cfg");         ///for release using CMake

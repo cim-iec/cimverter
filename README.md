@@ -1,4 +1,4 @@
-# CIM2Mod
+# CIMverter
 This tool is used to convert CIM-XML-RDF files into Modelica code.
 
 ## Licensing
@@ -47,7 +47,7 @@ In case of **commercial** use you are required to negotiate a proper license mod
     sudo apt-get install libconfig++-dev
 
 
-### To build the CIM2Mod using cmake by following steps:
+### To build the CIMverter using cmake by following steps:
 
 #### Get CIM-XML-Parser and GridData submodule:
 
@@ -57,11 +57,11 @@ In case of **commercial** use you are required to negotiate a proper license mod
 
     git submodule add https://git.rwth-aachen.de/CIM-XML-Interface/CIM-XML-Parser.git
 
-#####  or just copy CIM-XML-Parser project into the CIM2Mod folder
+#####  or just copy CIM-XML-Parser project into the CIMverter folder
 
     see https://git.rwth-aachen.de/CIM-XML-Interface/CIM-XML-Parser
 
-#### Build CIM-XML-Parser and CIM2Mod
+#### Build CIM-XML-Parser and CIMverter
 
 ##### 1. Create build directory
 
@@ -72,7 +72,7 @@ In case of **commercial** use you are required to negotiate a proper license mod
     cd build/
     cmake -DCMAKE_BUILD_TYPE=Release ..
 
-##### 3. Compile CIM2Mod and CIMParser
+##### 3. Compile CIMverter and CIMParser
 
     make -j4
 
@@ -83,28 +83,11 @@ In case of **commercial** use you are required to negotiate a proper license mod
 #### Usage:
 
     cd build/bin
+    
 
-##### To parse separate xml files:
+##### Command for Usage help:
 
-    ./CIM2Mod -f <file2.xml> <file2.xml>... [output_file_name]
-
-##### To parse separate xml files using verbose option:
-
-    ./CIM2Mod -f --verbose <file2.xml> <file2.xml>... [output_file_name]
-
-##### to parse all xml files in a folder:
-
-    ./CIM2Mod -a --verbose <xml_directory/> [output_file_name]
-
-##### to parse all xml files in a folder:
-
-    ./CIM2Mod -a <xml_directory/> [output_file_name]
-
-  The tool generates the modelica document: `output_file_name.mo`
-
-##### Command help:
-
-    ./CIM2Mod --help
+    ./CIMverter --help
 
 ***
 
@@ -129,7 +112,7 @@ In case of **commercial** use you are required to negotiate a proper license mod
 
 ### Project Folder may has authority problem on Linux:
 
-    sudo chown -R [your account username] CIM2Mod/
+    sudo chown -R [your account username] CIMverter/
     
 ### setDependencyCheckOff() should be added right now before bug fixed of the CIM Parser
     see line 133 in main.cpp

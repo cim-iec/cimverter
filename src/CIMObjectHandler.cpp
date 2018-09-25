@@ -4,6 +4,7 @@
  */
 
 #include "CIMObjectHandler.h"
+#include "ModelicaWorkshop/ModPowerSystems/Connection.h"
 
 /**\brief Macro for transformation.extent setting
  */
@@ -62,11 +63,17 @@ CIMObjectHandler::~CIMObjectHandler() {
 /**
  * Get all settings from config.cfg.
  */
-void CIMObjectHandler::get_config() {
+void CIMObjectHandler::get_config(std::string templates) {
 
+  template_folder = templates;
   print_separator();
   std::cout << "reading config files..." << std::endl;
   this->configManager.getAllSettings();
+  std::cout << "using templates: " << templates <<"\n";
+  configManager.template_folder = templates;
+  this->configManager.getConnectionConfigFiles();
+  this->configManager.getConnectionNames();
+  Connection::setConfigManager(&this->configManager);
   print_separator();
 }
 
@@ -113,9 +120,9 @@ bool CIMObjectHandler::pre_process() {
  * Generate the modelica code
  * by parsering the _CIMObjects
  */
-bool CIMObjectHandler::ModelicaCodeGenerator(std::vector<std::string> args) {
+bool CIMObjectHandler::ModelicaCodeGenerator(std::string output_file_name, int verbose_flag) {
 
-  const std::string filename = args[0];
+  const std::string filename = output_file_name;
   ctemplate::TemplateDictionary *dict = new ctemplate::TemplateDictionary("MODELICA");///set the main tpl file
   this->SystemSettingsHandler(filename, dict);
 
@@ -177,13 +184,17 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::vector<std::string> args) {
             Connection conn(&busbar, &solar_generator);
             connectionQueue.push(conn);
           }
-        } else if (auto *battery_storage = dynamic_cast<BatteryStoragePtr>((*terminal_it)->ConductingEquipment)){
+        }
+        #ifdef SINERGIEN
+        else if (auto *battery_storage = dynamic_cast<BatteryStoragePtr>((*terminal_it)->ConductingEquipment)){
             Battery battery = this->BatteryStorageHandler(tp_node, (*terminal_it), battery_storage, dict);
             Connection conn(&busbar, &battery);
-           connectionQueue.push(conn);
+            connectionQueue.push(conn);
 
-        } else {
-          if(args.size() == 2 && strcmp(args[1].c_str(), "--verbose") == 0) {
+        }
+        #endif
+         else {
+          if(verbose_flag == 1) {
             print_RTTI((*terminal_it)->ConductingEquipment); /// In verbose module to show the no used object information
           }
         }
@@ -200,7 +211,7 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::vector<std::string> args) {
                 ctemplate::TemplateDictionary *household_dict = dict->AddIncludeDictionary(
                     "HOUSEHOLD_TYPE1_DICT");
                 household_dict->SetFilename(
-                    this->configManager.ts.directory_path + "resource/HouseholdType1.tpl");
+                    this->configManager.ts.directory_path + "resource/" + template_folder + "/HouseholdType1.tpl");
                 this->householdQueue.front().set_template_values(household_dict);
               }
               break;
@@ -210,7 +221,7 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::vector<std::string> args) {
                 ctemplate::TemplateDictionary *household_dict = dict->AddIncludeDictionary(
                     "HOUSEHOLD_TYPE2_DICT");
                 household_dict->SetFilename(
-                    this->configManager.ts.directory_path + "resource/HouseholdType2.tpl");
+                    this->configManager.ts.directory_path + "resource/" + template_folder + "/HouseholdType2.tpl");
                 this->householdQueue.front().set_template_values(household_dict);
               }
               break;
@@ -224,15 +235,15 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::vector<std::string> args) {
         while (!this->pqloadQueue.empty()) {
           if (this->configManager.pqload_parameters.type == 1 && pqloadQueue.front().PQLoadType() == PQLoadType::Standard) {
             ctemplate::TemplateDictionary *pqLoad_dict = dict->AddIncludeDictionary("PQLOAD_DICT");
-            pqLoad_dict->SetFilename(this->configManager.ts.directory_path + "resource/PQLoad.tpl");
+            pqLoad_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/PQLoad.tpl");
             pqloadQueue.front().set_template_values(pqLoad_dict);
           } else if (this->configManager.pqload_parameters.type == 2 && pqloadQueue.front().PQLoadType() == PQLoadType::Profile) {
               ctemplate::TemplateDictionary *pqLoad_dict = dict->AddIncludeDictionary("PQLOAD_PROFILE_DICT");
-              pqLoad_dict->SetFilename(this->configManager.ts.directory_path + "resource/PQLoadProfile.tpl");
+              pqLoad_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/PQLoadProfile.tpl");
               pqloadQueue.front().set_template_values(pqLoad_dict);
           } else if(this->configManager.pqload_parameters.type == 3 && pqloadQueue.front().PQLoadType() == PQLoadType::NormProfile){
               ctemplate::TemplateDictionary *pqLoad_dict = dict->AddIncludeDictionary("PQLOAD_NORM_PROFILE_DICT");
-              pqLoad_dict->SetFilename(this->configManager.ts.directory_path + "resource/PQLoadNormProfile.tpl");
+              pqLoad_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/PQLoadNormProfile.tpl");
               pqloadQueue.front().set_template_values(pqLoad_dict);
           }
           Connection conn(&busbar, &pqloadQueue.front());
@@ -244,7 +255,7 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::vector<std::string> args) {
           ctemplate::TemplateDictionary *solar_generator_dict = dict->AddIncludeDictionary(
               "SOLARGENERATOR_DICT");
           solar_generator_dict->SetFilename(
-              this->configManager.ts.directory_path + "resource/SolarGenerator.tpl");
+              this->configManager.ts.directory_path + "resource/" + template_folder + "/SolarGenerator.tpl");
           solarGeneratorQueue.front().set_template_values(solar_generator_dict);
           Connection conn(&busbar, &solarGeneratorQueue.front());
           connectionQueue.push(conn);
@@ -257,7 +268,7 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::vector<std::string> args) {
   this->ConnectionHandler(dict);
 
   std::string modelica_output;
-  ctemplate::ExpandTemplate(this->configManager.ts.directory_path + "resource/modelica.tpl",
+  ctemplate::ExpandTemplate(this->configManager.ts.directory_path + "resource/" + template_folder + "/modelica.tpl",
                             ctemplate::STRIP_BLANK_LINES, dict, &modelica_output);
 #ifdef DEBUG
 #pragma message("DEBUG model activated!")
@@ -330,7 +341,7 @@ BusBar CIMObjectHandler::TopologicalNodeHandler(const TPNodePtr tp_node, ctempla
         busbar.annotation.placement.transformation.rotation = 0;
 
         ctemplate::TemplateDictionary *busbar_dict = dict->AddIncludeDictionary("BUSBAR_DICT");
-        busbar_dict->SetFilename(this->configManager.ts.directory_path + "resource/BusBar.tpl");
+        busbar_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/BusBar.tpl");
         busbar.set_template_values(busbar_dict);
     }
   for (diagram_it = tp_node->DiagramObjects.begin(); diagram_it!=tp_node->DiagramObjects.end(); ++diagram_it) {
@@ -340,7 +351,7 @@ BusBar CIMObjectHandler::TopologicalNodeHandler(const TPNodePtr tp_node, ctempla
     busbar.annotation.placement.transformation.rotation = (*diagram_it)->rotation.value;
 
     ctemplate::TemplateDictionary *busbar_dict = dict->AddIncludeDictionary("BUSBAR_DICT");
-    busbar_dict->SetFilename(this->configManager.ts.directory_path + "resource/BusBar.tpl");
+    busbar_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/BusBar.tpl");
     busbar.set_template_values(busbar_dict);
   }
 
@@ -423,7 +434,7 @@ bool CIMObjectHandler::BusBarSectionHandler(const BusBarSectionPtr busbar_sectio
       busbar.annotation.placement.transformation.rotation = 0;
 
       ctemplate::TemplateDictionary *busbar_dict = dict->AddIncludeDictionary("BUSBAR_DICT");
-      busbar_dict->SetFilename(this->configManager.ts.directory_path + "resource/BusBar.tpl");
+      busbar_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/BusBar.tpl");
       busbar.set_template_values(busbar_dict);
   }
 
@@ -437,7 +448,7 @@ bool CIMObjectHandler::BusBarSectionHandler(const BusBarSectionPtr busbar_sectio
     busbar.annotation.placement.transformation.rotation = (*diagram_it)->rotation.value;
 
     ctemplate::TemplateDictionary *busbar_dict = dict->AddIncludeDictionary("BUSBAR_DICT");
-    busbar_dict->SetFilename(this->configManager.ts.directory_path + "resource/BusBar.tpl");
+    busbar_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/BusBar.tpl");
     busbar.set_template_values(busbar_dict);
   }
   return true;
@@ -468,7 +479,7 @@ ConnectivityNode CIMObjectHandler::ConnectivityNodeHandler(const TPNodePtr tp_no
 
       if (conn_node.sequenceNumber()==0 || conn_node.sequenceNumber()==1) {
           ctemplate::TemplateDictionary *conn_node_dict = dict->AddIncludeDictionary("CONNECTIVITYNODE_DICT");
-          conn_node_dict->SetFilename(this->configManager.ts.directory_path + "resource/ConnectivityNode.tpl");
+          conn_node_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/ConnectivityNode.tpl");
           conn_node.set_template_values(conn_node_dict);
       }
   }
@@ -482,7 +493,7 @@ ConnectivityNode CIMObjectHandler::ConnectivityNodeHandler(const TPNodePtr tp_no
 
     if (conn_node.sequenceNumber()==0 || conn_node.sequenceNumber()==1) {
       ctemplate::TemplateDictionary *conn_node_dict = dict->AddIncludeDictionary("CONNECTIVITYNODE_DICT");
-      conn_node_dict->SetFilename(this->configManager.ts.directory_path + "resource/ConnectivityNode.tpl");
+      conn_node_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/ConnectivityNode.tpl");
       conn_node.set_template_values(conn_node_dict);
     }
   }
@@ -520,7 +531,7 @@ Slack CIMObjectHandler::ExternalNIHandler(const TPNodePtr tp_node, const Termina
 
       if (slack.sequenceNumber()==0 || slack.sequenceNumber()==1) {
           ctemplate::TemplateDictionary *slack_dict = dict->AddIncludeDictionary("SLACK_DICT");
-          slack_dict->SetFilename(this->configManager.ts.directory_path + "resource/Slack.tpl");
+          slack_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/Slack.tpl");
           slack.set_template_values(slack_dict);
       }
   }
@@ -534,7 +545,7 @@ Slack CIMObjectHandler::ExternalNIHandler(const TPNodePtr tp_node, const Termina
 
     if (slack.sequenceNumber()==0 || slack.sequenceNumber()==1) {
       ctemplate::TemplateDictionary *slack_dict = dict->AddIncludeDictionary("SLACK_DICT");
-      slack_dict->SetFilename(this->configManager.ts.directory_path + "resource/Slack.tpl");
+      slack_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/Slack.tpl");
       slack.set_template_values(slack_dict);
     }
   }
@@ -598,7 +609,7 @@ CIMObjectHandler::ACLineSegmentHandler(const TPNodePtr tp_node, const TerminalPt
 
       if (piline.sequenceNumber()==0 || piline.sequenceNumber()==1) {
           ctemplate::TemplateDictionary *piLine_dict = dict->AddIncludeDictionary("PILINE_DICT");
-          piLine_dict->SetFilename(this->configManager.ts.directory_path + "resource/PiLine.tpl");
+          piLine_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/PiLine.tpl");
           piline.set_template_values(piLine_dict);
       }
   }
@@ -612,7 +623,7 @@ CIMObjectHandler::ACLineSegmentHandler(const TPNodePtr tp_node, const TerminalPt
 
     if (piline.sequenceNumber()==0 || piline.sequenceNumber()==1) {
       ctemplate::TemplateDictionary *piLine_dict = dict->AddIncludeDictionary("PILINE_DICT");
-      piLine_dict->SetFilename(this->configManager.ts.directory_path + "resource/PiLine.tpl");
+      piLine_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/PiLine.tpl");
       piline.set_template_values(piLine_dict);
     }
   }
@@ -702,7 +713,7 @@ Transformer CIMObjectHandler::PowerTransformerHandler(const TPNodePtr tp_node, c
 
       if (trafo.sequenceNumber()==0 || trafo.sequenceNumber()==1) {
           ctemplate::TemplateDictionary *powerTrafo_dict = dict->AddIncludeDictionary("TRANSFORMER_DICT");
-          powerTrafo_dict->SetFilename(this->configManager.ts.directory_path + "resource/Transformer.tpl");
+          powerTrafo_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/Transformer.tpl");
           trafo.set_template_values(powerTrafo_dict);
       }
   }
@@ -718,7 +729,7 @@ Transformer CIMObjectHandler::PowerTransformerHandler(const TPNodePtr tp_node, c
 
     if (trafo.sequenceNumber()==0 || trafo.sequenceNumber()==1) {
       ctemplate::TemplateDictionary *powerTrafo_dict = dict->AddIncludeDictionary("TRANSFORMER_DICT");
-      powerTrafo_dict->SetFilename(this->configManager.ts.directory_path + "resource/Transformer.tpl");
+      powerTrafo_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/Transformer.tpl");
       trafo.set_template_values(powerTrafo_dict);
     }
   }
@@ -806,17 +817,17 @@ PQLoad CIMObjectHandler::EnergyConsumerHandler(const TPNodePtr tp_node, const Te
 
               if (this->configManager.pqload_parameters.type == 1 && pqload.PQLoadType() == PQLoadType::Standard) {
                   ctemplate::TemplateDictionary *pqLoad_dict = dict->AddIncludeDictionary("PQLOAD_DICT");
-                  pqLoad_dict->SetFilename(this->configManager.ts.directory_path + "resource/PQLoad.tpl");
+                  pqLoad_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/PQLoad.tpl");
                   pqload.set_template_values(pqLoad_dict);
 
               } else if(this->configManager.pqload_parameters.type == 2 && pqload.PQLoadType() == PQLoadType::Profile){
                   ctemplate::TemplateDictionary *pqLoad_dict = dict->AddIncludeDictionary("PQLOAD_PROFILE_DICT");
-                  pqLoad_dict->SetFilename(this->configManager.ts.directory_path + "resource/PQLoadProfile.tpl");
+                  pqLoad_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/PQLoadProfile.tpl");
                   pqload.set_template_values(pqLoad_dict);
 
               } else if(this->configManager.pqload_parameters.type == 3 && pqload.PQLoadType() == PQLoadType::NormProfile){
                   ctemplate::TemplateDictionary *pqLoad_dict = dict->AddIncludeDictionary("PQLOAD_NORM_PROFILE_DICT");
-                  pqLoad_dict->SetFilename(this->configManager.ts.directory_path + "resource/PQLoadNormProfile.tpl");
+                  pqLoad_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/PQLoadNormProfile.tpl");
                   pqload.set_template_values(pqLoad_dict);
               }
           }
@@ -836,17 +847,17 @@ PQLoad CIMObjectHandler::EnergyConsumerHandler(const TPNodePtr tp_node, const Te
 
         if (this->configManager.pqload_parameters.type == 1 && pqload.PQLoadType() == PQLoadType::Standard) {
           ctemplate::TemplateDictionary *pqLoad_dict = dict->AddIncludeDictionary("PQLOAD_DICT");
-          pqLoad_dict->SetFilename(this->configManager.ts.directory_path + "resource/PQLoad.tpl");
+          pqLoad_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/PQLoad.tpl");
           pqload.set_template_values(pqLoad_dict);
 
         } else if(this->configManager.pqload_parameters.type == 2 && pqload.PQLoadType() == PQLoadType::Profile){
           ctemplate::TemplateDictionary *pqLoad_dict = dict->AddIncludeDictionary("PQLOAD_PROFILE_DICT");
-          pqLoad_dict->SetFilename(this->configManager.ts.directory_path + "resource/PQLoadProfile.tpl");
+          pqLoad_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/PQLoadProfile.tpl");
           pqload.set_template_values(pqLoad_dict);
 
         } else if(this->configManager.pqload_parameters.type == 3 && pqload.PQLoadType() == PQLoadType::NormProfile){
           ctemplate::TemplateDictionary *pqLoad_dict = dict->AddIncludeDictionary("PQLOAD_NORM_PROFILE_DICT");
-          pqLoad_dict->SetFilename(this->configManager.ts.directory_path + "resource/PQLoadNormProfile.tpl");
+          pqLoad_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/PQLoadNormProfile.tpl");
           pqload.set_template_values(pqLoad_dict);
         }
       }
@@ -883,7 +894,7 @@ WindGenerator CIMObjectHandler::SynchronousMachineHandlerType1(const TPNodePtr t
 
       if (wind_generator.sequenceNumber()==0 || wind_generator.sequenceNumber()==1) {
           ctemplate::TemplateDictionary *wind_generator_dict = dict->AddIncludeDictionary("WINDGENERATOR_DICT");
-          wind_generator_dict->SetFilename(this->configManager.ts.directory_path + "resource/WindGenerator.tpl");
+          wind_generator_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/WindGenerator.tpl");
           wind_generator.set_template_values(wind_generator_dict);
       }
   }
@@ -898,7 +909,7 @@ WindGenerator CIMObjectHandler::SynchronousMachineHandlerType1(const TPNodePtr t
 
     if (wind_generator.sequenceNumber()==0 || wind_generator.sequenceNumber()==1) {
       ctemplate::TemplateDictionary *wind_generator_dict = dict->AddIncludeDictionary("WINDGENERATOR_DICT");
-      wind_generator_dict->SetFilename(this->configManager.ts.directory_path + "resource/WindGenerator.tpl");
+      wind_generator_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/WindGenerator.tpl");
       wind_generator.set_template_values(wind_generator_dict);
     }
   }
@@ -921,9 +932,9 @@ SolarGenerator CIMObjectHandler::SynchronousMachineHandlerType2(const TPNodePtr 
   solar_generator.set_connected(terminal->connected);
   solar_generator.set_sequenceNumber(terminal->sequenceNumber);
 
-  if (this->configManager.wind_gen_parameters.enable) {
-    SET_TRANS_EXTENT(solar_generator,wind_gen);
-    solar_generator.annotation.placement.visible = configManager.wind_gen_parameters.annotation.visible;
+  if (this->configManager.solar_gen_parameters.enable) {
+    SET_TRANS_EXTENT(solar_generator,solar_gen);
+    solar_generator.annotation.placement.visible = configManager.solar_gen_parameters.annotation.visible;
   }
   if(syn_machine->DiagramObjects.begin() == syn_machine->DiagramObjects.end()){
       std::cerr << "Missing Diagram Object for SyncronousMachine2: " << syn_machine->name << " Default Position 0,0 \n";
@@ -931,14 +942,14 @@ SolarGenerator CIMObjectHandler::SynchronousMachineHandlerType2(const TPNodePtr 
       solar_generator.annotation.placement.transformation.origin.y = 0;
       solar_generator.annotation.placement.transformation.rotation = 0;
 
-      if (this->configManager.wind_gen_parameters.enable) {
+      if (this->configManager.solar_gen_parameters.enable) {
           if (this->configManager.household_parameters.use_households == false) {
 
               if (solar_generator.sequenceNumber()==0 || solar_generator.sequenceNumber()==1) {
                   ctemplate::TemplateDictionary *solar_generator_dict = dict->AddIncludeDictionary(
                           "SOLARGENERATOR_DICT");
                   solar_generator_dict->SetFilename(
-                          this->configManager.ts.directory_path + "resource/SolarGenerator.tpl");
+                          this->configManager.ts.directory_path + "resource/" + template_folder + "/SolarGenerator.tpl");
                   solar_generator.set_template_values(solar_generator_dict);
               }
           }
@@ -952,14 +963,14 @@ SolarGenerator CIMObjectHandler::SynchronousMachineHandlerType2(const TPNodePtr 
     solar_generator.annotation.placement.transformation.origin.y = _t_points.yPosition;
     solar_generator.annotation.placement.transformation.rotation = (*diagram_it)->rotation.value;
 
-    if (this->configManager.wind_gen_parameters.enable) {
+    if (this->configManager.solar_gen_parameters.enable) {
       if (this->configManager.household_parameters.use_households == false) {
 
         if (solar_generator.sequenceNumber()==0 || solar_generator.sequenceNumber()==1) {
           ctemplate::TemplateDictionary *solar_generator_dict = dict->AddIncludeDictionary(
               "SOLARGENERATOR_DICT");
           solar_generator_dict->SetFilename(
-              this->configManager.ts.directory_path + "resource/SolarGenerator.tpl");
+              this->configManager.ts.directory_path + "resource/" + template_folder + "/SolarGenerator.tpl");
           solar_generator.set_template_values(solar_generator_dict);
         }
       }
@@ -968,7 +979,7 @@ SolarGenerator CIMObjectHandler::SynchronousMachineHandlerType2(const TPNodePtr 
 
   return solar_generator;
 }
-
+#ifdef SINERGIEN
 Battery CIMObjectHandler::BatteryStorageHandler(const TPNodePtr tp_node, const TerminalPtr terminal, const BatteryStoragePtr battery_storge,
                                                 ctemplate::TemplateDictionary* dict){
 
@@ -979,7 +990,6 @@ Battery CIMObjectHandler::BatteryStorageHandler(const TPNodePtr tp_node, const T
   } else if(this->configManager.pqload_parameters.type == 1){
     battery.set_BatteryType(BatteryType::Type1);
   }
-
   battery.set_name(name_in_modelica(battery_storge->name));
   battery.set_sequenceNumber(terminal->sequenceNumber);
   battery.set_connected(terminal->connected);
@@ -1000,12 +1010,12 @@ Battery CIMObjectHandler::BatteryStorageHandler(const TPNodePtr tp_node, const T
         if (battery.sequenceNumber() == 0 || battery.sequenceNumber() == 1) {
             if (this->configManager.pqload_parameters.type == 0 && battery.BatteryType() == BatteryType::Type0) {
                 ctemplate::TemplateDictionary *battery_dict = dict->AddIncludeDictionary("BATTERY_TYPE0_DICT");
-                battery_dict->SetFilename(this->configManager.ts.directory_path + "resource/BatteryType0.tpl");
+                battery_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/BatteryType0.tpl");
                 battery.set_template_values(battery_dict);
 
             } else if (this->configManager.pqload_parameters.type == 1 && battery.BatteryType() == BatteryType::Type1) {
                 ctemplate::TemplateDictionary *battery_dict = dict->AddIncludeDictionary("BATTERY_TYPE1_DICT");
-                battery_dict->SetFilename(this->configManager.ts.directory_path + "resource/BatteryType1.tpl");
+                battery_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/BatteryType1.tpl");
                 battery.set_template_values(battery_dict);
             }
         }
@@ -1022,12 +1032,12 @@ Battery CIMObjectHandler::BatteryStorageHandler(const TPNodePtr tp_node, const T
     if (battery.sequenceNumber()==0 || battery.sequenceNumber()==1) {
       if (this->configManager.pqload_parameters.type == 0 && battery.BatteryType() == BatteryType::Type0) {
         ctemplate::TemplateDictionary *battery_dict = dict->AddIncludeDictionary("BATTERY_TYPE0_DICT");
-        battery_dict->SetFilename(this->configManager.ts.directory_path + "resource/BatteryType0.tpl");
+        battery_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/BatteryType0.tpl");
         battery.set_template_values(battery_dict);
 
       } else if(this->configManager.pqload_parameters.type == 1 && battery.BatteryType() == BatteryType::Type1){
         ctemplate::TemplateDictionary *battery_dict = dict->AddIncludeDictionary("BATTERY_TYPE1_DICT");
-        battery_dict->SetFilename(this->configManager.ts.directory_path + "resource/BatteryType1.tpl");
+        battery_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/BatteryType1.tpl");
         battery.set_template_values(battery_dict);
       }
     }
@@ -1036,6 +1046,7 @@ Battery CIMObjectHandler::BatteryStorageHandler(const TPNodePtr tp_node, const T
   return battery;
 
 }
+#endif
 
 
 /**
@@ -1048,7 +1059,7 @@ bool CIMObjectHandler::ConnectionHandler(ctemplate::TemplateDictionary *dict) {
   std::cout << "connectionQueue size: " << size << std::endl;
   while (!connectionQueue.empty()) {
     ctemplate::TemplateDictionary *connection_dict = dict->AddIncludeDictionary("CONNECTIONS_DICT");
-    connection_dict->SetFilename(this->configManager.ts.directory_path + "resource/Connections.tpl");
+    connection_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/Connections.tpl");
     if (connectionQueue.front().is_connected()) {
       connection_dict->AddSectionDictionary("CONNECTED_SECTION");
     } else {
