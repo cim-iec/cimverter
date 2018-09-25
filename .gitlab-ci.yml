@@ -47,5 +47,4 @@ mirror:
     - git push --prune https://${GITHUB_USER}:${GITHUB_TOKEN}@github.com/RWTH-ACS/CIMverter release
   only: 
     - release
-    - master
 
