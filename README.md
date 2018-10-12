@@ -12,7 +12,7 @@ In case of **commercial** use you are required to negotiate a proper license mod
 * ctemplate >= 2.3
 * libconifg++
 * as submodule: libcimpp with arabica
-(* Doxygen)
+* (Doxygen)
 
 ## Installation steps for Ubuntu Linux:
 
