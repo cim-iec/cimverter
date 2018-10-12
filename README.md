@@ -11,10 +11,10 @@ In case of **commercial** use you are required to negotiate a proper license mod
 * Boost >= 1.60.0
 * ctemplate >= 2.3
 * libconifg++
-* CIMParser-arabica
-* Doxygen
+* as submodule: libcimpp with arabica
+(* Doxygen)
 
-## Linux/Ubuntu:
+## Installation steps for Ubuntu Linux:
 
 ### Install cmake:
 
@@ -29,39 +29,30 @@ In case of **commercial** use you are required to negotiate a proper license mod
     sudo apt-get update
     sudo apt-get install build-essential g++ python-dev autotools-dev libicu-dev build-essential libbz2-dev libboost-all-dev
 
-
-#### Install ctemplate:
+### Install ctemplate:
 
     sudo apt-get install libctemplate-dev
 
-#### Install Doxygen on Ubuntu:
+### Install Doxygen
 
-	sudo apt-get install doxygen
+    sudo apt-get install doxygen
 
-#### Install Graphviz for document Graph generation
+### Install Graphviz for document Graph generation
 
     sudo apt-get install graphviz
 
-#### Install libconfig++ on Ubuntu:
+### Install libconfig++
 
     sudo apt-get install libconfig++-dev
 
 
 ### To build the CIMverter using cmake by following steps:
 
-#### Get CIM-XML-Parser and GridData submodule:
+#### Get submodules and GridData submodule:
 
     git submodule update --init --recursive --remote
 
-##### if it doesn't work (Release Branch Default)
-
-    git submodule add https://git.rwth-aachen.de/CIM-XML-Interface/CIM-XML-Parser.git
-
-#####  or just copy CIM-XML-Parser project into the CIMverter folder
-
-    see https://git.rwth-aachen.de/CIM-XML-Interface/CIM-XML-Parser
-
-#### Build CIM-XML-Parser and CIMverter
+#### Build CIMverter with all submodules
 
 ##### 1. Create build directory
 
@@ -92,7 +83,7 @@ In case of **commercial** use you are required to negotiate a proper license mod
 ***
 
 ***
-## For developer:
+## For developers:
 
 ### How to update the lastest submodule:
 
@@ -101,7 +92,7 @@ In case of **commercial** use you are required to negotiate a proper license mod
     3. git pull
     4. git submodule update
 
-### Build in Debug Module:
+### Buid in debug mode:
 
     cd build/
     cmake -DCMAKE_BUILD_TYPE=Debug ..

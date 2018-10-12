@@ -1,3 +1,3 @@
 [submodule "libcimpp"]
 	path = libcimpp
-	url = git@git.rwth-aachen.de:acs/core/cim/cimpp/libcimpp.git
+	url = https://github.com/RWTH-ACS/libcimpp.git
