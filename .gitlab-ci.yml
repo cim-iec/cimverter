@@ -42,8 +42,8 @@ test:
 mirror:
   stage: mirror
   script:
-    - git clone --mirror https://${GITLAB_USERCIMVERTER}:${GITLAB_TOKENCIMVERTER}@git.rwth-aachen.de/acs/core/cim/CIM2Mod/ 
-    - cd CIM2Mod.git
+    - git clone --mirror https://${GITLAB_USERCIMVERTER}:${GITLAB_TOKENCIMVERTER}@git.rwth-aachen.de/acs/core/cim/CIMverter/ 
+    - cd CIMverter.git
     - git push --prune https://${GITHUB_USER}:${GITHUB_TOKEN}@github.com/RWTH-ACS/CIMverter release
   only: 
     - release
