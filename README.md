@@ -3,7 +3,7 @@ This tool is used to convert CIM-XML-RDF files into Modelica code.
 
 ## Licensing
 For **non-commercial** use this software is licensed under the terms in the included [LICENSE](LICENSE) file.
-In case of **commercial** use you are required to negotiate a proper license model with the *Institute for Automation of Complex Power Systems* at *RWTH Aachen University*. Therefor please write to [acs-sek@eonerc.rwth-aachen.de](mailto:acs-sek@eonerc.rwth-aachen.de).
+In case of **commercial** use you are required to negotiate a proper license model with the *Institute for Automation of Complex Power Systems* at *RWTH Aachen University*. Therefore please write to [acs-sek@eonerc.rwth-aachen.de](mailto:acs-sek@eonerc.rwth-aachen.de).
 
 ## Dependencies:
 * cmake >=3.5
