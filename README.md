@@ -44,23 +44,26 @@ To use CIMverter, go to `/build/bin` and type `./CIMverter --help` to get the la
 ***
 ## For developers:
 
-### How to update the lastest submodule:
+To update the latest submodules enter the respective submodule directory pull the needed version:
 
     1. cd submodule directory
     2. git checkout master or git checkout release
     3. git pull
     4. git submodule update
 
-### Buid in debug mode:
+
+To use CIMverter in Debug mode, change the build version to Debug:
 
     cd build/
     cmake -DCMAKE_BUILD_TYPE=Debug ..
 
-### Recommand using clion IDE with cmake build system:
+We recommend using clion IDE with cmake build system:
 
 * Makefile will not be used any more because arabica xml parser
 
-### Project Folder may has authority problem on Linux:
+## Known Errors
+### Authority problems
+If your project Folder has authority problems, change the owner of it:
 
     sudo chown -R [your account username] CIMverter/
     
