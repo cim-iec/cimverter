@@ -33,7 +33,7 @@ After installing the dependencies, the simple steps to get and build CIMverter a
 
 The binary will be placed in `/build/bin`
 
-Optionally, one can create the documentation of the project by entering /build and typing:
+Optionally, one can create the documentation of the project by entering `/build` and typing:
 
     make document
     
