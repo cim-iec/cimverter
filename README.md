@@ -1,11 +1,13 @@
-# CIMverter
-This tool is used to convert CIM-XML-RDF files into Modelica code.
+# What is CIMverter
+CIMverter is a tool to convert CIM-XML-RDF files into Modelica code.
+It was developed and is maintained by  the *Institute for Automation of Complex Power Systems* at *RWTH Aachen University*. 
+For further project information, as well as a documentation of the CIM standard, visit *https://www.fein-aachen.org/projects/cimpp/*
 
-## Licensing
 For **non-commercial** use this software is licensed under the terms in the included [LICENSE](LICENSE) file.
 In case of **commercial** use you are required to negotiate a proper license model with the *Institute for Automation of Complex Power Systems* at *RWTH Aachen University*. Therefore please write to [acs-sek@eonerc.rwth-aachen.de](mailto:acs-sek@eonerc.rwth-aachen.de).
 
-## Dependencies:
+## Getting started 
+CIMverter needs the following dependencies to work properly:
 * cmake >=3.5
 * clang
 * Boost >= 1.60.0
@@ -14,72 +16,29 @@ In case of **commercial** use you are required to negotiate a proper license mod
 * as submodule: libcimpp with arabica
 * (Doxygen)
 
-## Installation steps for Ubuntu Linux:
-
-### Install cmake:
-
-    sudo apt-get install cmake
-
-### Install clang:
-
-    sudo apt-get install clang
-
-### Get the required libraries:
+To use CIMverter on a Ubuntu Linux system first install the needed dependencies.
 
     sudo apt-get update
-    sudo apt-get install build-essential g++ python-dev autotools-dev libicu-dev build-essential libbz2-dev libboost-all-dev
+    sudo apt-get install cmake clang build-essential g++ python-dev autotools-dev libicu-dev build-essential libbz2-dev libboost-all-dev libctemplate-dev doxygen graphviz libconfig++-dev
 
-### Install ctemplate:
+After installing the dependencies, the simple steps to get and build CIMverter are: 
 
-    sudo apt-get install libctemplate-dev
-
-### Install Doxygen
-
-    sudo apt-get install doxygen
-
-### Install Graphviz for document Graph generation
-
-    sudo apt-get install graphviz
-
-### Install libconfig++
-
-    sudo apt-get install libconfig++-dev
-
-
-### To build the CIMverter using cmake by following steps:
-
-#### Get submodules and GridData submodule:
-
+    git clone https://github.com/RWTH-ACS/CIMverter.git
+    cd CIMverter
     git submodule update --init --recursive --remote
-
-#### Build CIMverter with all submodules
-
-##### 1. Create build directory
-
     mkdir build
-
-##### 2. Change into build directory and run cmake
-
     cd build/
     cmake -DCMAKE_BUILD_TYPE=Release ..
-
-##### 3. Compile CIMverter and CIMParser
-
     make -j4
 
-##### 4. [optional] Generate doxygen documentation
+The binary will be placed in `/build/bin`
+
+Optionally, one can create the documentation of the project by entering /build and typing:
 
     make document
-
-#### Usage:
-
-    cd build/bin
     
-
-##### Command for Usage help:
-
-    ./CIMverter --help
-
+    
+To use CIMverter, go to `/build/bin` and type `./CIMverter --help` to get the latest usage informations. 
 ***
 
 ***
