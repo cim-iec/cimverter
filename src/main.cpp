@@ -1,8 +1,10 @@
 #include <chrono>
 #include "CIMObjectHandler.h"
 #include <dirent.h>
+#include <regex>
 #include <getopt.h>
 #include <unistd.h>
+
 
 /**
  * Get File size
@@ -114,15 +116,20 @@ int main(int argc, char *argv[]) {
             std::vector<std::string> files;
             if (c == -1)
                 break;
+            std::regex mat(".*xml$");
             switch (c)
             {
                 // Read files with -f
                 case 'f':
                     optind--;
                     for( ;optind < argc && *argv[optind] != '-'; optind++){
-                        std::cout << "CIM-XML file is:" << ( argv[optind] ) << std::endl;
-                        file_size += filesize(( argv[optind] ));
-                        cimModel.addCIMFile(( argv[optind] ));
+                        if(!std::regex_match(argv[optind], mat) ){
+                            std::cout << "is not a .xml file" << ( argv[optind] ) << std::endl;
+                        }else{
+                            std::cout << "CIM-XML file is:" << ( argv[optind] ) << std::endl;
+                            file_size += filesize(( argv[optind] ));
+                            cimModel.addCIMFile(( argv[optind] ));
+                        }
                     }
                     break;
                 // Define the name of the output files with -o
@@ -140,9 +147,13 @@ int main(int argc, char *argv[]) {
 
                     for (auto f : files)
                     {
-                        std::cout << "CIM-XML file is:" << f << std::endl;
-                        file_size += filesize(f.c_str());
-                        cimModel.addCIMFile(f);
+                        if(!std::regex_match(f, mat) ){
+                            std::cout << "is not a .xml file" << ( f )<< " skipping" << std::endl;
+                        }else{
+                            std::cout << "CIM-XML file is:" << f << std::endl;
+                            file_size += filesize(f.c_str());
+                            cimModel.addCIMFile(f);
+                        }
                     }
                     break;
                 case 't':
