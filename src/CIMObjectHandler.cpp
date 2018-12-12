@@ -652,7 +652,7 @@ Transformer CIMObjectHandler::PowerTransformerHandler(const TPNodePtr tp_node, c
        ++transformer_end_it) {
     if ((*transformer_end_it)->endNumber==1) {
 
-      trafo.set_Sr((*transformer_end_it)->ratedS.value*1000000);
+      trafo.set_Sr((*transformer_end_it)->ratedS.value*1000000); // Lukas FIXME TODO: Hier muss wohl configManager.us.active_power_unit ausgewertet werden!
       trafo.set_r((*transformer_end_it)->r.value);
       trafo.set_x((*transformer_end_it)->x.value);
       trafo.set_b((*transformer_end_it)->b.value);

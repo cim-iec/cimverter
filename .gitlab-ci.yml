@@ -23,7 +23,10 @@ test:
   image: ${DOCKER_IMAGE_DEV}:${DOCKER_TAG_DEV}
   tags:
     - docker
+
   before_script:
+    - apt-get update -qq && apt-get install -y -qq git 
+    - git --version
     - rm -rf libcimpp/
     - git clone --recursive https://${GITLAB_USERLIBCIMPP}:${GITLAB_TOKENLIBCIMPP}@git.rwth-aachen.de/acs/core/cim/cimpp/libcimpp.git/ libcimpp/
     - mkdir -p build && cd build
