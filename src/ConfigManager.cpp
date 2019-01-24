@@ -191,6 +191,18 @@ void ConfigManager::getGlobalSettings(){
   catch (const SettingNotFoundException &nfex) {
     std::cerr << "No apply_Neplan_fix settings in configuration file." << std::endl;
   }
+  // TODO: Remove if tested
+  // try {
+  //   this->gs.create_distaix_format = this->cfg.lookup("create_distaix_format");
+  //   if(this->gs.create_distaix_format == true){
+  //     std::cout << "Create distaix format: true" << std::endl;
+  //   } else {
+  //     std::cout << "Create distaix format: false" << std::endl;
+  //   }
+  // }
+  // catch (const SettingNotFoundException &nfex) {
+  //   std::cerr << "No create_distaix_format settings in configuration file." << std::endl;
+  // }
 }
 
 void ConfigManager::getUnitSettings() {

@@ -71,6 +71,20 @@ class PiLine : public ModelicaWorkshop::ModBaseClass {
   double Imax() const {
     return _Imax;
   };
+  
+  void set_node1(std::string node1) {
+    this->_node1 = node1;
+  }
+  std::string node1() const {
+    return _node1;
+  }
+
+  void set_node2(std::string node2) {
+    this->_node2 = node2;
+  }
+  std::string node2() const {
+    return _node2;
+  }
 
   void set_Imax_displayUnit(modelicaUnit Imax_displayUnit) {
     this->_Imax_displayUnit = Imax_displayUnit;
@@ -127,6 +141,8 @@ class PiLine : public ModelicaWorkshop::ModBaseClass {
   double _g = 0;  //Shunt Conductance per km
   double _Sr = 1;  //rated apparent power
   double _Imax = 0;  //maximal current
+  std::string _node1 = ""; //First connection point
+  std::string _node2 = ""; //Second connection point
 
   modelicaUnit _Imax_displayUnit = modelicaUnit::A;
   modelicaUnit _Sr_displayUnit = modelicaUnit::W;

@@ -1,5 +1,6 @@
 #include <chrono>
 #include "CIMObjectHandler.h"
+#include "DistAIXPostprocessor.h"
 #include <dirent.h>
 #include <regex>
 #include <getopt.h>
@@ -178,7 +179,7 @@ int main(int argc, char *argv[]) {
   // Check if verbose mode is used
   if(verbose_flag)
   {
-      std::cout << "verbose activated \n";
+        std::cout << "verbose activated \n";
   }
 
 
@@ -194,6 +195,13 @@ int main(int argc, char *argv[]) {
   ObjectHandler.get_config(template_folder);// Get configuration files
 
   ObjectHandler.ModelicaCodeGenerator(output_file_name, verbose_flag);
+  
+  if(template_folder == "DistAIX_templates") {
+        DistAIXPostprocessor *DP = new DistAIXPostprocessor(template_folder);
+        DP->postprocess(output_file_name);
+        delete DP;
+  }
+  
 
   // Timer stop
   stop = std::chrono::high_resolution_clock::now();

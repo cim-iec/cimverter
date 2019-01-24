@@ -15,6 +15,7 @@ namespace ModelicaWorkshop {
 */
 Connection::Connection(const BusBar* busbar):_port1(busbar->name()),_terminalId1(configManager->cs.BusBarName),_p1(Point{busbar->annotation.placement.transformation.origin.x,
                                                                                            busbar->annotation.placement.transformation.origin.y}) ,_p2(Point{0,0}){
+  _port1Short = _port1;
   _port1.append(".");
   _port1.append(_terminalId1);
 }
@@ -29,6 +30,8 @@ Connection::Connection(const BusBar* busbar, const Slack* slack): Connection(bus
 
   _port2 = slack->name();
   _terminalId2 = Connection::configManager->cs.SlackName;
+  _port2Short = _port2;
+
   _port2.append(".");
   _port2.append(_terminalId2);
   _p2.x = slack->annotation.placement.transformation.origin.x;
@@ -63,6 +66,8 @@ Connection::Connection(const BusBar* busbar, const PQLoad* pq_load): Connection(
 
   _port2 = pq_load->name();
   _terminalId2 = Connection::configManager->cs.PQLoadName;
+  _port2Short = _port2;
+
   _port2.append(".");
   _port2.append(_terminalId2);
 
@@ -95,6 +100,8 @@ Connection::Connection(const BusBar* busbar, const Household* household): Connec
 
   _port2 = household->name();
   _terminalId2 = Connection::configManager->cs.HouseholdName;
+  _port2Short = _port2;
+
   _port2.append(".");
   _port2.append(_terminalId2);
 
@@ -112,6 +119,8 @@ Connection::Connection(const BusBar* busbar, const ConnectivityNode* connectivit
 
   _port2 = connectivity_node->name();
   _terminalId2 = this->configManager->cs.ConnectivityNodeName;
+  _port2Short = _port2;
+
   _port2.append(".");
   _port2.append(_terminalId2);
   _p2.x = connectivity_node->annotation.placement.transformation.origin.x;
@@ -149,6 +158,7 @@ Connection::Connection(const BusBar* busbar, const PiLine* pi_line): Connection(
     _terminalId2 = this->configManager->cs.PiLineName + configManager->cs.PiLineSuffix1;
   }
   _port2 = pi_line->name();
+  _port2Short = _port2;
   _port2.append(".");
   _port2.append(_terminalId2);
 
@@ -184,6 +194,7 @@ Connection::Connection(const BusBar* busbar, const Transformer* transformer): Co
     _terminalId2 = this->configManager->cs.TransformerName + configManager->cs.TransformerSuffix1;
   }
   _port2 = transformer->name();
+  _port2Short = _port2;
   _port2.append(".");
   _port2.append(_terminalId2);
 
@@ -200,6 +211,8 @@ Connection::Connection(const BusBar* busbar, const WindGenerator* wind_generator
 
   _port2 = wind_generator->name();
   _terminalId2 = this->configManager->cs.WindGeneratorName;
+  _port2Short = _port2;
+
   _port2.append(".");
   _port2.append(_terminalId2);
   _p2.x = wind_generator->annotation.placement.transformation.origin.x;
@@ -218,6 +231,8 @@ Connection::Connection(const BusBar* busbar, const SolarGenerator* solar_generat
 
   _port2 = solar_generator->name();
   _terminalId2 = this->configManager->cs.SolarGeneratorName;
+  _port2Short = _port2;
+  
   _port2.append(".");
   _port2.append(_terminalId2);
   _p2.x = solar_generator->annotation.placement.transformation.origin.x;
@@ -236,6 +251,8 @@ Connection::Connection(const BusBar* busbar, const Battery* battery): Connection
 
   _port2 = battery->name();
   _terminalId2 = this->configManager->cs.BatteryName;
+  _port2Short = _port2;
+ 
   _port2.append(".");
   _port2.append(_terminalId2);
   _p2.x = battery->annotation.placement.transformation.origin.x;
@@ -346,6 +363,8 @@ void Connection::draw_connection(ctemplate::TemplateDictionary *dictionary) {
 
   dictionary->SetValue("PORT1", _port1);
   dictionary->SetValue("PORT2", _port2);
+  dictionary->SetValue("PORT1SHORT", _port1Short);
+  dictionary->SetValue("PORT2SHORT", _port2Short);
 
   if(this->is_connected()) {
     dictionary->SetValue("CONNECTION_TYPE", _connection_type);
