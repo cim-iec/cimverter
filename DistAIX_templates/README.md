@@ -32,6 +32,7 @@ ComponentType,parameter_flag1=value,parameter_flag2=value,...
     <br></br>
     - ``distaix.tpl``: Defines the structure of the output file before postprocessing
 
+
 ## DistAIXPostprocessor
 In addition to the new templates, the DistAIXPostprocessor class is needed to assure output files in the correct format.
 - ``void postprocess(...)``: Public function used to initiate postprocessing.
