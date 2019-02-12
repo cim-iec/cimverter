@@ -90,7 +90,7 @@ int main(int argc, char *argv[]) {
         print_argument_help();
     }else{
 
-        output_file_name = "default_output_name";// Push output modelica filesname
+        output_file_name = "default_output_name";// Push output modelica filename
         int c;
 
 
@@ -109,7 +109,7 @@ int main(int argc, char *argv[]) {
             int option_index = 0;
 
             //c = getopt (argc, argv, "abc");
-            c = getopt_long(argc, argv, "a:f:o:t:",long_options, &option_index);
+            c = getopt_long(argc, argv, "o:a:f:t:",long_options, &option_index);
 
             std::vector<std::string> files;
             if (c == -1)
