@@ -114,6 +114,7 @@ int main(int argc, char *argv[]) {
             std::vector<std::string> files;
             if (c == -1)
                 break;
+
             switch (c)
             {
                 // Read files with -f
@@ -132,7 +133,9 @@ int main(int argc, char *argv[]) {
                 // Read folders with -a
                 case 'a':
                     if(!ends_with(optarg, "/")){
-                        files = search_folder(strcat(optarg, "/"));
+                        char* dest;
+                        strcpy(dest, optarg);
+                        files = search_folder(strcat(dest, "/"));
                     }
                     else{
                         files = search_folder(optarg);
