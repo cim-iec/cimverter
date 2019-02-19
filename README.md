@@ -43,7 +43,7 @@ make document
 
 ### Usage
 ```bash
-cd build/bin
+cd bin
 ./CIMverter --help
 ``` 
 
