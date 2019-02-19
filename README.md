@@ -21,7 +21,7 @@ In case of **commercial** use you are required to negotiate a proper license mod
 sudo apt-get update
 sudo apt-get install cmake clang build-essential g++ python-dev autotools-dev libicu-dev build-essential libbz2-dev libboost-all-dev libctemplate-dev doxygen graphviz libconfig++-dev
 ```
-### Getting CIMverter
+### Get CIMverter
 ```bash
 git clone --recurse-submodules https://github.com/RWTH-ACS/CIMverter.git
 ```
