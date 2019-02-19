@@ -43,9 +43,9 @@ make document
 ```
 
 ### Usage
-```
-    cd build/bin
-    ./CIMverter --help
+```bash
+cd build/bin
+./CIMverter --help
 ``` 
 
 ***
