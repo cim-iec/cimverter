@@ -14,71 +14,39 @@ In case of **commercial** use you are required to negotiate a proper license mod
 * as submodule: libcimpp with arabica
 * (Doxygen)
 
-## Installation steps for Ubuntu Linux:
+## Installation
 
-### Install cmake:
+### Getting CIMverter
+```bash
+git clone https://github.com/RWTH-ACS/CIMverter.git
+cd CIMverter
+git submodule update --init --recursive --remote
+```
 
-    sudo apt-get install cmake
+### Installation of depenencies
+```bash
+sudo apt-get update
+sudo apt-get install cmake clang build-essential g++ python-dev autotools-dev libicu-dev build-essential libbz2-dev libboost-all-dev libctemplate-dev doxygen graphviz libconfig++-dev
+```
 
-### Install clang:
+### Build CIMverter with all submodules
+```bash
+mkdir build
+cd build/
+cmake -DCMAKE_BUILD_TYPE=Release ..
+make -j4
+```
 
-    sudo apt-get install clang
+### Generate doxygen documentation (optional)
+```bash
+make document
+```
 
-### Get the required libraries:
-
-    sudo apt-get update
-    sudo apt-get install build-essential g++ python-dev autotools-dev libicu-dev build-essential libbz2-dev libboost-all-dev
-
-### Install ctemplate:
-
-    sudo apt-get install libctemplate-dev
-
-### Install Doxygen
-
-    sudo apt-get install doxygen
-
-### Install Graphviz for document Graph generation
-
-    sudo apt-get install graphviz
-
-### Install libconfig++
-
-    sudo apt-get install libconfig++-dev
-
-
-### To build the CIMverter using cmake by following steps:
-
-#### Get submodules and GridData submodule:
-
-    git submodule update --init --recursive --remote
-
-#### Build CIMverter with all submodules
-
-##### 1. Create build directory
-
-    mkdir build
-
-##### 2. Change into build directory and run cmake
-
-    cd build/
-    cmake -DCMAKE_BUILD_TYPE=Release ..
-
-##### 3. Compile CIMverter and CIMParser
-
-    make -j4
-
-##### 4. [optional] Generate doxygen documentation
-
-    make document
-
-#### Usage:
-
+### Usage
+```
     cd build/bin
-    
-
-##### Command for Usage help:
-
     ./CIMverter --help
+``` 
 
 ***
 
