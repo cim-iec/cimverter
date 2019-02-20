@@ -46,7 +46,7 @@ make document
 ## Usage
 
 ### Sample grid
-This will generate a Modelica system model file `CIGRE.mo` which can be simulated based on the [ModPowerSystems](https://git.rwth-aachen.de/acs/public/simulation/modpowersystems) library..
+This will generate a Modelica system model file `CIGRE.mo` which can be simulated based on the [ModPowerSystems](https://git.rwth-aachen.de/acs/public/simulation/modpowersystems) library.
 ```bash
 cd bin
 ./CIMverter -a ../../samples/CIGRE_MV_Rudion_With_LoadFlow_Results/ -o CIGRE
