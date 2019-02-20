@@ -16,7 +16,8 @@ In case of **commercial** use you are required to negotiate a proper license mod
 * as submodule: libcimpp with arabica
 * (Doxygen)
 
-## Installation
+
+## Getting started
 
 ### Installation of depenencies
 ```bash
@@ -41,8 +42,11 @@ make -j4
 make document
 ```
 
-### Usage example
-This will generate a Modelica system model file 'CIGRE.mo'  
+
+## Usage
+
+### Sample grid
+This will generate a Modelica system model file `CIGRE.mo` which can be simulated based on the [ModPowerSystems](https://git.rwth-aachen.de/acs/public/simulation/modpowersystems) library..
 ```bash
 cd bin
 ./CIMverter -a ../../samples/CIGRE_MV_Rudion_With_LoadFlow_Results/ -o CIGRE
