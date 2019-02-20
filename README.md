@@ -41,9 +41,15 @@ make -j4
 make document
 ```
 
-### Usage
+### Usage example
+This will generate a Modelica system model file 'CIGRE.mo'  
 ```bash
 cd bin
+./CIMverter -a ../../samples/CIGRE_MV_Rudion_With_LoadFlow_Results/ -o CIGRE
+```
+
+### Help
+```bash
 ./CIMverter --help
 ``` 
 
