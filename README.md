@@ -51,7 +51,7 @@ cd bin
 ``` 
 Second: 
 ```bash
-export CIMVERTER_HOME=your/path/to/build/bin
+export CIMVERTER_HOME=your/path/to/build/bin/
 ./bin/CIMverter --help
 ``` 
 
