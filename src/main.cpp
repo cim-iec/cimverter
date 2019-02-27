@@ -76,6 +76,7 @@ void print_argument_help(){
 }
 
 int main(int argc, char *argv[]) {
+    std::cout << std::getenv("CIMVERTER_HOME")<< std::endl;
     std::string output_file_name;// Arguments for the ObjectHandler
     std::string template_folder = "ModPowerSystems_templates";
 
