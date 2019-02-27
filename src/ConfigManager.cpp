@@ -3,6 +3,7 @@
  *
  */
 
+#include <cstring>
 #include "ConfigManager.h"
 
 ConfigManager::ConfigManager() {
@@ -157,7 +158,15 @@ void ConfigManager::getConnectionNames(){
 
 void ConfigManager::getConfigFiles() {
   try {
-    this->cfg.readFile("config.cfg");         ///for release using CMake
+      std::string cfgName = "config.cfg";
+      if (std::getenv("CIMVERTER_HOME") != NULL){
+
+          const char* CIMVERTER_HOME = std::getenv("CIMVERTER_HOME");
+          std::cout << "cfg path"<< CIMVERTER_HOME + cfgName << std::endl;
+          cfgName = CIMVERTER_HOME + cfgName;
+          this->cfg.readFile(cfgName.c_str());         ///for release using CMake
+      }
+      this->cfg.readFile(cfgName.c_str());         ///for release using CMake
     //this->cfg.readFile("build/bin/config.cfg"); ///for developing using makefile
   }
   catch (const FileIOException &fioex) {
@@ -248,28 +257,57 @@ void ConfigManager::getUnitSettings() {
 /// Get files' path from config.cfg
 ///
 void ConfigManager::getFilesSettings() {
-  std::cout << "----------------FilesSettings-------------------" << std::endl;
-  try {
-    this->fs.input_path = this->cfg.lookup("files.input_directory_path").c_str();
-    std::cout << "input_directory_path: " << fs.input_path << std::endl;
-  }
-  catch (const SettingNotFoundException &nfex) {
-    std::cerr << "No input_directory_path settings in configuration file." << std::endl;
-  }
-  try {
-    this->fs.output_path = this->cfg.lookup("files.output_directory_path").c_str();
-    std::cout << "output_directory_path: " << fs.output_path << std::endl;
-  }
-  catch (const SettingNotFoundException &nfex) {
-    std::cerr << "No output_directory_path settings in configuration file." << std::endl;
-  }
-  try {
-    this->ts.directory_path = this->cfg.lookup("files.template_directory_path").c_str();
-    std::cout << "template_directory_path: " << ts.directory_path << std::endl;
-  }
-  catch (const SettingNotFoundException &nfex) {
-    std::cerr << "No template_directory_path settings in configuration file." << std::endl;
-  }
+
+    if (std::getenv("CIMVERTER_HOME") != NULL){
+        const char* CIMVERTER_HOME = std::getenv("CIMVERTER_HOME");
+        std::cout << "----------------FilesSettings-------------------" << std::endl;
+        try {
+            this->fs.input_path = this->cfg.lookup("files.input_directory_path").c_str();
+            std::cout << "input_directory_path: " << fs.input_path << std::endl;
+        }
+        catch (const SettingNotFoundException &nfex) {
+            std::cerr << "No input_directory_path settings in configuration file." << std::endl;
+        }
+        try {
+            std::string outputPath = this->cfg.lookup("files.output_directory_path").c_str();
+            this->fs.output_path = CIMVERTER_HOME + outputPath;
+            std::cout << "output_directory_path: " << fs.output_path << std::endl;
+        }
+        catch (const SettingNotFoundException &nfex) {
+            std::cerr << "No output_directory_path settings in configuration file." << std::endl;
+        }
+        try {
+            std::string directoryPath = this->cfg.lookup("files.template_directory_path").c_str();
+            this->ts.directory_path = CIMVERTER_HOME + directoryPath;
+            std::cout << "template_directory_path: " << ts.directory_path << std::endl;
+        }
+        catch (const SettingNotFoundException &nfex) {
+            std::cerr << "No template_directory_path settings in configuration file." << std::endl;
+        }
+    }else{
+        std::cout << "----------------FilesSettings-------------------" << std::endl;
+        try {
+            this->fs.input_path = this->cfg.lookup("files.input_directory_path").c_str();
+            std::cout << "input_directory_path: " << fs.input_path << std::endl;
+        }
+        catch (const SettingNotFoundException &nfex) {
+            std::cerr << "No input_directory_path settings in configuration file." << std::endl;
+        }
+        try {
+            this->fs.output_path = this->cfg.lookup("files.output_directory_path").c_str();
+            std::cout << "output_directory_path: " << fs.output_path << std::endl;
+        }
+        catch (const SettingNotFoundException &nfex) {
+            std::cerr << "No output_directory_path settings in configuration file." << std::endl;
+        }
+        try {
+            this->ts.directory_path = this->cfg.lookup("files.template_directory_path").c_str();
+            std::cout << "template_directory_path: " << ts.directory_path << std::endl;
+        }
+        catch (const SettingNotFoundException &nfex) {
+            std::cerr << "No template_directory_path settings in configuration file." << std::endl;
+        }
+    }
 }
 
 ///

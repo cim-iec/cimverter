@@ -76,10 +76,12 @@ void print_argument_help(){
 }
 
 int main(int argc, char *argv[]) {
-    std::cout << std::getenv("CIMVERTER_HOME")<< std::endl;
+    const char* CIMVERTER_HOME = std::getenv("CIMVERTER_HOME");
+
+    std::cout << "CIMVERTER_HOME : "<< std::getenv("CIMVERTER_HOME")<< std::endl;
     std::string output_file_name;// Arguments for the ObjectHandler
     std::string template_folder = "ModPowerSystems_templates";
-
+    std::cout << "template : "<< template_folder<< std::endl;
     static int verbose_flag = 0;
 
     long file_size;// File size
@@ -162,7 +164,7 @@ int main(int argc, char *argv[]) {
                     }
                     break;
                 case 't':
-                    template_folder = optarg;
+                        template_folder = optarg;
                     break;
                 case '?':
                     std::cerr << "unknown argument " << c << "\n";
