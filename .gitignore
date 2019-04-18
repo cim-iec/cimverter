@@ -10,3 +10,4 @@ obj
 .settings
 .idea
 test/outputs/*
+.vscode/*
