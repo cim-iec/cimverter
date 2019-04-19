@@ -24,6 +24,10 @@ class Transformer : public ModBaseClass {
   Transformer& operator=(const Transformer &);
   virtual ~Transformer();
 
+  void set_tap_pos(double tap_pos){
+    this->tap_pos = tap_pos;
+  }
+
   void set_Vnom1(double Vnom1) {
     this->_Vnom1 = Vnom1;
   };
@@ -142,6 +146,9 @@ class Transformer : public ModBaseClass {
   double _x = 0;
   double _b = 0;
   double _g = 0;
+
+  double tap_pos = 0;
+  double tap_step = 0.1;
 
   modelicaUnit _Vnom1_displayUnit = modelicaUnit::V;
   modelicaUnit _Vnom2_displayUnit = modelicaUnit::V;

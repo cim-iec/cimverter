@@ -4,6 +4,7 @@ It was developed and is maintained by  the *Institute for Automation of Complex 
 For further project information, as well as a documentation of the CIM standard, visit *https://www.fein-aachen.org/projects/*
 
 ## Licensing
+
 For **non-commercial** use, this software is licensed under the terms in the included [LICENSE](LICENSE) file.
 In case of **commercial** use, you are required to negotiate a proper license model with the *Institute for Automation of Complex Power Systems* at *RWTH Aachen University*. Therefore please write to [acs-sek@eonerc.rwth-aachen.de](mailto:acs-sek@eonerc.rwth-aachen.de).
 
@@ -16,8 +17,12 @@ In case of **commercial** use, you are required to negotiate a proper license mo
 * as submodule: libcimpp with arabica
 * (Doxygen)
 
+<<<<<<< HEAD
+## Installation
+=======
 
 ## Getting started
+>>>>>>> release
 
 ### Installation of depenencies
 ```bash
@@ -42,6 +47,11 @@ make -j4
 make document
 ```
 
+<<<<<<< HEAD
+### Usage
+```bash
+cd bin
+=======
 
 ## Usage
 
@@ -54,6 +64,7 @@ cd bin
 
 ### Help
 ```bash
+>>>>>>> release
 ./CIMverter --help
 ``` 
 
@@ -62,23 +73,26 @@ cd bin
 ***
 ## For developers:
 
-### How to update the lastest submodule:
+To update the latest submodules enter the respective submodule directory pull the needed version:
 
     1. cd submodule directory
     2. git checkout master or git checkout release
     3. git pull
     4. git submodule update
 
-### Buid in debug mode:
+
+To use CIMverter in Debug mode, change the build version to Debug:
 
     cd build/
     cmake -DCMAKE_BUILD_TYPE=Debug ..
 
-### Recommand using clion IDE with cmake build system:
+We recommend using clion IDE with cmake build system:
 
 * Makefile will not be used any more because arabica xml parser
 
-### Project Folder may has authority problem on Linux:
+## Known Errors
+### Authority problems
+If your project Folder has authority problems, change the owner of it:
 
     sudo chown -R [your account username] CIMverter/
     

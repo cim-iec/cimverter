@@ -74,6 +74,8 @@ bool Transformer::set_template_values(ctemplate::TemplateDictionary *dictionary)
   dictionary->SetFormattedValue("UKR", "%.5f", this->Ukr());
   dictionary->SetFormattedValue("R", "%.6f", this->r());
   dictionary->SetFormattedValue("X", "%.6f", this->x());
+  dictionary->SetFormattedValue("TAPPOS","%.6f", this->tap_pos);
+  dictionary->SetFormattedValue("TAPSTEP","%.6f", this->tap_step);
 
   this->set_template_annotation_values(dictionary);
 

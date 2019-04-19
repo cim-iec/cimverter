@@ -1,0 +1,1 @@
+{{NAME}},Slack,{{VNOM}}

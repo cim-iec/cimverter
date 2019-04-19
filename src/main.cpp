@@ -1,8 +1,11 @@
 #include <chrono>
 #include "CIMObjectHandler.h"
+#include "DistAIXPostprocessor.h"
 #include <dirent.h>
+#include <regex>
 #include <getopt.h>
 #include <unistd.h>
+
 
 /**
  * Get File size
@@ -73,9 +76,10 @@ void print_argument_help(){
 }
 
 int main(int argc, char *argv[]) {
+    //const char* CIMVERTER_HOME = std::getenv("CIMVERTER_HOME");
     std::string output_file_name;// Arguments for the ObjectHandler
     std::string template_folder = "ModPowerSystems_templates";
-
+    std::cout << "template : "<< template_folder<< std::endl;
     static int verbose_flag = 0;
 
     long file_size;// File size
@@ -114,6 +118,7 @@ int main(int argc, char *argv[]) {
             std::vector<std::string> files;
             if (c == -1)
                 break;
+            std::regex mat(".*xml$");
 
             switch (c)
             {
@@ -121,9 +126,13 @@ int main(int argc, char *argv[]) {
                 case 'f':
                     optind--;
                     for( ;optind < argc && *argv[optind] != '-'; optind++){
-                        std::cout << "CIM-XML file is:" << ( argv[optind] ) << std::endl;
-                        file_size += filesize(( argv[optind] ));
-                        cimModel.addCIMFile(( argv[optind] ));
+                        if(!std::regex_match(argv[optind], mat) ){
+                            std::cout << "is not a .xml file" << ( argv[optind] ) << std::endl;
+                        }else{
+                            std::cout << "CIM-XML file is:" << ( argv[optind] ) << std::endl;
+                            file_size += filesize(( argv[optind] ));
+                            cimModel.addCIMFile(( argv[optind] ));
+                        }
                     }
                     break;
                 // Define the name of the output files with -o
@@ -143,13 +152,17 @@ int main(int argc, char *argv[]) {
 
                     for (auto f : files)
                     {
-                        std::cout << "CIM-XML file is:" << f << std::endl;
-                        file_size += filesize(f.c_str());
-                        cimModel.addCIMFile(f);
+                        if(!std::regex_match(f, mat) ){
+                            std::cout << "is not a .xml file" << ( f )<< " skipping" << std::endl;
+                        }else{
+                            std::cout << "CIM-XML file is:" << f << std::endl;
+                            file_size += filesize(f.c_str());
+                            cimModel.addCIMFile(f);
+                        }
                     }
                     break;
                 case 't':
-                    template_folder = optarg;
+                        template_folder = optarg;
                     break;
                 case '?':
                     std::cerr << "unknown argument " << c << "\n";
@@ -170,7 +183,7 @@ int main(int argc, char *argv[]) {
   // Check if verbose mode is used
   if(verbose_flag)
   {
-      std::cout << "verbose activated \n";
+        std::cout << "verbose activated \n";
   }
 
 
@@ -186,6 +199,13 @@ int main(int argc, char *argv[]) {
   ObjectHandler.get_config(template_folder);// Get configuration files
 
   ObjectHandler.ModelicaCodeGenerator(output_file_name, verbose_flag);
+  
+  if(template_folder == "DistAIX_templates") {
+        DistAIXPostprocessor *DP = new DistAIXPostprocessor(template_folder);
+        DP->postprocess(output_file_name);
+        delete DP;
+  }
+  
 
   // Timer stop
   stop = std::chrono::high_resolution_clock::now();

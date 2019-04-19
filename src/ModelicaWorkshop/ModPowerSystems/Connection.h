@@ -62,7 +62,8 @@ class Connection : public ModBaseClass {
 
  private:
   static ConfigManager *configManager;
-  std::string _port1, _port2;  //port
+  std::string _port1, _port2, _port1Short, _port2Short;  //port (Short versions used for distaix templates)
+
   Point _p1, _p2;
   std::string _terminalId1, _terminalId2;  //terminal
 
