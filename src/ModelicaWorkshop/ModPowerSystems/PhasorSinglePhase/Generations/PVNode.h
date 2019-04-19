@@ -1,16 +1,26 @@
-//
-// Created by achim on 19.04.19.
-//
 
-#ifndef CIMVERTER_PVNODE_H
-#define CIMVERTER_PVNODE_H
+#ifndef SRC_MODELICAWORKSHOP_MODPOWERSYSTEMS_PHASORSINGLEPHASE_GENERATIONS
+#define SRC_MODELICAWORKSHOP_MODPOWERSYSTEMS_PHASORSINGLEPHASE_GENERATIONS
+#include "../../../ModBaseClass.h"
 
+namespace ModPowerSystems {
 
+    namespace PhasorSinglePhase {
 
-class PVNode {
+        namespace Generations {
 
-};
+            class PVNode: public ModBaseClass {
+            public:
+                PVNode();
+                virtual ~PVNode();
 
+                bool set_template_values(ctemplate::TemplateDictionary *dictionary) override;
+            };
 
+        } /* namespace Generations */
 
-#endif //CIMVERTER_PVNODE_H
+    } /* namespace PhasorSinglePhase */
+
+} /* namespace ModPowerSystems */
+
+#endif //SRC_MODELICAWORKSHOP_MODPOWERSYSTEMS_PHASORSINGLEPHASE_GENERATIONS _PVNODE_H
