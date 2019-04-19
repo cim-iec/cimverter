@@ -702,6 +702,7 @@ Transformer CIMObjectHandler::PowerTransformerHandler(const TPNodePtr tp_node, c
       trafo.set_r((*transformer_end_it)->r.value);
       trafo.set_x((*transformer_end_it)->x.value);
       trafo.set_b((*transformer_end_it)->b.value);
+      trafo.set_tap_pos( ((*transformer_end_it)->RatioTapChanger->step - 1) * 1000);
 
       if(this->configManager.us.enable) {
         if (this->configManager.us.voltage_unit == "V") {
