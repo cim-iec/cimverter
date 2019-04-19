@@ -18,8 +18,11 @@ namespace ModPowerSystems {
             bool PVNode::set_template_values(ctemplate::TemplateDictionary *dictionary) {
 
                 dictionary->SetValue("NAME", this->name());
-                this->set_template_annotation_values(dictionary);
+                dictionary->SetFormattedValue("PGEN", "%.3f", this->Pgen());
+                dictionary->SetFormattedValue("VABS", "%.3f", this->Vabs());
+                dictionary->SetFormattedValue("VNOM", "%.3f", this->Vnom());
 
+                this->set_template_annotation_values(dictionary);
                 return true;
             }
 

@@ -10,6 +10,7 @@
 #include "ModPowerSystems/PhasorSinglePhase/Loads/ZLoad.h"
 #include "ModPowerSystems/PhasorSinglePhase/Generations/WindGenerator.h"
 #include "ModPowerSystems/PhasorSinglePhase/Generations/GenericGenerator.h"
+#include "ModPowerSystems/PhasorSinglePhase/Generations/PVNode.h"
 #include "ModPowerSystems/PhasorSinglePhase/Generations/SolarGenerator.h"
 #include "ModPowerSystems/PhasorSinglePhase/Households/Household.h"
 #include "ModPowerSystems/PhasorSinglePhase/Storage/Battery.h"

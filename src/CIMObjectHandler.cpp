@@ -916,57 +916,6 @@ PQLoad CIMObjectHandler::EnergyConsumerHandler(const TPNodePtr tp_node, const Te
 /**
  * ConductingEquipment of Terminal
  * ConductingEquipment cast to SynchronousMachine
- * Convert to WindGenerator in Modelica
- */
-WindGenerator CIMObjectHandler::SynchronousMachineHandlerType1(const TPNodePtr tp_node, const TerminalPtr terminal,
-                                                               const SynMachinePtr syn_machine,
-                                                               ctemplate::TemplateDictionary *dict) {
-  WindGenerator wind_generator;
-
-  wind_generator.set_name(name_in_modelica(syn_machine->name));
-  wind_generator.set_sequenceNumber(terminal->sequenceNumber);
-  wind_generator.set_connected(terminal->connected);
-  wind_generator.annotation.placement.visible = true;
-
-  if (this->configManager.wind_gen_parameters.enable) {
-    SET_TRANS_EXTENT(wind_generator,wind_gen);
-    wind_generator.annotation.placement.visible = configManager.wind_gen_parameters.annotation.visible;
-  }
-
-  if(syn_machine->DiagramObjects.begin() == syn_machine->DiagramObjects.end()){
-      std::cerr << "Missing Diagram Object for SynchronousMachine: " << syn_machine->name << " Default Position 0,0 \n";
-      wind_generator.annotation.placement.transformation.origin.x = 0;
-      wind_generator.annotation.placement.transformation.origin.y = 0;
-      wind_generator.annotation.placement.transformation.rotation = 0;
-
-      if (wind_generator.sequenceNumber()==0 || wind_generator.sequenceNumber()==1) {
-          ctemplate::TemplateDictionary *wind_generator_dict = dict->AddIncludeDictionary("WINDGENERATOR_DICT");
-          wind_generator_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/WindGenerator.tpl");
-          wind_generator.set_template_values(wind_generator_dict);
-      }
-  }
-
-  for (diagram_it = syn_machine->DiagramObjects.begin();
-       diagram_it!=syn_machine->DiagramObjects.end();
-       ++diagram_it) {
-    _t_points = this->calculate_average_position();
-    wind_generator.annotation.placement.transformation.origin.x = _t_points.xPosition;
-    wind_generator.annotation.placement.transformation.origin.y = _t_points.yPosition;
-    wind_generator.annotation.placement.transformation.rotation = (*diagram_it)->rotation.value;
-
-    if (wind_generator.sequenceNumber()==0 || wind_generator.sequenceNumber()==1) {
-      ctemplate::TemplateDictionary *wind_generator_dict = dict->AddIncludeDictionary("WINDGENERATOR_DICT");
-      wind_generator_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/WindGenerator.tpl");
-      wind_generator.set_template_values(wind_generator_dict);
-    }
-  }
-
-  return wind_generator;
-}
-
-/**
- * ConductingEquipment of Terminal
- * ConductingEquipment cast to SynchronousMachine
  * Convert to SolarGenerator in Modelica
  */
 SolarGenerator CIMObjectHandler::SynchronousMachineHandlerType2(const TPNodePtr tp_node, const TerminalPtr terminal,
@@ -1025,6 +974,107 @@ SolarGenerator CIMObjectHandler::SynchronousMachineHandlerType2(const TPNodePtr 
   }
 
   return solar_generator;
+}
+
+/**
+ * ConductingEquipment of Terminal
+ * ConductingEquipment cast to SynchronousMachine
+ * Convert to WindGenerator in Modelica
+ */
+WindGenerator CIMObjectHandler::SynchronousMachineHandlerType1(const TPNodePtr tp_node, const TerminalPtr terminal,
+                                                               const SynMachinePtr syn_machine,
+                                                               ctemplate::TemplateDictionary *dict) {
+    WindGenerator wind_generator;
+
+    wind_generator.set_name(name_in_modelica(syn_machine->name));
+    wind_generator.set_sequenceNumber(terminal->sequenceNumber);
+    wind_generator.set_connected(terminal->connected);
+    wind_generator.annotation.placement.visible = true;
+
+    if (this->configManager.wind_gen_parameters.enable) {
+        SET_TRANS_EXTENT(wind_generator,wind_gen);
+        wind_generator.annotation.placement.visible = configManager.wind_gen_parameters.annotation.visible;
+    }
+
+    if(syn_machine->DiagramObjects.begin() == syn_machine->DiagramObjects.end()){
+        std::cerr << "Missing Diagram Object for SynchronousMachine: " << syn_machine->name << " Default Position 0,0 \n";
+        wind_generator.annotation.placement.transformation.origin.x = 0;
+        wind_generator.annotation.placement.transformation.origin.y = 0;
+        wind_generator.annotation.placement.transformation.rotation = 0;
+
+        if (wind_generator.sequenceNumber()==0 || wind_generator.sequenceNumber()==1) {
+            ctemplate::TemplateDictionary *wind_generator_dict = dict->AddIncludeDictionary("WINDGENERATOR_DICT");
+            wind_generator_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/WindGenerator.tpl");
+            wind_generator.set_template_values(wind_generator_dict);
+        }
+    }
+
+    for (diagram_it = syn_machine->DiagramObjects.begin();
+         diagram_it!=syn_machine->DiagramObjects.end();
+         ++diagram_it) {
+        _t_points = this->calculate_average_position();
+        wind_generator.annotation.placement.transformation.origin.x = _t_points.xPosition;
+        wind_generator.annotation.placement.transformation.origin.y = _t_points.yPosition;
+        wind_generator.annotation.placement.transformation.rotation = (*diagram_it)->rotation.value;
+
+        if (wind_generator.sequenceNumber()==0 || wind_generator.sequenceNumber()==1) {
+            ctemplate::TemplateDictionary *wind_generator_dict = dict->AddIncludeDictionary("WINDGENERATOR_DICT");
+            wind_generator_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/WindGenerator.tpl");
+            wind_generator.set_template_values(wind_generator_dict);
+        }
+    }
+
+    return wind_generator;
+}
+
+
+/**
+ * ConductingEquipment of Terminal
+ * ConductingEquipment cast to SynchronousMachine
+ * Convert to PVNode in Modelica
+ */
+PVNode CIMObjectHandler::SynchronousMachineHandlerType0(const TPNodePtr tp_node, const TerminalPtr terminal,
+                                                               const SynMachinePtr syn_machine,
+                                                               ctemplate::TemplateDictionary *dict) {
+    PVNode pv_node;
+
+    pv_node.set_name(name_in_modelica(syn_machine->name));
+    pv_node.set_sequenceNumber(terminal->sequenceNumber);
+    pv_node.set_connected(terminal->connected);
+    pv_node.annotation.placement.visible = true;
+    pv_node.setPgen(0);
+    pv_node.setVabs(0);
+    pv_node.setVnom(0);
+
+    if(syn_machine->DiagramObjects.begin() == syn_machine->DiagramObjects.end()){
+        std::cerr << "Missing Diagram Object for SynchronousMachine: " << syn_machine->name << " Default Position 0,0 \n";
+        pv_node.annotation.placement.transformation.origin.x = 0;
+        pv_node.annotation.placement.transformation.origin.y = 0;
+        pv_node.annotation.placement.transformation.rotation = 0;
+
+        if (pv_node.sequenceNumber()==0 || pv_node.sequenceNumber()==1) {
+            ctemplate::TemplateDictionary *pv_node_dict = dict->AddIncludeDictionary("PVNODE_DICT");
+            pv_node_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/PVNode.tpl");
+            pv_node.set_template_values(pv_node_dict);
+        }
+    }
+
+    for (diagram_it = syn_machine->DiagramObjects.begin();
+         diagram_it!=syn_machine->DiagramObjects.end();
+         ++diagram_it) {
+        _t_points = this->calculate_average_position();
+        pv_node.annotation.placement.transformation.origin.x = _t_points.xPosition;
+        pv_node.annotation.placement.transformation.origin.y = _t_points.yPosition;
+        pv_node.annotation.placement.transformation.rotation = (*diagram_it)->rotation.value;
+
+        if (pv_node.sequenceNumber()==0 || pv_node.sequenceNumber()==1) {
+            ctemplate::TemplateDictionary *pv_node_dict = dict->AddIncludeDictionary("PVNODE_DICT");
+            pv_node_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/PVNode.tpl");
+            pv_node.set_template_values(pv_node_dict);
+        }
+    }
+
+    return pv_node;
 }
 #ifdef SINERGIEN
 Battery CIMObjectHandler::BatteryStorageHandler(const TPNodePtr tp_node, const TerminalPtr terminal, const BatteryStoragePtr battery_storge,

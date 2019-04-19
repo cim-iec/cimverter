@@ -70,6 +70,7 @@ class CIMObjectHandler {
   PiLine ACLineSegmentHandler(const TPNodePtr tp_node, const TerminalPtr terminal, const AcLinePtr ac_line, ctemplate::TemplateDictionary* dict, std::string node1Name = "", std::string node2Name = "");
   Transformer PowerTransformerHandler(const TPNodePtr tp_node, const TerminalPtr terminal, const PowerTrafoPtr power_trafo, ctemplate::TemplateDictionary* dict);
   PQLoad EnergyConsumerHandler(const TPNodePtr tp_node, const TerminalPtr terminal, const EnergyConsumerPtr energy_consumer, ctemplate::TemplateDictionary* dict);
+  PVNode SynchronousMachineHandlerType0(const TPNodePtr tp_node, const TerminalPtr terminal, const SynMachinePtr syn_machine, ctemplate::TemplateDictionary* dict);
   WindGenerator SynchronousMachineHandlerType1(const TPNodePtr tp_node, const TerminalPtr terminal, const SynMachinePtr syn_machine, ctemplate::TemplateDictionary* dict);
   SolarGenerator SynchronousMachineHandlerType2(const TPNodePtr tp_node, const TerminalPtr terminal, const SynMachinePtr syn_machine,ctemplate::TemplateDictionary* dict);
 

@@ -22,6 +22,7 @@ typedef ModPowerSystems::PhasorSinglePhase::Lines::RxLine RxLine;
 typedef ModPowerSystems::PhasorSinglePhase::Transformers::Transformer Transformer;
 typedef ModPowerSystems::PhasorSinglePhase::Generations::GenericGenerator GenericGenerator;
 typedef ModPowerSystems::PhasorSinglePhase::Generations::WindGenerator WindGenerator;
+typedef ModPowerSystems::PhasorSinglePhase::Generations::PVNode PVNode;
 typedef ModPowerSystems::PhasorSinglePhase::Generations::SolarGenerator SolarGenerator;
 typedef ModPowerSystems::PhasorSinglePhase::Storage::Battery Battery;
 typedef ModPowerSystems::PhasorSinglePhase::Households::Household Household;
