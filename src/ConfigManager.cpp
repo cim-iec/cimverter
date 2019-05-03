@@ -34,6 +34,7 @@ void ConfigManager::getAllSettings() {
   this->getSolarGeneratorSettings();
   this->getBatterySettings();
   this->getHouseholdSettings();
+  this->getSVSettings();
 }
 
 
@@ -189,6 +190,7 @@ void ConfigManager::getGlobalSettings(){
     std::cerr << "No source_tool_name in configuration file." << std::endl;
   }
   try {
+
     this->gs.apply_Neplan_fix = this->cfg.lookup("apply_Neplan_fix");
     if(this->gs.apply_Neplan_fix == true){
       std::cout << "Apply Neplan Fix: true" << std::endl;
@@ -794,4 +796,30 @@ void ConfigManager::getHouseholdSettings() {
   catch (const SettingNotFoundException &nfex) {
     std::cerr << "UseHouseholds setting mistake in configuration file." << std::endl;
   }
+}
+
+void ConfigManager::getSVSettings(){
+    std::cout << "-------------SVSettings-------------" << std::endl;
+    try {
+        this->svSettings.useSVforEnergyConsumer= this->cfg.lookup("useSVforEnergyConsumer");
+        std::cout << "reading SV for Energy Consumer!" << std::endl;
+    }
+    catch (const SettingNotFoundException &nfex) {
+        std::cerr << "Missing SV for Energyconsumer in config file." << std::endl;
+    }
+    try {
+        this->svSettings.useSVforExternalNetworkInjection= this->cfg.lookup("useSVforExternalNetworkInjection");
+        std::cout << "reading SV for useSVforExternalNetworkInjection!" << std::endl;
+    }
+    catch (const SettingNotFoundException &nfex) {
+        std::cerr << "Missing useSVforExternalNetworkInjection in config file." << std::endl;
+    }
+    try {
+        this->svSettings.useSVforGeneratingUnit= this->cfg.lookup("useSVforGeneratingUnit");
+        std::cout << "reading useSVforGeneratingUnit!" << std::endl;
+    }
+    catch (const SettingNotFoundException &nfex) {
+        std::cerr << "Missing useSVforGeneratingUnit in config file." << std::endl;
+    }
+
 }

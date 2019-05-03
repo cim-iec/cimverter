@@ -47,10 +47,17 @@ CIMObjectHandler::~CIMObjectHandler() {
 
   auto sv_it = svPowerFlowMap.begin();
   auto Opl_it = OpLimitMap.begin();
+  auto svVolt_it = svVoltageMap.begin();
+
 
   while (sv_it != svPowerFlowMap.end())
   {
     svPowerFlowMap.erase(sv_it++);
+  }
+
+  while (svVolt_it != svVoltageMap.end())
+  {
+    svVoltageMap.erase(svVolt_it++);
   }
 
   while (Opl_it != OpLimitMap.end())
@@ -99,19 +106,26 @@ void CIMObjectHandler::print_RTTI(BaseClass *Object) {
 bool CIMObjectHandler::pre_process() {
   ///pre searching loop
   if(this->configManager.gs.apply_Neplan_fix == true){
-    for (BaseClass *Object : this->_CIMObjects) {
-      ///find terminal's svPowerFlow
-      if (auto *sv_powerflow = dynamic_cast<SVPowerFlowPtr>(Object)) {
-        svPowerFlowMap.insert({sv_powerflow->Terminal,sv_powerflow}); //hashmap
-      }
-
       ///find OperationLimitSet for AClineSegment, stored in hashmap
-      else if (auto *op_limitset = dynamic_cast<OpLimitSetPtr>(Object)) {
-        if(auto *ac_line = dynamic_cast<AcLinePtr>(op_limitset->Equipment)){
-          OpLimitMap.insert({ac_line,op_limitset}); //hashmap
-        }
+      for (BaseClass *Object : this->_CIMObjects) {
+          if (auto *op_limitset = dynamic_cast<OpLimitSetPtr>(Object)) {
+              if (auto *ac_line = dynamic_cast<AcLinePtr>(op_limitset->Equipment)) {
+                  OpLimitMap.insert({ac_line, op_limitset}); //hashmap
+              }
+          }
       }
-    }
+  }
+    if(this->configManager.svSettings.useSVforEnergyConsumer == true
+       or this->configManager.svSettings.useSVforGeneratingUnit == true
+       or this->configManager.svSettings.useSVforExternalNetworkInjection == true  ){
+        for (BaseClass *Object : this->_CIMObjects) {
+            ///find terminal's svPowerFlow
+            if (auto *sv_powerflow = dynamic_cast<SVPowerFlowPtr>(Object)) {
+                svPowerFlowMap.insert({sv_powerflow->Terminal,sv_powerflow}); //hashmap
+            }else if ( auto *sv_voltage = dynamic_cast<SVVoltagePtr>(Object)){
+                svVoltageMap.insert({sv_voltage->TopologicalNode, sv_voltage});
+            }
+        }
   }
   return true;
 }
@@ -556,6 +570,7 @@ Slack CIMObjectHandler::ExternalNIHandler(const TPNodePtr tp_node, const Termina
   slack.set_sequenceNumber(terminal->sequenceNumber);
   slack.set_connected(terminal->connected);
   slack.annotation.placement.visible = true;
+
   slack.set_Vnom(tp_node->BaseVoltage->nominalVoltage.value);
   if(this->configManager.us.enable){
     FIX_NEPLAN_VOLTAGE(slack);
@@ -702,6 +717,7 @@ Transformer CIMObjectHandler::PowerTransformerHandler(const TPNodePtr tp_node, c
       trafo.set_r((*transformer_end_it)->r.value);
       trafo.set_x((*transformer_end_it)->x.value);
       trafo.set_b((*transformer_end_it)->b.value);
+
       trafo.set_tap_pos( ((*transformer_end_it)->RatioTapChanger->step - 1) * 1000);
 
       if(this->configManager.us.enable) {
@@ -808,7 +824,7 @@ PQLoad CIMObjectHandler::EnergyConsumerHandler(const TPNodePtr tp_node, const Te
     pqload.set_PQLoadType(PQLoadType::NormProfile);
   }
 
-  if(this->configManager.gs.apply_Neplan_fix == true && svPowerFlowMap[terminal]){
+  if(this->configManager.svSettings.useSVforEnergyConsumer == true && svPowerFlowMap[terminal]){
     pqload.set_Pnom(svPowerFlowMap[terminal]->p.value);
     pqload.set_Qnom(svPowerFlowMap[terminal]->q.value);
   }
@@ -1033,21 +1049,37 @@ WindGenerator CIMObjectHandler::SynchronousMachineHandlerType1(const TPNodePtr t
  * ConductingEquipment cast to SynchronousMachine
  * Convert to PVNode in Modelica
  */
-PVNode CIMObjectHandler::SynchronousMachineHandlerType0(const TPNodePtr tp_node, const TerminalPtr terminal,
-                                                               const SynMachinePtr syn_machine,
+PVNode CIMObjectHandler::GeneratingUnitHandler(const TPNodePtr tp_node, const TerminalPtr terminal,
+                                                               const GeneratingUnitPtr generatingUnit,
                                                                ctemplate::TemplateDictionary *dict) {
     PVNode pv_node;
 
-    pv_node.set_name(name_in_modelica(syn_machine->name));
+    pv_node.set_name(name_in_modelica(generatingUnit->name));
     pv_node.set_sequenceNumber(terminal->sequenceNumber);
     pv_node.set_connected(terminal->connected);
     pv_node.annotation.placement.visible = true;
-    pv_node.setPgen(0);
-    pv_node.setVabs(0);
-    pv_node.setVnom(0);
 
-    if(syn_machine->DiagramObjects.begin() == syn_machine->DiagramObjects.end()){
-        std::cerr << "Missing Diagram Object for SynchronousMachine: " << syn_machine->name << " Default Position 0,0 \n";
+    if(this->configManager.svSettings.useSVforGeneratingUnit == true && svPowerFlowMap[terminal] && svVoltageMap[tp_node]){
+            pv_node.setPgen(svPowerFlowMap[terminal]->p.value);
+            pv_node.setVabs(svVoltageMap[tp_node]->v.value);
+    }else{
+        pv_node.setPgen(generatingUnit->initialP.value);
+        for(rotatingMachine_it = generatingUnit->RotatingMachine.begin();
+            rotatingMachine_it!= generatingUnit->RotatingMachine.end();
+            ++rotatingMachine_it){
+            pv_node.setVabs((*rotatingMachine_it)->RegulatingControl->targetValue);
+        }
+    }
+
+    for(rotatingMachine_it = generatingUnit->RotatingMachine.begin();
+        rotatingMachine_it!= generatingUnit->RotatingMachine.end();
+        ++rotatingMachine_it){
+        pv_node.setVnom((*rotatingMachine_it)->ratedU.value);
+    }
+
+
+    if(generatingUnit->DiagramObjects.begin() == generatingUnit->DiagramObjects.end()){
+        std::cerr << "Missing Diagram Object for SynchronousMachine: " << generatingUnit->name << " Default Position 0,0 \n";
         pv_node.annotation.placement.transformation.origin.x = 0;
         pv_node.annotation.placement.transformation.origin.y = 0;
         pv_node.annotation.placement.transformation.rotation = 0;
@@ -1059,8 +1091,8 @@ PVNode CIMObjectHandler::SynchronousMachineHandlerType0(const TPNodePtr tp_node,
         }
     }
 
-    for (diagram_it = syn_machine->DiagramObjects.begin();
-         diagram_it!=syn_machine->DiagramObjects.end();
+    for (diagram_it = generatingUnit->DiagramObjects.begin();
+         diagram_it!= generatingUnit->DiagramObjects.end();
          ++diagram_it) {
         _t_points = this->calculate_average_position();
         pv_node.annotation.placement.transformation.origin.x = _t_points.xPosition;

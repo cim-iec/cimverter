@@ -35,6 +35,13 @@ typedef  struct ConnectionSettings{
    std::string HouseholdName;
 };
 
+// use SV settings
+typedef struct UseSVSettings{
+    bool useSVforEnergyConsumer;
+    bool useSVforGeneratingUnit;
+    bool useSVforExternalNetworkInjection;
+};
+
 /// global settings in Config.cfg
 typedef struct GlobalSettings{
   std::string source_tool_name;
@@ -183,6 +190,7 @@ class ConfigManager {
 
   virtual ~ConfigManager();
 
+  UseSVSettings svSettings;
   ConnectionSettings cs;
   GlobalSettings  gs;
   UnitSettings us;
@@ -209,6 +217,8 @@ class ConfigManager {
   void getConnectionConfigFiles();
 
   void getAllSettings();
+
+  void getSVSettings();
 
   void getGlobalSettings();
 
