@@ -40,6 +40,7 @@ class Connection : public ModBaseClass {
   Connection(const BusBar* busbar, const Slack* slack);
   Connection(const BusBar* busbar, const PQLoad* pq_load);
   Connection(const BusBar* busbar, const Household* household);
+  Connection(const BusBar* busbar, const PVNode* pvNode);
   Connection(const BusBar* busbar, const PiLine* pi_line);
   Connection(const BusBar* busbar, const Transformer* transformer);
   Connection(const BusBar* busbar, const WindGenerator* wind_generator);

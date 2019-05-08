@@ -155,6 +155,13 @@ void ConfigManager::getConnectionNames(){
     catch (const SettingNotFoundException &nfex) {
         std::cerr << "No system enable settings in configuration file." << std::endl;
     }
+    try {
+        this->cs.PVNodeName = this->conCfg.lookup("connections.PVNode.name").c_str();
+
+    }
+    catch (const SettingNotFoundException &nfex) {
+        std::cerr << "No system enable settings in configuration file." << std::endl;
+    }
 }
 
 void ConfigManager::getConfigFiles() {

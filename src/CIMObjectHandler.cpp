@@ -225,11 +225,11 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::string output_file_name, int v
             connectionQueue.push(conn);
           }
 
-        } else if (auto *syn_machine = dynamic_cast<SynMachinePtr>((*terminal_it)->ConductingEquipment)) {
+        } else if (auto *generating_unit = dynamic_cast<GeneratingUnitPtr >((*terminal_it)->ConductingEquipment)) {
           if (this->configManager.household_parameters.use_households == false ) {
-            SolarGenerator solar_generator = this->SynchronousMachineHandlerType2(tp_node, (*terminal_it),
-                                                                                  syn_machine, dict);
-            Connection conn(&busbar, &solar_generator);
+            PVNode pv_node= this->GeneratingUnitHandler(tp_node, (*terminal_it),
+                                                                                  generating_unit, dict);
+            Connection conn(&busbar, &pv_node);
             connectionQueue.push(conn);
           }
         }
@@ -452,10 +452,10 @@ bool CIMObjectHandler::HouseholdComponetsHandler(const TPNodePtr tp_node, ctempl
       if (auto *energy_consumer = dynamic_cast<EnergyConsumerPtr>((*terminal_it)->ConductingEquipment)) {
         PQLoad pqload = this->EnergyConsumerHandler(tp_node, (*terminal_it), energy_consumer, dict);
         this->pqloadQueue.push(pqload);
-      } else if (auto *syn_machine = dynamic_cast<SynMachinePtr>((*terminal_it)->ConductingEquipment)) {
-        SolarGenerator solar_generator = this->SynchronousMachineHandlerType2(tp_node, (*terminal_it), syn_machine,
+      } else if (auto *generating_unit = dynamic_cast<GeneratingUnitPtr >((*terminal_it)->ConductingEquipment)) {
+        PVNode pv_node = this->GeneratingUnitHandler(tp_node, (*terminal_it), generating_unit,
                                                                               dict);
-        this->solarGeneratorQueue.push(solar_generator);
+        //this->solarGeneratorQueue.push(pv_node);
       }
 
       if (this->pqloadQueue.size()==1 && this->solarGeneratorQueue.size()==1) {
@@ -572,6 +572,11 @@ Slack CIMObjectHandler::ExternalNIHandler(const TPNodePtr tp_node, const Termina
   slack.annotation.placement.visible = true;
 
   slack.set_Vnom(tp_node->BaseVoltage->nominalVoltage.value);
+    if(this->configManager.svSettings.useSVforEnergyConsumer == true && svVoltageMap[tp_node]){
+        slack.set_phiV(svVoltageMap[tp_node]->angle.value);
+    }
+
+
   if(this->configManager.us.enable){
     FIX_NEPLAN_VOLTAGE(slack);
   }
@@ -722,13 +727,13 @@ Transformer CIMObjectHandler::PowerTransformerHandler(const TPNodePtr tp_node, c
 
       if(this->configManager.us.enable) {
         if (this->configManager.us.voltage_unit == "V") {
-          trafo.set_Vnom1((*transformer_end_it)->BaseVoltage->nominalVoltage.value);
+          trafo.set_Vnom1((*transformer_end_it)->ratedU.value);
         } else if (this->configManager.us.voltage_unit == "kV") {
-          trafo.set_Vnom1((*transformer_end_it)->BaseVoltage->nominalVoltage.value*1000);
+          trafo.set_Vnom1((*transformer_end_it)->ratedU.value*1000);
         } else if (this->configManager.us.voltage_unit == "mV") {
-          trafo.set_Vnom1((*transformer_end_it)->BaseVoltage->nominalVoltage.value*0.001);
+          trafo.set_Vnom1((*transformer_end_it)->ratedU.value*0.001);
         } else if (this->configManager.us.voltage_unit == "MV") {
-          trafo.set_Vnom1((*transformer_end_it)->BaseVoltage->nominalVoltage.value*1000000);
+          trafo.set_Vnom1((*transformer_end_it)->ratedU.value*1000000);
         }
       }
 
@@ -750,13 +755,13 @@ Transformer CIMObjectHandler::PowerTransformerHandler(const TPNodePtr tp_node, c
 
       if(this->configManager.us.enable) {
         if (this->configManager.us.voltage_unit == "V") {
-          trafo.set_Vnom2((*transformer_end_it)->BaseVoltage->nominalVoltage.value);
+          trafo.set_Vnom2((*transformer_end_it)->ratedU.value);
         } else if (this->configManager.us.voltage_unit == "kV") {
-          trafo.set_Vnom2((*transformer_end_it)->BaseVoltage->nominalVoltage.value*1000);
+          trafo.set_Vnom2((*transformer_end_it)->ratedU.value*1000);
         } else if (this->configManager.us.voltage_unit == "mV") {
-          trafo.set_Vnom2((*transformer_end_it)->BaseVoltage->nominalVoltage.value*0.001);
+          trafo.set_Vnom2((*transformer_end_it)->ratedU.value*0.001);
         } else if (this->configManager.us.voltage_unit == "MV") {
-          trafo.set_Vnom2((*transformer_end_it)->BaseVoltage->nominalVoltage.value*1000000);
+          trafo.set_Vnom2((*transformer_end_it)->ratedU.value*1000000);
         }
       }
     }
@@ -827,6 +832,9 @@ PQLoad CIMObjectHandler::EnergyConsumerHandler(const TPNodePtr tp_node, const Te
   if(this->configManager.svSettings.useSVforEnergyConsumer == true && svPowerFlowMap[terminal]){
     pqload.set_Pnom(svPowerFlowMap[terminal]->p.value);
     pqload.set_Qnom(svPowerFlowMap[terminal]->q.value);
+  }else{
+      pqload.set_Pnom(energy_consumer->p.value);
+      pqload.set_Qnom(energy_consumer->q.value);
   }
 
   pqload.set_name(name_in_modelica(energy_consumer->name));

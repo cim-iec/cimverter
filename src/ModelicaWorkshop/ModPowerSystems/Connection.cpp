@@ -241,6 +241,26 @@ Connection::Connection(const BusBar* busbar, const SolarGenerator* solar_generat
 
 }
 
+/** \brief Connection between BusBar and PVNode
+ *
+ * Delegate BusBar constructors
+*/
+Connection::Connection(const BusBar* busbar, const PVNode* pv_node): Connection(busbar) {
+
+  this->set_connected(pv_node->is_connected());//electrical connected?
+
+  _port2 = pv_node->name();
+  _terminalId2 = this->configManager->cs.PVNodeName;
+  _port2Short = _port2;
+
+  _port2.append(".");
+  _port2.append(_terminalId2);
+  _p2.x = pv_node->annotation.placement.transformation.origin.x;
+  _p2.y = pv_node->annotation.placement.transformation.origin.y;
+  this->cal_middle_points(pv_node);
+
+}
+
 /** \brief Connection between BusBar and Battery
  *
  * Delegate BusBar constructors

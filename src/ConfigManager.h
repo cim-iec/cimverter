@@ -33,6 +33,7 @@ typedef  struct ConnectionSettings{
    std::string SolarGeneratorName;
    std::string BatteryName;
    std::string HouseholdName;
+   std::string PVNodeName;
 };
 
 // use SV settings

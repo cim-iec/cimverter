@@ -97,6 +97,7 @@ class CIMObjectHandler {
   std::queue<PQLoad> pqloadQueue;
   std::queue<Battery> batteryQueue;
   std::queue<SolarGenerator> solarGeneratorQueue;
+  //std::queue<PVNode> PVQueue;
   std::queue<Household> householdQueue;
   std::queue<Connection> connectionQueue;
   std::unordered_map<TerminalPtr,SVPowerFlowPtr> svPowerFlowMap;
