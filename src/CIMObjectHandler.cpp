@@ -156,7 +156,7 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::string output_file_name, int v
   ///main searching loop
   for (BaseClass *Object : this->_CIMObjects) {
 
-    ///TopologicalNode, convert to BusBar
+
     if (auto *tp_node = dynamic_cast<TPNodePtr>(Object)) {
 
       BusBar busbar = this->TopologicalNodeHandler(tp_node, dict);
@@ -225,12 +225,26 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::string output_file_name, int v
             connectionQueue.push(conn);
           }
 
-        } else if (auto *generating_unit = dynamic_cast<GeneratingUnitPtr >((*terminal_it)->ConductingEquipment)) {
-          if (this->configManager.household_parameters.use_households == false ) {
-            PVNode pv_node= this->GeneratingUnitHandler(tp_node, (*terminal_it),
-                                                                                  generating_unit, dict);
-            Connection conn(&busbar, &pv_node);
-            connectionQueue.push(conn);
+        } else if (auto *synchronous_machine = dynamic_cast<SynMachinePtr >((*terminal_it)->ConductingEquipment)) {
+            for (BaseClass *Object : this->_CIMObjects) {
+
+                ///TopologicalNode, convert to BusBar
+                if(auto *generatingUnit= dynamic_cast<GeneratingUnitPtr >(Object)){
+                    for(rotatingMachine_it = generatingUnit->RotatingMachine.begin();
+                        rotatingMachine_it!= generatingUnit->RotatingMachine.end();
+                        ++rotatingMachine_it){
+                        if((*rotatingMachine_it) == synchronous_machine){
+                            if (this->configManager.household_parameters.use_households == false ) {
+                                PVNode pv_node= this->GeneratingUnitHandler(tp_node, (*terminal_it),
+                                                                            generatingUnit, dict);
+                                Connection conn(&busbar, &pv_node);
+                                connectionQueue.push(conn);
+                            }
+                        }
+                    }
+                }
+
+
           }
         }
         #ifdef SINERGIEN
@@ -309,12 +323,23 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::string output_file_name, int v
           connectionQueue.push(conn);
           solarGeneratorQueue.pop();
         }
+          while (!this->pvNodeQueue.empty()) {
+
+              ctemplate::TemplateDictionary *pv_node_dict = dict->AddIncludeDictionary(
+                      "PVNODE_DICT");
+              pv_node_dict->SetFilename(
+                      this->configManager.ts.directory_path + "resource/" + template_folder + "/PVNode.tpl");
+              pvNodeQueue.front().set_template_values(pv_node_dict);
+              Connection conn(&busbar, &pvNodeQueue.front());
+              connectionQueue.push(conn);
+              pvNodeQueue.pop();
+          }
       }
     }
   }
-
+    std::cout << "before connection handle "<< std::endl;
   this->ConnectionHandler(dict);
-
+    std::cout << "after connection handle "<< std::endl;
   std::string modelica_output;
 
   if(template_folder == "DistAIX_templates") {
@@ -452,11 +477,27 @@ bool CIMObjectHandler::HouseholdComponetsHandler(const TPNodePtr tp_node, ctempl
       if (auto *energy_consumer = dynamic_cast<EnergyConsumerPtr>((*terminal_it)->ConductingEquipment)) {
         PQLoad pqload = this->EnergyConsumerHandler(tp_node, (*terminal_it), energy_consumer, dict);
         this->pqloadQueue.push(pqload);
-      } else if (auto *generating_unit = dynamic_cast<GeneratingUnitPtr >((*terminal_it)->ConductingEquipment)) {
-        PVNode pv_node = this->GeneratingUnitHandler(tp_node, (*terminal_it), generating_unit,
-                                                                              dict);
-        //this->solarGeneratorQueue.push(pv_node);
+      }else if (auto *synchronous_machine = dynamic_cast<SynMachinePtr >((*terminal_it)->ConductingEquipment)) {
+          for (BaseClass *Object : this->_CIMObjects) {
+
+              ///TopologicalNode, convert to BusBar
+              if (auto *generatingUnit = dynamic_cast<GeneratingUnitPtr >(Object)) {
+                  for (rotatingMachine_it = generatingUnit->RotatingMachine.begin();
+                       rotatingMachine_it != generatingUnit->RotatingMachine.end();
+                       ++rotatingMachine_it) {
+                      if ((*rotatingMachine_it) == synchronous_machine) {
+                          if (this->configManager.household_parameters.use_households == false) {
+                              PVNode pv_node = this->GeneratingUnitHandler(tp_node, (*terminal_it),
+                                                                           generatingUnit, dict);
+                              this->pvNodeQueue.push(pv_node);
+
+                          }
+                      }
+                  }
+              }
+          }
       }
+
 
       if (this->pqloadQueue.size()==1 && this->solarGeneratorQueue.size()==1) {
 
@@ -1061,28 +1102,28 @@ PVNode CIMObjectHandler::GeneratingUnitHandler(const TPNodePtr tp_node, const Te
                                                                const GeneratingUnitPtr generatingUnit,
                                                                ctemplate::TemplateDictionary *dict) {
     PVNode pv_node;
-
     pv_node.set_name(name_in_modelica(generatingUnit->name));
     pv_node.set_sequenceNumber(terminal->sequenceNumber);
     pv_node.set_connected(terminal->connected);
     pv_node.annotation.placement.visible = true;
 
     if(this->configManager.svSettings.useSVforGeneratingUnit == true && svPowerFlowMap[terminal] && svVoltageMap[tp_node]){
-            pv_node.setPgen(svPowerFlowMap[terminal]->p.value);
+        std::cout << "something" << std::endl;
+        pv_node.setPgen(svPowerFlowMap[terminal]->p.value);
             pv_node.setVabs(svVoltageMap[tp_node]->v.value);
     }else{
-        pv_node.setPgen(generatingUnit->initialP.value);
-        for(rotatingMachine_it = generatingUnit->RotatingMachine.begin();
-            rotatingMachine_it!= generatingUnit->RotatingMachine.end();
-            ++rotatingMachine_it){
-            pv_node.setVabs((*rotatingMachine_it)->RegulatingControl->targetValue);
+        for(rotatingMachine_it1 = generatingUnit->RotatingMachine.begin();
+            rotatingMachine_it1!= generatingUnit->RotatingMachine.end();
+            ++rotatingMachine_it1){
+            pv_node.setVabs((*rotatingMachine_it1)->RegulatingControl->targetValue);
         }
+        pv_node.setPgen(generatingUnit->initialP.value);
     }
 
-    for(rotatingMachine_it = generatingUnit->RotatingMachine.begin();
-        rotatingMachine_it!= generatingUnit->RotatingMachine.end();
-        ++rotatingMachine_it){
-        pv_node.setVnom((*rotatingMachine_it)->ratedU.value);
+    for(rotatingMachine_it1 = generatingUnit->RotatingMachine.begin();
+        rotatingMachine_it1!= generatingUnit->RotatingMachine.end();
+        ++rotatingMachine_it1){
+        pv_node.setVnom((*rotatingMachine_it1)->ratedU.value);
     }
 
 
@@ -1193,16 +1234,19 @@ bool CIMObjectHandler::ConnectionHandler(ctemplate::TemplateDictionary *dict) {
 
   unsigned int size;
   size = connectionQueue.size();
-  std::cout << "connectionQueue size: " << size << std::endl;
+
   while (!connectionQueue.empty()) {
     ctemplate::TemplateDictionary *connection_dict = dict->AddIncludeDictionary("CONNECTIONS_DICT");
     connection_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/Connections.tpl");
+
     if (connectionQueue.front().is_connected()) {
       connection_dict->AddSectionDictionary("CONNECTED_SECTION");
     } else {
       connection_dict->AddSectionDictionary("UNCONNECTED_SECTION");
     }
+
     connectionQueue.front().draw_connection(connection_dict);
+
     connectionQueue.pop();
   }
 

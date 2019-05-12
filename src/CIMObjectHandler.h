@@ -97,7 +97,7 @@ class CIMObjectHandler {
   std::queue<PQLoad> pqloadQueue;
   std::queue<Battery> batteryQueue;
   std::queue<SolarGenerator> solarGeneratorQueue;
-  //std::queue<PVNode> PVQueue;
+  std::queue<PVNode> pvNodeQueue;
   std::queue<Household> householdQueue;
   std::queue<Connection> connectionQueue;
   std::unordered_map<TerminalPtr,SVPowerFlowPtr> svPowerFlowMap;
@@ -106,6 +106,7 @@ class CIMObjectHandler {
 
   std::list<DiagramObjectPtr>::iterator diagram_it;
   std::list<RotatingMachinePtr>::iterator rotatingMachine_it;
+  std::list<RotatingMachinePtr>::iterator rotatingMachine_it1;
   DiagramObjectPoint calculate_average_position();//using this->diagram_it
 
   std::map<AcLinePtr,std::string> piLineIdMap;

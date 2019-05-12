@@ -135,7 +135,6 @@ Connection::Connection(const BusBar* busbar, const ConnectivityNode* connectivit
 Connection::Connection(const BusBar* busbar, const PiLine* pi_line): Connection(busbar) {
 
   this->set_connected(pi_line->is_connected());//electrical connected?
-
   if (pi_line->sequenceNumber() == 0 || pi_line->sequenceNumber() == 1) {
     _terminalId2 = this->configManager->cs.PiLineName + configManager->cs.PiLineSuffix1;
     if (pi_line->annotation.placement.transformation.rotation == 90 || pi_line->annotation.placement.transformation.rotation == -90) {
@@ -248,7 +247,6 @@ Connection::Connection(const BusBar* busbar, const SolarGenerator* solar_generat
 Connection::Connection(const BusBar* busbar, const PVNode* pv_node): Connection(busbar) {
 
   this->set_connected(pv_node->is_connected());//electrical connected?
-
   _port2 = pv_node->name();
   _terminalId2 = this->configManager->cs.PVNodeName;
   _port2Short = _port2;
