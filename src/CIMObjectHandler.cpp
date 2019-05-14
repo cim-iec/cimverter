@@ -125,8 +125,16 @@ bool CIMObjectHandler::pre_process() {
             }else if ( auto *sv_voltage = dynamic_cast<SVVoltagePtr>(Object)){
                 svVoltageMap.insert({sv_voltage->TopologicalNode, sv_voltage});
             }
+
         }
   }
+  for (BaseClass *Object : this->_CIMObjects){
+      if(auto *generatingUnit = dynamic_cast<GeneratingUnitPtr > (Object)){
+          generatingUnitList.push_back(generatingUnit);
+      }
+  }
+
+
   return true;
 }
 
@@ -226,10 +234,10 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::string output_file_name, int v
           }
 
         } else if (auto *synchronous_machine = dynamic_cast<SynMachinePtr >((*terminal_it)->ConductingEquipment)) {
-            for (BaseClass *Object : this->_CIMObjects) {
+            for (auto *generatingUnit : this->generatingUnitList) {
 
                 ///TopologicalNode, convert to BusBar
-                if(auto *generatingUnit= dynamic_cast<GeneratingUnitPtr >(Object)){
+                //if(auto *generatingUnit= dynamic_cast<GeneratingUnitPtr >(Object)){
                     for(rotatingMachine_it = generatingUnit->RotatingMachine.begin();
                         rotatingMachine_it!= generatingUnit->RotatingMachine.end();
                         ++rotatingMachine_it){
@@ -241,7 +249,7 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::string output_file_name, int v
                                 connectionQueue.push(conn);
                             }
                         }
-                    }
+                  //  }
                 }
 
 
@@ -337,9 +345,9 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::string output_file_name, int v
       }
     }
   }
-    std::cout << "before connection handle "<< std::endl;
+    
   this->ConnectionHandler(dict);
-    std::cout << "after connection handle "<< std::endl;
+
   std::string modelica_output;
 
   if(template_folder == "DistAIX_templates") {
@@ -478,10 +486,10 @@ bool CIMObjectHandler::HouseholdComponetsHandler(const TPNodePtr tp_node, ctempl
         PQLoad pqload = this->EnergyConsumerHandler(tp_node, (*terminal_it), energy_consumer, dict);
         this->pqloadQueue.push(pqload);
       }else if (auto *synchronous_machine = dynamic_cast<SynMachinePtr >((*terminal_it)->ConductingEquipment)) {
-          for (BaseClass *Object : this->_CIMObjects) {
+          for (auto generatingUnit : this->generatingUnitList) {
 
               ///TopologicalNode, convert to BusBar
-              if (auto *generatingUnit = dynamic_cast<GeneratingUnitPtr >(Object)) {
+              //if (auto *generatingUnit = dynamic_cast<GeneratingUnitPtr >(Object)) {
                   for (rotatingMachine_it = generatingUnit->RotatingMachine.begin();
                        rotatingMachine_it != generatingUnit->RotatingMachine.end();
                        ++rotatingMachine_it) {
@@ -493,7 +501,7 @@ bool CIMObjectHandler::HouseholdComponetsHandler(const TPNodePtr tp_node, ctempl
 
                           }
                       }
-                  }
+                  //}
               }
           }
       }
@@ -1108,7 +1116,6 @@ PVNode CIMObjectHandler::GeneratingUnitHandler(const TPNodePtr tp_node, const Te
     pv_node.annotation.placement.visible = true;
 
     if(this->configManager.svSettings.useSVforGeneratingUnit == true && svPowerFlowMap[terminal] && svVoltageMap[tp_node]){
-        std::cout << "something" << std::endl;
         pv_node.setPgen(svPowerFlowMap[terminal]->p.value);
             pv_node.setVabs(svVoltageMap[tp_node]->v.value);
     }else{

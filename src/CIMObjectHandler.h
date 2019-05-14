@@ -100,6 +100,7 @@ class CIMObjectHandler {
   std::queue<PVNode> pvNodeQueue;
   std::queue<Household> householdQueue;
   std::queue<Connection> connectionQueue;
+  std::vector<GeneratingUnitPtr> generatingUnitList;
   std::unordered_map<TerminalPtr,SVPowerFlowPtr> svPowerFlowMap;
   std::unordered_map<TPNodePtr,SVVoltagePtr> svVoltageMap;
   std::unordered_map<AcLinePtr,OpLimitSetPtr> OpLimitMap;
