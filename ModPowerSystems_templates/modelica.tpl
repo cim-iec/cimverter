@@ -22,7 +22,7 @@ annotation(Placement(visible = {{VISIBLE}}, transformation(extent = {{TRANS_EXTE
 {{>WINDGENERATOR_DICT}}
 
 {{>SOLARGENERATOR_DICT}}
-
+{{>PVNODE_DICT}}
 {{>PQLOAD_DICT}}
 
 {{>PQLOAD_PROFILE_DICT}}

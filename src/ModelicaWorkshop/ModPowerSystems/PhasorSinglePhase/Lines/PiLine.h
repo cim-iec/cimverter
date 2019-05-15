@@ -140,7 +140,7 @@ class PiLine : public ModelicaWorkshop::ModBaseClass {
   double _b = 0;  //Shunt Susceptance per km
   double _g = 0;  //Shunt Conductance per km
   double _Sr = 1;  //rated apparent power
-  double _Imax = 0;  //maximal current
+  double _Imax = 100;  //maximal current
   std::string _node1 = ""; //First connection point
   std::string _node2 = ""; //Second connection point
 

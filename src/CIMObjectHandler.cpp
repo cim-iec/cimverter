@@ -345,7 +345,7 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::string output_file_name, int v
       }
     }
   }
-    
+
   this->ConnectionHandler(dict);
 
   std::string modelica_output;
@@ -1135,7 +1135,7 @@ PVNode CIMObjectHandler::GeneratingUnitHandler(const TPNodePtr tp_node, const Te
 
 
     if(generatingUnit->DiagramObjects.begin() == generatingUnit->DiagramObjects.end()){
-        std::cerr << "Missing Diagram Object for SynchronousMachine: " << generatingUnit->name << " Default Position 0,0 \n";
+        std::cerr << "Missing Diagram Object for PVNode: " << generatingUnit->name << " Default Position 0,0 \n";
         pv_node.annotation.placement.transformation.origin.x = 0;
         pv_node.annotation.placement.transformation.origin.y = 0;
         pv_node.annotation.placement.transformation.rotation = 0;

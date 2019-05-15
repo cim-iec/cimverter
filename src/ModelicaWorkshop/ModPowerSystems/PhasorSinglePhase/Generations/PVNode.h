@@ -41,7 +41,32 @@ namespace ModPowerSystems {
 
                 bool set_template_values(ctemplate::TemplateDictionary *dictionary) override;
 
+                void setPgen_displayUnit(modelicaUnit Pgen_displayUnit){
+                    this->_Pgen_displayUnit = Pgen_displayUnit;
+                }
+                modelicaUnit getPgen_displayUnit(){
+                    return this->_Pgen_displayUnit;
+                }
+
+                void setVabs_displayUnit(modelicaUnit Vabs_displayUnit){
+                    this->_Vabs_displayUnit = Vabs_displayUnit;
+                }
+                modelicaUnit getVabs_displayUnit(){
+                    return this->_Vabs_displayUnit;
+                }
+
+                void setVnom_displayUnit(modelicaUnit Vnom_displayUnit){
+                    this->_Vnom_displayUnit = Vnom_displayUnit;
+                }
+                modelicaUnit getVnom_displayUnit(){
+                    return this->_Vnom_displayUnit;
+                }
+
             private:;
+                modelicaUnit _Pgen_displayUnit = modelicaUnit::W;
+                modelicaUnit _Vabs_displayUnit = modelicaUnit::V;
+                modelicaUnit _Vnom_displayUnit = modelicaUnit::V;
+
                 double _Pgen = 0;
                 double _Vabs = 0;
                 double _Vnom = 0;
