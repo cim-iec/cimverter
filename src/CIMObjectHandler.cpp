@@ -1115,9 +1115,10 @@ PVNode CIMObjectHandler::GeneratingUnitHandler(const TPNodePtr tp_node, const Te
     pv_node.set_connected(terminal->connected);
     pv_node.annotation.placement.visible = true;
 
+
     if(this->configManager.svSettings.useSVforGeneratingUnit == true && svPowerFlowMap[terminal] && svVoltageMap[tp_node]){
         pv_node.setPgen(svPowerFlowMap[terminal]->p.value);
-            pv_node.setVabs(svVoltageMap[tp_node]->v.value);
+        pv_node.setVabs(svVoltageMap[tp_node]->v.value);
     }else{
         for(rotatingMachine_it1 = generatingUnit->RotatingMachine.begin();
             rotatingMachine_it1!= generatingUnit->RotatingMachine.end();
