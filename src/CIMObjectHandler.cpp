@@ -236,8 +236,9 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::string output_file_name, int v
         } else if (auto *synchronous_machine = dynamic_cast<SynMachinePtr >((*terminal_it)->ConductingEquipment)) {
             for (auto *generatingUnit : this->generatingUnitList) {
 
-                ///TopologicalNode, convert to BusBar
-                //if(auto *generatingUnit= dynamic_cast<GeneratingUnitPtr >(Object)){
+                /// ATM We only support synchronous machines which are connected to a GeneratingUnit
+                /// They are handled as PVNodes
+
                     for(rotatingMachine_it = generatingUnit->RotatingMachine.begin();
                         rotatingMachine_it!= generatingUnit->RotatingMachine.end();
                         ++rotatingMachine_it){
@@ -249,7 +250,6 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::string output_file_name, int v
                                 connectionQueue.push(conn);
                             }
                         }
-                  //  }
                 }
 
 
@@ -1106,6 +1106,8 @@ WindGenerator CIMObjectHandler::SynchronousMachineHandlerType1(const TPNodePtr t
  * ConductingEquipment cast to SynchronousMachine
  * Convert to PVNode in Modelica
  */
+// TODO synchronous machine übergeben synMachineHandler statt generating unit
+// hashmap für generating unit mapping statt list
 PVNode CIMObjectHandler::GeneratingUnitHandler(const TPNodePtr tp_node, const TerminalPtr terminal,
                                                                const GeneratingUnitPtr generatingUnit,
                                                                ctemplate::TemplateDictionary *dict) {
@@ -1117,21 +1119,79 @@ PVNode CIMObjectHandler::GeneratingUnitHandler(const TPNodePtr tp_node, const Te
 
 
     if(this->configManager.svSettings.useSVforGeneratingUnit == true && svPowerFlowMap[terminal] && svVoltageMap[tp_node]){
-        pv_node.setPgen(svPowerFlowMap[terminal]->p.value);
-        pv_node.setVabs(svVoltageMap[tp_node]->v.value);
+
+        if(this->configManager.us.enable){
+
+            if(this->configManager.us.active_power_unit == "W"){
+                pv_node.setPgen(svPowerFlowMap[terminal]->p.value);
+            } else if(this->configManager.us.active_power_unit == "kW"){
+                pv_node.setPgen(svPowerFlowMap[terminal]->p.value * 1000);
+            } else if(this->configManager.us.active_power_unit == "mW"){
+                pv_node.setPgen(svPowerFlowMap[terminal]->p.value * 0.001);
+            } else if(this->configManager.us.active_power_unit == "MW"){
+                pv_node.setPgen(svPowerFlowMap[terminal]->p.value * 1000000);
+            }
+            if(this->configManager.us.voltage_unit == "V"){
+                pv_node.setVabs(svVoltageMap[tp_node]->v.value);
+            } else if(this->configManager.us.voltage_unit == "kV"){
+                pv_node.setVabs(svVoltageMap[tp_node]->v.value * 1000);
+            } else if(this->configManager.us.voltage_unit == "mV"){
+                pv_node.setVabs(svVoltageMap[tp_node]->v.value * 0.001);
+            } else if(this->configManager.us.voltage_unit == "MV"){
+                pv_node.setVabs(svVoltageMap[tp_node]->v.value * 1000000);
+            }
+
+        }
+
+
     }else{
         for(rotatingMachine_it1 = generatingUnit->RotatingMachine.begin();
             rotatingMachine_it1!= generatingUnit->RotatingMachine.end();
             ++rotatingMachine_it1){
-            pv_node.setVabs((*rotatingMachine_it1)->RegulatingControl->targetValue);
+
+            if(this->configManager.us.enable) {
+
+                if (this->configManager.us.active_power_unit == "W") {
+                    pv_node.setPgen(generatingUnit->initialP.value);
+                } else if (this->configManager.us.active_power_unit == "kW") {
+                    pv_node.setPgen(generatingUnit->initialP.value * 1000);
+                } else if (this->configManager.us.active_power_unit == "mW") {
+                    pv_node.setPgen(generatingUnit->initialP.value * 0.001);
+                } else if (this->configManager.us.active_power_unit == "MW") {
+                    pv_node.setPgen(generatingUnit->initialP.value * 1000000);
+                }
+                if(this->configManager.us.voltage_unit == "V"){
+                    pv_node.setVabs((*rotatingMachine_it1)->RegulatingControl->targetValue);
+                } else if(this->configManager.us.voltage_unit == "kV"){
+                    pv_node.setVabs((*rotatingMachine_it1)->RegulatingControl->targetValue * 1000);
+                } else if(this->configManager.us.voltage_unit == "mV"){
+                    pv_node.setVabs((*rotatingMachine_it1)->RegulatingControl->targetValue * 0.001);
+                } else if(this->configManager.us.voltage_unit == "MV"){
+                    pv_node.setVabs((*rotatingMachine_it1)->RegulatingControl->targetValue * 1000000);
+                }
+            }
+
         }
-        pv_node.setPgen(generatingUnit->initialP.value);
+
     }
 
     for(rotatingMachine_it1 = generatingUnit->RotatingMachine.begin();
         rotatingMachine_it1!= generatingUnit->RotatingMachine.end();
         ++rotatingMachine_it1){
-        pv_node.setVnom((*rotatingMachine_it1)->ratedU.value);
+        if(this->configManager.us.enable){
+
+            if(this->configManager.us.voltage_unit == "V"){
+                pv_node.setVnom((*rotatingMachine_it1)->ratedU.value);
+            } else if(this->configManager.us.voltage_unit == "kV"){
+                pv_node.setVnom((*rotatingMachine_it1)->ratedU.value * 1000);
+            } else if(this->configManager.us.voltage_unit == "mV"){
+                pv_node.setVnom((*rotatingMachine_it1)->ratedU.value * 0.001);
+            } else if(this->configManager.us.voltage_unit == "MV"){
+                pv_node.setVnom((*rotatingMachine_it1)->ratedU.value * 1000000);
+            }
+
+        }
+
     }
 
 
