@@ -178,13 +178,13 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::string output_file_name, int v
       for (terminal_it = tp_node->Terminal.begin(); terminal_it!=tp_node->Terminal.end(); ++terminal_it) {
 
         //ConnectivityNode no use for NEPLAN
-        if (auto *connectivity_node = dynamic_cast<ConnectivityNodePtr>((*terminal_it)->ConnectivityNode)) {
+        /*if (auto *connectivity_node = dynamic_cast<ConnectivityNodePtr>((*terminal_it)->ConnectivityNode)) {
 
           ConnectivityNode connectivity_Node = this->ConnectivityNodeHandler(tp_node, (*terminal_it),
                                                                             connectivity_node, dict);
           Connection conn(&busbar, &connectivity_Node);
           connectionQueue.push(conn);
-        }
+        }*/
 
         if (auto *externalNI = dynamic_cast<ExNIPtr>((*terminal_it)->ConductingEquipment)) {
           Slack slack = this->ExternalNIHandler(tp_node, (*terminal_it), externalNI, dict);
@@ -562,7 +562,7 @@ bool CIMObjectHandler::BusBarSectionHandler(const BusBarSectionPtr busbar_sectio
 /**
  * ConnectivityNode
  * Convert to ConnectivityNode in Modelica
- */
+ *//*
 ConnectivityNode CIMObjectHandler::ConnectivityNodeHandler(const TPNodePtr tp_node, const TerminalPtr terminal,
                                                           const ConnectivityNodePtr connectivity_node,
                                                           ctemplate::TemplateDictionary *dict) {
@@ -605,7 +605,7 @@ ConnectivityNode CIMObjectHandler::ConnectivityNodeHandler(const TPNodePtr tp_no
 
   return conn_node;
 }
-
+*/
 /**
  * ConductingEquipment of Terminal
  * ConductingEquipment cast to ExternalNetworkInjection
