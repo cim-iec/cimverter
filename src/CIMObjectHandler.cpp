@@ -3,6 +3,7 @@
  *
  */
 
+#include <CIMExceptions.hpp>
 #include "CIMObjectHandler.h"
 #include "ModelicaWorkshop/ModPowerSystems/Connection.h"
 
@@ -616,6 +617,12 @@ Slack CIMObjectHandler::ExternalNIHandler(const TPNodePtr tp_node, const Termina
   Slack slack;
 
   slack.set_name(name_in_modelica(externalNI->name));
+  try{
+    slack.set_sequenceNumber(terminal->sequenceNumber);
+  }catch(ReadingUninitializedField& e){
+    slack.set_sequenceNumber(0);
+    std::cout <<"Missing sequence number in terminal sequence number" << terminal << std::endl;
+  }
   slack.set_sequenceNumber(terminal->sequenceNumber);
   slack.set_connected(terminal->connected);
   slack.annotation.placement.visible = true;
@@ -678,7 +685,12 @@ CIMObjectHandler::ACLineSegmentHandler(const TPNodePtr tp_node, const TerminalPt
   piline.set_r(ac_line->r.value/ac_line->length.value);
   piline.set_x(ac_line->x.value/ac_line->length.value);
   piline.set_b(ac_line->bch.value/ac_line->length.value);
-  piline.set_g(ac_line->gch.value/ac_line->length.value);
+  try{
+      piline.set_g(ac_line->gch.value/ac_line->length.value);
+  }catch(ReadingUninitializedField& e){
+      std::cout << "no ghc value set for acLineSegment" << std::endl;
+      piline.set_g(0/ac_line->length.value);
+  }
 
   if (this->configManager.gs.create_distaix_format == true && !node1Name.empty() && !node2Name.empty()) {
     piline.set_node1(node1Name);
@@ -706,7 +718,12 @@ CIMObjectHandler::ACLineSegmentHandler(const TPNodePtr tp_node, const TerminalPt
     }
   }
 
-  piline.set_sequenceNumber(terminal->sequenceNumber);
+  try{
+      piline.set_sequenceNumber(terminal->sequenceNumber);
+  }catch(ReadingUninitializedField& e){
+      piline.set_sequenceNumber(0);
+      std::cout <<"Missing sequence number in terminal sequence number" << terminal << std::endl;
+  }
   piline.set_connected(terminal->connected);
   piline.annotation.placement.visible = true;
 
@@ -757,7 +774,13 @@ Transformer CIMObjectHandler::PowerTransformerHandler(const TPNodePtr tp_node, c
 
   Transformer trafo;
   trafo.set_name(name_in_modelica(power_trafo->name));
-  trafo.set_sequenceNumber(terminal->sequenceNumber);
+  try{
+    trafo.set_sequenceNumber(terminal->sequenceNumber);
+  }catch(ReadingUninitializedField& e){
+    trafo.set_sequenceNumber(0);
+    std::cout <<"Missing sequence number in terminal sequence number" << terminal << std::endl;
+  }
+
   trafo.set_connected(terminal->connected);
   trafo.annotation.placement.visible = true;
 
@@ -914,7 +937,12 @@ PQLoad CIMObjectHandler::EnergyConsumerHandler(const TPNodePtr tp_node, const Te
   }
 
   pqload.set_name(name_in_modelica(energy_consumer->name));
-  pqload.set_sequenceNumber(terminal->sequenceNumber);
+  try{
+    pqload.set_sequenceNumber(terminal->sequenceNumber);
+  }catch(ReadingUninitializedField& e){
+    pqload.set_sequenceNumber(0);
+    std::cout <<"Missing sequence number in terminal sequence number" << terminal << std::endl;
+  }
   pqload.set_connected(terminal->connected);
   pqload.annotation.placement.visible = true;
 
@@ -999,7 +1027,13 @@ SolarGenerator CIMObjectHandler::SynchronousMachineHandlerType2(const TPNodePtr 
   solar_generator.set_name(name_in_modelica(syn_machine->name));
   solar_generator.annotation.placement.visible = true;
   solar_generator.set_connected(terminal->connected);
-  solar_generator.set_sequenceNumber(terminal->sequenceNumber);
+
+  try{
+    solar_generator.set_sequenceNumber(terminal->sequenceNumber);
+  }catch(ReadingUninitializedField& e){
+    solar_generator.set_sequenceNumber(0);
+    std::cout <<"Missing sequence number in terminal sequence number" << terminal << std::endl;
+  }
 
   if (this->configManager.solar_gen_parameters.enable) {
     SET_TRANS_EXTENT(solar_generator,solar_gen);
@@ -1060,7 +1094,12 @@ WindGenerator CIMObjectHandler::SynchronousMachineHandlerType1(const TPNodePtr t
     WindGenerator wind_generator;
 
     wind_generator.set_name(name_in_modelica(syn_machine->name));
-    wind_generator.set_sequenceNumber(terminal->sequenceNumber);
+    try{
+        wind_generator.set_sequenceNumber(terminal->sequenceNumber);
+    }catch(ReadingUninitializedField& e){
+        wind_generator.set_sequenceNumber(0);
+        std::cout <<"Missing sequence number in terminal sequence number" << terminal << std::endl;
+    }
     wind_generator.set_connected(terminal->connected);
     wind_generator.annotation.placement.visible = true;
 
@@ -1113,6 +1152,12 @@ PVNode CIMObjectHandler::GeneratingUnitHandler(const TPNodePtr tp_node, const Te
                                                                ctemplate::TemplateDictionary *dict) {
     PVNode pv_node;
     pv_node.set_name(name_in_modelica(generatingUnit->name));
+    try{
+        pv_node.set_sequenceNumber(terminal->sequenceNumber);
+    }catch(ReadingUninitializedField& e){
+        pv_node.set_sequenceNumber(0);
+        std::cout <<"Missing sequence number in terminal sequence number" << terminal << std::endl;
+    }
     pv_node.set_sequenceNumber(terminal->sequenceNumber);
     pv_node.set_connected(terminal->connected);
     pv_node.annotation.placement.visible = true;
