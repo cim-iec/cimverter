@@ -49,7 +49,18 @@ CIMObjectHandler::~CIMObjectHandler() {
   auto sv_it = svPowerFlowMap.begin();
   auto Opl_it = OpLimitMap.begin();
   auto svVolt_it = svVoltageMap.begin();
+  auto used_it = _UsedObjects.begin();
+  auto generator_it = generatorMap.begin();
 
+
+  while (used_it != _UsedObjects.end())
+    {
+        _UsedObjects.erase(used_it++);
+    }
+  while (generator_it != generatorMap.end())
+    {
+        generatorMap.erase(generator_it++);
+    }
 
   while (sv_it != svPowerFlowMap.end())
   {
@@ -131,7 +142,11 @@ bool CIMObjectHandler::pre_process() {
   }
   for (BaseClass *Object : this->_CIMObjects){
       if(auto *generatingUnit = dynamic_cast<GeneratingUnitPtr > (Object)){
-          generatingUnitList.push_back(generatingUnit);
+          for(rotatingMachine_it = generatingUnit->RotatingMachine.begin();
+              rotatingMachine_it!= generatingUnit->RotatingMachine.end();
+              ++rotatingMachine_it){
+              generatorMap.insert({(*rotatingMachine_it) , generatingUnit});
+          }
       }
   }
 
@@ -161,6 +176,7 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::string output_file_name, int v
 
   ///frist searching loop, to find I_max of ACLineSegment, SvPowerFlow of Terminal for PQLoad
   this->pre_process();
+  std::unordered_map<BaseClass*, ModBaseClass*> copy;
 
   ///main searching loop
   for (BaseClass *Object : this->_CIMObjects) {
@@ -188,73 +204,82 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::string output_file_name, int v
         }*/
 
         if (auto *externalNI = dynamic_cast<ExNIPtr>((*terminal_it)->ConductingEquipment)) {
-          Slack slack = this->ExternalNIHandler(tp_node, (*terminal_it), externalNI, dict);
-          Connection conn(&busbar, &slack);
-          connectionQueue.push(conn);
+            if(_UsedObjects.find(externalNI) != _UsedObjects.end()) {
+            }else{
+                Slack slack = this->ExternalNIHandler(tp_node, (*terminal_it), externalNI, dict);
+                _UsedObjects.insert({externalNI, &slack});
+            }
+            Connection conn(&busbar, (SlackPtr )_UsedObjects[externalNI]);
+            connectionQueue.push(conn);
 
         } else if (auto *power_trafo = dynamic_cast<PowerTrafoPtr>((*terminal_it)->ConductingEquipment)) {
-          Transformer trafo = this->PowerTransformerHandler(tp_node, (*terminal_it), power_trafo, dict);
-          Connection conn(&busbar, &trafo);
-          connectionQueue.push(conn);
+            if(_UsedObjects.find(power_trafo) != _UsedObjects.end()) {
+            }else{
+                Transformer trafo = this->PowerTransformerHandler(tp_node, (*terminal_it), power_trafo, dict);
+                _UsedObjects.insert({power_trafo, &trafo});
+            }
+            Connection conn(&busbar, (TransformerPtr )_UsedObjects[power_trafo]);
+            connectionQueue.push(conn);
 
         } else if (auto *ac_line = dynamic_cast<AcLinePtr>((*terminal_it)->ConductingEquipment)) {
-         
-          if(template_folder == "DistAIX_templates"){
-            /* Changed implementation to enable creation of lossy cables for DistAIX format.
-            * Instead of creating "connections", the name of the busbar is stored when visited for the first time.
-            * When visiting the pi_line for the second time, the name of the current busbar, as well as the name of the busbbar
-            * stored during the first visit are passed as optional arguments to the ACLineSegmentHandler.
-            * This handler was modified in such a way, that those additional arguments are stores as dictionary values
-            * used in the DistAIX templates.
-            */
+            if(_UsedObjects.find(ac_line) != _UsedObjects.end()) {
 
-            auto searchIt = piLineIdMap.find(ac_line);
-            if(searchIt != piLineIdMap.end()) {
-            
-              PiLine pi_line = this->ACLineSegmentHandler(tp_node, (*terminal_it), ac_line, dict, piLineIdMap[ac_line], busbar.name());
+            }else {
 
-            }
-            else {
+                if (template_folder == "DistAIX_templates") {
+                    /* Changed implementation to enable creation of lossy cables for DistAIX format.
+                    * Instead of creating "connections", the name of the busbar is stored when visited for the first time.
+                    * When visiting the pi_line for the second time, the name of the current busbar, as well as the name of the busbbar
+                    * stored during the first visit are passed as optional arguments to the ACLineSegmentHandler.
+                    * This handler was modified in such a way, that those additional arguments are stores as dictionary values
+                    * used in the DistAIX templates.
+                    */
 
-              piLineIdMap[ac_line] = busbar.name();
-              
-            }
-          }
-          else {
-            PiLine pi_line = this->ACLineSegmentHandler(tp_node, (*terminal_it), ac_line, dict);
-            Connection conn(&busbar, &pi_line);
-            connectionQueue.push(conn);
-          }
-          
-        } else if (auto *energy_consumer = dynamic_cast<EnergyConsumerPtr>((*terminal_it)->ConductingEquipment)) {
+                    auto searchIt = piLineIdMap.find(ac_line);
+                    if (searchIt != piLineIdMap.end()) {
 
-          if (this->configManager.household_parameters.use_households == false ) {
-            PQLoad pqload = this->EnergyConsumerHandler(tp_node, (*terminal_it), energy_consumer, dict);
-            Connection conn(&busbar, &pqload);
-            connectionQueue.push(conn);
-          }
+                        PiLine pi_line = this->ACLineSegmentHandler(tp_node, (*terminal_it), ac_line, dict,
+                                                                    piLineIdMap[ac_line], busbar.name());
+                        _UsedObjects.insert({ac_line, &pi_line});
+                    } else {
 
-        } else if (auto *synchronous_machine = dynamic_cast<SynMachinePtr >((*terminal_it)->ConductingEquipment)) {
-            for (auto *generatingUnit : this->generatingUnitList) {
+                        piLineIdMap[ac_line] = busbar.name();
 
-                /// ATM We only support synchronous machines which are connected to a GeneratingUnit
-                /// They are handled as PVNodes
+                    }
+                } else {
 
-                    for(rotatingMachine_it = generatingUnit->RotatingMachine.begin();
-                        rotatingMachine_it!= generatingUnit->RotatingMachine.end();
-                        ++rotatingMachine_it){
-                        if((*rotatingMachine_it) == synchronous_machine){
-                            if (this->configManager.household_parameters.use_households == false ) {
-                                PVNode pv_node= this->GeneratingUnitHandler(tp_node, (*terminal_it),
-                                                                            generatingUnit, dict);
-                                Connection conn(&busbar, &pv_node);
-                                connectionQueue.push(conn);
-                            }
-                        }
+                    PiLine pi_line = this->ACLineSegmentHandler(tp_node, (*terminal_it), ac_line, dict);
+                    _UsedObjects.insert({ac_line, &pi_line});
                 }
+            }
+            Connection conn(&busbar, (PiLinePtr)_UsedObjects[ac_line]);
+            connectionQueue.push(conn);
+        } else if (auto *energy_consumer = dynamic_cast<EnergyConsumerPtr>((*terminal_it)->ConductingEquipment)) {
+            if(_UsedObjects.find(energy_consumer) != _UsedObjects.end()) {
 
+            }else {
 
-          }
+                if (this->configManager.household_parameters.use_households == false) {
+                    PQLoad pqload = this->EnergyConsumerHandler(tp_node, (*terminal_it), energy_consumer, dict);
+                    _UsedObjects.insert({energy_consumer, &pqload});
+                }
+            }
+            Connection conn(&busbar, (PQLoad*)_UsedObjects[energy_consumer]);
+            connectionQueue.push(conn);
+        } else if (auto *synchronous_machine = dynamic_cast<SynMachinePtr >((*terminal_it)->ConductingEquipment)) {
+            if(_UsedObjects.find(synchronous_machine) != _UsedObjects.end()) {
+
+            }else {
+
+                if (this->configManager.household_parameters.use_households == false) {
+                    PVNode pv_node = this->SynchronousMachineHandlerType0(tp_node, (*terminal_it),
+                                                                          synchronous_machine, dict);
+                    _UsedObjects.insert({synchronous_machine,&pv_node});
+
+                }
+                Connection conn(&busbar, (PVNodePtr )_UsedObjects[synchronous_machine]);
+                connectionQueue.push(conn);
+            }
         }
         #ifdef SINERGIEN
         else if (auto *battery_storage = dynamic_cast<BatteryStoragePtr>((*terminal_it)->ConductingEquipment)){
@@ -487,25 +512,17 @@ bool CIMObjectHandler::HouseholdComponetsHandler(const TPNodePtr tp_node, ctempl
         PQLoad pqload = this->EnergyConsumerHandler(tp_node, (*terminal_it), energy_consumer, dict);
         this->pqloadQueue.push(pqload);
       }else if (auto *synchronous_machine = dynamic_cast<SynMachinePtr >((*terminal_it)->ConductingEquipment)) {
-          for (auto generatingUnit : this->generatingUnitList) {
 
-              ///TopologicalNode, convert to BusBar
-              //if (auto *generatingUnit = dynamic_cast<GeneratingUnitPtr >(Object)) {
-                  for (rotatingMachine_it = generatingUnit->RotatingMachine.begin();
-                       rotatingMachine_it != generatingUnit->RotatingMachine.end();
-                       ++rotatingMachine_it) {
-                      if ((*rotatingMachine_it) == synchronous_machine) {
-                          if (this->configManager.household_parameters.use_households == false) {
-                              PVNode pv_node = this->GeneratingUnitHandler(tp_node, (*terminal_it),
-                                                                           generatingUnit, dict);
-                              this->pvNodeQueue.push(pv_node);
+          if (this->configManager.household_parameters.use_households == false) {
+              PVNode pv_node = this->SynchronousMachineHandlerType0(tp_node, (*terminal_it),
+                                                           synchronous_machine, dict);
+              this->pvNodeQueue.push(pv_node);
 
-                          }
-                      }
-                  //}
-              }
           }
+
+
       }
+
 
 
       if (this->pqloadQueue.size()==1 && this->solarGeneratorQueue.size()==1) {
@@ -679,18 +696,26 @@ Slack CIMObjectHandler::ExternalNIHandler(const TPNodePtr tp_node, const Termina
 PiLine
 CIMObjectHandler::ACLineSegmentHandler(const TPNodePtr tp_node, const TerminalPtr terminal, const AcLinePtr ac_line,
                                        ctemplate::TemplateDictionary *dict, std::string node1Name /* = "" */, std::string node2Name /* = "" */) {
+
   PiLine piline;
   piline.set_name(name_in_modelica(ac_line->name));
   piline.set_length(ac_line->length.value);
   piline.set_r(ac_line->r.value/ac_line->length.value);
   piline.set_x(ac_line->x.value/ac_line->length.value);
   piline.set_b(ac_line->bch.value/ac_line->length.value);
-  try{
-      piline.set_g(ac_line->gch.value/ac_line->length.value);
-  }catch(ReadingUninitializedField& e){
-      std::cout << "no ghc value set for acLineSegment" << std::endl;
-      piline.set_g(0/ac_line->length.value);
-  }
+
+    try{
+        piline.set_g(ac_line->gch.value);///ac_line->length.value);
+    }catch(ReadingUninitializedField* e){
+        piline.set_g(0/ac_line->length.value);
+        std::cout<<"Missing gch value" << std::endl;
+    }
+    try{
+        piline.set_sequenceNumber(terminal->sequenceNumber);
+    }catch(ReadingUninitializedField& e){
+        piline.set_sequenceNumber(0);
+        std::cout<<"Missing terminal seqNR" << std::endl;
+    }
 
   if (this->configManager.gs.create_distaix_format == true && !node1Name.empty() && !node2Name.empty()) {
     piline.set_node1(node1Name);
@@ -718,13 +743,13 @@ CIMObjectHandler::ACLineSegmentHandler(const TPNodePtr tp_node, const TerminalPt
     }
   }
 
-  try{
-      piline.set_sequenceNumber(terminal->sequenceNumber);
-  }catch(ReadingUninitializedField& e){
-      piline.set_sequenceNumber(0);
-      std::cout <<"Missing sequence number in terminal sequence number" << terminal << std::endl;
-  }
-  piline.set_connected(terminal->connected);
+
+    try{
+        piline.set_connected(terminal->connected);
+    }catch(ReadingUninitializedField& e){
+        piline.set_connected(1);
+        std::cout<<"Missing connection info in terminal" << terminal << std::endl;
+    }
   piline.annotation.placement.visible = true;
 
   if (this->configManager.piline_parameters.enable) {
@@ -795,7 +820,9 @@ Transformer CIMObjectHandler::PowerTransformerHandler(const TPNodePtr tp_node, c
       trafo.set_x((*transformer_end_it)->x.value);
       trafo.set_b((*transformer_end_it)->b.value);
 
-      trafo.set_tap_pos( ((*transformer_end_it)->RatioTapChanger->step - 1) * 1000);
+      if((*transformer_end_it)->RatioTapChanger != nullptr){
+          trafo.set_tap_pos( ((*transformer_end_it)->RatioTapChanger->step - 1) * 1000);
+      }
 
       if(this->configManager.us.enable) {
         if (this->configManager.us.voltage_unit == "V") {
@@ -905,8 +932,27 @@ PQLoad CIMObjectHandler::EnergyConsumerHandler(const TPNodePtr tp_node, const Te
     pqload.set_Pnom(svPowerFlowMap[terminal]->p.value);
     pqload.set_Qnom(svPowerFlowMap[terminal]->q.value);
   }else{
-      pqload.set_Pnom(energy_consumer->p.value);
-      pqload.set_Qnom(energy_consumer->q.value);
+      try{
+          pqload.set_Pnom(energy_consumer->pfixed.value);
+      }catch(ReadingUninitializedField* e){
+          try{
+              pqload.set_Pnom(energy_consumer->p.value);
+          }catch(ReadingUninitializedField* e1){
+              std::cout <<"reading unititalized Pnom for PQLoad: " << std::endl;
+              pqload.set_Pnom(1);
+          }
+      }
+
+      try{
+          pqload.set_Qnom(energy_consumer->qfixed.value);
+      }catch(ReadingUninitializedField* e){
+          try{
+              pqload.set_Qnom(energy_consumer->q.value);
+          }catch(ReadingUninitializedField* e1){
+              std::cout <<"reading unititalized Qnom for PQLoad: " << std::endl;
+              pqload.set_Qnom(1);
+          }
+      }
   }
 
   pqload.set_name(name_in_modelica(energy_consumer->name));
@@ -1145,23 +1191,38 @@ WindGenerator CIMObjectHandler::SynchronousMachineHandlerType1(const TPNodePtr t
  * ConductingEquipment cast to SynchronousMachine
  * Convert to PVNode in Modelica
  */
-// TODO synchronous machine übergeben synMachineHandler statt generating unit
-// hashmap für generating unit mapping statt list
-PVNode CIMObjectHandler::GeneratingUnitHandler(const TPNodePtr tp_node, const TerminalPtr terminal,
-                                                               const GeneratingUnitPtr generatingUnit,
+
+PVNode CIMObjectHandler::SynchronousMachineHandlerType0(const TPNodePtr tp_node, const TerminalPtr terminal,
+                                                               const SynMachinePtr syn_machine,
                                                                ctemplate::TemplateDictionary *dict) {
     PVNode pv_node;
-    pv_node.set_name(name_in_modelica(generatingUnit->name));
+    pv_node.set_name(name_in_modelica(syn_machine->name));
     try{
         pv_node.set_sequenceNumber(terminal->sequenceNumber);
     }catch(ReadingUninitializedField& e){
         pv_node.set_sequenceNumber(0);
         std::cout <<"Missing sequence number in terminal sequence number" << terminal << std::endl;
     }
-    pv_node.set_sequenceNumber(terminal->sequenceNumber);
     pv_node.set_connected(terminal->connected);
     pv_node.annotation.placement.visible = true;
 
+    if(this->configManager.us.enable){
+        try {
+            if(this->configManager.us.voltage_unit == "V"){
+                pv_node.setVnom((syn_machine)->ratedU.value);
+            } else if(this->configManager.us.voltage_unit == "kV"){
+                pv_node.setVnom((syn_machine)->ratedU.value * 1000);
+            } else if(this->configManager.us.voltage_unit == "mV"){
+                pv_node.setVnom((syn_machine)->ratedU.value * 0.001);
+            } else if(this->configManager.us.voltage_unit == "MV"){
+                pv_node.setVnom((syn_machine)->ratedU.value * 1000000);
+            }
+        }catch(ReadingUninitializedField* e){
+            pv_node.setVnom(1);
+            std::cout << "Unitialized Vnom for PVNode" << std::endl;
+        }
+
+    }
 
     if(this->configManager.svSettings.useSVforGeneratingUnit == true && svPowerFlowMap[terminal] && svVoltageMap[tp_node]){
 
@@ -1190,58 +1251,36 @@ PVNode CIMObjectHandler::GeneratingUnitHandler(const TPNodePtr tp_node, const Te
 
 
     }else{
-        for(rotatingMachine_it1 = generatingUnit->RotatingMachine.begin();
-            rotatingMachine_it1!= generatingUnit->RotatingMachine.end();
-            ++rotatingMachine_it1){
 
-            if(this->configManager.us.enable) {
-
+        if(this->configManager.us.enable) {
                 if (this->configManager.us.active_power_unit == "W") {
-                    pv_node.setPgen(generatingUnit->initialP.value);
+                    pv_node.setPgen(generatorMap[syn_machine]->initialP.value);
                 } else if (this->configManager.us.active_power_unit == "kW") {
-                    pv_node.setPgen(generatingUnit->initialP.value * 1000);
+                    pv_node.setPgen(generatorMap[syn_machine]->initialP.value * 1000);
                 } else if (this->configManager.us.active_power_unit == "mW") {
-                    pv_node.setPgen(generatingUnit->initialP.value * 0.001);
+                    pv_node.setPgen(generatorMap[syn_machine]->initialP.value * 0.001);
                 } else if (this->configManager.us.active_power_unit == "MW") {
-                    pv_node.setPgen(generatingUnit->initialP.value * 1000000);
+                    pv_node.setPgen(generatorMap[syn_machine]->initialP.value * 1000000);
                 }
+            if(syn_machine->RegulatingControl != nullptr){
                 if(this->configManager.us.voltage_unit == "V"){
-                    pv_node.setVabs((*rotatingMachine_it1)->RegulatingControl->targetValue);
+                    pv_node.setVabs((syn_machine)->RegulatingControl->targetValue);
                 } else if(this->configManager.us.voltage_unit == "kV"){
-                    pv_node.setVabs((*rotatingMachine_it1)->RegulatingControl->targetValue * 1000);
+                    pv_node.setVabs((syn_machine)->RegulatingControl->targetValue * 1000);
                 } else if(this->configManager.us.voltage_unit == "mV"){
-                    pv_node.setVabs((*rotatingMachine_it1)->RegulatingControl->targetValue * 0.001);
+                    pv_node.setVabs((syn_machine)->RegulatingControl->targetValue * 0.001);
                 } else if(this->configManager.us.voltage_unit == "MV"){
-                    pv_node.setVabs((*rotatingMachine_it1)->RegulatingControl->targetValue * 1000000);
+                    pv_node.setVabs((syn_machine)->RegulatingControl->targetValue * 1000000);
                 }
+            }else{
+                pv_node.setVabs(pv_node.Vnom());
             }
-
-        }
+       }
 
     }
 
-    for(rotatingMachine_it1 = generatingUnit->RotatingMachine.begin();
-        rotatingMachine_it1!= generatingUnit->RotatingMachine.end();
-        ++rotatingMachine_it1){
-        if(this->configManager.us.enable){
-
-            if(this->configManager.us.voltage_unit == "V"){
-                pv_node.setVnom((*rotatingMachine_it1)->ratedU.value);
-            } else if(this->configManager.us.voltage_unit == "kV"){
-                pv_node.setVnom((*rotatingMachine_it1)->ratedU.value * 1000);
-            } else if(this->configManager.us.voltage_unit == "mV"){
-                pv_node.setVnom((*rotatingMachine_it1)->ratedU.value * 0.001);
-            } else if(this->configManager.us.voltage_unit == "MV"){
-                pv_node.setVnom((*rotatingMachine_it1)->ratedU.value * 1000000);
-            }
-
-        }
-
-    }
-
-
-    if(generatingUnit->DiagramObjects.begin() == generatingUnit->DiagramObjects.end()){
-        std::cerr << "Missing Diagram Object for PVNode: " << generatingUnit->name << " Default Position 0,0 \n";
+    if(syn_machine->DiagramObjects.begin() == syn_machine->DiagramObjects.end()){
+        std::cerr << "Missing Diagram Object for PVNode: " << syn_machine->name << " Default Position 0,0 \n";
         pv_node.annotation.placement.transformation.origin.x = 0;
         pv_node.annotation.placement.transformation.origin.y = 0;
         pv_node.annotation.placement.transformation.rotation = 0;
@@ -1253,8 +1292,8 @@ PVNode CIMObjectHandler::GeneratingUnitHandler(const TPNodePtr tp_node, const Te
         }
     }
 
-    for (diagram_it = generatingUnit->DiagramObjects.begin();
-         diagram_it!= generatingUnit->DiagramObjects.end();
+    for (diagram_it = syn_machine->DiagramObjects.begin();
+         diagram_it!= syn_machine->DiagramObjects.end();
          ++diagram_it) {
         _t_points = this->calculate_average_position();
         pv_node.annotation.placement.transformation.origin.x = _t_points.xPosition;
