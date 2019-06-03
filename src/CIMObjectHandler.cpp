@@ -638,7 +638,7 @@ Slack CIMObjectHandler::ExternalNIHandler(const TPNodePtr tp_node, const Termina
     slack.set_sequenceNumber(terminal->sequenceNumber);
   }catch(ReadingUninitializedField& e){
     slack.set_sequenceNumber(0);
-    std::cout <<"Missing sequence number in terminal sequence number" << terminal << std::endl;
+    std::cout <<"Missing sequence number in terminal sequence number " << terminal << std::endl;
   }
   slack.set_sequenceNumber(terminal->sequenceNumber);
   slack.set_connected(terminal->connected);
@@ -803,7 +803,7 @@ Transformer CIMObjectHandler::PowerTransformerHandler(const TPNodePtr tp_node, c
     trafo.set_sequenceNumber(terminal->sequenceNumber);
   }catch(ReadingUninitializedField& e){
     trafo.set_sequenceNumber(0);
-    std::cout <<"Missing sequence number in terminal sequence number" << terminal << std::endl;
+    std::cout <<"Missing sequence number in terminal sequence number " << terminal << std::endl;
   }
 
   trafo.set_connected(terminal->connected);
@@ -987,7 +987,7 @@ PQLoad CIMObjectHandler::EnergyConsumerHandler(const TPNodePtr tp_node, const Te
     pqload.set_sequenceNumber(terminal->sequenceNumber);
   }catch(ReadingUninitializedField& e){
     pqload.set_sequenceNumber(0);
-    std::cout <<"Missing sequence number in terminal sequence number" << terminal << std::endl;
+    std::cout <<"Missing sequence number in terminal sequence number " << terminal << std::endl;
   }
   pqload.set_connected(terminal->connected);
   pqload.annotation.placement.visible = true;
@@ -1078,7 +1078,7 @@ SolarGenerator CIMObjectHandler::SynchronousMachineHandlerType2(const TPNodePtr 
     solar_generator.set_sequenceNumber(terminal->sequenceNumber);
   }catch(ReadingUninitializedField& e){
     solar_generator.set_sequenceNumber(0);
-    std::cout <<"Missing sequence number in terminal sequence number" << terminal << std::endl;
+    std::cout <<"Missing sequence number in terminal sequence number " << terminal << std::endl;
   }
 
   if (this->configManager.solar_gen_parameters.enable) {
@@ -1144,7 +1144,7 @@ WindGenerator CIMObjectHandler::SynchronousMachineHandlerType1(const TPNodePtr t
         wind_generator.set_sequenceNumber(terminal->sequenceNumber);
     }catch(ReadingUninitializedField& e){
         wind_generator.set_sequenceNumber(0);
-        std::cout <<"Missing sequence number in terminal sequence number" << terminal << std::endl;
+        std::cout <<"Missing sequence number in terminal sequence number " << terminal << std::endl;
     }
     wind_generator.set_connected(terminal->connected);
     wind_generator.annotation.placement.visible = true;
@@ -1201,7 +1201,7 @@ PVNode CIMObjectHandler::SynchronousMachineHandlerType0(const TPNodePtr tp_node,
         pv_node.set_sequenceNumber(terminal->sequenceNumber);
     }catch(ReadingUninitializedField& e){
         pv_node.set_sequenceNumber(0);
-        std::cout <<"Missing sequence number in terminal sequence number" << terminal << std::endl;
+        std::cout <<"Missing sequence number in terminal sequence number " << terminal << std::endl;
     }
     pv_node.set_connected(terminal->connected);
     pv_node.annotation.placement.visible = true;
@@ -1219,7 +1219,7 @@ PVNode CIMObjectHandler::SynchronousMachineHandlerType0(const TPNodePtr tp_node,
             }
         }catch(ReadingUninitializedField* e){
             pv_node.setVnom(1);
-            std::cout << "Unitialized Vnom for PVNode" << std::endl;
+            std::cout << "Unitialized Vnom for Ŝynchronous Machine" << std::endl;
         }
 
     }
@@ -1280,7 +1280,7 @@ PVNode CIMObjectHandler::SynchronousMachineHandlerType0(const TPNodePtr tp_node,
     }
 
     if(syn_machine->DiagramObjects.begin() == syn_machine->DiagramObjects.end()){
-        std::cerr << "Missing Diagram Object for PVNode: " << syn_machine->name << " Default Position 0,0 \n";
+        std::cerr << "Missing Diagram Object for SynchronousMachine: " << syn_machine->name << " Default Position 0,0 \n";
         pv_node.annotation.placement.transformation.origin.x = 0;
         pv_node.annotation.placement.transformation.origin.y = 0;
         pv_node.annotation.placement.transformation.rotation = 0;
