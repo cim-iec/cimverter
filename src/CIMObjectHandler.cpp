@@ -451,14 +451,38 @@ BusBar* CIMObjectHandler::TopologicalNodeHandler(const TPNodePtr tp_node, ctempl
     if (tp_node->DiagramObjects.begin() == tp_node->DiagramObjects.end()){
         std::cerr << "Missing Diagram Object for TpNode:  " << tp_node->name << " Taking average Terminal Position \n";
 
-        // TODO average tp_terminal positions (x,y)
-        busbar->annotation.placement.transformation.origin.x = 0;
-        busbar->annotation.placement.transformation.origin.y = 0;
-        busbar->annotation.placement.transformation.rotation = 0;
+        int counter = 0;
+        float currX = 0;
+        float currY = 0;
 
+        for(std::list<TerminalPtr >::iterator terminal_it = tp_node->Terminal.begin();
+            terminal_it != tp_node->Terminal.end(); terminal_it++) {
+
+            if ((*terminal_it)->DiagramObjects.begin() != (*terminal_it)->DiagramObjects.end()) {
+
+                for(diagram_it = (*terminal_it)->DiagramObjects.begin();
+                    diagram_it!=(*terminal_it)->DiagramObjects.end(); ++diagram_it){
+                    this->calculate_average_position();
+                    currX += _t_points.xPosition;
+                    currY += _t_points.yPosition;
+                    counter += 1;
+                }
+
+            }
+        }
+        if(counter == 0){
+            busbar->annotation.placement.transformation.origin.x = 0;
+            busbar->annotation.placement.transformation.origin.y = 0;
+
+        }else{
+            busbar->annotation.placement.transformation.origin.x = currX / counter;
+            busbar->annotation.placement.transformation.origin.y = currY / counter;
+        }
+        busbar->annotation.placement.transformation.rotation = 0;
         ctemplate::TemplateDictionary *busbar_dict = dict->AddIncludeDictionary("BUSBAR_DICT");
         busbar_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/BusBar.tpl");
         busbar->set_template_values(busbar_dict);
+
     }
   for (diagram_it = tp_node->DiagramObjects.begin(); diagram_it!=tp_node->DiagramObjects.end(); ++diagram_it) {
     _t_points = this->calculate_average_position();
