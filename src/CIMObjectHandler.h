@@ -18,6 +18,7 @@
 #include "ModelicaWorkshop/ModelicaClass.h"
 
 
+
 typedef IEC61970::Base::Core::IdentifiedObject* IdentifiedObjectPtr;
 typedef IEC61970::Base::Wires::BusbarSection* BusBarSectionPtr;
 typedef IEC61970::Base::Topology::TopologicalNode* TPNodePtr;
@@ -43,19 +44,6 @@ typedef IEC61970::Base::OperationalLimits::OperationalLimit* OpLimitPtr;
 typedef IEC61970::Base::Core::IdentifiedObject* IdentifiedObjectPtr;
 typedef ModPowerSystems::PhasorSinglePhase::Connections::BusBar BusBar;
 typedef ModPowerSystems::PhasorSinglePhase::Connections::ConnectivityNode ConnectivityNode;
-typedef ModPowerSystems::PhasorSinglePhase::Sources::Slack *SlackPtr;
-typedef ModPowerSystems::PhasorSinglePhase::Loads::PQLoad *PQLoadPtr;
-typedef ModPowerSystems::PhasorSinglePhase::Loads::ZLoad *ZLoadPtr;
-typedef ModPowerSystems::PhasorSinglePhase::Lines::PiLine *PiLinePtr;
-typedef ModPowerSystems::PhasorSinglePhase::Lines::RxLine *RxLinePtr;
-typedef ModPowerSystems::PhasorSinglePhase::Transformers::Transformer *TransformerPtr;
-typedef ModPowerSystems::PhasorSinglePhase::Generations::GenericGenerator *GenericGeneratorPtr;
-typedef ModPowerSystems::PhasorSinglePhase::Generations::WindGenerator *WindGeneratorPtr;
-typedef ModPowerSystems::PhasorSinglePhase::Generations::PVNode *PVNodePtr;
-typedef ModPowerSystems::PhasorSinglePhase::Generations::SolarGenerator *SolarGeneratorPtr;
-typedef ModPowerSystems::PhasorSinglePhase::Storage::Battery *BatteryPtr;
-typedef ModPowerSystems::PhasorSinglePhase::Households::Household *HouseholdPtr;
-
 #ifdef SINERGIEN
 typedef Sinergien::EnergyGrid::EnergyStorage::BatteryStorage* BatteryStoragePtr;
 #endif
@@ -83,16 +71,16 @@ class CIMObjectHandler {
 
   bool ModelicaCodeGenerator(std::string output_file_name, int verbose_flag);
   bool SystemSettingsHandler(const std::string filename, ctemplate::TemplateDictionary* dict);
-  BusBar TopologicalNodeHandler(const TPNodePtr tp_node, ctemplate::TemplateDictionary* dict);
+  BusBar* TopologicalNodeHandler(const TPNodePtr tp_node, ctemplate::TemplateDictionary* dict);
   bool BusBarSectionHandler(const BusBarSectionPtr busbar_section, BusBar &busbar, ctemplate::TemplateDictionary* dict);
   ConnectivityNode ConnectivityNodeHandler(const TPNodePtr tp_node, const TerminalPtr terminal, const ConnectivityNodePtr connectivity_node, ctemplate::TemplateDictionary* dict);
-  Slack ExternalNIHandler(const TPNodePtr tp_node, const TerminalPtr terminal, const ExNIPtr externalNI, ctemplate::TemplateDictionary* dict);
-  PiLine ACLineSegmentHandler(const TPNodePtr tp_node, const TerminalPtr terminal, const AcLinePtr ac_line, ctemplate::TemplateDictionary* dict, std::string node1Name = "", std::string node2Name = "");
-  Transformer PowerTransformerHandler(const TPNodePtr tp_node, const TerminalPtr terminal, const PowerTrafoPtr power_trafo, ctemplate::TemplateDictionary* dict);
-  PQLoad EnergyConsumerHandler(const TPNodePtr tp_node, const TerminalPtr terminal, const EnergyConsumerPtr energy_consumer, ctemplate::TemplateDictionary* dict);
-  PVNode SynchronousMachineHandlerType0(const TPNodePtr tp_node, const TerminalPtr terminal, const SynMachinePtr syn_machine, ctemplate::TemplateDictionary* dict);
-  WindGenerator SynchronousMachineHandlerType1(const TPNodePtr tp_node, const TerminalPtr terminal, const SynMachinePtr syn_machine, ctemplate::TemplateDictionary* dict);
-  SolarGenerator SynchronousMachineHandlerType2(const TPNodePtr tp_node, const TerminalPtr terminal, const SynMachinePtr syn_machine,ctemplate::TemplateDictionary* dict);
+  Slack* ExternalNIHandler(const TPNodePtr tp_node, const TerminalPtr terminal, const ExNIPtr externalNI, ctemplate::TemplateDictionary* dict);
+  PiLine* ACLineSegmentHandler(const TPNodePtr tp_node, const TerminalPtr terminal, const AcLinePtr ac_line, ctemplate::TemplateDictionary* dict, std::string node1Name = "", std::string node2Name = "");
+  Transformer* PowerTransformerHandler(const TPNodePtr tp_node, const TerminalPtr terminal, const PowerTrafoPtr power_trafo, ctemplate::TemplateDictionary* dict);
+  PQLoad* EnergyConsumerHandler(const TPNodePtr tp_node, const TerminalPtr terminal, const EnergyConsumerPtr energy_consumer, ctemplate::TemplateDictionary* dict);
+  PVNode * SynchronousMachineHandlerType0(const TPNodePtr tp_node, const TerminalPtr terminal, const SynMachinePtr syn_machine, ctemplate::TemplateDictionary* dict);
+  WindGenerator* SynchronousMachineHandlerType1(const TPNodePtr tp_node, const TerminalPtr terminal, const SynMachinePtr syn_machine, ctemplate::TemplateDictionary* dict);
+  SolarGenerator* SynchronousMachineHandlerType2(const TPNodePtr tp_node, const TerminalPtr terminal, const SynMachinePtr syn_machine,ctemplate::TemplateDictionary* dict);
 
 #ifdef SINERGIEN
     Battery BatteryStorageHandler(const TPNodePtr tp_node, const TerminalPtr terminal, const BatteryStoragePtr battery_storge, ctemplate::TemplateDictionary* dict);
@@ -118,6 +106,11 @@ class CIMObjectHandler {
   std::queue<Household> householdQueue;
   std::queue<Connection> connectionQueue;
   std::unordered_map<BaseClass*, ModBaseClass*> _UsedObjects;
+  std::unordered_map<BaseClass*, Slack*> _UsedexternalNI;
+  std::unordered_map<BaseClass*, Transformer*> _UsedPowerTrafo;
+  std::unordered_map<BaseClass*, PiLine*> _UsedAcLine;
+  std::unordered_map<BaseClass*, PQLoad*> _UsedEnergyConsumer;
+  std::unordered_map<BaseClass*, PVNode*> _UsedSynMachine;
   std::unordered_map<RotatingMachinePtr,GeneratingUnitPtr> generatorMap;
   std::unordered_map<TerminalPtr,SVPowerFlowPtr> svPowerFlowMap;
   std::unordered_map<TPNodePtr,SVVoltagePtr> svVoltageMap;

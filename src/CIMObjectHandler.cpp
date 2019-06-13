@@ -10,26 +10,26 @@
 /**\brief Macro for transformation.extent setting
  */
 #define  SET_TRANS_EXTENT(component, type_str)                                                  \
-                      component.annotation.placement.transformation.extent.first.x =            \
+                      component->annotation.placement.transformation.extent.first.x =            \
                       configManager.type_str##_parameters.annotation.transformation_extent[0];  \
-                      component.annotation.placement.transformation.extent.first.y =            \
+                      component->annotation.placement.transformation.extent.first.y =            \
                       configManager.type_str##_parameters.annotation.transformation_extent[1];  \
-                      component.annotation.placement.transformation.extent.second.x =           \
+                      component->annotation.placement.transformation.extent.second.x =           \
                       configManager.type_str##_parameters.annotation.transformation_extent[2];  \
-                      component.annotation.placement.transformation.extent.second.y =           \
+                      component->annotation.placement.transformation.extent.second.y =           \
                       configManager.type_str##_parameters.annotation.transformation_extent[3];  \
 
 /**\brief Macro for NEPLAN Voltage unit fix
  */
 #define FIX_NEPLAN_VOLTAGE(component)                                                           \
                     if(this->configManager.us.voltage_unit == "V"){                             \
-                    component.set_Vnom(component.Vnom());                                       \
+                    component->set_Vnom(component->Vnom());                                       \
                     } else if (this->configManager.us.voltage_unit == "kV") {                   \
-                    component.set_Vnom(component.Vnom()*1000);                                  \
+                    component->set_Vnom(component->Vnom()*1000);                                  \
                     } else if(this->configManager.us.voltage_unit == "mV") {                    \
-                    component.set_Vnom(component.Vnom()*0.001);                                 \
+                    component->set_Vnom(component->Vnom()*0.001);                                 \
                     } else if(this->configManager.us.voltage_unit == "MV"){                     \
-                    component.set_Vnom(component.Vnom()*1000000);                               \
+                    component->set_Vnom(component->Vnom()*1000000);                               \
                     }                                                                           \
 
 
@@ -184,7 +184,7 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::string output_file_name, int v
 
     if (auto *tp_node = dynamic_cast<TPNodePtr>(Object)) {
 
-      BusBar busbar = this->TopologicalNodeHandler(tp_node, dict);
+      BusBar* busbar = this->TopologicalNodeHandler(tp_node, dict);
 
       if (this->configManager.household_parameters.use_households == true ) {
         this->HouseholdComponetsHandler(tp_node, dict);
@@ -206,19 +206,19 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::string output_file_name, int v
         if (auto *externalNI = dynamic_cast<ExNIPtr>((*terminal_it)->ConductingEquipment)) {
             if(_UsedObjects.find(externalNI) != _UsedObjects.end()) {
             }else{
-                Slack slack = this->ExternalNIHandler(tp_node, (*terminal_it), externalNI, dict);
-                _UsedObjects.insert({externalNI, &slack});
+                Slack* slack = this->ExternalNIHandler(tp_node, (*terminal_it), externalNI, dict);
+                _UsedObjects.insert({externalNI, slack});
             }
-            Connection conn(&busbar, (SlackPtr )_UsedObjects[externalNI]);
+            Connection conn(busbar, (Slack* )_UsedObjects[externalNI]);
             connectionQueue.push(conn);
 
         } else if (auto *power_trafo = dynamic_cast<PowerTrafoPtr>((*terminal_it)->ConductingEquipment)) {
             if(_UsedObjects.find(power_trafo) != _UsedObjects.end()) {
             }else{
-                Transformer trafo = this->PowerTransformerHandler(tp_node, (*terminal_it), power_trafo, dict);
-                _UsedObjects.insert({power_trafo, &trafo});
+                Transformer* trafo = this->PowerTransformerHandler(tp_node, (*terminal_it), power_trafo, dict);
+                _UsedObjects.insert({power_trafo, trafo});
             }
-            Connection conn(&busbar, (TransformerPtr )_UsedObjects[power_trafo]);
+            Connection conn(busbar, (Transformer* )_UsedObjects[power_trafo]);
             connectionQueue.push(conn);
 
         } else if (auto *ac_line = dynamic_cast<AcLinePtr>((*terminal_it)->ConductingEquipment)) {
@@ -238,21 +238,21 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::string output_file_name, int v
                     auto searchIt = piLineIdMap.find(ac_line);
                     if (searchIt != piLineIdMap.end()) {
 
-                        PiLine pi_line = this->ACLineSegmentHandler(tp_node, (*terminal_it), ac_line, dict,
-                                                                    piLineIdMap[ac_line], busbar.name());
-                        _UsedObjects.insert({ac_line, &pi_line});
+                        PiLine* pi_line = this->ACLineSegmentHandler(tp_node, (*terminal_it), ac_line, dict,
+                                                                    piLineIdMap[ac_line], busbar->name());
+                        _UsedObjects.insert({ac_line, pi_line});
                     } else {
 
-                        piLineIdMap[ac_line] = busbar.name();
+                        piLineIdMap[ac_line] = busbar->name();
 
                     }
                 } else {
 
-                    PiLine pi_line = this->ACLineSegmentHandler(tp_node, (*terminal_it), ac_line, dict);
-                    _UsedObjects.insert({ac_line, &pi_line});
+                    PiLine* pi_line = this->ACLineSegmentHandler(tp_node, (*terminal_it), ac_line, dict);
+                    _UsedObjects.insert({ac_line, pi_line});
                 }
             }
-            Connection conn(&busbar, (PiLinePtr)_UsedObjects[ac_line]);
+            Connection conn(busbar, ((PiLine*)_UsedObjects[ac_line]));
             connectionQueue.push(conn);
         } else if (auto *energy_consumer = dynamic_cast<EnergyConsumerPtr>((*terminal_it)->ConductingEquipment)) {
             if(_UsedObjects.find(energy_consumer) != _UsedObjects.end()) {
@@ -260,11 +260,11 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::string output_file_name, int v
             }else {
 
                 if (this->configManager.household_parameters.use_households == false) {
-                    PQLoad pqload = this->EnergyConsumerHandler(tp_node, (*terminal_it), energy_consumer, dict);
-                    _UsedObjects.insert({energy_consumer, &pqload});
+                    PQLoad* pqload = this->EnergyConsumerHandler(tp_node, (*terminal_it), energy_consumer, dict);
+                    _UsedObjects.insert({energy_consumer, pqload});
                 }
             }
-            Connection conn(&busbar, (PQLoad*)_UsedObjects[energy_consumer]);
+            Connection conn(busbar, (PQLoad*)_UsedObjects[energy_consumer]);
             connectionQueue.push(conn);
         } else if (auto *synchronous_machine = dynamic_cast<SynMachinePtr >((*terminal_it)->ConductingEquipment)) {
             if(_UsedObjects.find(synchronous_machine) != _UsedObjects.end()) {
@@ -272,12 +272,12 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::string output_file_name, int v
             }else {
 
                 if (this->configManager.household_parameters.use_households == false) {
-                    PVNode pv_node = this->SynchronousMachineHandlerType0(tp_node, (*terminal_it),
+                    PVNode * pv_node = this->SynchronousMachineHandlerType0(tp_node, (*terminal_it),
                                                                           synchronous_machine, dict);
-                    _UsedObjects.insert({synchronous_machine,&pv_node});
+                    _UsedObjects.insert({synchronous_machine,pv_node});
 
                 }
-                Connection conn(&busbar, (PVNodePtr )_UsedObjects[synchronous_machine]);
+                Connection conn(busbar, (PVNode* )_UsedObjects[synchronous_machine]);
                 connectionQueue.push(conn);
             }
         }
@@ -323,9 +323,9 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::string output_file_name, int v
               break;
             default:break;
           }
-
-          Connection conn(&busbar, &this->householdQueue.front());
+          Connection conn(busbar, &this->householdQueue.front());
           connectionQueue.push(conn);
+
           this->householdQueue.pop();
         }
         while (!this->pqloadQueue.empty()) {
@@ -342,7 +342,7 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::string output_file_name, int v
               pqLoad_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/PQLoadNormProfile.tpl");
               pqloadQueue.front().set_template_values(pqLoad_dict);
           }
-          Connection conn(&busbar, &pqloadQueue.front());
+          Connection conn(busbar, &pqloadQueue.front());
           connectionQueue.push(conn);
           pqloadQueue.pop();
         }
@@ -353,7 +353,7 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::string output_file_name, int v
           solar_generator_dict->SetFilename(
               this->configManager.ts.directory_path + "resource/" + template_folder + "/SolarGenerator.tpl");
           solarGeneratorQueue.front().set_template_values(solar_generator_dict);
-          Connection conn(&busbar, &solarGeneratorQueue.front());
+          Connection conn(busbar, &solarGeneratorQueue.front());
           connectionQueue.push(conn);
           solarGeneratorQueue.pop();
         }
@@ -364,7 +364,7 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::string output_file_name, int v
               pv_node_dict->SetFilename(
                       this->configManager.ts.directory_path + "resource/" + template_folder + "/PVNode.tpl");
               pvNodeQueue.front().set_template_values(pv_node_dict);
-              Connection conn(&busbar, &pvNodeQueue.front());
+              Connection conn(busbar, &pvNodeQueue.front());
               connectionQueue.push(conn);
               pvNodeQueue.pop();
           }
@@ -432,11 +432,11 @@ bool CIMObjectHandler::SystemSettingsHandler(const std::string filename, ctempla
  * TopologicalNode
  * Convert to busbar in Modelica
  */
-BusBar CIMObjectHandler::TopologicalNodeHandler(const TPNodePtr tp_node, ctemplate::TemplateDictionary *dict) {
-  BusBar busbar;
-  busbar.set_name(name_in_modelica(tp_node->name));
-  busbar.annotation.placement.visible = true;
-  busbar.set_Vnom(tp_node->BaseVoltage->nominalVoltage.value);
+BusBar* CIMObjectHandler::TopologicalNodeHandler(const TPNodePtr tp_node, ctemplate::TemplateDictionary *dict) {
+  BusBar* busbar = new BusBar();
+  busbar->set_name(name_in_modelica(tp_node->name));
+  busbar->annotation.placement.visible = true;
+  busbar->set_Vnom(tp_node->BaseVoltage->nominalVoltage.value);
 
   if(this->configManager.us.enable){
     FIX_NEPLAN_VOLTAGE(busbar);
@@ -444,30 +444,31 @@ BusBar CIMObjectHandler::TopologicalNodeHandler(const TPNodePtr tp_node, ctempla
 
   if (this->configManager.busbar_parameters.enable) {
     SET_TRANS_EXTENT(busbar,busbar);//Macro
-    busbar.annotation.placement.visible = configManager.busbar_parameters.annotation.visible;
+    busbar->annotation.placement.visible = configManager.busbar_parameters.annotation.visible;
   }
-  busbar.set_Vnom_displayUnit(busbar.Vnom_displayUnit());
+  busbar->set_Vnom_displayUnit(busbar->Vnom_displayUnit());
   // std::list<DiagramObjectPtr>::iterator diagram_it is class member!
     if (tp_node->DiagramObjects.begin() == tp_node->DiagramObjects.end()){
-        std::cerr << "Missing Diagram Object for TpNode:  " << tp_node->name << " Default Position 0,0 \n";
+        std::cerr << "Missing Diagram Object for TpNode:  " << tp_node->name << " Taking average Terminal Position \n";
 
-        busbar.annotation.placement.transformation.origin.x = 0;
-        busbar.annotation.placement.transformation.origin.y = 0;
-        busbar.annotation.placement.transformation.rotation = 0;
+        // TODO average tp_terminal positions (x,y)
+        busbar->annotation.placement.transformation.origin.x = 0;
+        busbar->annotation.placement.transformation.origin.y = 0;
+        busbar->annotation.placement.transformation.rotation = 0;
 
         ctemplate::TemplateDictionary *busbar_dict = dict->AddIncludeDictionary("BUSBAR_DICT");
         busbar_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/BusBar.tpl");
-        busbar.set_template_values(busbar_dict);
+        busbar->set_template_values(busbar_dict);
     }
   for (diagram_it = tp_node->DiagramObjects.begin(); diagram_it!=tp_node->DiagramObjects.end(); ++diagram_it) {
     _t_points = this->calculate_average_position();
-    busbar.annotation.placement.transformation.origin.x = _t_points.xPosition;
-    busbar.annotation.placement.transformation.origin.y = _t_points.yPosition;
-    busbar.annotation.placement.transformation.rotation = (*diagram_it)->rotation.value;
+    busbar->annotation.placement.transformation.origin.x = _t_points.xPosition;
+    busbar->annotation.placement.transformation.origin.y = _t_points.yPosition;
+    busbar->annotation.placement.transformation.rotation = (*diagram_it)->rotation.value;
 
     ctemplate::TemplateDictionary *busbar_dict = dict->AddIncludeDictionary("BUSBAR_DICT");
     busbar_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/BusBar.tpl");
-    busbar.set_template_values(busbar_dict);
+    busbar->set_template_values(busbar_dict);
   }
 
   //BusBarSection used in Cimphony
@@ -495,28 +496,28 @@ bool CIMObjectHandler::HouseholdComponetsHandler(const TPNodePtr tp_node, ctempl
 
       if (auto *energy_consumer = dynamic_cast<EnergyConsumerPtr>((*terminal_it)->ConductingEquipment)) {
 
-        PQLoad pqload = this->EnergyConsumerHandler(tp_node, (*terminal_it), energy_consumer, dict);
-        Household household(pqload);
+        PQLoad* pqload = this->EnergyConsumerHandler(tp_node, (*terminal_it), energy_consumer, dict);
+        Household* household = new Household(*pqload);
         if (this->configManager.household_parameters.enable) {
           SET_TRANS_EXTENT(household,household);
-          household.annotation.placement.visible = configManager.household_parameters.annotation.visible;
+          household->annotation.placement.visible = configManager.household_parameters.annotation.visible;
         }
 
-        this->householdQueue.push(household);
+        this->householdQueue.push(*household);
       }
     }
   } else if (this->configManager.household_parameters.type == "type2"){
     for (terminal_it = tp_node->Terminal.begin(); terminal_it != tp_node->Terminal.end(); ++terminal_it) {
 
       if (auto *energy_consumer = dynamic_cast<EnergyConsumerPtr>((*terminal_it)->ConductingEquipment)) {
-        PQLoad pqload = this->EnergyConsumerHandler(tp_node, (*terminal_it), energy_consumer, dict);
-        this->pqloadQueue.push(pqload);
+        PQLoad* pqload = this->EnergyConsumerHandler(tp_node, (*terminal_it), energy_consumer, dict);
+        this->pqloadQueue.push(*pqload);
       }else if (auto *synchronous_machine = dynamic_cast<SynMachinePtr >((*terminal_it)->ConductingEquipment)) {
 
           if (this->configManager.household_parameters.use_households == false) {
-              PVNode pv_node = this->SynchronousMachineHandlerType0(tp_node, (*terminal_it),
+              PVNode* pv_node = this->SynchronousMachineHandlerType0(tp_node, (*terminal_it),
                                                            synchronous_machine, dict);
-              this->pvNodeQueue.push(pv_node);
+              this->pvNodeQueue.push(*pv_node);
 
           }
 
@@ -527,14 +528,14 @@ bool CIMObjectHandler::HouseholdComponetsHandler(const TPNodePtr tp_node, ctempl
 
       if (this->pqloadQueue.size()==1 && this->solarGeneratorQueue.size()==1) {
 
-        Household household(this->pqloadQueue.front(), this->solarGeneratorQueue.front());  //type2
+        Household* household = new Household(this->pqloadQueue.front(), this->solarGeneratorQueue.front());  //type2
 
         if (this->configManager.household_parameters.enable) {
           SET_TRANS_EXTENT(household,household);
-          household.annotation.placement.visible = configManager.household_parameters.annotation.visible;
+          household->annotation.placement.visible = configManager.household_parameters.annotation.visible;
         }
 
-        this->householdQueue.push(household);
+        this->householdQueue.push(*household);
         this->pqloadQueue.pop();
         this->solarGeneratorQueue.pop();
       }
@@ -629,24 +630,24 @@ ConnectivityNode CIMObjectHandler::ConnectivityNodeHandler(const TPNodePtr tp_no
  * ConductingEquipment cast to ExternalNetworkInjection
  * Convert to slack in Modelica
  */
-Slack CIMObjectHandler::ExternalNIHandler(const TPNodePtr tp_node, const TerminalPtr terminal, const ExNIPtr externalNI,
+Slack* CIMObjectHandler::ExternalNIHandler(const TPNodePtr tp_node, const TerminalPtr terminal, const ExNIPtr externalNI,
                                           ctemplate::TemplateDictionary *dict) {
-  Slack slack;
+  Slack* slack = new Slack();
 
-  slack.set_name(name_in_modelica(externalNI->name));
+  slack->set_name(name_in_modelica(externalNI->name));
   try{
-    slack.set_sequenceNumber(terminal->sequenceNumber);
-  }catch(ReadingUninitializedField& e){
-    slack.set_sequenceNumber(0);
+    slack->set_sequenceNumber(terminal->sequenceNumber);
+  }catch(ReadingUninitializedField* e){
+    slack->set_sequenceNumber(0);
     std::cout <<"Missing sequence number in terminal sequence number " << terminal << std::endl;
   }
-  slack.set_sequenceNumber(terminal->sequenceNumber);
-  slack.set_connected(terminal->connected);
-  slack.annotation.placement.visible = true;
+  slack->set_sequenceNumber(terminal->sequenceNumber);
+  slack->set_connected(terminal->connected);
+  slack->annotation.placement.visible = true;
 
-  slack.set_Vnom(tp_node->BaseVoltage->nominalVoltage.value);
+  slack->set_Vnom(tp_node->BaseVoltage->nominalVoltage.value);
     if(this->configManager.svSettings.useSVforEnergyConsumer == true && svVoltageMap[tp_node]){
-        slack.set_phiV(svVoltageMap[tp_node]->angle.value);
+        slack->set_phiV(svVoltageMap[tp_node]->angle.value);
     }
 
 
@@ -656,32 +657,32 @@ Slack CIMObjectHandler::ExternalNIHandler(const TPNodePtr tp_node, const Termina
 
   if (this->configManager.slack_parameters.enable) {
     SET_TRANS_EXTENT(slack,slack);
-    slack.annotation.placement.visible = configManager.slack_parameters.annotation.visible;
+    slack->annotation.placement.visible = configManager.slack_parameters.annotation.visible;
   }
   if (externalNI->DiagramObjects.begin() == externalNI->DiagramObjects.end()){
       std::cerr << "Missing Diagram Object for ExternalNIHandler: " << externalNI->name << " Default Position 0,0 \n";
-      slack.annotation.placement.transformation.origin.x = 0;
-      slack.annotation.placement.transformation.origin.y = 0;
-      slack.annotation.placement.transformation.rotation = 0;
+      slack->annotation.placement.transformation.origin.x = 0;
+      slack->annotation.placement.transformation.origin.y = 0;
+      slack->annotation.placement.transformation.rotation = 0;
 
-      if (slack.sequenceNumber()==0 || slack.sequenceNumber()==1) {
+      if (slack->sequenceNumber()==0 || slack->sequenceNumber()==1) {
           ctemplate::TemplateDictionary *slack_dict = dict->AddIncludeDictionary("SLACK_DICT");
           slack_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/Slack.tpl");
-          slack.set_template_values(slack_dict);
+          slack->set_template_values(slack_dict);
       }
   }
 
   for (diagram_it = externalNI->DiagramObjects.begin(); diagram_it!=externalNI->DiagramObjects.end(); ++diagram_it) {
 
     _t_points = this->calculate_average_position();
-    slack.annotation.placement.transformation.origin.x = _t_points.xPosition;
-    slack.annotation.placement.transformation.origin.y = _t_points.yPosition;
-    slack.annotation.placement.transformation.rotation = (*diagram_it)->rotation.value - 90;
+    slack->annotation.placement.transformation.origin.x = _t_points.xPosition;
+    slack->annotation.placement.transformation.origin.y = _t_points.yPosition;
+    slack->annotation.placement.transformation.rotation = (*diagram_it)->rotation.value - 90;
 
-    if (slack.sequenceNumber()==0 || slack.sequenceNumber()==1) {
+    if (slack->sequenceNumber()==0 || slack->sequenceNumber()==1) {
       ctemplate::TemplateDictionary *slack_dict = dict->AddIncludeDictionary("SLACK_DICT");
       slack_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/Slack.tpl");
-      slack.set_template_values(slack_dict);
+      slack->set_template_values(slack_dict);
     }
   }
 
@@ -693,33 +694,33 @@ Slack CIMObjectHandler::ExternalNIHandler(const TPNodePtr tp_node, const Termina
  * ConductingEquipment cast to ACLineSegment
  * Convert to Pi_line in Modelica
  */
-PiLine
+PiLine *
 CIMObjectHandler::ACLineSegmentHandler(const TPNodePtr tp_node, const TerminalPtr terminal, const AcLinePtr ac_line,
                                        ctemplate::TemplateDictionary *dict, std::string node1Name /* = "" */, std::string node2Name /* = "" */) {
 
-  PiLine piline;
-  piline.set_name(name_in_modelica(ac_line->name));
-  piline.set_length(ac_line->length.value);
-  piline.set_r(ac_line->r.value/ac_line->length.value);
-  piline.set_x(ac_line->x.value/ac_line->length.value);
-  piline.set_b(ac_line->bch.value/ac_line->length.value);
+  PiLine * piline = new PiLine();
+  piline->set_name(name_in_modelica(ac_line->name));
+  piline->set_length(ac_line->length.value);
+  piline->set_r(ac_line->r.value/ac_line->length.value);
+  piline->set_x(ac_line->x.value/ac_line->length.value);
+  piline->set_b(ac_line->bch.value/ac_line->length.value);
 
     try{
-        piline.set_g(ac_line->gch.value);///ac_line->length.value);
+        piline->set_g(ac_line->gch.value);///ac_line->length.value);
     }catch(ReadingUninitializedField* e){
-        piline.set_g(0/ac_line->length.value);
+        piline->set_g(0/ac_line->length.value);
         std::cout<<"Missing gch value" << std::endl;
     }
     try{
-        piline.set_sequenceNumber(terminal->sequenceNumber);
-    }catch(ReadingUninitializedField& e){
-        piline.set_sequenceNumber(0);
+        piline->set_sequenceNumber(terminal->sequenceNumber);
+    }catch(ReadingUninitializedField* e){
+        piline->set_sequenceNumber(0);
         std::cout<<"Missing terminal seqNR" << std::endl;
     }
 
   if (this->configManager.gs.create_distaix_format == true && !node1Name.empty() && !node2Name.empty()) {
-    piline.set_node1(node1Name);
-    piline.set_node2(node2Name);
+    piline->set_node1(node1Name);
+    piline->set_node2(node2Name);
   }
 
   //find I_Max
@@ -727,61 +728,61 @@ CIMObjectHandler::ACLineSegmentHandler(const TPNodePtr tp_node, const TerminalPt
     for(OpLimitPtr op_limit: OpLimitMap[ac_line]->OperationalLimitValue){
       if(auto current_limit = dynamic_cast<CurrentLimitPtr>(op_limit)){
         if(current_limit->name == "Normal")
-          piline.set_Imax(current_limit->value.value);
+          piline->set_Imax(current_limit->value.value);
       }
     }
   }
   if(this->configManager.us.enable){
     if(this->configManager.us.current_unit == "A"){
-      piline.set_Imax(piline.Imax());
+      piline->set_Imax(piline->Imax());
     } else if(this->configManager.us.current_unit == "kA"){
-        piline.set_Imax(piline.Imax()*1000);
+        piline->set_Imax(piline->Imax()*1000);
     } else if(this->configManager.us.current_unit == "mA"){
-      piline.set_Imax(piline.Imax()*0.001);
+      piline->set_Imax(piline->Imax()*0.001);
     } else if(this->configManager.us.current_unit == "MA"){
-      piline.set_Imax(piline.Imax()*1000000);
+      piline->set_Imax(piline->Imax()*1000000);
     }
   }
 
 
     try{
-        piline.set_connected(terminal->connected);
-    }catch(ReadingUninitializedField& e){
-        piline.set_connected(1);
+        piline->set_connected(terminal->connected);
+    }catch(ReadingUninitializedField* e){
+        piline->set_connected(1);
         std::cout<<"Missing connection info in terminal" << terminal << std::endl;
     }
-  piline.annotation.placement.visible = true;
+  piline->annotation.placement.visible = true;
 
   if (this->configManager.piline_parameters.enable) {
 
     SET_TRANS_EXTENT(piline,piline);
-    piline.annotation.placement.visible = configManager.piline_parameters.annotation.visible;
+    piline->annotation.placement.visible = configManager.piline_parameters.annotation.visible;
   }
 
   if (ac_line->DiagramObjects.begin() == ac_line->DiagramObjects.end()){
       std::cerr << "Missing Diagram Object for acLine: " << ac_line->name << " Default Position 0,0 \n";
-      piline.annotation.placement.transformation.origin.x = 0;
-      piline.annotation.placement.transformation.origin.y = 0;
-      piline.annotation.placement.transformation.rotation = 0;
+      piline->annotation.placement.transformation.origin.x = 0;
+      piline->annotation.placement.transformation.origin.y = 0;
+      piline->annotation.placement.transformation.rotation = 0;
 
-      if (piline.sequenceNumber()==0 || piline.sequenceNumber()==1) {
+      if (piline->sequenceNumber()==0 || piline->sequenceNumber()==1) {
           ctemplate::TemplateDictionary *piLine_dict = dict->AddIncludeDictionary("PILINE_DICT");
           piLine_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/PiLine.tpl");
-          piline.set_template_values(piLine_dict);
+          piline->set_template_values(piLine_dict);
       }
   }
 
   for (diagram_it = ac_line->DiagramObjects.begin(); diagram_it!=ac_line->DiagramObjects.end(); ++diagram_it) {
 
     _t_points = this->calculate_average_position();
-    piline.annotation.placement.transformation.origin.x = _t_points.xPosition;
-    piline.annotation.placement.transformation.origin.y = _t_points.yPosition;
-    piline.annotation.placement.transformation.rotation = (*diagram_it)->rotation.value - 90;
+    piline->annotation.placement.transformation.origin.x = _t_points.xPosition;
+    piline->annotation.placement.transformation.origin.y = _t_points.yPosition;
+    piline->annotation.placement.transformation.rotation = (*diagram_it)->rotation.value - 90;
 
-    if (piline.sequenceNumber()==0 || piline.sequenceNumber()==1 || (template_folder == "DistAIX_templates" && piline.sequenceNumber() == 2) /* last term needed */) {
+    if (piline->sequenceNumber()==0 || piline->sequenceNumber()==1 || (template_folder == "DistAIX_templates" && piline->sequenceNumber() == 2) /* last term needed */) {
       ctemplate::TemplateDictionary *piLine_dict = dict->AddIncludeDictionary("PILINE_DICT");
       piLine_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/PiLine.tpl");
-      piline.set_template_values(piLine_dict);
+      piline->set_template_values(piLine_dict);
     }
   }
 
@@ -793,21 +794,21 @@ CIMObjectHandler::ACLineSegmentHandler(const TPNodePtr tp_node, const TerminalPt
  * ConductingEquipment cast to PowerTransformer
  * Convert to Transformer in Modelica
  */
-Transformer CIMObjectHandler::PowerTransformerHandler(const TPNodePtr tp_node, const TerminalPtr terminal,
+Transformer* CIMObjectHandler::PowerTransformerHandler(const TPNodePtr tp_node, const TerminalPtr terminal,
                                                       const PowerTrafoPtr power_trafo,
                                                       ctemplate::TemplateDictionary *dict) {
 
-  Transformer trafo;
-  trafo.set_name(name_in_modelica(power_trafo->name));
+  Transformer* trafo = new Transformer();
+  trafo->set_name(name_in_modelica(power_trafo->name));
   try{
-    trafo.set_sequenceNumber(terminal->sequenceNumber);
-  }catch(ReadingUninitializedField& e){
-    trafo.set_sequenceNumber(0);
+    trafo->set_sequenceNumber(terminal->sequenceNumber);
+  }catch(ReadingUninitializedField* e){
+    trafo->set_sequenceNumber(0);
     std::cout <<"Missing sequence number in terminal sequence number " << terminal << std::endl;
   }
 
-  trafo.set_connected(terminal->connected);
-  trafo.annotation.placement.visible = true;
+  trafo->set_connected(terminal->connected);
+  trafo->annotation.placement.visible = true;
 
   std::list<PowerTransformerEndPtr>::iterator transformer_end_it;
   for (transformer_end_it = power_trafo->PowerTransformerEnd.begin();
@@ -815,29 +816,29 @@ Transformer CIMObjectHandler::PowerTransformerHandler(const TPNodePtr tp_node, c
        ++transformer_end_it) {
     if ((*transformer_end_it)->endNumber==1) {
 
-      trafo.set_Sr((*transformer_end_it)->ratedS.value*1000000); // Lukas FIXME TODO: Hier muss wohl configManager.us.active_power_unit ausgewertet werden!
-      trafo.set_r((*transformer_end_it)->r.value);
-      trafo.set_x((*transformer_end_it)->x.value);
-      trafo.set_b((*transformer_end_it)->b.value);
+      trafo->set_Sr((*transformer_end_it)->ratedS.value*1000000); // Lukas FIXME TODO: Hier muss wohl configManager.us.active_power_unit ausgewertet werden!
+      trafo->set_r((*transformer_end_it)->r.value);
+      trafo->set_x((*transformer_end_it)->x.value);
+      trafo->set_b((*transformer_end_it)->b.value);
 
       if((*transformer_end_it)->RatioTapChanger != nullptr){
-          trafo.set_tap_pos( ((*transformer_end_it)->RatioTapChanger->step - 1) * 1000);
+          trafo->set_tap_pos( ((*transformer_end_it)->RatioTapChanger->step - 1) * 1000);
       }
 
       if(this->configManager.us.enable) {
         if (this->configManager.us.voltage_unit == "V") {
-          trafo.set_Vnom1((*transformer_end_it)->ratedU.value);
+          trafo->set_Vnom1((*transformer_end_it)->ratedU.value);
         } else if (this->configManager.us.voltage_unit == "kV") {
-          trafo.set_Vnom1((*transformer_end_it)->ratedU.value*1000);
+          trafo->set_Vnom1((*transformer_end_it)->ratedU.value*1000);
         } else if (this->configManager.us.voltage_unit == "mV") {
-          trafo.set_Vnom1((*transformer_end_it)->ratedU.value*0.001);
+          trafo->set_Vnom1((*transformer_end_it)->ratedU.value*0.001);
         } else if (this->configManager.us.voltage_unit == "MV") {
-          trafo.set_Vnom1((*transformer_end_it)->ratedU.value*1000000);
+          trafo->set_Vnom1((*transformer_end_it)->ratedU.value*1000000);
         }
       }
 
-      trafo.calc_URr();
-      trafo.calc_Ukr();
+      trafo->calc_URr();
+      trafo->calc_Ukr();
       
       /*
       using namespace std;
@@ -854,13 +855,13 @@ Transformer CIMObjectHandler::PowerTransformerHandler(const TPNodePtr tp_node, c
 
       if(this->configManager.us.enable) {
         if (this->configManager.us.voltage_unit == "V") {
-          trafo.set_Vnom2((*transformer_end_it)->ratedU.value);
+          trafo->set_Vnom2((*transformer_end_it)->ratedU.value);
         } else if (this->configManager.us.voltage_unit == "kV") {
-          trafo.set_Vnom2((*transformer_end_it)->ratedU.value*1000);
+          trafo->set_Vnom2((*transformer_end_it)->ratedU.value*1000);
         } else if (this->configManager.us.voltage_unit == "mV") {
-          trafo.set_Vnom2((*transformer_end_it)->ratedU.value*0.001);
+          trafo->set_Vnom2((*transformer_end_it)->ratedU.value*0.001);
         } else if (this->configManager.us.voltage_unit == "MV") {
-          trafo.set_Vnom2((*transformer_end_it)->ratedU.value*1000000);
+          trafo->set_Vnom2((*transformer_end_it)->ratedU.value*1000000);
         }
       }
     }
@@ -869,19 +870,19 @@ Transformer CIMObjectHandler::PowerTransformerHandler(const TPNodePtr tp_node, c
   if (this->configManager.trafo_parameters.enable) {
 
     SET_TRANS_EXTENT(trafo,trafo);
-    trafo.annotation.placement.visible = configManager.trafo_parameters.annotation.visible;
+    trafo->annotation.placement.visible = configManager.trafo_parameters.annotation.visible;
   }
 
   if(power_trafo->DiagramObjects.begin() == power_trafo->DiagramObjects.end()){
       std::cerr << "Missing Diagram Object for PowerTrafo: " << power_trafo->name << " Default Position 0,0 \n";
-      trafo.annotation.placement.transformation.origin.x = 0;
-      trafo.annotation.placement.transformation.origin.y = 0;
-      trafo.annotation.placement.transformation.rotation = 0;
+      trafo->annotation.placement.transformation.origin.x = 0;
+      trafo->annotation.placement.transformation.origin.y = 0;
+      trafo->annotation.placement.transformation.rotation = 0;
 
-      if (trafo.sequenceNumber()==0 || trafo.sequenceNumber()==1) {
+      if (trafo->sequenceNumber()==0 || trafo->sequenceNumber()==1) {
           ctemplate::TemplateDictionary *powerTrafo_dict = dict->AddIncludeDictionary("TRANSFORMER_DICT");
           powerTrafo_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/Transformer.tpl");
-          trafo.set_template_values(powerTrafo_dict);
+          trafo->set_template_values(powerTrafo_dict);
       }
   }
 
@@ -890,14 +891,14 @@ Transformer CIMObjectHandler::PowerTransformerHandler(const TPNodePtr tp_node, c
        ++diagram_it) {
 
     _t_points = this->calculate_average_position();
-    trafo.annotation.placement.transformation.origin.x = _t_points.xPosition;
-    trafo.annotation.placement.transformation.origin.y = _t_points.yPosition;
-    trafo.annotation.placement.transformation.rotation = (*diagram_it)->rotation.value - 90;
+    trafo->annotation.placement.transformation.origin.x = _t_points.xPosition;
+    trafo->annotation.placement.transformation.origin.y = _t_points.yPosition;
+    trafo->annotation.placement.transformation.rotation = (*diagram_it)->rotation.value - 90;
 
-    if (trafo.sequenceNumber()==0 || trafo.sequenceNumber()==1) {
+    if (trafo->sequenceNumber()==0 || trafo->sequenceNumber()==1) {
       ctemplate::TemplateDictionary *powerTrafo_dict = dict->AddIncludeDictionary("TRANSFORMER_DICT");
       powerTrafo_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/Transformer.tpl");
-      trafo.set_template_values(powerTrafo_dict);
+      trafo->set_template_values(powerTrafo_dict);
     }
   }
 
@@ -909,120 +910,120 @@ Transformer CIMObjectHandler::PowerTransformerHandler(const TPNodePtr tp_node, c
  * ConductingEquipment cast to energy_consumer
  * Convert to pqload in Modelica
  */
-PQLoad CIMObjectHandler::EnergyConsumerHandler(const TPNodePtr tp_node, const TerminalPtr terminal,
+PQLoad* CIMObjectHandler::EnergyConsumerHandler(const TPNodePtr tp_node, const TerminalPtr terminal,
                                                const EnergyConsumerPtr energy_consumer,
                                                ctemplate::TemplateDictionary *dict) {
 
-  PQLoad pqload;
+  PQLoad* pqload = new PQLoad();
 
   if (this->configManager.pqload_parameters.type == 1 ) {
 
-    pqload.set_PQLoadType(PQLoadType::Standard);
+    pqload->set_PQLoadType(PQLoadType::Standard);
 
   } else if(this->configManager.pqload_parameters.type == 2){
 
-      pqload.set_PQLoadType(PQLoadType::Profile);
+      pqload->set_PQLoadType(PQLoadType::Profile);
 
   } else if(this->configManager.pqload_parameters.type == 3){
 
-    pqload.set_PQLoadType(PQLoadType::NormProfile);
+    pqload->set_PQLoadType(PQLoadType::NormProfile);
   }
 
   if(this->configManager.svSettings.useSVforEnergyConsumer == true && svPowerFlowMap[terminal]){
-    pqload.set_Pnom(svPowerFlowMap[terminal]->p.value);
-    pqload.set_Qnom(svPowerFlowMap[terminal]->q.value);
+    pqload->set_Pnom(svPowerFlowMap[terminal]->p.value);
+    pqload->set_Qnom(svPowerFlowMap[terminal]->q.value);
   }else{
       try{
-          pqload.set_Pnom(energy_consumer->pfixed.value);
+          pqload->set_Pnom(energy_consumer->pfixed.value);
       }catch(ReadingUninitializedField* e){
           try{
-              pqload.set_Pnom(energy_consumer->p.value);
+              pqload->set_Pnom(energy_consumer->p.value);
           }catch(ReadingUninitializedField* e1){
               std::cout <<"reading unititalized Pnom for PQLoad: " << std::endl;
-              pqload.set_Pnom(1);
+              pqload->set_Pnom(1);
           }
       }
 
       try{
-          pqload.set_Qnom(energy_consumer->qfixed.value);
+          pqload->set_Qnom(energy_consumer->qfixed.value);
       }catch(ReadingUninitializedField* e){
           try{
-              pqload.set_Qnom(energy_consumer->q.value);
+              pqload->set_Qnom(energy_consumer->q.value);
           }catch(ReadingUninitializedField* e1){
               std::cout <<"reading unititalized Qnom for PQLoad: " << std::endl;
-              pqload.set_Qnom(1);
+              pqload->set_Qnom(1);
           }
       }
   }
 
-  pqload.set_name(name_in_modelica(energy_consumer->name));
-  pqload.set_Vnom(tp_node->BaseVoltage->nominalVoltage.value);
+  pqload->set_name(name_in_modelica(energy_consumer->name));
+  pqload->set_Vnom(tp_node->BaseVoltage->nominalVoltage.value);
   if(this->configManager.us.enable){
     FIX_NEPLAN_VOLTAGE(pqload);
 
     if(this->configManager.us.active_power_unit == "W"){
-      pqload.set_Pnom(pqload.Pnom());
+      pqload->set_Pnom(pqload->Pnom());
     } else if(this->configManager.us.active_power_unit == "kW"){
-      pqload.set_Pnom(pqload.Pnom()*1000);
+      pqload->set_Pnom(pqload->Pnom()*1000);
     } else if(this->configManager.us.active_power_unit == "mW"){
-      pqload.set_Pnom(pqload.Pnom()*0.001);
+      pqload->set_Pnom(pqload->Pnom()*0.001);
     } else if(this->configManager.us.active_power_unit == "MW"){
-      pqload.set_Pnom(pqload.Pnom()*1000000);
+      pqload->set_Pnom(pqload->Pnom()*1000000);
     }
 
     if(this->configManager.us.reactive_power_unit == "var"){
-      pqload.set_Qnom(pqload.Qnom());
+      pqload->set_Qnom(pqload->Qnom());
     } else if(this->configManager.us.reactive_power_unit == "kvar"){
-      pqload.set_Qnom(pqload.Qnom()*1000);
+      pqload->set_Qnom(pqload->Qnom()*1000);
     } else if(this->configManager.us.reactive_power_unit == "mvar"){
-      pqload.set_Qnom(pqload.Qnom()*0.001);
+      pqload->set_Qnom(pqload->Qnom()*0.001);
     } else if(this->configManager.us.reactive_power_unit == "Mvar"){
-      pqload.set_Qnom(pqload.Qnom()*1000000);
+      pqload->set_Qnom(pqload->Qnom()*1000000);
     }
 
   }
 
-  pqload.set_name(name_in_modelica(energy_consumer->name));
+  pqload->set_name(name_in_modelica(energy_consumer->name));
   try{
-    pqload.set_sequenceNumber(terminal->sequenceNumber);
-  }catch(ReadingUninitializedField& e){
-    pqload.set_sequenceNumber(0);
+    pqload->set_sequenceNumber(terminal->sequenceNumber);
+  }catch(ReadingUninitializedField* e){
+    pqload->set_sequenceNumber(0);
     std::cout <<"Missing sequence number in terminal sequence number " << terminal << std::endl;
   }
-  pqload.set_connected(terminal->connected);
-  pqload.annotation.placement.visible = true;
+  pqload->set_connected(terminal->connected);
+  pqload->annotation.placement.visible = true;
 
   if (this->configManager.pqload_parameters.enable) {
 
     SET_TRANS_EXTENT(pqload,pqload);
-    pqload.annotation.placement.visible = configManager.pqload_parameters.annotation.visible;
-    pqload.set_profileName(configManager.pqload_parameters.profile_name);
-    pqload.set_profileFileName(configManager.pqload_parameters.profile_filename);
+    pqload->annotation.placement.visible = configManager.pqload_parameters.annotation.visible;
+    pqload->set_profileName(configManager.pqload_parameters.profile_name);
+    pqload->set_profileFileName(configManager.pqload_parameters.profile_filename);
   }
 
   if(energy_consumer->DiagramObjects.begin() == energy_consumer->DiagramObjects.end()){
       std::cerr << "Missing Diagram Object for EnergyConsumer: " << energy_consumer->name << " Default Position 0,0 \n";
-      pqload.annotation.placement.transformation.origin.x = 0;
-      pqload.annotation.placement.transformation.origin.y = 0;
-      pqload.annotation.placement.transformation.rotation = 0;
+      pqload->annotation.placement.transformation.origin.x = 0;
+      pqload->annotation.placement.transformation.origin.y = 0;
+      pqload->annotation.placement.transformation.rotation = 0;
 
       if(this->configManager.household_parameters.use_households == false){
-          if (pqload.sequenceNumber() == 0 || pqload.sequenceNumber() == 1) {
+          if (pqload->sequenceNumber() == 0 || pqload->sequenceNumber() == 1) {
 
-              if (this->configManager.pqload_parameters.type == 1 && pqload.PQLoadType() == PQLoadType::Standard) {
+              if (this->configManager.pqload_parameters.type == 1 && pqload->PQLoadType() == PQLoadType::Standard) {
                   ctemplate::TemplateDictionary *pqLoad_dict = dict->AddIncludeDictionary("PQLOAD_DICT");
                   pqLoad_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/PQLoad.tpl");
-                  pqload.set_template_values(pqLoad_dict);
+                  pqload->set_template_values(pqLoad_dict);
 
-              } else if(this->configManager.pqload_parameters.type == 2 && pqload.PQLoadType() == PQLoadType::Profile){
+              } else if(this->configManager.pqload_parameters.type == 2 && pqload->PQLoadType() == PQLoadType::Profile){
                   ctemplate::TemplateDictionary *pqLoad_dict = dict->AddIncludeDictionary("PQLOAD_PROFILE_DICT");
                   pqLoad_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/PQLoadProfile.tpl");
-                  pqload.set_template_values(pqLoad_dict);
+                  pqload->set_template_values(pqLoad_dict);
 
-              } else if(this->configManager.pqload_parameters.type == 3 && pqload.PQLoadType() == PQLoadType::NormProfile){
+              } else if(this->configManager.pqload_parameters.type == 3 && pqload->PQLoadType() == PQLoadType::NormProfile){
                   ctemplate::TemplateDictionary *pqLoad_dict = dict->AddIncludeDictionary("PQLOAD_NORM_PROFILE_DICT");
                   pqLoad_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/PQLoadNormProfile.tpl");
-                  pqload.set_template_values(pqLoad_dict);
+                  pqload->set_template_values(pqLoad_dict);
               }
           }
       }
@@ -1032,27 +1033,27 @@ PQLoad CIMObjectHandler::EnergyConsumerHandler(const TPNodePtr tp_node, const Te
            ++diagram_it) {
 
     _t_points = this->calculate_average_position();
-    pqload.annotation.placement.transformation.origin.x = _t_points.xPosition;
-    pqload.annotation.placement.transformation.origin.y = _t_points.yPosition;
-    pqload.annotation.placement.transformation.rotation = (*diagram_it)->rotation.value;
+    pqload->annotation.placement.transformation.origin.x = _t_points.xPosition;
+    pqload->annotation.placement.transformation.origin.y = _t_points.yPosition;
+    pqload->annotation.placement.transformation.rotation = (*diagram_it)->rotation.value;
 
     if(this->configManager.household_parameters.use_households == false){
-      if (pqload.sequenceNumber() == 0 || pqload.sequenceNumber() == 1) {
+      if (pqload->sequenceNumber() == 0 || pqload->sequenceNumber() == 1) {
 
-        if (this->configManager.pqload_parameters.type == 1 && pqload.PQLoadType() == PQLoadType::Standard) {
+        if (this->configManager.pqload_parameters.type == 1 && pqload->PQLoadType() == PQLoadType::Standard) {
           ctemplate::TemplateDictionary *pqLoad_dict = dict->AddIncludeDictionary("PQLOAD_DICT");
           pqLoad_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/PQLoad.tpl");
-          pqload.set_template_values(pqLoad_dict);
+          pqload->set_template_values(pqLoad_dict);
 
-        } else if(this->configManager.pqload_parameters.type == 2 && pqload.PQLoadType() == PQLoadType::Profile){
+        } else if(this->configManager.pqload_parameters.type == 2 && pqload->PQLoadType() == PQLoadType::Profile){
           ctemplate::TemplateDictionary *pqLoad_dict = dict->AddIncludeDictionary("PQLOAD_PROFILE_DICT");
           pqLoad_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/PQLoadProfile.tpl");
-          pqload.set_template_values(pqLoad_dict);
+          pqload->set_template_values(pqLoad_dict);
 
-        } else if(this->configManager.pqload_parameters.type == 3 && pqload.PQLoadType() == PQLoadType::NormProfile){
+        } else if(this->configManager.pqload_parameters.type == 3 && pqload->PQLoadType() == PQLoadType::NormProfile){
           ctemplate::TemplateDictionary *pqLoad_dict = dict->AddIncludeDictionary("PQLOAD_NORM_PROFILE_DICT");
           pqLoad_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/PQLoadNormProfile.tpl");
-          pqload.set_template_values(pqLoad_dict);
+          pqload->set_template_values(pqLoad_dict);
         }
       }
     }
@@ -1065,41 +1066,41 @@ PQLoad CIMObjectHandler::EnergyConsumerHandler(const TPNodePtr tp_node, const Te
  * ConductingEquipment cast to SynchronousMachine
  * Convert to SolarGenerator in Modelica
  */
-SolarGenerator CIMObjectHandler::SynchronousMachineHandlerType2(const TPNodePtr tp_node, const TerminalPtr terminal,
+SolarGenerator* CIMObjectHandler::SynchronousMachineHandlerType2(const TPNodePtr tp_node, const TerminalPtr terminal,
                                                                 const SynMachinePtr syn_machine,
                                                                 ctemplate::TemplateDictionary *dict) {
-  SolarGenerator solar_generator;
+  SolarGenerator* solar_generator = new SolarGenerator();
 
-  solar_generator.set_name(name_in_modelica(syn_machine->name));
-  solar_generator.annotation.placement.visible = true;
-  solar_generator.set_connected(terminal->connected);
+  solar_generator->set_name(name_in_modelica(syn_machine->name));
+  solar_generator->annotation.placement.visible = true;
+  solar_generator->set_connected(terminal->connected);
 
   try{
-    solar_generator.set_sequenceNumber(terminal->sequenceNumber);
-  }catch(ReadingUninitializedField& e){
-    solar_generator.set_sequenceNumber(0);
+    solar_generator->set_sequenceNumber(terminal->sequenceNumber);
+  }catch(ReadingUninitializedField* e){
+    solar_generator->set_sequenceNumber(0);
     std::cout <<"Missing sequence number in terminal sequence number " << terminal << std::endl;
   }
 
   if (this->configManager.solar_gen_parameters.enable) {
     SET_TRANS_EXTENT(solar_generator,solar_gen);
-    solar_generator.annotation.placement.visible = configManager.solar_gen_parameters.annotation.visible;
+    solar_generator->annotation.placement.visible = configManager.solar_gen_parameters.annotation.visible;
   }
   if(syn_machine->DiagramObjects.begin() == syn_machine->DiagramObjects.end()){
       std::cerr << "Missing Diagram Object for SyncronousMachine2: " << syn_machine->name << " Default Position 0,0 \n";
-      solar_generator.annotation.placement.transformation.origin.x = 0;
-      solar_generator.annotation.placement.transformation.origin.y = 0;
-      solar_generator.annotation.placement.transformation.rotation = 0;
+      solar_generator->annotation.placement.transformation.origin.x = 0;
+      solar_generator->annotation.placement.transformation.origin.y = 0;
+      solar_generator->annotation.placement.transformation.rotation = 0;
 
       if (this->configManager.solar_gen_parameters.enable) {
           if (this->configManager.household_parameters.use_households == false) {
 
-              if (solar_generator.sequenceNumber()==0 || solar_generator.sequenceNumber()==1) {
+              if (solar_generator->sequenceNumber()==0 || solar_generator->sequenceNumber()==1) {
                   ctemplate::TemplateDictionary *solar_generator_dict = dict->AddIncludeDictionary(
                           "SOLARGENERATOR_DICT");
                   solar_generator_dict->SetFilename(
                           this->configManager.ts.directory_path + "resource/" + template_folder + "/SolarGenerator.tpl");
-                  solar_generator.set_template_values(solar_generator_dict);
+                  solar_generator->set_template_values(solar_generator_dict);
               }
           }
       }
@@ -1108,19 +1109,19 @@ SolarGenerator CIMObjectHandler::SynchronousMachineHandlerType2(const TPNodePtr 
        diagram_it!=syn_machine->DiagramObjects.end();
        ++diagram_it) {
     _t_points = this->calculate_average_position();
-    solar_generator.annotation.placement.transformation.origin.x = _t_points.xPosition;
-    solar_generator.annotation.placement.transformation.origin.y = _t_points.yPosition;
-    solar_generator.annotation.placement.transformation.rotation = (*diagram_it)->rotation.value;
+    solar_generator->annotation.placement.transformation.origin.x = _t_points.xPosition;
+    solar_generator->annotation.placement.transformation.origin.y = _t_points.yPosition;
+    solar_generator->annotation.placement.transformation.rotation = (*diagram_it)->rotation.value;
 
     if (this->configManager.solar_gen_parameters.enable) {
       if (this->configManager.household_parameters.use_households == false) {
 
-        if (solar_generator.sequenceNumber()==0 || solar_generator.sequenceNumber()==1) {
+        if (solar_generator->sequenceNumber()==0 || solar_generator->sequenceNumber()==1) {
           ctemplate::TemplateDictionary *solar_generator_dict = dict->AddIncludeDictionary(
               "SOLARGENERATOR_DICT");
           solar_generator_dict->SetFilename(
               this->configManager.ts.directory_path + "resource/" + template_folder + "/SolarGenerator.tpl");
-          solar_generator.set_template_values(solar_generator_dict);
+          solar_generator->set_template_values(solar_generator_dict);
         }
       }
     }
@@ -1134,36 +1135,36 @@ SolarGenerator CIMObjectHandler::SynchronousMachineHandlerType2(const TPNodePtr 
  * ConductingEquipment cast to SynchronousMachine
  * Convert to WindGenerator in Modelica
  */
-WindGenerator CIMObjectHandler::SynchronousMachineHandlerType1(const TPNodePtr tp_node, const TerminalPtr terminal,
+WindGenerator* CIMObjectHandler::SynchronousMachineHandlerType1(const TPNodePtr tp_node, const TerminalPtr terminal,
                                                                const SynMachinePtr syn_machine,
                                                                ctemplate::TemplateDictionary *dict) {
-    WindGenerator wind_generator;
+    WindGenerator* wind_generator = new WindGenerator();
 
-    wind_generator.set_name(name_in_modelica(syn_machine->name));
+    wind_generator->set_name(name_in_modelica(syn_machine->name));
     try{
-        wind_generator.set_sequenceNumber(terminal->sequenceNumber);
-    }catch(ReadingUninitializedField& e){
-        wind_generator.set_sequenceNumber(0);
+        wind_generator->set_sequenceNumber(terminal->sequenceNumber);
+    }catch(ReadingUninitializedField* e){
+        wind_generator->set_sequenceNumber(0);
         std::cout <<"Missing sequence number in terminal sequence number " << terminal << std::endl;
     }
-    wind_generator.set_connected(terminal->connected);
-    wind_generator.annotation.placement.visible = true;
+    wind_generator->set_connected(terminal->connected);
+    wind_generator->annotation.placement.visible = true;
 
     if (this->configManager.wind_gen_parameters.enable) {
         SET_TRANS_EXTENT(wind_generator,wind_gen);
-        wind_generator.annotation.placement.visible = configManager.wind_gen_parameters.annotation.visible;
+        wind_generator->annotation.placement.visible = configManager.wind_gen_parameters.annotation.visible;
     }
 
     if(syn_machine->DiagramObjects.begin() == syn_machine->DiagramObjects.end()){
         std::cerr << "Missing Diagram Object for SynchronousMachine: " << syn_machine->name << " Default Position 0,0 \n";
-        wind_generator.annotation.placement.transformation.origin.x = 0;
-        wind_generator.annotation.placement.transformation.origin.y = 0;
-        wind_generator.annotation.placement.transformation.rotation = 0;
+        wind_generator->annotation.placement.transformation.origin.x = 0;
+        wind_generator->annotation.placement.transformation.origin.y = 0;
+        wind_generator->annotation.placement.transformation.rotation = 0;
 
-        if (wind_generator.sequenceNumber()==0 || wind_generator.sequenceNumber()==1) {
+        if (wind_generator->sequenceNumber()==0 || wind_generator->sequenceNumber()==1) {
             ctemplate::TemplateDictionary *wind_generator_dict = dict->AddIncludeDictionary("WINDGENERATOR_DICT");
             wind_generator_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/WindGenerator.tpl");
-            wind_generator.set_template_values(wind_generator_dict);
+            wind_generator->set_template_values(wind_generator_dict);
         }
     }
 
@@ -1171,14 +1172,14 @@ WindGenerator CIMObjectHandler::SynchronousMachineHandlerType1(const TPNodePtr t
          diagram_it!=syn_machine->DiagramObjects.end();
          ++diagram_it) {
         _t_points = this->calculate_average_position();
-        wind_generator.annotation.placement.transformation.origin.x = _t_points.xPosition;
-        wind_generator.annotation.placement.transformation.origin.y = _t_points.yPosition;
-        wind_generator.annotation.placement.transformation.rotation = (*diagram_it)->rotation.value;
+        wind_generator->annotation.placement.transformation.origin.x = _t_points.xPosition;
+        wind_generator->annotation.placement.transformation.origin.y = _t_points.yPosition;
+        wind_generator->annotation.placement.transformation.rotation = (*diagram_it)->rotation.value;
 
-        if (wind_generator.sequenceNumber()==0 || wind_generator.sequenceNumber()==1) {
+        if (wind_generator->sequenceNumber()==0 || wind_generator->sequenceNumber()==1) {
             ctemplate::TemplateDictionary *wind_generator_dict = dict->AddIncludeDictionary("WINDGENERATOR_DICT");
             wind_generator_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/WindGenerator.tpl");
-            wind_generator.set_template_values(wind_generator_dict);
+            wind_generator->set_template_values(wind_generator_dict);
         }
     }
 
@@ -1192,34 +1193,42 @@ WindGenerator CIMObjectHandler::SynchronousMachineHandlerType1(const TPNodePtr t
  * Convert to PVNode in Modelica
  */
 
-PVNode CIMObjectHandler::SynchronousMachineHandlerType0(const TPNodePtr tp_node, const TerminalPtr terminal,
+PVNode * CIMObjectHandler::SynchronousMachineHandlerType0(const TPNodePtr tp_node, const TerminalPtr terminal,
                                                                const SynMachinePtr syn_machine,
                                                                ctemplate::TemplateDictionary *dict) {
-    PVNode pv_node;
-    pv_node.set_name(name_in_modelica(syn_machine->name));
+    PVNode* pv_node = new PVNode();
+    pv_node->set_name(name_in_modelica(syn_machine->name));
     try{
-        pv_node.set_sequenceNumber(terminal->sequenceNumber);
-    }catch(ReadingUninitializedField& e){
-        pv_node.set_sequenceNumber(0);
+        pv_node->set_sequenceNumber(terminal->sequenceNumber);
+    }catch(ReadingUninitializedField* e){
+        pv_node->set_sequenceNumber(0);
         std::cout <<"Missing sequence number in terminal sequence number " << terminal << std::endl;
     }
-    pv_node.set_connected(terminal->connected);
-    pv_node.annotation.placement.visible = true;
+    pv_node->set_connected(terminal->connected);
+    pv_node->annotation.placement.visible = true;
 
     if(this->configManager.us.enable){
         try {
             if(this->configManager.us.voltage_unit == "V"){
-                pv_node.setVnom((syn_machine)->ratedU.value);
+                pv_node->setVnom((syn_machine)->ratedU.value);
             } else if(this->configManager.us.voltage_unit == "kV"){
-                pv_node.setVnom((syn_machine)->ratedU.value * 1000);
+                pv_node->setVnom((syn_machine)->ratedU.value * 1000);
             } else if(this->configManager.us.voltage_unit == "mV"){
-                pv_node.setVnom((syn_machine)->ratedU.value * 0.001);
+                pv_node->setVnom((syn_machine)->ratedU.value * 0.001);
             } else if(this->configManager.us.voltage_unit == "MV"){
-                pv_node.setVnom((syn_machine)->ratedU.value * 1000000);
+                pv_node->setVnom((syn_machine)->ratedU.value * 1000000);
             }
         }catch(ReadingUninitializedField* e){
-            pv_node.setVnom(1);
-            std::cout << "Unitialized Vnom for Ŝynchronous Machine" << std::endl;
+            if(this->configManager.us.voltage_unit == "V"){
+                pv_node->setVnom(tp_node->BaseVoltage->nominalVoltage.value);
+            } else if(this->configManager.us.voltage_unit == "kV"){
+                pv_node->setVnom(tp_node->BaseVoltage->nominalVoltage.value * 1000);
+            } else if(this->configManager.us.voltage_unit == "mV"){
+                pv_node->setVnom(tp_node->BaseVoltage->nominalVoltage.value * 0.001);
+            } else if(this->configManager.us.voltage_unit == "MV"){
+                pv_node->setVnom(tp_node->BaseVoltage->nominalVoltage.value * 1000000);
+            }
+            std::cout << "Unitialized Vnom for Synchronous Machine taking TopologicalNode BaseVoltage " << std::endl;
         }
 
     }
@@ -1229,22 +1238,22 @@ PVNode CIMObjectHandler::SynchronousMachineHandlerType0(const TPNodePtr tp_node,
         if(this->configManager.us.enable){
 
             if(this->configManager.us.active_power_unit == "W"){
-                pv_node.setPgen(svPowerFlowMap[terminal]->p.value);
+                pv_node->setPgen(-svPowerFlowMap[terminal]->p.value);
             } else if(this->configManager.us.active_power_unit == "kW"){
-                pv_node.setPgen(svPowerFlowMap[terminal]->p.value * 1000);
+                pv_node->setPgen(-svPowerFlowMap[terminal]->p.value * 1000);
             } else if(this->configManager.us.active_power_unit == "mW"){
-                pv_node.setPgen(svPowerFlowMap[terminal]->p.value * 0.001);
+                pv_node->setPgen(-svPowerFlowMap[terminal]->p.value * 0.001);
             } else if(this->configManager.us.active_power_unit == "MW"){
-                pv_node.setPgen(svPowerFlowMap[terminal]->p.value * 1000000);
+                pv_node->setPgen(-svPowerFlowMap[terminal]->p.value * 1000000);
             }
             if(this->configManager.us.voltage_unit == "V"){
-                pv_node.setVabs(svVoltageMap[tp_node]->v.value);
+                pv_node->setVabs(svVoltageMap[tp_node]->v.value);
             } else if(this->configManager.us.voltage_unit == "kV"){
-                pv_node.setVabs(svVoltageMap[tp_node]->v.value * 1000);
+                pv_node->setVabs(svVoltageMap[tp_node]->v.value * 1000);
             } else if(this->configManager.us.voltage_unit == "mV"){
-                pv_node.setVabs(svVoltageMap[tp_node]->v.value * 0.001);
+                pv_node->setVabs(svVoltageMap[tp_node]->v.value * 0.001);
             } else if(this->configManager.us.voltage_unit == "MV"){
-                pv_node.setVabs(svVoltageMap[tp_node]->v.value * 1000000);
+                pv_node->setVabs(svVoltageMap[tp_node]->v.value * 1000000);
             }
 
         }
@@ -1254,26 +1263,26 @@ PVNode CIMObjectHandler::SynchronousMachineHandlerType0(const TPNodePtr tp_node,
 
         if(this->configManager.us.enable) {
                 if (this->configManager.us.active_power_unit == "W") {
-                    pv_node.setPgen(generatorMap[syn_machine]->initialP.value);
+                    pv_node->setPgen(generatorMap[syn_machine]->initialP.value);
                 } else if (this->configManager.us.active_power_unit == "kW") {
-                    pv_node.setPgen(generatorMap[syn_machine]->initialP.value * 1000);
+                    pv_node->setPgen(generatorMap[syn_machine]->initialP.value * 1000);
                 } else if (this->configManager.us.active_power_unit == "mW") {
-                    pv_node.setPgen(generatorMap[syn_machine]->initialP.value * 0.001);
+                    pv_node->setPgen(generatorMap[syn_machine]->initialP.value * 0.001);
                 } else if (this->configManager.us.active_power_unit == "MW") {
-                    pv_node.setPgen(generatorMap[syn_machine]->initialP.value * 1000000);
+                    pv_node->setPgen(generatorMap[syn_machine]->initialP.value * 1000000);
                 }
             if(syn_machine->RegulatingControl != nullptr){
                 if(this->configManager.us.voltage_unit == "V"){
-                    pv_node.setVabs((syn_machine)->RegulatingControl->targetValue);
+                    pv_node->setVabs((syn_machine)->RegulatingControl->targetValue);
                 } else if(this->configManager.us.voltage_unit == "kV"){
-                    pv_node.setVabs((syn_machine)->RegulatingControl->targetValue * 1000);
+                    pv_node->setVabs((syn_machine)->RegulatingControl->targetValue * 1000);
                 } else if(this->configManager.us.voltage_unit == "mV"){
-                    pv_node.setVabs((syn_machine)->RegulatingControl->targetValue * 0.001);
+                    pv_node->setVabs((syn_machine)->RegulatingControl->targetValue * 0.001);
                 } else if(this->configManager.us.voltage_unit == "MV"){
-                    pv_node.setVabs((syn_machine)->RegulatingControl->targetValue * 1000000);
+                    pv_node->setVabs((syn_machine)->RegulatingControl->targetValue * 1000000);
                 }
             }else{
-                pv_node.setVabs(pv_node.Vnom());
+                pv_node->setVabs(pv_node->Vnom());
             }
        }
 
@@ -1281,14 +1290,14 @@ PVNode CIMObjectHandler::SynchronousMachineHandlerType0(const TPNodePtr tp_node,
 
     if(syn_machine->DiagramObjects.begin() == syn_machine->DiagramObjects.end()){
         std::cerr << "Missing Diagram Object for SynchronousMachine: " << syn_machine->name << " Default Position 0,0 \n";
-        pv_node.annotation.placement.transformation.origin.x = 0;
-        pv_node.annotation.placement.transformation.origin.y = 0;
-        pv_node.annotation.placement.transformation.rotation = 0;
+        pv_node->annotation.placement.transformation.origin.x = 0;
+        pv_node->annotation.placement.transformation.origin.y = 0;
+        pv_node->annotation.placement.transformation.rotation = 0;
 
-        if (pv_node.sequenceNumber()==0 || pv_node.sequenceNumber()==1) {
+        if (pv_node->sequenceNumber()==0 || pv_node->sequenceNumber()==1) {
             ctemplate::TemplateDictionary *pv_node_dict = dict->AddIncludeDictionary("PVNODE_DICT");
             pv_node_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/PVNode.tpl");
-            pv_node.set_template_values(pv_node_dict);
+            pv_node->set_template_values(pv_node_dict);
         }
     }
 
@@ -1296,14 +1305,14 @@ PVNode CIMObjectHandler::SynchronousMachineHandlerType0(const TPNodePtr tp_node,
          diagram_it!= syn_machine->DiagramObjects.end();
          ++diagram_it) {
         _t_points = this->calculate_average_position();
-        pv_node.annotation.placement.transformation.origin.x = _t_points.xPosition;
-        pv_node.annotation.placement.transformation.origin.y = _t_points.yPosition;
-        pv_node.annotation.placement.transformation.rotation = (*diagram_it)->rotation.value;
+        pv_node->annotation.placement.transformation.origin.x = _t_points.xPosition;
+        pv_node->annotation.placement.transformation.origin.y = _t_points.yPosition;
+        pv_node->annotation.placement.transformation.rotation = (*diagram_it)->rotation.value;
 
-        if (pv_node.sequenceNumber()==0 || pv_node.sequenceNumber()==1) {
+        if (pv_node->sequenceNumber()==0 || pv_node->sequenceNumber()==1) {
             ctemplate::TemplateDictionary *pv_node_dict = dict->AddIncludeDictionary("PVNODE_DICT");
             pv_node_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/PVNode.tpl");
-            pv_node.set_template_values(pv_node_dict);
+            pv_node->set_template_values(pv_node_dict);
         }
     }
 
