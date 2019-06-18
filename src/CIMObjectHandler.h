@@ -106,11 +106,6 @@ class CIMObjectHandler {
   std::queue<Household> householdQueue;
   std::queue<Connection> connectionQueue;
   std::unordered_map<BaseClass*, ModBaseClass*> _UsedObjects;
-  std::unordered_map<BaseClass*, Slack*> _UsedexternalNI;
-  std::unordered_map<BaseClass*, Transformer*> _UsedPowerTrafo;
-  std::unordered_map<BaseClass*, PiLine*> _UsedAcLine;
-  std::unordered_map<BaseClass*, PQLoad*> _UsedEnergyConsumer;
-  std::unordered_map<BaseClass*, PVNode*> _UsedSynMachine;
   std::unordered_map<RotatingMachinePtr,GeneratingUnitPtr> generatorMap;
   std::unordered_map<TerminalPtr,SVPowerFlowPtr> svPowerFlowMap;
   std::unordered_map<TPNodePtr,SVVoltagePtr> svVoltageMap;

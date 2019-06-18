@@ -55,6 +55,7 @@ CIMObjectHandler::~CIMObjectHandler() {
 
   while (used_it != _UsedObjects.end())
     {
+        delete used_it->second;
         _UsedObjects.erase(used_it++);
     }
   while (generator_it != generatorMap.end())
@@ -193,7 +194,6 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::string output_file_name, int v
       std::list<TerminalPtr>::iterator terminal_it;
 
       for (terminal_it = tp_node->Terminal.begin(); terminal_it!=tp_node->Terminal.end(); ++terminal_it) {
-
         //ConnectivityNode no use for NEPLAN
         /*if (auto *connectivity_node = dynamic_cast<ConnectivityNodePtr>((*terminal_it)->ConnectivityNode)) {
 
@@ -290,6 +290,7 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::string output_file_name, int v
         }
         #endif
          else {
+            //print_RTTI((*terminal_it)->ConductingEquipment); /// In verbose module to show the no used object information
           if(verbose_flag == 1) {
             print_RTTI((*terminal_it)->ConductingEquipment); /// In verbose module to show the no used object information
           }
@@ -448,21 +449,19 @@ BusBar* CIMObjectHandler::TopologicalNodeHandler(const TPNodePtr tp_node, ctempl
   }
   busbar->set_Vnom_displayUnit(busbar->Vnom_displayUnit());
   // std::list<DiagramObjectPtr>::iterator diagram_it is class member!
+    int counter = 0;
+    float currX = 0;
+    float currY = 0;
     if (tp_node->DiagramObjects.begin() == tp_node->DiagramObjects.end()){
         std::cerr << "Missing Diagram Object for TpNode:  " << tp_node->name << " Taking average Terminal Position \n";
 
-        int counter = 0;
-        float currX = 0;
-        float currY = 0;
-
         for(std::list<TerminalPtr >::iterator terminal_it = tp_node->Terminal.begin();
             terminal_it != tp_node->Terminal.end(); terminal_it++) {
-
             if ((*terminal_it)->DiagramObjects.begin() != (*terminal_it)->DiagramObjects.end()) {
 
                 for(diagram_it = (*terminal_it)->DiagramObjects.begin();
                     diagram_it!=(*terminal_it)->DiagramObjects.end(); ++diagram_it){
-                    this->calculate_average_position();
+                    _t_points = this->calculate_average_position();
                     currX += _t_points.xPosition;
                     currY += _t_points.yPosition;
                     counter += 1;
@@ -483,26 +482,29 @@ BusBar* CIMObjectHandler::TopologicalNodeHandler(const TPNodePtr tp_node, ctempl
         busbar_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/BusBar.tpl");
         busbar->set_template_values(busbar_dict);
 
-    }
-  for (diagram_it = tp_node->DiagramObjects.begin(); diagram_it!=tp_node->DiagramObjects.end(); ++diagram_it) {
-    _t_points = this->calculate_average_position();
-    busbar->annotation.placement.transformation.origin.x = _t_points.xPosition;
-    busbar->annotation.placement.transformation.origin.y = _t_points.yPosition;
-    busbar->annotation.placement.transformation.rotation = (*diagram_it)->rotation.value;
+    }else {
+        for (diagram_it = tp_node->DiagramObjects.begin(); diagram_it != tp_node->DiagramObjects.end(); ++diagram_it) {
+            _t_points = this->calculate_average_position();
+            currX += _t_points.xPosition;
+            currY += _t_points.yPosition;
+            counter += 1;
+            busbar->annotation.placement.transformation.rotation = (*diagram_it)->rotation.value;
+        }
+        busbar->annotation.placement.transformation.origin.x = currX / counter;
+        busbar->annotation.placement.transformation.origin.y = currY / counter;
+        ctemplate::TemplateDictionary *busbar_dict = dict->AddIncludeDictionary("BUSBAR_DICT");
+        busbar_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/BusBar.tpl");
+        busbar->set_template_values(busbar_dict);
 
-    ctemplate::TemplateDictionary *busbar_dict = dict->AddIncludeDictionary("BUSBAR_DICT");
-    busbar_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/BusBar.tpl");
-    busbar->set_template_values(busbar_dict);
-  }
 
-  //BusBarSection used in Cimphony
+        //BusBarSection used in Cimphony
 //  std::list<TerminalPtr>::iterator terminal_it;
 //  for (terminal_it = tp_node->Terminal.begin(); terminal_it!=tp_node->Terminal.end(); ++terminal_it) {
 //    if (auto *busbar_section = dynamic_cast<BusBarSectionPtr>((*terminal_it)->ConductingEquipment)) {
 //      this->BusBarSectionHandler(busbar_section, busbar, dict);
 //    }
 //  }
-
+    }
   return busbar;
 }
 
@@ -584,12 +586,22 @@ bool CIMObjectHandler::BusBarSectionHandler(const BusBarSectionPtr busbar_sectio
       ctemplate::TemplateDictionary *busbar_dict = dict->AddIncludeDictionary("BUSBAR_DICT");
       busbar_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/BusBar.tpl");
       busbar.set_template_values(busbar_dict);
-  }
+  }else{
 
+      int counter = 0;
+      float currX = 0;
+      float currY = 0;
   for (diagram_it = busbar_section->DiagramObjects.begin();
        diagram_it!=busbar_section->DiagramObjects.end();
        ++diagram_it) {
-    _t_points = this->calculate_average_position();
+      _t_points = this->calculate_average_position();
+      currX += _t_points.xPosition;
+      currY += _t_points.yPosition;
+      counter += 1;
+      busbar.annotation.placement.transformation.rotation = (*diagram_it)->rotation.value;
+  }
+    busbar.annotation.placement.transformation.origin.x = currX / counter;
+    busbar.annotation.placement.transformation.origin.y = currY / counter;
 
     busbar.annotation.placement.transformation.origin.x = _t_points.xPosition;
     busbar.annotation.placement.transformation.origin.y = _t_points.yPosition;
@@ -663,7 +675,7 @@ Slack* CIMObjectHandler::ExternalNIHandler(const TPNodePtr tp_node, const Termin
     slack->set_sequenceNumber(terminal->sequenceNumber);
   }catch(ReadingUninitializedField* e){
     slack->set_sequenceNumber(0);
-    std::cout <<"Missing sequence number in terminal sequence number " << terminal << std::endl;
+    std::cerr <<"Missing sequence number in terminal sequence number " << terminal << std::endl;
   }
   slack->set_sequenceNumber(terminal->sequenceNumber);
   slack->set_connected(terminal->connected);
@@ -694,20 +706,26 @@ Slack* CIMObjectHandler::ExternalNIHandler(const TPNodePtr tp_node, const Termin
           slack_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/Slack.tpl");
           slack->set_template_values(slack_dict);
       }
-  }
+  }else{
+      int counter = 0;
+      float currX = 0;
+      float currY = 0;
 
-  for (diagram_it = externalNI->DiagramObjects.begin(); diagram_it!=externalNI->DiagramObjects.end(); ++diagram_it) {
+      for (diagram_it = externalNI->DiagramObjects.begin(); diagram_it!=externalNI->DiagramObjects.end(); ++diagram_it) {
+          _t_points = this->calculate_average_position();
+          currX += _t_points.xPosition;
+          currY += _t_points.yPosition;
+          counter += 1;
+      }
+      slack->annotation.placement.transformation.origin.x = currX / counter;
+      slack->annotation.placement.transformation.origin.y = currY / counter;
+      slack->annotation.placement.transformation.rotation = (*diagram_it)->rotation.value - 90;
 
-    _t_points = this->calculate_average_position();
-    slack->annotation.placement.transformation.origin.x = _t_points.xPosition;
-    slack->annotation.placement.transformation.origin.y = _t_points.yPosition;
-    slack->annotation.placement.transformation.rotation = (*diagram_it)->rotation.value - 90;
-
-    if (slack->sequenceNumber()==0 || slack->sequenceNumber()==1) {
-      ctemplate::TemplateDictionary *slack_dict = dict->AddIncludeDictionary("SLACK_DICT");
-      slack_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/Slack.tpl");
-      slack->set_template_values(slack_dict);
-    }
+      if (slack->sequenceNumber()==0 || slack->sequenceNumber()==1) {
+          ctemplate::TemplateDictionary *slack_dict = dict->AddIncludeDictionary("SLACK_DICT");
+          slack_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/Slack.tpl");
+          slack->set_template_values(slack_dict);
+      }
   }
 
   return slack;
@@ -733,13 +751,13 @@ CIMObjectHandler::ACLineSegmentHandler(const TPNodePtr tp_node, const TerminalPt
         piline->set_g(ac_line->gch.value);///ac_line->length.value);
     }catch(ReadingUninitializedField* e){
         piline->set_g(0/ac_line->length.value);
-        std::cout<<"Missing gch value" << std::endl;
+        std::cerr<<"Missing gch value" << std::endl;
     }
     try{
         piline->set_sequenceNumber(terminal->sequenceNumber);
     }catch(ReadingUninitializedField* e){
         piline->set_sequenceNumber(0);
-        std::cout<<"Missing terminal seqNR" << std::endl;
+        std::cerr<<"Missing terminal seqNR" << std::endl;
     }
 
   if (this->configManager.gs.create_distaix_format == true && !node1Name.empty() && !node2Name.empty()) {
@@ -773,7 +791,7 @@ CIMObjectHandler::ACLineSegmentHandler(const TPNodePtr tp_node, const TerminalPt
         piline->set_connected(terminal->connected);
     }catch(ReadingUninitializedField* e){
         piline->set_connected(1);
-        std::cout<<"Missing connection info in terminal" << terminal << std::endl;
+        std::cerr<<"Missing connection info in terminal" << terminal << std::endl;
     }
   piline->annotation.placement.visible = true;
 
@@ -794,22 +812,28 @@ CIMObjectHandler::ACLineSegmentHandler(const TPNodePtr tp_node, const TerminalPt
           piLine_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/PiLine.tpl");
           piline->set_template_values(piLine_dict);
       }
-  }
+  }else {
+      int counter = 0;
+      float currX = 0;
+      float currY = 0;
+      for (diagram_it = ac_line->DiagramObjects.begin(); diagram_it != ac_line->DiagramObjects.end(); ++diagram_it) {
+          _t_points = this->calculate_average_position();
+          currX += _t_points.xPosition;
+          currY += _t_points.yPosition;
+          counter += 1;
+          piline->annotation.placement.transformation.rotation = (*diagram_it)->rotation.value - 90;
+      }
+      piline->annotation.placement.transformation.origin.x = currX/counter;
+      piline->annotation.placement.transformation.origin.y = currY/counter;
 
-  for (diagram_it = ac_line->DiagramObjects.begin(); diagram_it!=ac_line->DiagramObjects.end(); ++diagram_it) {
-
-    _t_points = this->calculate_average_position();
-    piline->annotation.placement.transformation.origin.x = _t_points.xPosition;
-    piline->annotation.placement.transformation.origin.y = _t_points.yPosition;
-    piline->annotation.placement.transformation.rotation = (*diagram_it)->rotation.value - 90;
-
-    if (piline->sequenceNumber()==0 || piline->sequenceNumber()==1 || (template_folder == "DistAIX_templates" && piline->sequenceNumber() == 2) /* last term needed */) {
-      ctemplate::TemplateDictionary *piLine_dict = dict->AddIncludeDictionary("PILINE_DICT");
-      piLine_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/PiLine.tpl");
-      piline->set_template_values(piLine_dict);
-    }
-  }
-
+       if (piline->sequenceNumber() == 0 || piline->sequenceNumber() == 1 ||
+              (template_folder == "DistAIX_templates" && piline->sequenceNumber() == 2) /* last term needed */) {
+              ctemplate::TemplateDictionary *piLine_dict = dict->AddIncludeDictionary("PILINE_DICT");
+              piLine_dict->SetFilename(
+                      this->configManager.ts.directory_path + "resource/" + template_folder + "/PiLine.tpl");
+              piline->set_template_values(piLine_dict);
+          }
+      }
   return piline;
 }
 
@@ -828,7 +852,7 @@ Transformer* CIMObjectHandler::PowerTransformerHandler(const TPNodePtr tp_node, 
     trafo->set_sequenceNumber(terminal->sequenceNumber);
   }catch(ReadingUninitializedField* e){
     trafo->set_sequenceNumber(0);
-    std::cout <<"Missing sequence number in terminal sequence number " << terminal << std::endl;
+    std::cerr <<"Missing sequence number in terminal sequence number " << terminal << std::endl;
   }
 
   trafo->set_connected(terminal->connected);
@@ -908,24 +932,30 @@ Transformer* CIMObjectHandler::PowerTransformerHandler(const TPNodePtr tp_node, 
           powerTrafo_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/Transformer.tpl");
           trafo->set_template_values(powerTrafo_dict);
       }
+  }else {
+      int counter = 0;
+      float currX = 0;
+      float currY = 0;
+
+      for (diagram_it = power_trafo->DiagramObjects.begin();
+           diagram_it != power_trafo->DiagramObjects.end();
+           ++diagram_it) {
+          _t_points = this->calculate_average_position();
+          currX += _t_points.xPosition;
+          currY += _t_points.yPosition;
+          counter += 1;
+          trafo->annotation.placement.transformation.rotation = (*diagram_it)->rotation.value - 90;
+      }
+      trafo->annotation.placement.transformation.origin.x = currX/counter;
+      trafo->annotation.placement.transformation.origin.y = currY/counter;
+
+          if (trafo->sequenceNumber() == 0 || trafo->sequenceNumber() == 1) {
+              ctemplate::TemplateDictionary *powerTrafo_dict = dict->AddIncludeDictionary("TRANSFORMER_DICT");
+              powerTrafo_dict->SetFilename(
+                      this->configManager.ts.directory_path + "resource/" + template_folder + "/Transformer.tpl");
+              trafo->set_template_values(powerTrafo_dict);
+          }
   }
-
-  for (diagram_it = power_trafo->DiagramObjects.begin();
-       diagram_it!=power_trafo->DiagramObjects.end();
-       ++diagram_it) {
-
-    _t_points = this->calculate_average_position();
-    trafo->annotation.placement.transformation.origin.x = _t_points.xPosition;
-    trafo->annotation.placement.transformation.origin.y = _t_points.yPosition;
-    trafo->annotation.placement.transformation.rotation = (*diagram_it)->rotation.value - 90;
-
-    if (trafo->sequenceNumber()==0 || trafo->sequenceNumber()==1) {
-      ctemplate::TemplateDictionary *powerTrafo_dict = dict->AddIncludeDictionary("TRANSFORMER_DICT");
-      powerTrafo_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/Transformer.tpl");
-      trafo->set_template_values(powerTrafo_dict);
-    }
-  }
-
   return trafo;
 }
 
@@ -963,7 +993,7 @@ PQLoad* CIMObjectHandler::EnergyConsumerHandler(const TPNodePtr tp_node, const T
           try{
               pqload->set_Pnom(energy_consumer->p.value);
           }catch(ReadingUninitializedField* e1){
-              std::cout <<"reading unititalized Pnom for PQLoad: " << std::endl;
+              std::cerr <<"reading unititalized Pnom for PQLoad: " << std::endl;
               pqload->set_Pnom(1);
           }
       }
@@ -974,7 +1004,7 @@ PQLoad* CIMObjectHandler::EnergyConsumerHandler(const TPNodePtr tp_node, const T
           try{
               pqload->set_Qnom(energy_consumer->q.value);
           }catch(ReadingUninitializedField* e1){
-              std::cout <<"reading unititalized Qnom for PQLoad: " << std::endl;
+              std::cerr <<"reading unititalized Qnom for PQLoad: " << std::endl;
               pqload->set_Qnom(1);
           }
       }
@@ -1012,7 +1042,7 @@ PQLoad* CIMObjectHandler::EnergyConsumerHandler(const TPNodePtr tp_node, const T
     pqload->set_sequenceNumber(terminal->sequenceNumber);
   }catch(ReadingUninitializedField* e){
     pqload->set_sequenceNumber(0);
-    std::cout <<"Missing sequence number in terminal sequence number " << terminal << std::endl;
+    std::cerr <<"Missing sequence number in terminal sequence number " << terminal << std::endl;
   }
   pqload->set_connected(terminal->connected);
   pqload->annotation.placement.visible = true;
@@ -1051,15 +1081,23 @@ PQLoad* CIMObjectHandler::EnergyConsumerHandler(const TPNodePtr tp_node, const T
               }
           }
       }
-  }
+  }else{
+          int counter = 0;
+          float currX = 0;
+          float currY = 0;
 
-  for (diagram_it = energy_consumer->DiagramObjects.begin(); diagram_it!=energy_consumer->DiagramObjects.end();
-           ++diagram_it) {
+          for (diagram_it = energy_consumer->DiagramObjects.begin(); diagram_it!=energy_consumer->DiagramObjects.end();
+               ++diagram_it) {
+              _t_points = this->calculate_average_position();
+              currX += _t_points.xPosition;
+              currY += _t_points.yPosition;
+              counter += 1;
+              pqload->annotation.placement.transformation.rotation = (*diagram_it)->rotation.value;
+          }
 
-    _t_points = this->calculate_average_position();
-    pqload->annotation.placement.transformation.origin.x = _t_points.xPosition;
-    pqload->annotation.placement.transformation.origin.y = _t_points.yPosition;
-    pqload->annotation.placement.transformation.rotation = (*diagram_it)->rotation.value;
+    pqload->annotation.placement.transformation.origin.x = currX /counter;
+    pqload->annotation.placement.transformation.origin.y = currY /counter;
+
 
     if(this->configManager.household_parameters.use_households == false){
       if (pqload->sequenceNumber() == 0 || pqload->sequenceNumber() == 1) {
@@ -1103,7 +1141,7 @@ SolarGenerator* CIMObjectHandler::SynchronousMachineHandlerType2(const TPNodePtr
     solar_generator->set_sequenceNumber(terminal->sequenceNumber);
   }catch(ReadingUninitializedField* e){
     solar_generator->set_sequenceNumber(0);
-    std::cout <<"Missing sequence number in terminal sequence number " << terminal << std::endl;
+    std::cerr <<"Missing sequence number in terminal sequence number " << terminal << std::endl;
   }
 
   if (this->configManager.solar_gen_parameters.enable) {
@@ -1169,7 +1207,7 @@ WindGenerator* CIMObjectHandler::SynchronousMachineHandlerType1(const TPNodePtr 
         wind_generator->set_sequenceNumber(terminal->sequenceNumber);
     }catch(ReadingUninitializedField* e){
         wind_generator->set_sequenceNumber(0);
-        std::cout <<"Missing sequence number in terminal sequence number " << terminal << std::endl;
+        std::cerr <<"Missing sequence number in terminal sequence number " << terminal << std::endl;
     }
     wind_generator->set_connected(terminal->connected);
     wind_generator->annotation.placement.visible = true;
@@ -1226,7 +1264,7 @@ PVNode * CIMObjectHandler::SynchronousMachineHandlerType0(const TPNodePtr tp_nod
         pv_node->set_sequenceNumber(terminal->sequenceNumber);
     }catch(ReadingUninitializedField* e){
         pv_node->set_sequenceNumber(0);
-        std::cout <<"Missing sequence number in terminal sequence number " << terminal << std::endl;
+        std::cerr <<"Missing sequence number in terminal sequence number " << terminal << std::endl;
     }
     pv_node->set_connected(terminal->connected);
     pv_node->annotation.placement.visible = true;
@@ -1252,7 +1290,7 @@ PVNode * CIMObjectHandler::SynchronousMachineHandlerType0(const TPNodePtr tp_nod
             } else if(this->configManager.us.voltage_unit == "MV"){
                 pv_node->setVnom(tp_node->BaseVoltage->nominalVoltage.value * 1000000);
             }
-            std::cout << "Unitialized Vnom for Synchronous Machine taking TopologicalNode BaseVoltage " << std::endl;
+            std::cerr << "Unitialized Vnom for Synchronous Machine taking TopologicalNode BaseVoltage " << std::endl;
         }
 
     }
@@ -1323,15 +1361,22 @@ PVNode * CIMObjectHandler::SynchronousMachineHandlerType0(const TPNodePtr tp_nod
             pv_node_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/PVNode.tpl");
             pv_node->set_template_values(pv_node_dict);
         }
-    }
+    }else{
+        int counter = 0;
+        float currX = 0;
+        float currY = 0;
+        for (diagram_it = syn_machine->DiagramObjects.begin();
+             diagram_it!= syn_machine->DiagramObjects.end();
+             ++diagram_it) {            _t_points = this->calculate_average_position();
+            currX += _t_points.xPosition;
+            currY += _t_points.yPosition;
+            counter += 1;
+            pv_node->annotation.placement.transformation.rotation = (*diagram_it)->rotation.value;
+        }
 
-    for (diagram_it = syn_machine->DiagramObjects.begin();
-         diagram_it!= syn_machine->DiagramObjects.end();
-         ++diagram_it) {
-        _t_points = this->calculate_average_position();
-        pv_node->annotation.placement.transformation.origin.x = _t_points.xPosition;
-        pv_node->annotation.placement.transformation.origin.y = _t_points.yPosition;
-        pv_node->annotation.placement.transformation.rotation = (*diagram_it)->rotation.value;
+        pv_node->annotation.placement.transformation.origin.x = currX /counter;
+        pv_node->annotation.placement.transformation.origin.y = currY /counter;
+
 
         if (pv_node->sequenceNumber()==0 || pv_node->sequenceNumber()==1) {
             ctemplate::TemplateDictionary *pv_node_dict = dict->AddIncludeDictionary("PVNODE_DICT");
@@ -1456,11 +1501,10 @@ DiagramObjectPoint CIMObjectHandler::calculate_average_position() {
     t_points.yPosition = (*points_it)->yPosition + t_points.yPosition;
   }
 
+
   std::size_t size = (*diagram_it)->DiagramObjectPoints.size();
-
   t_points = convert_coordinate(t_points.xPosition/size, t_points.yPosition/size, this->configManager);
-
-  return t_points;
+    return t_points;
 }
 
 /**
@@ -1474,10 +1518,8 @@ DiagramObjectPoint CIMObjectHandler::convert_coordinate(double x, double y, cons
       trans_para[i] = configManager.ss.topology_trans_parameter[i];
   }
   DiagramObjectPoint t_points;
-
   t_points.xPosition = trans_para[0]*x + trans_para[1];
   t_points.yPosition = trans_para[2]*y + trans_para[3];
-
   return t_points;
 }
 

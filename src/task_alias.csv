@@ -5,3 +5,9 @@ cim:IdentifiedObject.DiagramObjects, cim:DiagramObject.IdentifiedObject
 cim:DiagramObject.DiagramObjectPoints, cim:DiagramObjectPoint.DiagramObject
 cim:SubGeographicalRegion.Substations, cim:Substation.Region
 cim:OperationalLimitSet.OperationalLimitValue, cim:OperationalLimit.OperationalLimitSet
+cim:Location.PowerSystemResources, cim:PowerSystemResource.Location
+cim:GeneratingUnit.RotatingMachine, cim:SynchronousMachine.GeneratingUnit
+cim:TopologicalIsland.AngleRefTopologicalNode, cim:TopologicalNode.AngleRefTopologicalIsland
+cim:TopologicalIsland.TopologicalNodes, cim:TopologicalNode.TopologicalIsland
+cim:Location.PositionPoints , cim:PositionPoint.Location
+cim:SubGeographicalRegion.Lines, cim:Line.Region
