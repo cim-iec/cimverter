@@ -5,6 +5,7 @@
 #include "ModPowerSystems/PhasorSinglePhase/Transformers/Transformer.h"
 #include "ModPowerSystems/PhasorSinglePhase/Lines/PiLine.h"
 #include "ModPowerSystems/PhasorSinglePhase/Lines/RxLine.h"
+#include "ModPowerSystems/PhasorSinglePhase/Lines/Breaker.h"
 #include "ModPowerSystems/PhasorSinglePhase/Sources/Slack.h"
 #include "ModPowerSystems/PhasorSinglePhase/Loads/PQLoad.h"
 #include "ModPowerSystems/PhasorSinglePhase/Loads/ZLoad.h"

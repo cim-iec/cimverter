@@ -162,6 +162,13 @@ void ConfigManager::getConnectionNames(){
     catch (const SettingNotFoundException &nfex) {
         std::cerr << "No system enable settings in configuration file." << std::endl;
     }
+    try {
+        this->cs.BreakerName = this->conCfg.lookup("connections.Breaker.name").c_str();
+
+    }
+    catch (const SettingNotFoundException &nfex) {
+        std::cerr << "No system enable settings in configuration file." << std::endl;
+    }
 }
 
 void ConfigManager::getConfigFiles() {

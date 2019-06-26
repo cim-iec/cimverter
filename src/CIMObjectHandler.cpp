@@ -180,8 +180,8 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::string output_file_name, int v
   std::unordered_map<BaseClass*, ModBaseClass*> copy;
 
   ///main searching loop
-  for (BaseClass *Object : this->_CIMObjects) {
 
+  for (BaseClass *Object : this->_CIMObjects) {
 
     if (auto *tp_node = dynamic_cast<TPNodePtr>(Object)) {
 
@@ -280,6 +280,18 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::string output_file_name, int v
                 Connection conn(busbar, (PVNode* )_UsedObjects[synchronous_machine]);
                 connectionQueue.push(conn);
             }
+        }else if (auto *cim_breaker = dynamic_cast<BreakerPtr> ((*terminal_it)->ConductingEquipment)){
+            if(_UsedObjects.find(cim_breaker) != _UsedObjects.end()) {
+                std::cout << "unused" << (cim_breaker)->name << std::endl;
+            }
+            else{
+                Breaker * breaker = this->BreakerHandler(tp_node, (*terminal_it), cim_breaker , dict);
+                _UsedObjects.insert({cim_breaker, breaker});
+                print_RTTI((*terminal_it)->ConductingEquipment); /// In verbose module to show the no used object information
+            }
+            Connection conn(busbar, (Breaker* )_UsedObjects[cim_breaker]);
+            connectionQueue.push(conn);
+
         }
         #ifdef SINERGIEN
         else if (auto *battery_storage = dynamic_cast<BatteryStoragePtr>((*terminal_it)->ConductingEquipment)){
@@ -290,7 +302,7 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::string output_file_name, int v
         }
         #endif
          else {
-            //print_RTTI((*terminal_it)->ConductingEquipment); /// In verbose module to show the no used object information
+
           if(verbose_flag == 1) {
             print_RTTI((*terminal_it)->ConductingEquipment); /// In verbose module to show the no used object information
           }
@@ -701,11 +713,9 @@ Slack* CIMObjectHandler::ExternalNIHandler(const TPNodePtr tp_node, const Termin
       slack->annotation.placement.transformation.origin.y = 0;
       slack->annotation.placement.transformation.rotation = 0;
 
-      if (slack->sequenceNumber()==0 || slack->sequenceNumber()==1) {
           ctemplate::TemplateDictionary *slack_dict = dict->AddIncludeDictionary("SLACK_DICT");
           slack_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/Slack.tpl");
           slack->set_template_values(slack_dict);
-      }
   }else{
       int counter = 0;
       float currX = 0;
@@ -721,11 +731,9 @@ Slack* CIMObjectHandler::ExternalNIHandler(const TPNodePtr tp_node, const Termin
       slack->annotation.placement.transformation.origin.y = currY / counter;
       slack->annotation.placement.transformation.rotation = (*diagram_it)->rotation.value - 90;
 
-      if (slack->sequenceNumber()==0 || slack->sequenceNumber()==1) {
           ctemplate::TemplateDictionary *slack_dict = dict->AddIncludeDictionary("SLACK_DICT");
           slack_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/Slack.tpl");
           slack->set_template_values(slack_dict);
-      }
   }
 
   return slack;
@@ -807,11 +815,9 @@ CIMObjectHandler::ACLineSegmentHandler(const TPNodePtr tp_node, const TerminalPt
       piline->annotation.placement.transformation.origin.y = 0;
       piline->annotation.placement.transformation.rotation = 0;
 
-      if (piline->sequenceNumber()==0 || piline->sequenceNumber()==1) {
           ctemplate::TemplateDictionary *piLine_dict = dict->AddIncludeDictionary("PILINE_DICT");
           piLine_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/PiLine.tpl");
           piline->set_template_values(piLine_dict);
-      }
   }else {
       int counter = 0;
       float currX = 0;
@@ -826,13 +832,11 @@ CIMObjectHandler::ACLineSegmentHandler(const TPNodePtr tp_node, const TerminalPt
       piline->annotation.placement.transformation.origin.x = currX/counter;
       piline->annotation.placement.transformation.origin.y = currY/counter;
 
-       if (piline->sequenceNumber() == 0 || piline->sequenceNumber() == 1 ||
-              (template_folder == "DistAIX_templates" && piline->sequenceNumber() == 2) /* last term needed */) {
               ctemplate::TemplateDictionary *piLine_dict = dict->AddIncludeDictionary("PILINE_DICT");
               piLine_dict->SetFilename(
                       this->configManager.ts.directory_path + "resource/" + template_folder + "/PiLine.tpl");
               piline->set_template_values(piLine_dict);
-          }
+
       }
   return piline;
 }
@@ -927,11 +931,9 @@ Transformer* CIMObjectHandler::PowerTransformerHandler(const TPNodePtr tp_node, 
       trafo->annotation.placement.transformation.origin.y = 0;
       trafo->annotation.placement.transformation.rotation = 0;
 
-      if (trafo->sequenceNumber()==0 || trafo->sequenceNumber()==1) {
-          ctemplate::TemplateDictionary *powerTrafo_dict = dict->AddIncludeDictionary("TRANSFORMER_DICT");
-          powerTrafo_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/Transformer.tpl");
-          trafo->set_template_values(powerTrafo_dict);
-      }
+      ctemplate::TemplateDictionary *powerTrafo_dict = dict->AddIncludeDictionary("TRANSFORMER_DICT");
+      powerTrafo_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/Transformer.tpl");
+      trafo->set_template_values(powerTrafo_dict);
   }else {
       int counter = 0;
       float currX = 0;
@@ -949,12 +951,11 @@ Transformer* CIMObjectHandler::PowerTransformerHandler(const TPNodePtr tp_node, 
       trafo->annotation.placement.transformation.origin.x = currX/counter;
       trafo->annotation.placement.transformation.origin.y = currY/counter;
 
-          if (trafo->sequenceNumber() == 0 || trafo->sequenceNumber() == 1) {
-              ctemplate::TemplateDictionary *powerTrafo_dict = dict->AddIncludeDictionary("TRANSFORMER_DICT");
-              powerTrafo_dict->SetFilename(
-                      this->configManager.ts.directory_path + "resource/" + template_folder + "/Transformer.tpl");
-              trafo->set_template_values(powerTrafo_dict);
-          }
+      ctemplate::TemplateDictionary *powerTrafo_dict = dict->AddIncludeDictionary("TRANSFORMER_DICT");
+      powerTrafo_dict->SetFilename(
+              this->configManager.ts.directory_path + "resource/" + template_folder + "/Transformer.tpl");
+      trafo->set_template_values(powerTrafo_dict);
+
   }
   return trafo;
 }
@@ -1248,6 +1249,45 @@ WindGenerator* CIMObjectHandler::SynchronousMachineHandlerType1(const TPNodePtr 
     return wind_generator;
 }
 
+Breaker* CIMObjectHandler::BreakerHandler(const TPNodePtr tp_node, const TerminalPtr terminal, const BreakerPtr cim_breaker,ctemplate::TemplateDictionary* dict){
+    Breaker* breaker = new Breaker();
+    breaker->set_name(name_in_modelica(cim_breaker->name));
+    breaker->set_is_closed(!cim_breaker->normalOpen);
+    std::cout << "closed : " << cim_breaker->normalOpen <<std::endl;
+    breaker->set_connected(terminal->connected);
+    if(cim_breaker->DiagramObjects.begin() == cim_breaker->DiagramObjects.end()){
+        std::cerr << "Missing Diagram Object for Switch: " << cim_breaker->name << " Default Position 0,0 \n";
+        breaker->annotation.placement.transformation.origin.x = 0;
+        breaker->annotation.placement.transformation.origin.y = 0;
+        breaker->annotation.placement.transformation.rotation = 0;
+
+        ctemplate::TemplateDictionary *breaker_dict = dict->AddIncludeDictionary("BREAKER_DICT");
+        breaker_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/Breaker.tpl");
+        breaker->set_template_values(breaker_dict);
+    }else{
+        int counter = 0;
+        float currX = 0;
+        float currY = 0;
+        for (diagram_it = cim_breaker->DiagramObjects.begin();
+             diagram_it!= cim_breaker->DiagramObjects.end();
+             ++diagram_it) {            _t_points = this->calculate_average_position();
+            currX += _t_points.xPosition;
+            currY += _t_points.yPosition;
+            counter += 1;
+            breaker->annotation.placement.transformation.rotation = (*diagram_it)->rotation.value;
+        }
+
+        breaker->annotation.placement.transformation.origin.x = currX /counter;
+         breaker->annotation.placement.transformation.origin.y = currY /counter;
+
+
+        ctemplate::TemplateDictionary *breaker_dict = dict->AddIncludeDictionary("BREAKER_DICT");
+        breaker_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/Breaker.tpl");
+        breaker->set_template_values(breaker_dict);
+
+    }
+    return breaker;
+}
 
 /**
  * ConductingEquipment of Terminal
@@ -1356,11 +1396,9 @@ PVNode * CIMObjectHandler::SynchronousMachineHandlerType0(const TPNodePtr tp_nod
         pv_node->annotation.placement.transformation.origin.y = 0;
         pv_node->annotation.placement.transformation.rotation = 0;
 
-        if (pv_node->sequenceNumber()==0 || pv_node->sequenceNumber()==1) {
-            ctemplate::TemplateDictionary *pv_node_dict = dict->AddIncludeDictionary("PVNODE_DICT");
-            pv_node_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/PVNode.tpl");
-            pv_node->set_template_values(pv_node_dict);
-        }
+        ctemplate::TemplateDictionary *pv_node_dict = dict->AddIncludeDictionary("PVNODE_DICT");
+        pv_node_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/PVNode.tpl");
+        pv_node->set_template_values(pv_node_dict);
     }else{
         int counter = 0;
         float currX = 0;
@@ -1378,15 +1416,16 @@ PVNode * CIMObjectHandler::SynchronousMachineHandlerType0(const TPNodePtr tp_nod
         pv_node->annotation.placement.transformation.origin.y = currY /counter;
 
 
-        if (pv_node->sequenceNumber()==0 || pv_node->sequenceNumber()==1) {
-            ctemplate::TemplateDictionary *pv_node_dict = dict->AddIncludeDictionary("PVNODE_DICT");
-            pv_node_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/PVNode.tpl");
-            pv_node->set_template_values(pv_node_dict);
-        }
+        ctemplate::TemplateDictionary *pv_node_dict = dict->AddIncludeDictionary("PVNODE_DICT");
+        pv_node_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/PVNode.tpl");
+        pv_node->set_template_values(pv_node_dict);
+
     }
 
     return pv_node;
 }
+
+
 #ifdef SINERGIEN
 Battery CIMObjectHandler::BatteryStorageHandler(const TPNodePtr tp_node, const TerminalPtr terminal, const BatteryStoragePtr battery_storge,
                                                 ctemplate::TemplateDictionary* dict){

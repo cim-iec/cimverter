@@ -26,6 +26,7 @@ typedef IEC61970::Base::Core::ConnectivityNode* ConnectivityNodePtr;
 typedef IEC61970::Base::Core::Terminal* TerminalPtr;
 typedef IEC61970::Base::Wires::ExternalNetworkInjection* ExNIPtr;
 typedef IEC61970::Base::Wires::ACLineSegment* AcLinePtr;
+typedef IEC61970::Base::Wires::Breaker* BreakerPtr;
 typedef IEC61970::Base::Wires::PowerTransformer* PowerTrafoPtr;
 typedef IEC61970::Base::Wires::PowerTransformerEnd* PowerTransformerEndPtr;
 typedef IEC61970::Base::Wires::EnergyConsumer* EnergyConsumerPtr;
@@ -81,7 +82,7 @@ class CIMObjectHandler {
   PVNode * SynchronousMachineHandlerType0(const TPNodePtr tp_node, const TerminalPtr terminal, const SynMachinePtr syn_machine, ctemplate::TemplateDictionary* dict);
   WindGenerator* SynchronousMachineHandlerType1(const TPNodePtr tp_node, const TerminalPtr terminal, const SynMachinePtr syn_machine, ctemplate::TemplateDictionary* dict);
   SolarGenerator* SynchronousMachineHandlerType2(const TPNodePtr tp_node, const TerminalPtr terminal, const SynMachinePtr syn_machine,ctemplate::TemplateDictionary* dict);
-
+  Breaker* BreakerHandler(const TPNodePtr tp_node, const TerminalPtr terminal, const BreakerPtr breaker,ctemplate::TemplateDictionary* dict);
 #ifdef SINERGIEN
     Battery BatteryStorageHandler(const TPNodePtr tp_node, const TerminalPtr terminal, const BatteryStoragePtr battery_storge, ctemplate::TemplateDictionary* dict);
 #endif

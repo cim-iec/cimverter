@@ -74,6 +74,20 @@ Connection::Connection(const BusBar* busbar, const PQLoad* pq_load): Connection(
   this->cal_middle_points(pq_load);
 }
 
+
+Connection::Connection(const BusBar* busbar, const Breaker* breaker): Connection(busbar) {
+    this->set_connected(breaker->is_connected());//electrical connected?
+    _port2 = breaker->name();
+    _terminalId2 = this->configManager->cs.BreakerName;
+    _port2Short = _port2;
+
+    _port2.append(".");
+    _port2.append(_terminalId2);
+    _p2.x = breaker->annotation.placement.transformation.origin.x;
+    _p2.y = breaker->annotation.placement.transformation.origin.y;
+    this->cal_middle_points(breaker);
+
+}
 /** \brief Connection between BusBar and Household
  *
  * Delegate BusBar constructors
