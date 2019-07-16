@@ -136,10 +136,8 @@ bool CIMObjectHandler::pre_process() {
             ///find terminal's svPowerFlow
             if (auto *sv_powerflow = dynamic_cast<SVPowerFlowPtr>(Object)) {
                 svPowerFlowMap.insert({sv_powerflow->Terminal, sv_powerflow}); //hashmap
-                std::cout << "inserted in powerflow: " << sv_powerflow->Terminal->name << std::endl;
             } else if (auto *sv_voltage = dynamic_cast<SVVoltagePtr>(Object)) {
                 svVoltageMap.insert({ (sv_voltage->TopologicalNode), sv_voltage});
-                std::cout << "inserted in voltageMap: " << sv_voltage->TopologicalNode->name << std::endl;
             }
 
         }
@@ -169,8 +167,6 @@ bool CIMObjectHandler::pre_process() {
         } else {
             if (auto *terminal = dynamic_cast<TerminalPtr>(Object)) {
                 terminalList[terminal->ConnectivityNode].push_back(terminal);
-                std::cout << "inserted in terminalList: " << terminal->name << std::endl;
-
             }
         }
 
