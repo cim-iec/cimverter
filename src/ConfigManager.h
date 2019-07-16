@@ -77,6 +77,7 @@ typedef struct SystemSettings {
   double label_extent[4];               /// label size
   bool label_visible;                   /// label visible
   double annotation_extent[4];          /// system size
+  bool use_TPNodes;                     /// Use TPNode or ConnectivityNodes
 } SystemSettings;
 
 /// base annotation settings in Config.cfg

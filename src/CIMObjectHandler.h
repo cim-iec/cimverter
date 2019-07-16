@@ -24,6 +24,9 @@ typedef IEC61970::Base::Wires::BusbarSection* BusBarSectionPtr;
 typedef IEC61970::Base::Topology::TopologicalNode* TPNodePtr;
 typedef IEC61970::Base::Core::ConnectivityNode* ConnectivityNodePtr;
 typedef IEC61970::Base::Core::Terminal* TerminalPtr;
+typedef IEC61970::Base::Core::Terminal Terminal;
+typedef IEC61970::Base::Core::ConductingEquipment* ConductingPtr;
+typedef IEC61970::Base::Core::BaseVoltage* BaseVoltagePtr;
 typedef IEC61970::Base::Wires::ExternalNetworkInjection* ExNIPtr;
 typedef IEC61970::Base::Wires::ACLineSegment* AcLinePtr;
 typedef IEC61970::Base::Wires::Breaker* BreakerPtr;
@@ -70,23 +73,28 @@ class CIMObjectHandler {
   CIMObjectHandler& operator=(const CIMObjectHandler&) = delete;
   virtual ~CIMObjectHandler();
 
+  void prepareTerminalList();
   bool ModelicaCodeGenerator(std::string output_file_name, int verbose_flag);
   bool SystemSettingsHandler(const std::string filename, ctemplate::TemplateDictionary* dict);
+
   BusBar* TopologicalNodeHandler(const TPNodePtr tp_node, ctemplate::TemplateDictionary* dict);
+  Slack* ExternalNIHandler( BaseClass* tp_node, const TerminalPtr terminal, const ExNIPtr externalNI, ctemplate::TemplateDictionary* dict);
+  PQLoad* EnergyConsumerHandler( const TerminalPtr terminal, const EnergyConsumerPtr energy_consumer, ctemplate::TemplateDictionary* dict);
+  PVNode * SynchronousMachineHandlerType0(BaseClass* node, const TerminalPtr terminal, const SynMachinePtr syn_machine, ctemplate::TemplateDictionary* dict);
+  BusBar* ConnectivityNodeHandler(const ConnectivityNodePtr connectivity_node, ctemplate::TemplateDictionary* dict);
+  bool HouseholdComponetsHandler( BaseClass* node, ctemplate::TemplateDictionary* dict);  //to find household Componets
+
   bool BusBarSectionHandler(const BusBarSectionPtr busbar_section, BusBar &busbar, ctemplate::TemplateDictionary* dict);
-  ConnectivityNode ConnectivityNodeHandler(const TPNodePtr tp_node, const TerminalPtr terminal, const ConnectivityNodePtr connectivity_node, ctemplate::TemplateDictionary* dict);
-  Slack* ExternalNIHandler(const TPNodePtr tp_node, const TerminalPtr terminal, const ExNIPtr externalNI, ctemplate::TemplateDictionary* dict);
-  PiLine* ACLineSegmentHandler(const TPNodePtr tp_node, const TerminalPtr terminal, const AcLinePtr ac_line, ctemplate::TemplateDictionary* dict, std::string node1Name = "", std::string node2Name = "");
-  Transformer* PowerTransformerHandler(const TPNodePtr tp_node, const TerminalPtr terminal, const PowerTrafoPtr power_trafo, ctemplate::TemplateDictionary* dict);
-  PQLoad* EnergyConsumerHandler(const TPNodePtr tp_node, const TerminalPtr terminal, const EnergyConsumerPtr energy_consumer, ctemplate::TemplateDictionary* dict);
-  PVNode * SynchronousMachineHandlerType0(const TPNodePtr tp_node, const TerminalPtr terminal, const SynMachinePtr syn_machine, ctemplate::TemplateDictionary* dict);
-  WindGenerator* SynchronousMachineHandlerType1(const TPNodePtr tp_node, const TerminalPtr terminal, const SynMachinePtr syn_machine, ctemplate::TemplateDictionary* dict);
-  SolarGenerator* SynchronousMachineHandlerType2(const TPNodePtr tp_node, const TerminalPtr terminal, const SynMachinePtr syn_machine,ctemplate::TemplateDictionary* dict);
-  Breaker* BreakerHandler(const TPNodePtr tp_node, const TerminalPtr terminal, const BreakerPtr breaker,ctemplate::TemplateDictionary* dict);
+
+  PiLine* ACLineSegmentHandler(const TerminalPtr terminal, const AcLinePtr ac_line, ctemplate::TemplateDictionary* dict, std::string node1Name = "", std::string node2Name = "");
+  Transformer* PowerTransformerHandler(const TerminalPtr terminal, const PowerTrafoPtr power_trafo, ctemplate::TemplateDictionary* dict);
+  WindGenerator* SynchronousMachineHandlerType1(const TerminalPtr terminal, const SynMachinePtr syn_machine, ctemplate::TemplateDictionary* dict);
+  SolarGenerator* SynchronousMachineHandlerType2(const TerminalPtr terminal, const SynMachinePtr syn_machine,ctemplate::TemplateDictionary* dict);
+  Breaker* BreakerHandler(const TerminalPtr terminal, const BreakerPtr breaker,ctemplate::TemplateDictionary* dict);
 #ifdef SINERGIEN
     Battery BatteryStorageHandler(const TPNodePtr tp_node, const TerminalPtr terminal, const BatteryStoragePtr battery_storge, ctemplate::TemplateDictionary* dict);
 #endif
-    bool HouseholdComponetsHandler(const TPNodePtr tp_node, ctemplate::TemplateDictionary* dict);  //to find household Componets
+
   bool ConnectionHandler(ctemplate::TemplateDictionary* dict);
 
   bool pre_process(); ///first loop
@@ -97,6 +105,8 @@ class CIMObjectHandler {
 
  private:
   std::string template_folder;
+  BusBar* currBusbar;
+  BaseClass* currNode;
   ConfigManager configManager;
   DiagramObjectPoint _t_points;
   std::vector<BaseClass*> _CIMObjects;
@@ -108,9 +118,12 @@ class CIMObjectHandler {
   std::queue<Connection> connectionQueue;
   std::unordered_map<BaseClass*, ModBaseClass*> _UsedObjects;
   std::unordered_map<RotatingMachinePtr,GeneratingUnitPtr> generatorMap;
-  std::unordered_map<TerminalPtr,SVPowerFlowPtr> svPowerFlowMap;
-  std::unordered_map<TPNodePtr,SVVoltagePtr> svVoltageMap;
+  std::unordered_map<ConductingPtr ,BaseVoltagePtr> baseVoltageMap;
+  std::unordered_map<TerminalPtr, SVPowerFlowPtr> svPowerFlowMap;
+  std::unordered_map<BaseClass*,SVVoltagePtr> svVoltageMap;
   std::unordered_map<AcLinePtr,OpLimitSetPtr> OpLimitMap;
+  std::unordered_map<BaseClass*, std::list<TerminalPtr> > terminalList;
+
 
   std::list<DiagramObjectPtr>::iterator diagram_it;
   std::list<RotatingMachinePtr>::iterator rotatingMachine_it;

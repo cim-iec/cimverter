@@ -407,6 +407,12 @@ void ConfigManager::getSystemSettings() {
   catch (const SettingNotFoundException &nfex) {
     std::cerr << "No annotation_extent settings in configuration file." << std::endl;
   }
+  try {
+      this->ss.use_TPNodes = this->cfg.lookup(("system.use_TPNodes"));
+  }catch(const SettingNotFoundException &nfex){
+      std::cerr << "No use_TPNode Setting configuration file." << std::endl;
+  }
+
 }
 
 ///
