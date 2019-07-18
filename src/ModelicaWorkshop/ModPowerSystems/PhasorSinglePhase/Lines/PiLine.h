@@ -7,6 +7,8 @@
 #define SRC_MODELICAWORKSHOP_MODPOWERSYSTEMS_PHASORSINGLEPHASE_LINES_PILINE_H_
 
 #include "../../../ModBaseClass.h"
+#include "../Connections/BusBar.h"
+typedef ModPowerSystems::PhasorSinglePhase::Connections::BusBar BusBar;
 
 using namespace ModelicaWorkshop;
 
@@ -131,9 +133,40 @@ class PiLine : public ModelicaWorkshop::ModBaseClass {
 
   bool set_template_values(ctemplate::TemplateDictionary *dictionary) override;
 
+  BusBar* getBus1()const {
+    return this->bus1;
+
+  }
+  BusBar* getBus2()const {
+    return this->bus2;
+
+  }
+  void setBus1(BusBar* bus){
+    this->bus1 = bus;
+    bus1Initialized = true;
+  }
+  void setBus2(BusBar* bus){
+    this->bus2 = bus;
+    bus2Initialized = true;
+  }
+
+  void setBus(BusBar* bus){
+    if(this->bus1Initialized == false){
+      setBus1(bus);
+      bus1Initialized = true;
+    }else{
+      setBus2(bus);
+      bus2Initialized = true;
+    }
+  }
+
  private:
 
   //Parameters
+  BusBar* bus1;
+  bool bus1Initialized = false;
+  BusBar* bus2;
+  bool bus2Initialized = false;
   double _length = 0;  //Length of line in km
   double _r = 0;  //Series Resistance per km
   double _x = 0;  //Series Reactance per km

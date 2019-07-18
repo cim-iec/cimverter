@@ -35,6 +35,8 @@ typedef  struct ConnectionSettings{
    std::string HouseholdName;
    std::string PVNodeName;
    std::string BreakerName;
+   std::string BreakerSuffix1;
+   std::string BreakerSuffix2;
 };
 
 // use SV settings
@@ -192,7 +194,7 @@ class ConfigManager {
   ConfigManager();
 
   virtual ~ConfigManager();
-
+  int default_baseKV;
   UseSVSettings svSettings;
   ConnectionSettings cs;
   GlobalSettings  gs;
@@ -220,6 +222,8 @@ class ConfigManager {
   void getConnectionConfigFiles();
 
   void getAllSettings();
+
+  void getDefault_baseKV();
 
   void getSVSettings();
 

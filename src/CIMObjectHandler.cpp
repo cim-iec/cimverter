@@ -252,8 +252,9 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::string output_file_name, int v
 
           } else if (auto *power_trafo = dynamic_cast<PowerTrafoPtr>((terminal)->ConductingEquipment)) {
               if(_UsedObjects.find(power_trafo) != _UsedObjects.end()) {
+                  ((Transformer* )_UsedObjects[power_trafo])->setBus(busbar);
               }else{
-                  Transformer* trafo = this->PowerTransformerHandler((terminal), power_trafo, dict);
+                  Transformer* trafo = this->PowerTransformerHandler(busbar, (terminal), power_trafo, dict);
                   _UsedObjects.insert({power_trafo, trafo});
               }
               Connection conn(busbar, (Transformer* )_UsedObjects[power_trafo]);
@@ -261,7 +262,7 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::string output_file_name, int v
 
           } else if (auto *ac_line = dynamic_cast<AcLinePtr>((terminal)->ConductingEquipment)) {
               if(_UsedObjects.find(ac_line) != _UsedObjects.end()) {
-
+                  ((PiLine* )_UsedObjects[ac_line])->setBus(busbar);
               }else {
 
                   if (template_folder == "DistAIX_templates") {
@@ -276,7 +277,7 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::string output_file_name, int v
                       auto searchIt = piLineIdMap.find(ac_line);
                       if (searchIt != piLineIdMap.end()) {
 
-                          PiLine* pi_line = this->ACLineSegmentHandler((terminal), ac_line, dict,
+                          PiLine* pi_line = this->ACLineSegmentHandler(busbar, (terminal), ac_line, dict,
                                                                        piLineIdMap[ac_line], busbar->name());
                           _UsedObjects.insert({ac_line, pi_line});
                       } else {
@@ -286,7 +287,7 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::string output_file_name, int v
                       }
                   } else {
 
-                      PiLine* pi_line = this->ACLineSegmentHandler((terminal), ac_line, dict);
+                      PiLine* pi_line = this->ACLineSegmentHandler(busbar, (terminal), ac_line, dict);
                       _UsedObjects.insert({ac_line, pi_line});
                   }
               }
@@ -320,9 +321,11 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::string output_file_name, int v
               }
           }else if (auto *cim_breaker = dynamic_cast<BreakerPtr> ((terminal)->ConductingEquipment)){
               if(_UsedObjects.find(cim_breaker) != _UsedObjects.end()) {
-               }
+                  Breaker* someBreaker = ((Breaker* )_UsedObjects[cim_breaker]);
+                  someBreaker->setBus(busbar);
+              }
               else{
-                  Breaker * breaker = this->BreakerHandler((terminal), cim_breaker , dict);
+                  Breaker * breaker = this->BreakerHandler(busbar,(terminal), cim_breaker , dict);
                   _UsedObjects.insert({cim_breaker, breaker});
               }
               Connection conn(busbar, (Breaker* )_UsedObjects[cim_breaker]);
@@ -563,8 +566,20 @@ BusBar* CIMObjectHandler::ConnectivityNodeHandler(const ConnectivityNodePtr con_
     BusBar* busbar = new BusBar();
     busbar->set_name(name_in_modelica(con_node->name));
     busbar->annotation.placement.visible = true;
-    //busbar->set_Vnom(con_node->BaseVoltage->nominalVoltage.value);//TODO
-    busbar->set_Vnom(1);
+    bool is_set = false;
+    std::list<TerminalPtr>::iterator terminal_it = terminalList[con_node].begin();
+    while (is_set == false){
+        if(baseVoltageMap.find((*terminal_it)->ConductingEquipment) != baseVoltageMap.end()){
+            busbar->set_Vnom(baseVoltageMap[(*terminal_it)->ConductingEquipment]->nominalVoltage.value);
+            is_set = true;
+        }
+        terminal_it ++;
+        if(terminal_it == terminalList[con_node].end()){
+            std::cerr << "No BaseVoltage connected to ConnectivityNode " << con_node->name << " using default value from cfg" <<std::endl;
+            busbar->set_Vnom(this->configManager.default_baseKV);
+            break;
+        }
+    }
     if(this->configManager.us.enable){
         FIX_NEPLAN_VOLTAGE(busbar);
     }
@@ -839,7 +854,7 @@ Slack* CIMObjectHandler::ExternalNIHandler(BaseClass* tp_node, const TerminalPtr
  * Convert to Pi_line in Modelica
  */
 PiLine *
-CIMObjectHandler::ACLineSegmentHandler(const TerminalPtr terminal, const AcLinePtr ac_line,
+CIMObjectHandler::ACLineSegmentHandler(BusBar* busbar, const TerminalPtr terminal, const AcLinePtr ac_line,
                                        ctemplate::TemplateDictionary *dict, std::string node1Name /* = "" */, std::string node2Name /* = "" */) {
 
   PiLine * piline = new PiLine();
@@ -856,9 +871,13 @@ CIMObjectHandler::ACLineSegmentHandler(const TerminalPtr terminal, const AcLineP
         std::cerr<<"Missing gch value" << std::endl;
     }
     try{
-        piline->set_sequenceNumber(terminal->sequenceNumber);
+        if(terminal->sequenceNumber == 2) {
+            piline->setBus2(busbar);
+        }else{
+            piline->setBus1(busbar);
+        }
     }catch(ReadingUninitializedField* e){
-        piline->set_sequenceNumber(0);
+        piline->setBus1(busbar);
         std::cerr<<"Missing terminal seqNR" << std::endl;
     }
 
@@ -940,16 +959,20 @@ CIMObjectHandler::ACLineSegmentHandler(const TerminalPtr terminal, const AcLineP
  * ConductingEquipment cast to PowerTransformer
  * Convert to Transformer in Modelica
  */
-Transformer* CIMObjectHandler::PowerTransformerHandler(const TerminalPtr terminal,
+Transformer* CIMObjectHandler::PowerTransformerHandler(BusBar* busbar, const TerminalPtr terminal,
                                                       const PowerTrafoPtr power_trafo,
                                                       ctemplate::TemplateDictionary *dict) {
 
   Transformer* trafo = new Transformer();
   trafo->set_name(name_in_modelica(power_trafo->name));
   try{
-    trafo->set_sequenceNumber(terminal->sequenceNumber);
+    if(terminal->sequenceNumber == 2) {
+        trafo->setBus2(busbar);
+    }else{
+        trafo->setBus1(busbar);
+    }
   }catch(ReadingUninitializedField* e){
-    trafo->set_sequenceNumber(0);
+    trafo->setBus1(busbar);
     std::cerr <<"Missing sequence number in terminal sequence number " << terminal << std::endl;
   }
 
@@ -1353,15 +1376,26 @@ WindGenerator* CIMObjectHandler::SynchronousMachineHandlerType1(const TerminalPt
     return wind_generator;
 }
 
-Breaker* CIMObjectHandler::BreakerHandler(const TerminalPtr terminal, const BreakerPtr cim_breaker,ctemplate::TemplateDictionary* dict){
+Breaker* CIMObjectHandler::BreakerHandler(BusBar* busbar, const TerminalPtr terminal, const BreakerPtr cim_breaker,ctemplate::TemplateDictionary* dict){
     Breaker* breaker = new Breaker();
     breaker->set_name(name_in_modelica(cim_breaker->name));
     breaker->set_is_closed(!cim_breaker->normalOpen);
+    // TODO set Vnom
     try{
         breaker->set_connected(terminal->connected);
     }catch(ReadingUninitializedField* e){
         breaker->set_connected(0);
         std::cerr <<"Missing connected state in terminal sequence number " << terminal << std::endl;
+    }
+    try{
+        if(terminal->sequenceNumber == 2) {
+            breaker->setBus2(busbar);
+        }else{
+            breaker->setBus1(busbar);
+        }
+    }catch(ReadingUninitializedField* e){
+        breaker->setBus1(busbar);
+        std::cerr <<"Missing sequence number in terminal sequence number " << terminal << std::endl;
     }
 
     if(cim_breaker->DiagramObjects.begin() == cim_breaker->DiagramObjects.end()){

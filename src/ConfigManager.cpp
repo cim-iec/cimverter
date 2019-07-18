@@ -35,6 +35,16 @@ void ConfigManager::getAllSettings() {
   this->getBatterySettings();
   this->getHouseholdSettings();
   this->getSVSettings();
+  this->getDefault_baseKV();
+}
+
+
+void ConfigManager::getDefault_baseKV() {
+    try {
+        this->default_baseKV = this->cfg.lookup("default_baseKV");
+    }catch (const SettingNotFoundException &nfex) {
+        std::cerr << "No default base_KV in configuration file." << std::endl;
+    }
 }
 
 
@@ -164,6 +174,20 @@ void ConfigManager::getConnectionNames(){
     }
     try {
         this->cs.BreakerName = this->conCfg.lookup("connections.Breaker.name").c_str();
+
+    }
+    catch (const SettingNotFoundException &nfex) {
+        std::cerr << "No system enable settings in configuration file." << std::endl;
+    }
+    try {
+        this->cs.BreakerSuffix1 = this->conCfg.lookup("connections.Breaker.suffix1").c_str();
+
+    }
+    catch (const SettingNotFoundException &nfex) {
+        std::cerr << "No system enable settings in configuration file." << std::endl;
+    }
+    try {
+        this->cs.BreakerSuffix2 = this->conCfg.lookup("connections.Breaker.suffix2").c_str();
 
     }
     catch (const SettingNotFoundException &nfex) {

@@ -17,7 +17,7 @@ namespace ModPowerSystems {
 
             bool Breaker::set_template_values(ctemplate::TemplateDictionary *dictionary) {
                 dictionary->SetValue("NAME", this->name());
-                dictionary->SetIntValue("ISCLOSED", this->isClosed());
+                dictionary->SetFormattedValue("ISCLOSED", "%s", this->isClosed() ? "true" : "false");
                 this->set_template_annotation_values(dictionary);
                 return true;
             }

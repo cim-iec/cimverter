@@ -7,7 +7,9 @@
 #define SRC_MODELICAWORKSHOP_MODPOWERSYSTEMS_PHASORSINGLEPHASE_TRANSFORMERS_TRANSFORMER_H_
 
 #include "../../../ModBaseClass.h"
+#include "../Connections/BusBar.h"
 #include <cmath>
+typedef ModPowerSystems::PhasorSinglePhase::Connections::BusBar BusBar;
 
 using namespace ModelicaWorkshop;
 
@@ -132,9 +134,38 @@ class Transformer : public ModBaseClass {
 
   bool set_template_values(ctemplate::TemplateDictionary *dictionary) override;
 
+  BusBar* getBus1()const {
+    return this->bus1;
+
+  }
+  BusBar* getBus2()const {
+      return this->bus2;
+
+  }
+  void setBus1(BusBar* bus){
+    this->bus1 = bus;
+    bus1Initialized = true;
+  }
+  void setBus2(BusBar* bus){
+      this->bus2 = bus;
+      bus2Initialized = true;
+  }
+
+  void setBus(BusBar* bus){
+    if(this->bus1Initialized == false){
+      setBus1(bus);
+      bus1Initialized = true;
+    }else{
+      setBus2(bus);
+      bus2Initialized = true;
+    }
+  }
 
  private:
-
+  BusBar* bus1;
+  bool bus1Initialized = false;
+  BusBar* bus2;
+  bool bus2Initialized = false;
   double _Vnom1 = 0;  //primary voltage level
   double _Vnom2 = 0;  //secondary voltage level
   double _Sr = 0;  //rated apparent power

@@ -1,6 +1,8 @@
 #ifndef CIMVERTER_BREAKER_H
 #define CIMVERTER_BREAKER_H
 #include "../../../ModBaseClass.h"
+#include "../Connections/BusBar.h"
+typedef ModPowerSystems::PhasorSinglePhase::Connections::BusBar BusBar;
 
 using namespace ModelicaWorkshop;
 
@@ -23,9 +25,41 @@ namespace ModPowerSystems {
                     this->_is_closed = is_closed;
                 }
                 bool set_template_values(ctemplate::TemplateDictionary *dictionary) override;
-            private:;
 
-                int _is_closed = 0;
+                BusBar* getBus1()const {
+                    return this->bus1;
+
+                }
+                BusBar* getBus2()const {
+                    return this->bus2;
+
+                }
+                void setBus1(BusBar* bus){
+                    this->bus1 = bus;
+                    bus1Initialized = true;
+                }
+                void setBus2(BusBar* bus){
+                    this->bus2 = bus;
+                    bus2Initialized = true;
+                }
+
+                void setBus(BusBar* bus){
+                    if(this->bus1Initialized == false){
+                        setBus1(bus);
+                        bus1Initialized = true;
+                    }else{
+                        setBus2(bus);
+                        bus2Initialized = true;
+                    }
+                }
+
+            private:;
+                //Parameters
+                BusBar* bus1;
+                bool bus1Initialized = false;
+                BusBar* bus2;
+                bool bus2Initialized = false;
+                bool _is_closed = false;
             };
 
         } /* namespace Lines */

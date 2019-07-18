@@ -86,11 +86,11 @@ class CIMObjectHandler {
 
   bool BusBarSectionHandler(const BusBarSectionPtr busbar_section, BusBar &busbar, ctemplate::TemplateDictionary* dict);
 
-  PiLine* ACLineSegmentHandler(const TerminalPtr terminal, const AcLinePtr ac_line, ctemplate::TemplateDictionary* dict, std::string node1Name = "", std::string node2Name = "");
-  Transformer* PowerTransformerHandler(const TerminalPtr terminal, const PowerTrafoPtr power_trafo, ctemplate::TemplateDictionary* dict);
+  PiLine* ACLineSegmentHandler(BusBar* busbar, const TerminalPtr terminal, const AcLinePtr ac_line, ctemplate::TemplateDictionary* dict, std::string node1Name = "", std::string node2Name = "");
+  Transformer* PowerTransformerHandler(BusBar* busbar, const TerminalPtr terminal, const PowerTrafoPtr power_trafo, ctemplate::TemplateDictionary* dict);
   WindGenerator* SynchronousMachineHandlerType1(const TerminalPtr terminal, const SynMachinePtr syn_machine, ctemplate::TemplateDictionary* dict);
   SolarGenerator* SynchronousMachineHandlerType2(const TerminalPtr terminal, const SynMachinePtr syn_machine,ctemplate::TemplateDictionary* dict);
-  Breaker* BreakerHandler(const TerminalPtr terminal, const BreakerPtr breaker,ctemplate::TemplateDictionary* dict);
+  Breaker* BreakerHandler(BusBar* busbar, const TerminalPtr terminal, const BreakerPtr breaker,ctemplate::TemplateDictionary* dict);
 #ifdef SINERGIEN
     Battery BatteryStorageHandler(const TPNodePtr tp_node, const TerminalPtr terminal, const BatteryStoragePtr battery_storge, ctemplate::TemplateDictionary* dict);
 #endif
