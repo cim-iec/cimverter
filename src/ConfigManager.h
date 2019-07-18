@@ -194,7 +194,7 @@ class ConfigManager {
   ConfigManager();
 
   virtual ~ConfigManager();
-  int default_baseKV;
+  double default_baseKV;
   UseSVSettings svSettings;
   ConnectionSettings cs;
   GlobalSettings  gs;

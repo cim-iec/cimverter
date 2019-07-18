@@ -41,7 +41,7 @@ void ConfigManager::getAllSettings() {
 
 void ConfigManager::getDefault_baseKV() {
     try {
-        this->default_baseKV = this->cfg.lookup("default_baseKV");
+        this->cfg.lookupValue("default_baseKV", this->default_baseKV);
     }catch (const SettingNotFoundException &nfex) {
         std::cerr << "No default base_KV in configuration file." << std::endl;
     }
