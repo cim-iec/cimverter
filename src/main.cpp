@@ -131,7 +131,7 @@ int main(int argc, char *argv[]) {
                     optind--;
                     for( ;optind < argc && *argv[optind] != '-'; optind++){
                         if(!std::regex_match(argv[optind], mat) ){
-                            std::cout << "is not a .xml file" << ( argv[optind] ) << std::endl;
+                            std::cerr << "is not a .xml file" << ( argv[optind] ) << std::endl;
                         }else{
                             std::cout << "CIM-XML file is:" << ( argv[optind] ) << std::endl;
                             file_size += filesize(( argv[optind] ));
