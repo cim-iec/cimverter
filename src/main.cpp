@@ -34,9 +34,13 @@ std::vector<std::string> search_folder(const char *path) {
   DIR *pDir;
   pDir = opendir(path);
   std::vector<std::string> files;
-  
-  while (NULL != (ent = readdir(pDir))) {
+  if(NULL == pDir){
+      std::cerr << "The specified directory does not exist. "
+              "Maybe you want to use the option -f to read a single File" << std::endl;
+      return files;
+  }
 
+  while (NULL != (ent = readdir(pDir))) {
     std::string _path(path);
     std::string _dirName(ent->d_name);
     if(strcmp(ent->d_name,".") == 0 || strcmp(ent->d_name,"..") == 0 )
