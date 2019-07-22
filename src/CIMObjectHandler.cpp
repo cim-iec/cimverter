@@ -559,14 +559,18 @@ BusBar* CIMObjectHandler::TopologicalNodeHandler(const TPNodePtr tp_node, ctempl
 
 
 /**
- * TopologicalNode
- * Convert to busbar in Modelica
+ * Create a Busbar for the respective ConnectivityNode
  */
 BusBar* CIMObjectHandler::ConnectivityNodeHandler(const ConnectivityNodePtr con_node, ctemplate::TemplateDictionary *dict) {
     BusBar* busbar = new BusBar();
     busbar->set_name(name_in_modelica(con_node->name));
     busbar->annotation.placement.visible = true;
     bool is_set = false;
+
+    // ConnectivityNodes don't have a BaseVoltage in CIM. Therefore, we use the BaseVoltage
+    // of the first ConductingEquipment found which is connected to the ConnectivityNode
+    // If there is no ConductingEquipment with BaseVoltage connected we print an error
+    // and use a default BaseVoltage
     std::list<TerminalPtr>::iterator terminal_it = terminalList[con_node].begin();
     while (is_set == false){
         if(baseVoltageMap.find((*terminal_it)->ConductingEquipment) != baseVoltageMap.end()){
@@ -859,10 +863,16 @@ CIMObjectHandler::ACLineSegmentHandler(BusBar* busbar, const TerminalPtr termina
 
   PiLine * piline = new PiLine();
   piline->set_name(name_in_modelica(ac_line->name));
-  piline->set_length(ac_line->length.value);
-  piline->set_r(ac_line->r.value/ac_line->length.value);
-  piline->set_x(ac_line->x.value/ac_line->length.value);
-  piline->set_b(ac_line->bch.value/ac_line->length.value);
+  float length = ac_line->length.value;
+  // CIM unit length should be km but some files may have there lengths in m
+  if(this->configManager.us.length_unit == "m"){
+      length = length / 1000;
+  }else if(this->configManager.us.length_unit == "km"){
+  }
+  piline->set_length(length);
+  piline->set_r(ac_line->r.value/length);
+  piline->set_x(ac_line->x.value/length);
+  piline->set_b(ac_line->bch.value/length);
 
     try{
         piline->set_g(ac_line->gch.value);///ac_line->length.value);

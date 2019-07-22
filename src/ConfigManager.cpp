@@ -291,6 +291,13 @@ void ConfigManager::getUnitSettings() {
   catch (const SettingNotFoundException &nfex) {
     std::cerr << "No reactive_power_unit settings in configuration file." << std::endl;
   }
+  try {
+    this->us.length_unit = this->cfg.lookup("apply_unit_fix.length_unit").c_str();
+    std::cout << "reactive_power_unit:" << this->us.reactive_power_unit << std::endl;
+  }
+  catch (const SettingNotFoundException &nfex) {
+    std::cerr << "No length_unit settings in configuration file." << std::endl;
+  }
 }
 
 ///

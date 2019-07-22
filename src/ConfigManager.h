@@ -95,6 +95,8 @@ typedef struct UnitSettings {
   std::string current_unit;         /// Default unit of current
   std::string active_power_unit;    /// Default unit of active power
   std::string reactive_power_unit;  /// Default unit of reactive power
+  std::string length_unit;  /// Default unit of length of ACLine
+
 } UnitSettings;
 
 /// slack settings in Config.cfg
