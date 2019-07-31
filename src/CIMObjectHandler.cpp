@@ -299,7 +299,7 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::string output_file_name, int v
               }else {
 
                   if (this->configManager.household_parameters.use_households == false) {
-                      PQLoad* pqload = this->EnergyConsumerHandler((terminal), energy_consumer, dict);
+                      PQLoad* pqload = this->EnergyConsumerHandler(tp_node,(terminal), energy_consumer, dict);
                       _UsedObjects.insert({energy_consumer, pqload});
                   }
               }
@@ -644,7 +644,7 @@ bool CIMObjectHandler::HouseholdComponetsHandler(BaseClass* tp_node, ctemplate::
 
       if (auto *energy_consumer = dynamic_cast<EnergyConsumerPtr>((*terminal_it)->ConductingEquipment)) {
 
-        PQLoad* pqload = this->EnergyConsumerHandler((*terminal_it), energy_consumer, dict);
+        PQLoad* pqload = this->EnergyConsumerHandler(tp_node, (*terminal_it), energy_consumer, dict);
         Household* household = new Household(*pqload);
         if (this->configManager.household_parameters.enable) {
           SET_TRANS_EXTENT(household,household);
@@ -658,7 +658,7 @@ bool CIMObjectHandler::HouseholdComponetsHandler(BaseClass* tp_node, ctemplate::
       for (terminal_it = terminalList[tp_node].begin(); terminal_it != terminalList[tp_node].end(); ++terminal_it) {
 
       if (auto *energy_consumer = dynamic_cast<EnergyConsumerPtr>((*terminal_it)->ConductingEquipment)) {
-        PQLoad* pqload = this->EnergyConsumerHandler((*terminal_it), energy_consumer, dict);
+        PQLoad* pqload = this->EnergyConsumerHandler(tp_node, (*terminal_it), energy_consumer, dict);
         this->pqloadQueue.push(*pqload);
       }else if (auto *synchronous_machine = dynamic_cast<SynMachinePtr >((*terminal_it)->ConductingEquipment)) {
 
@@ -802,8 +802,13 @@ Slack* CIMObjectHandler::ExternalNIHandler(BaseClass* tp_node, const TerminalPtr
   slack->set_sequenceNumber(terminal->sequenceNumber);
   slack->set_connected(terminal->connected);
   slack->annotation.placement.visible = true;
+  if (baseVoltageMap.find(externalNI) != baseVoltageMap.end()){
+      slack->set_Vnom(baseVoltageMap[externalNI]->nominalVoltage.value);
+  }else{
+      slack->set_Vnom(((TPNodePtr)tp_node)->BaseVoltage->nominalVoltage.value);
+      std::cerr <<"No BaseVoltage for ExternalNetworkInjection taking TPNode Voltage: " << std::endl;
+  }
 
-  slack->set_Vnom(baseVoltageMap[externalNI]->nominalVoltage.value);
 
 
     if(this->configManager.svSettings.useSVforExternalNetworkInjection == true &&
@@ -842,7 +847,7 @@ Slack* CIMObjectHandler::ExternalNIHandler(BaseClass* tp_node, const TerminalPtr
       }
       slack->annotation.placement.transformation.origin.x = currX / counter;
       slack->annotation.placement.transformation.origin.y = currY / counter;
-      slack->annotation.placement.transformation.rotation = (*diagram_it)->rotation.value - 90;
+
 
           ctemplate::TemplateDictionary *slack_dict = dict->AddIncludeDictionary("SLACK_DICT");
           slack_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/Slack.tpl");
@@ -1092,7 +1097,7 @@ Transformer* CIMObjectHandler::PowerTransformerHandler(BusBar* busbar, const Ter
  * ConductingEquipment cast to energy_consumer
  * Convert to pqload in Modelica
  */
-PQLoad* CIMObjectHandler::EnergyConsumerHandler(const TerminalPtr terminal,
+PQLoad* CIMObjectHandler::EnergyConsumerHandler(BaseClass* tp_node, const TerminalPtr terminal,
                                                const EnergyConsumerPtr energy_consumer,
                                                ctemplate::TemplateDictionary *dict) {
 
@@ -1114,13 +1119,13 @@ PQLoad* CIMObjectHandler::EnergyConsumerHandler(const TerminalPtr terminal,
   if(this->configManager.svSettings.useSVforEnergyConsumer == true){// && svPowerFlowMap[terminal] ) {
       try{
          pqload->set_Pnom(svPowerFlowMap[terminal]->p.value);
-      }catch(ReadingUninitializedField& e1){
+      }catch(ReadingUninitializedField* e1){
         std::cerr <<"Missing entry in PowerFlow Map: " << std::endl;
         pqload->set_Pnom(1);
       }
         try{
             pqload->set_Qnom(svPowerFlowMap[terminal]->q.value);
-        }catch(ReadingUninitializedField& e1){
+        }catch(ReadingUninitializedField* e1){
         std::cerr <<"Missing entry in PowerFlow Map: " << std::endl;
         pqload->set_Qnom(1);
         }
@@ -1150,7 +1155,12 @@ PQLoad* CIMObjectHandler::EnergyConsumerHandler(const TerminalPtr terminal,
     }
 
     pqload->set_name(name_in_modelica(energy_consumer->name));
-    pqload->set_Vnom(baseVoltageMap[energy_consumer]->nominalVoltage.value);
+    if (baseVoltageMap.find(energy_consumer) != baseVoltageMap.end()){
+        pqload->set_Vnom(baseVoltageMap[energy_consumer]->nominalVoltage.value);
+    }else{
+        pqload->set_Vnom(((TPNodePtr)tp_node)->BaseVoltage->nominalVoltage.value);
+        std::cerr <<"No BaseVoltage for EnergyConsumer taking TPNode Voltage: " << std::endl;
+    }
     if(this->configManager.us.enable){
         FIX_NEPLAN_VOLTAGE(pqload);
 

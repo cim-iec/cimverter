@@ -79,7 +79,7 @@ class CIMObjectHandler {
 
   BusBar* TopologicalNodeHandler(const TPNodePtr tp_node, ctemplate::TemplateDictionary* dict);
   Slack* ExternalNIHandler( BaseClass* tp_node, const TerminalPtr terminal, const ExNIPtr externalNI, ctemplate::TemplateDictionary* dict);
-  PQLoad* EnergyConsumerHandler( const TerminalPtr terminal, const EnergyConsumerPtr energy_consumer, ctemplate::TemplateDictionary* dict);
+  PQLoad* EnergyConsumerHandler(BaseClass* tp_node, const TerminalPtr terminal, const EnergyConsumerPtr energy_consumer, ctemplate::TemplateDictionary* dict);
   PVNode * SynchronousMachineHandlerType0(BaseClass* node, const TerminalPtr terminal, const SynMachinePtr syn_machine, ctemplate::TemplateDictionary* dict);
   BusBar* ConnectivityNodeHandler(const ConnectivityNodePtr connectivity_node, ctemplate::TemplateDictionary* dict);
   bool HouseholdComponetsHandler( BaseClass* node, ctemplate::TemplateDictionary* dict);  //to find household Componets
