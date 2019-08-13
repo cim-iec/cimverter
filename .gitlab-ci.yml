@@ -54,7 +54,7 @@ test:
     - ls -l
   artifacts:
     paths:
-      - /test/outputs
+      - test/outputs/
   only:
     - master 
     - release
