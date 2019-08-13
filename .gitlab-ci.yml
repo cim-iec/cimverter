@@ -53,7 +53,6 @@ test:
     - master 
     - release
     - rse
-
 checkmodel:
   stage: modelica
   image: ${DOCKER_IMAGE_OMC}:${DOCKER_TAG_OMC}
@@ -63,6 +62,8 @@ checkmodel:
     - pwd
     - cp test/outputs/*.mo .
     - ls -l
-    - omc /test/scripts/test_modell.mos
+    - omc test/scripts/test_RSE.mos
+  tags:
+    - docker
   only:
     -rse
