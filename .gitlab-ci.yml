@@ -10,10 +10,10 @@ stages:
   - modelica
 
 # build the docker img in which we want to test. normally we want a dockerfile with all dependencies which we just include
-docker:
+docker-cimverter:
   stage: prepare
   script:
-    - docker build -t ${DOCKER_IMAGE_DEV}:${DOCKER_TAG_DEV} .
+    - docker build -t ${DOCKER_IMAGE_DEV}:${DOCKER_TAG_DEV} -f ./Docker/Dockerfile.cimverter .
     - docker images
   only: 
     - rse
@@ -21,6 +21,15 @@ docker:
     - master
   tags:
     - shell
+
+docker-omc:
+  stage: prepare
+  script:
+    - docker build -t ${DOCKER_IMAGE_OMC}:${DOCKER_TAG_OMC} -f ./Docker/Dockerfile.omc .
+    - docker images
+  tags:
+    - shell
+
 # clone libcimpp in our projekt. compile and run the tests.
 test: 
   stage: test
@@ -44,3 +53,18 @@ test:
     - master 
     - release
     - rse
+
+checkmodel:
+  stage: modelica
+  image: ${DOCKER_IMAGE_OMC}:${DOCKER_TAG_OMC}
+  dependencies:
+    - translate
+  script:
+    - pwd
+    - cp test/outputs/*.mo .
+    - ls -l
+    - omc /test/scripts/test_modell.mos
+  tags:
+    - docker
+  only:
+    -rse

@@ -2,3 +2,6 @@
 [submodule "libcimpp"]
 	path = libcimpp
 	url = https://github.com/RWTH-ACS/libcimpp.git
+[submodule "modpowersystems"]
+	path = modpowersystems
+	url = git@git.rwth-aachen.de:acs/core/simulation/modpowersystems.git
