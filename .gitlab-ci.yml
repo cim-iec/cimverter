@@ -58,7 +58,7 @@ checkmodel:
   stage: modelica
   image: ${DOCKER_IMAGE_OMC}:${DOCKER_TAG_OMC}
   dependencies:
-    - translate
+    - test
   script:
     - pwd
     - cp test/outputs/*.mo .
