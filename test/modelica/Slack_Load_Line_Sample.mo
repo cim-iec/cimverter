@@ -1,4 +1,4 @@
-model testy.mo 
+model Slack_Load_Line_Sample
 inner ModPowerSystems.Base.System system(freq_nom(displayUnit = "Hz") = 50.0) 
 annotation(Placement(visible = true, transformation(extent = {{0.0,-30.0},{30.0,0.0}}, rotation = 0)));
 ModPowerSystems.PhasorSinglePhase.Connections.BusBar CIM_N1(Vnom = 20000.000)
@@ -21,4 +21,4 @@ annotation(Line(points={{87.00,-70.00},{87.00,-86.00},{88.00,-86.00}},color = {0
  connect(CIM_N0.Pin1,CIM_SL.Pin1)
 annotation(Line(points={{87.00,-70.00},{87.00,-55.20},{88.00,-55.20}},color = {0,0,0}, smooth = Smooth.None));
 annotation(Diagram(coordinateSystem(extent = {{0.00,0.00},{400.00,-400.00}})), Icon(coordinateSystem(extent = {{160.0,-160.0},{180.0,260.0}})));  
-end testy.mo; 
+end Slack_Load_Line_Sample; 

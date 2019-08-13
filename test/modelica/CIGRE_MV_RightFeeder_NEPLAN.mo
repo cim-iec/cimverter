@@ -1,4 +1,4 @@
-model testy.mo 
+model CIGRE_MV_RightFeeder_NEPLAN 
 inner ModPowerSystems.Base.System system(freq_nom(displayUnit = "Hz") = 50.0) 
 annotation(Placement(visible = true, transformation(extent = {{0.0,-30.0},{30.0,0.0}}, rotation = 0)));
 ModPowerSystems.PhasorSinglePhase.Connections.BusBar CIM_N0(Vnom = 110000.000)
@@ -37,4 +37,4 @@ annotation(Line(points={{223.80,-138.00},{223.80,-110.00},{222.80,-110.00}},colo
  connect(CIM_N13.Pin1,CIM_Load13_I.Pin1)
 annotation(Line(points={{223.80,-138.00},{234.80,-138.00},{234.80,-137.80}},color = {0,0,0}, smooth = Smooth.None));
 annotation(Diagram(coordinateSystem(extent = {{0.00,0.00},{400.00,-400.00}})), Icon(coordinateSystem(extent = {{160.0,-160.0},{180.0,260.0}})));  
-end testy.mo; 
+end CIGRE_MV_RightFeeder_NEPLAN; 
