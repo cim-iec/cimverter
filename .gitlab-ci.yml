@@ -64,7 +64,5 @@ checkmodel:
     - cp test/outputs/*.mo .
     - ls -l
     - omc /test/scripts/test_modell.mos
-  tags:
-    - docker
   only:
     -rse
