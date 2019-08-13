@@ -1,10 +1,13 @@
 variables:
   DOCKER_TAG_DEV: ${CI_COMMIT_REF_NAME}
   DOCKER_IMAGE_DEV: cimverter-dev
+  DOCKER_TAG_OMC: ${CI_COMMIT_REF_NAME}
+  DOCKER_IMAGE_OMC: omc-dev-rse
 
 stages:
   - prepare
   - test
+  - modelica
 
 # build the docker img in which we want to test. normally we want a dockerfile with all dependencies which we just include
 docker:
@@ -40,3 +43,4 @@ test:
   only:
     - master 
     - release
+    - rse
