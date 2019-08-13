@@ -67,7 +67,8 @@ checkmodel:
     - pwd
     - cp test/outputs/*.mo .
     - ls -l
-    - omc test/scripts/test_modell.mos
+    - omc test/scripts/test_cigre.mos
+    - omc test/scripts/test_slack.mos
   tags:
     - docker
   only:
