@@ -1,8 +1,8 @@
 loadModel(Modelica); getErrorString();
 loadFile("./modpowersystems/ModPowerSystems/package.mo"); getErrorString();
-loadFile("../output/CIGRE_MV_RightFeeder_NEPLAN.mo"); getErrorString();
+loadFile("./CIGRE_MV_RightFeeder_NEPLAN.mo"); getErrorString();
 checkModel(CIGRE_MV_RightFeeder_NEPLAN); getErrorString(); 
 
 loadFile("./modpowersystems/ModPowerSystems/package.mo"); getErrorString();
-loadFile("../output/Slack_Load_Line_Sample.mo"); getErrorString();
+loadFile(".Slack_Load_Line_Sample.mo"); getErrorString();
 checkModel(Slack_Load_Line_Sample); getErrorString(); 
