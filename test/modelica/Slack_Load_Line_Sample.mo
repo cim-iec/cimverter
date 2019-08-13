@@ -1,4 +1,4 @@
-model Slack_Load_Line_Sample
+model Slack_Load_Line_Sample 
 inner ModPowerSystems.Base.System system(freq_nom(displayUnit = "Hz") = 50.0) 
 annotation(Placement(visible = true, transformation(extent = {{0.0,-30.0},{30.0,0.0}}, rotation = 0)));
 ModPowerSystems.PhasorSinglePhase.Connections.BusBar CIM_N1(Vnom = 20000.000)
