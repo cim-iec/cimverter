@@ -66,4 +66,6 @@ checkmodel:
   tags:
     - docker
   only:
-    -rse
+    - rse
+    - master
+    - release
