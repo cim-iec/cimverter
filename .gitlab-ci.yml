@@ -34,7 +34,7 @@ test:
     - rm -rf libcimpp/
     - git clone --recursive https://${GITLAB_USERLIBCIMPP}:${GITLAB_TOKENLIBCIMPP}@git.rwth-aachen.de/acs/core/cim/cimpp/libcimpp.git/ libcimpp/
     - mkdir -p build && cd build
-    - cmake .. -DUSE_CIM_VERSION:STRING=IEC61970_16v29a_SINERGIEN
+    - cmake .. -DUSE_CIM_VERSION:STRING=IEC61970_17v23_IEC61968_13v11
     - make -j8
 
   script:
