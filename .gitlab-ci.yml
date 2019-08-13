@@ -49,6 +49,10 @@ test:
   script:
     - cd ../test/
     - ./testFiles.py
+  artifacts:
+    paths:
+        - /test/outputs
+    
   only:
     - master 
     - release
