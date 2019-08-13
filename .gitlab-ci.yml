@@ -50,8 +50,6 @@ test:
     - cd ../test/
     - ./testFiles.py
     - ls -l
-    - cd 
-    - ls -l
   artifacts:
     paths:
       - test/outputs/
