@@ -49,14 +49,17 @@ test:
   script:
     - cd ../test/
     - ./testFiles.py
+    - ls -l
+    - cd 
+    - ls -l
   artifacts:
     paths:
-        - /test/outputs
-    
+      - /test/outputs
   only:
     - master 
     - release
     - rse
+    
 checkmodel:
   stage: modelica
   image: ${DOCKER_IMAGE_OMC}:${DOCKER_TAG_OMC}
