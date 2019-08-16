@@ -4,6 +4,11 @@ variables:
   DOCKER_TAG_OMC: ${CI_COMMIT_REF_NAME}
   DOCKER_IMAGE_OMC: omc-dev-rse
 
+before_script:
+  - git config --local core.longpaths true
+  - git submodule sync --recursive
+  - git submodule update --init --recursive
+
 stages:
   - prepare
   - test
