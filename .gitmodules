@@ -1,4 +1,4 @@
 
 [submodule "libcimpp"]
 	path = libcimpp
-	url = https://github.com/RWTH-ACS/libcimpp.git
+	url = https://github.com/CIM-IEC/libcimpp.git
