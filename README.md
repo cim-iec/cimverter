@@ -31,6 +31,7 @@ git clone --recurse-submodules https://github.com/RWTH-ACS/CIMverter.git
 
 ### Build CIMverter with all submodules
 ```bash
+cd CIMverter
 mkdir build
 cd build/
 cmake ..
