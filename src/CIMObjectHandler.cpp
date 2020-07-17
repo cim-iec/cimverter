@@ -537,7 +537,14 @@ BusBar* CIMObjectHandler::TopologicalNodeHandler(const TPNodePtr tp_node, ctempl
             currX += _t_points.xPosition;
             currY += _t_points.yPosition;
             counter += 1;
-            busbar->annotation.placement.transformation.rotation = (*diagram_it)->rotation.value;
+            try{
+                busbar->annotation.placement.transformation.rotation = (*diagram_it)->rotation.value;
+            }catch(ReadingUninitializedField* e){
+                busbar->annotation.placement.transformation.rotation = 1;
+            std::cerr <<"Missing rotation for diagram obj"<< std::endl;
+
+            }
+
         }
         busbar->annotation.placement.transformation.origin.x = currX / counter;
         busbar->annotation.placement.transformation.origin.y = currY / counter;
@@ -869,20 +876,43 @@ CIMObjectHandler::ACLineSegmentHandler(BusBar* busbar, const TerminalPtr termina
   PiLine * piline = new PiLine();
   piline->set_name(name_in_modelica(ac_line->name));
   float length = ac_line->length.value;
+
   // CIM unit length should be km but some files may have there lengths in m
   if(this->configManager.us.length_unit == "m"){
       length = length / 1000;
   }else if(this->configManager.us.length_unit == "km"){
   }
+
   piline->set_length(length);
-  piline->set_r(ac_line->r.value/length);
-  piline->set_x(ac_line->x.value/length);
-  piline->set_b(ac_line->bch.value/length);
+
+
+    try{
+        piline->set_r(ac_line->r.value/length);
+    }catch(ReadingUninitializedField* e){
+        piline->set_length(length);
+        std::cerr<<"Missing r value" << std::endl;
+    }
+
+
+    try{
+        piline->set_x(ac_line->x.value/length);
+    }catch(ReadingUninitializedField* e){
+        piline->set_x(length);
+        std::cerr<<"Missing x value" << std::endl;
+    }
+
+    try{
+        piline->set_b(ac_line->bch.value/length);
+    }catch(ReadingUninitializedField* e){
+        piline->set_b(length);
+        std::cerr<<"Missing bch value" << std::endl;
+    }
+
 
     try{
         piline->set_g(ac_line->gch.value);///ac_line->length.value);
     }catch(ReadingUninitializedField* e){
-        piline->set_g(0/ac_line->length.value);
+        piline->set_g(0);
         std::cerr<<"Missing gch value" << std::endl;
     }
     try{
@@ -1240,7 +1270,13 @@ PQLoad* CIMObjectHandler::EnergyConsumerHandler(BaseClass* tp_node, const Termin
             currX += _t_points.xPosition;
             currY += _t_points.yPosition;
             counter += 1;
-            pqload->annotation.placement.transformation.rotation = (*diagram_it)->rotation.value;
+            try{
+                pqload->annotation.placement.transformation.rotation = (*diagram_it)->rotation.value;
+            }catch(ReadingUninitializedField* e){
+                pqload->annotation.placement.transformation.rotation = 1;
+                std::cerr <<"Missing rotation for diagram obj of pq load"<< energy_consumer->name << std::endl;
+            }
+
         }
 
         pqload->annotation.placement.transformation.origin.x = currX /counter;
