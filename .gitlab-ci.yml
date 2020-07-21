@@ -4,6 +4,7 @@ variables:
   DOCKER_TAG_OMC: ${CI_COMMIT_REF_NAME}
   DOCKER_IMAGE_OMC: omc-dev-rse
 
+
 stages:
   - prepare
   - test
@@ -67,6 +68,7 @@ checkmodel:
     - pwd
     - cp test/outputs/*.mo .
     - ls -l
+    - git clone --recursive https://${GITLAB_USERMODPOWERSYSTEMS}:${GITLAB_TOKENMODPOWERSYSTEMS}@git.rwth-aachen.de/acs/core/simulation/modpowersystems
     - omc test/scripts/test_cigre.mos
     - omc test/scripts/test_slack.mos
   tags:
