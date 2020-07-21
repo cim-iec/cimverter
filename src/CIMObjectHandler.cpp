@@ -1499,6 +1499,7 @@ PVNode * CIMObjectHandler::SynchronousMachineHandlerType0(BaseClass* tp_node, co
                                                                ctemplate::TemplateDictionary *dict) {
     PVNode* pv_node = new PVNode();
     pv_node->set_name(name_in_modelica(syn_machine->name));
+    std::cout <<syn_machine->name<< std::endl;
     try{
         pv_node->set_sequenceNumber(terminal->sequenceNumber);
     }catch(ReadingUninitializedField* e){
@@ -1519,17 +1520,24 @@ PVNode * CIMObjectHandler::SynchronousMachineHandlerType0(BaseClass* tp_node, co
             } else if(this->configManager.us.voltage_unit == "MV"){
                 pv_node->setVnom((syn_machine)->ratedU.value * 1000000);
             }
-        }catch(ReadingUninitializedField* e){
-            if(this->configManager.us.voltage_unit == "V"){
-                pv_node->setVnom(baseVoltageMap[syn_machine]->nominalVoltage.value);
-            } else if(this->configManager.us.voltage_unit == "kV"){
-                pv_node->setVnom(baseVoltageMap[syn_machine]->nominalVoltage.value * 1000);
-            } else if(this->configManager.us.voltage_unit == "mV"){
-                pv_node->setVnom(baseVoltageMap[syn_machine]->nominalVoltage.value * 0.001);
-            } else if(this->configManager.us.voltage_unit == "MV"){
-                pv_node->setVnom(baseVoltageMap[syn_machine]->nominalVoltage.value * 1000000);
+        }catch(ReadingUninitializedField* e) {
+                if(baseVoltageMap.find(syn_machine)!= baseVoltageMap.end()){
+                    if (this->configManager.us.voltage_unit == "V") {
+                        pv_node->setVnom(baseVoltageMap[syn_machine]->nominalVoltage.value);
+                    } else if (this->configManager.us.voltage_unit == "kV") {
+                        pv_node->setVnom(baseVoltageMap[syn_machine]->nominalVoltage.value * 1000);
+                    } else if (this->configManager.us.voltage_unit == "mV") {
+                        pv_node->setVnom(baseVoltageMap[syn_machine]->nominalVoltage.value * 0.001);
+                    } else if (this->configManager.us.voltage_unit == "MV") {
+                        pv_node->setVnom(baseVoltageMap[syn_machine]->nominalVoltage.value * 1000000);
+                    }
+                    std::cerr << "Unitialized Vnom for Synchronous Machine taking TopologicalNode BaseVoltage "
+                              << std::endl;
+                }
+            else{
+                std::cerr << "Synchronous Machine without ratedU and BaseVoltage" << syn_machine->name
+                          << std::endl;
             }
-            std::cerr << "Unitialized Vnom for Synchronous Machine taking TopologicalNode BaseVoltage " << std::endl;
         }
 
     }
