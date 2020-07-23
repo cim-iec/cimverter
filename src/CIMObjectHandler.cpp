@@ -126,6 +126,18 @@ bool CIMObjectHandler::pre_process() {
             if (auto *op_limitset = dynamic_cast<OpLimitSetPtr>(Object)) {
                 if (auto *ac_line = dynamic_cast<AcLinePtr>(op_limitset->Equipment)) {
                     OpLimitMap.insert({ac_line, op_limitset}); //hashmap
+                }else{
+                    for (BaseClass *Object1 : this->_CIMObjects) {
+                        if(auto *terminal = dynamic_cast<TerminalPtr> (Object1)){
+                            if(terminal->mRID == op_limitset->Terminal->mRID){
+                                if (auto *ac_line = dynamic_cast<AcLinePtr>(terminal->ConductingEquipment)) {
+                                    OpLimitMap.insert({ac_line, op_limitset});
+                                            break;
+                                }
+                            }
+
+                        }
+                    }
                 }
             }
         }
@@ -937,6 +949,11 @@ CIMObjectHandler::ACLineSegmentHandler(BusBar* busbar, const TerminalPtr termina
       if(auto current_limit = dynamic_cast<CurrentLimitPtr>(op_limit)){
         if(current_limit->name == "Normal")
           piline->set_Imax(current_limit->value.value);
+        else{
+            std::cout << "name of Current Limit is not Normal "<<piline->name() << std::endl;
+        }
+      }else{
+          std::cout << "missing current Limit for PiLine "<<piline->name() << std::endl;
       }
     }
   }
