@@ -1129,7 +1129,7 @@ Transformer* CIMObjectHandler::PowerTransformerHandler(BusBar* busbar, const Ter
               trafo->annotation.placement.transformation.rotation = (*diagram_it)->rotation.value - 90;
           }catch(ReadingUninitializedField* e){
               trafo->annotation.placement.transformation.rotation = 0;
-              std::cerr <<"Missing rotation for diagram obj"<< trafo << std::endl;
+              std::cerr <<"Missing rotation for diagram obj" << trafo->name() << std::endl;
 
           }
 
