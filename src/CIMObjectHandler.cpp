@@ -947,11 +947,11 @@ CIMObjectHandler::ACLineSegmentHandler(BusBar* busbar, const TerminalPtr termina
   if(OpLimitMap[ac_line]){
     for(OpLimitPtr op_limit: OpLimitMap[ac_line]->OperationalLimitValue){
       if(auto current_limit = dynamic_cast<CurrentLimitPtr>(op_limit)){
-        if(current_limit->name == "Normal")
+        //if(current_limit->name == "Normal")
           piline->set_Imax(current_limit->value.value);
-        else{
+        /*else{
             std::cout << "name of Current Limit is not Normal "<<piline->name() << std::endl;
-        }
+        }*/
       }else{
           std::cout << "missing current Limit for PiLine "<<piline->name() << std::endl;
       }
