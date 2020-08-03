@@ -552,7 +552,7 @@ BusBar* CIMObjectHandler::TopologicalNodeHandler(const TPNodePtr tp_node, ctempl
             try{
                 busbar->annotation.placement.transformation.rotation = (*diagram_it)->rotation.value;
             }catch(ReadingUninitializedField* e){
-                busbar->annotation.placement.transformation.rotation = 1;
+                busbar->annotation.placement.transformation.rotation = 0;
             std::cerr <<"Missing rotation for diagram obj"<< std::endl;
 
             }
@@ -1125,7 +1125,15 @@ Transformer* CIMObjectHandler::PowerTransformerHandler(BusBar* busbar, const Ter
           currX += _t_points.xPosition;
           currY += _t_points.yPosition;
           counter += 1;
-          trafo->annotation.placement.transformation.rotation = (*diagram_it)->rotation.value - 90;
+          try{
+              trafo->annotation.placement.transformation.rotation = (*diagram_it)->rotation.value - 90;
+          }catch(ReadingUninitializedField* e){
+              trafo->annotation.placement.transformation.rotation = 0;
+              std::cerr <<"Missing rotation for diagram obj"<< trafo << std::endl;
+
+          }
+
+
       }
       trafo->annotation.placement.transformation.origin.x = currX/counter;
       trafo->annotation.placement.transformation.origin.y = currY/counter;
@@ -1290,7 +1298,7 @@ PQLoad* CIMObjectHandler::EnergyConsumerHandler(BaseClass* tp_node, const Termin
             try{
                 pqload->annotation.placement.transformation.rotation = (*diagram_it)->rotation.value;
             }catch(ReadingUninitializedField* e){
-                pqload->annotation.placement.transformation.rotation = 1;
+                pqload->annotation.placement.transformation.rotation = 0;
                 std::cerr <<"Missing rotation for diagram obj of pq load"<< energy_consumer->name << std::endl;
             }
 
