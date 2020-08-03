@@ -36,8 +36,18 @@ void ConfigManager::getAllSettings() {
   this->getHouseholdSettings();
   this->getSVSettings();
   this->getDefault_baseKV();
+  this->getTapChangerStep();
 }
 
+void ConfigManager::getTapChangerStep(){
+    try {
+        this->tapStepPos= this->cfg.lookup("tapStepPosition").c_str();
+        std::cout << "reading tapStepPosition!" << std::endl;
+    }catch (const SettingNotFoundException &nfex) {
+        std::cerr << "No tapStepPosition in configuration file." << std::endl;
+    }
+
+}
 
 void ConfigManager::getDefault_baseKV() {
     try {

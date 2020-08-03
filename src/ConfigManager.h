@@ -198,6 +198,7 @@ class ConfigManager {
   virtual ~ConfigManager();
   double default_baseKV;
   UseSVSettings svSettings;
+  std::string tapStepPos;
   ConnectionSettings cs;
   GlobalSettings  gs;
   UnitSettings us;
@@ -260,6 +261,8 @@ class ConfigManager {
   void getBatterySettings();
 
   void getHouseholdSettings();
+
+  void getTapChangerStep();
 
  private:
   Config conCfg;

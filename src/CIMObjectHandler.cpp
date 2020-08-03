@@ -1053,7 +1053,12 @@ Transformer* CIMObjectHandler::PowerTransformerHandler(BusBar* busbar, const Ter
       trafo->set_b((*transformer_end_it)->b.value);
 
       if((*transformer_end_it)->RatioTapChanger != nullptr){
-          trafo->set_tap_pos( ((*transformer_end_it)->RatioTapChanger->step - 1) * 1000);
+          if(configManager.tapStepPos == "original"){
+              trafo->set_tap_pos( (*transformer_end_it)->RatioTapChanger->step);
+          }else{
+              trafo->set_tap_pos( ((*transformer_end_it)->RatioTapChanger->step - 1) * 1000);
+          }
+
       }
 
       if(this->configManager.us.enable) {
