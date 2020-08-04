@@ -111,6 +111,23 @@ void CIMObjectHandler::print_RTTI(BaseClass *Object) {
   std::cout << std::endl;
 }
 
+void CIMObjectHandler::remove_non_alnums(IdentifiedObjectPtr identified_obj){
+    auto name = identified_obj->name;
+    IEC61970::Base::Domain::String new_name;
+    for(auto el : name){
+        if( !(std::isalnum(el) || el == '_' || el == '-')){
+            char output[2];
+            sprintf((char*)(output),"%02X", el);
+            new_name = new_name + '_'+ output[0] + output[1] + '_';
+        }else{
+            new_name = new_name + el;
+        }
+    }
+    identified_obj->name = new_name;
+
+
+}
+
 /**
  * frist searching loop
  * to find I_max of ACLineSegment, SvPowerFlow of Terminal for PQLoad
@@ -121,6 +138,9 @@ bool CIMObjectHandler::pre_process() {
     std::list<TerminalPtr>::iterator terminal_it;
     std::list<ConductingPtr >::iterator conducting_it;
     for (BaseClass *Object : this->_CIMObjects) {
+        if(auto identified_obj = dynamic_cast<IdentifiedObjectPtr >(Object)){
+            this->remove_non_alnums(identified_obj);
+        }
         if (this->configManager.gs.apply_Neplan_fix == true) {
             ///find OperationLimitSet for AClineSegment, stored in hashmap
             if (auto *op_limitset = dynamic_cast<OpLimitSetPtr>(Object)) {

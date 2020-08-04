@@ -97,6 +97,7 @@ class CIMObjectHandler {
 
   bool ConnectionHandler(ctemplate::TemplateDictionary* dict);
 
+  void remove_non_alnums(IdentifiedObjectPtr identified_obj);
   bool pre_process(); ///first loop
   void get_config(std::string templates);  /// Get congiurations from config.cfg
   void print_RTTI(BaseClass *Object);  /// Print component information
