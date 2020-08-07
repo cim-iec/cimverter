@@ -128,6 +128,13 @@ void CIMObjectHandler::remove_non_alnums(IdentifiedObjectPtr identified_obj){
 
 }
 
+void CIMObjectHandler::add_mem_address(IdentifiedObjectPtr identified_obj){
+    std::stringstream ss;
+    ss << static_cast<const void*>(identified_obj);
+    std::string addrStr = ss.str();
+    identified_obj->name = identified_obj->name + addrStr;
+}
+
 /**
  * frist searching loop
  * to find I_max of ACLineSegment, SvPowerFlow of Terminal for PQLoad
@@ -140,6 +147,8 @@ bool CIMObjectHandler::pre_process() {
     for (BaseClass *Object : this->_CIMObjects) {
         if(auto identified_obj = dynamic_cast<IdentifiedObjectPtr >(Object)){
             this->remove_non_alnums(identified_obj);
+            if(this->configManager.make_unique_names == true)
+                this->add_mem_address(identified_obj);
         }
         if (this->configManager.gs.apply_Neplan_fix == true) {
             ///find OperationLimitSet for AClineSegment, stored in hashmap

@@ -37,6 +37,7 @@ void ConfigManager::getAllSettings() {
   this->getSVSettings();
   this->getDefault_baseKV();
   this->getTapChangerStep();
+  this->getMake_unique_names();
 }
 
 void ConfigManager::getTapChangerStep(){
@@ -47,6 +48,15 @@ void ConfigManager::getTapChangerStep(){
         std::cerr << "No tapStepPosition in configuration file." << std::endl;
     }
 
+}
+
+void ConfigManager::getMake_unique_names(){
+    try {
+        this->make_unique_names = this->cfg.lookup("make_unique_names");
+        std::cout << "reading make_unique_names!" << std::endl;
+    }catch (const SettingNotFoundException &nfex) {
+        std::cerr << "No make_unique_names in configuration file." << std::endl;
+    }
 }
 
 void ConfigManager::getDefault_baseKV() {

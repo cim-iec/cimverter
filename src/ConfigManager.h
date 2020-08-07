@@ -199,6 +199,7 @@ class ConfigManager {
   double default_baseKV;
   UseSVSettings svSettings;
   std::string tapStepPos;
+  bool make_unique_names;
   ConnectionSettings cs;
   GlobalSettings  gs;
   UnitSettings us;
@@ -263,6 +264,7 @@ class ConfigManager {
   void getHouseholdSettings();
 
   void getTapChangerStep();
+  void getMake_unique_names();
 
  private:
   Config conCfg;
