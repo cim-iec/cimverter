@@ -118,7 +118,12 @@ void CIMObjectHandler::remove_non_alnums(IdentifiedObjectPtr identified_obj){
         if( !(std::isalnum(el) || el == '_' || el == '-')){
             char output[2];
             sprintf((char*)(output),"%02X", el);
-            new_name = new_name + '_'+ output[0] + output[1] + '_';
+            if(el == name[-1]){
+                new_name = new_name + '_'+ output[0] + output[1];
+            }else{
+                new_name = new_name + '_'+ output[0] + output[1] + '_';
+            }
+
         }else{
             new_name = new_name + el;
         }
@@ -132,7 +137,7 @@ void CIMObjectHandler::add_mem_address(IdentifiedObjectPtr identified_obj){
     std::stringstream ss;
     ss << static_cast<const void*>(identified_obj);
     std::string addrStr = ss.str();
-    identified_obj->name = identified_obj->name + addrStr;
+    identified_obj->name = identified_obj->name + '_' + addrStr;
 }
 
 /**
