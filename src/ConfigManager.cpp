@@ -38,6 +38,7 @@ void ConfigManager::getAllSettings() {
   this->getDefault_baseKV();
   this->getTapChangerStep();
   this->getMake_unique_names();
+  this->getIgnore_unconnected_components();
 }
 
 void ConfigManager::getTapChangerStep(){
@@ -46,6 +47,16 @@ void ConfigManager::getTapChangerStep(){
         std::cout << "reading tapStepPosition!" << std::endl;
     }catch (const SettingNotFoundException &nfex) {
         std::cerr << "No tapStepPosition in configuration file." << std::endl;
+    }
+
+}
+
+void ConfigManager::getIgnore_unconnected_components(){
+    try {
+        this->ignore_unconnected_components = this->cfg.lookup("ignore_unconnected_components");
+        std::cout << "reading ignore_unconnected_components!" << std::endl;
+    }catch (const SettingNotFoundException &nfex) {
+        std::cerr << "No ignore_unconnected_components in configuration file." << std::endl;
     }
 
 }

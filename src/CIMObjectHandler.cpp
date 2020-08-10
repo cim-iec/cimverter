@@ -277,7 +277,9 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::string output_file_name, int v
       BusBar* busbar = this->currBusbar;
       BaseClass* tp_node = this->currNode;
       for (TerminalPtr terminal : terminals ) {
-
+          if(this->configManager.ignore_unconnected_components == true)
+            if(terminal->connected == false)
+                continue;
           //ConnectivityNode no use for NEPLAN
           /*if (auto *connectivity_node = dynamic_cast<ConnectivityNodePtr>((*terminal_it)->ConnectivityNode)) {
 
@@ -1813,7 +1815,6 @@ bool CIMObjectHandler::ConnectionHandler(ctemplate::TemplateDictionary *dict) {
   while (!connectionQueue.empty()) {
     ctemplate::TemplateDictionary *connection_dict = dict->AddIncludeDictionary("CONNECTIONS_DICT");
     connection_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/Connections.tpl");
-
     if (connectionQueue.front().is_connected()) {
       connection_dict->AddSectionDictionary("CONNECTED_SECTION");
     } else {

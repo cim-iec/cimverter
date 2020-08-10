@@ -199,6 +199,7 @@ class ConfigManager {
   double default_baseKV;
   UseSVSettings svSettings;
   std::string tapStepPos;
+  bool ignore_unconnected_components;
   bool make_unique_names;
   ConnectionSettings cs;
   GlobalSettings  gs;
@@ -265,6 +266,8 @@ class ConfigManager {
 
   void getTapChangerStep();
   void getMake_unique_names();
+  void getIgnore_unconnected_components();
+
 
  private:
   Config conCfg;
