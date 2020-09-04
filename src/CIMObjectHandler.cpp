@@ -997,7 +997,7 @@ CIMObjectHandler::ACLineSegmentHandler(BaseClass* tp_node, BusBar* busbar, const
                 piline->set_Vnom(vnom);
             }
 
-            std::cout <<"Adding TPNode Voltage to PiLine: " << piline->name() << std::endl;
+            //std::cout <<"Adding TPNode Voltage to PiLine: " << piline->name() << std::endl;
         }catch(ReadingUninitializedField* e){
             piline->set_Vnom(-1); // TODO find default value
             std::cerr<<"No Base Voltage at corresponding TPNode for PiLine setting to default value " << piline->name() << std::endl;
