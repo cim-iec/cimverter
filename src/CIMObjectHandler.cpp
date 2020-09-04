@@ -1717,7 +1717,14 @@ PVNode * CIMObjectHandler::SynchronousMachineHandlerType0(BaseClass* tp_node, co
             currX += _t_points.xPosition;
             currY += _t_points.yPosition;
             counter += 1;
-            pv_node->annotation.placement.transformation.rotation = (*diagram_it)->rotation.value;
+
+            try{
+                pv_node->annotation.placement.transformation.rotation = (*diagram_it)->rotation.value;
+            }catch(ReadingUninitializedField* e){
+                pv_node->annotation.placement.transformation.rotation = 0;
+                std::cerr <<"Missing rotation for diagram obj" << pv_node->name()<< std::endl;
+
+            }
         }
 
         pv_node->annotation.placement.transformation.origin.x = currX /counter;
