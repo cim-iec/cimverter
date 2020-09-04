@@ -325,7 +325,7 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::string output_file_name, int v
                       auto searchIt = piLineIdMap.find(ac_line);
                       if (searchIt != piLineIdMap.end()) {
 
-                          PiLine* pi_line = this->ACLineSegmentHandler(busbar, (terminal), ac_line, dict,
+                          PiLine* pi_line = this->ACLineSegmentHandler(tp_node, busbar, (terminal), ac_line, dict,
                                                                        piLineIdMap[ac_line], busbar->name());
                           _UsedObjects.insert({ac_line, pi_line});
                       } else {
@@ -335,7 +335,7 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::string output_file_name, int v
                       }
                   } else {
 
-                      PiLine* pi_line = this->ACLineSegmentHandler(busbar, (terminal), ac_line, dict);
+                      PiLine* pi_line = this->ACLineSegmentHandler(tp_node, busbar, (terminal), ac_line, dict);
                       _UsedObjects.insert({ac_line, pi_line});
                   }
               }
@@ -923,7 +923,7 @@ Slack* CIMObjectHandler::ExternalNIHandler(BaseClass* tp_node, const TerminalPtr
  * Convert to Pi_line in Modelica
  */
 PiLine *
-CIMObjectHandler::ACLineSegmentHandler(BusBar* busbar, const TerminalPtr terminal, const AcLinePtr ac_line,
+CIMObjectHandler::ACLineSegmentHandler(BaseClass* tp_node, BusBar* busbar, const TerminalPtr terminal, const AcLinePtr ac_line,
                                        ctemplate::TemplateDictionary *dict, std::string node1Name /* = "" */, std::string node2Name /* = "" */) {
 
   PiLine * piline = new PiLine();
@@ -979,6 +979,35 @@ CIMObjectHandler::ACLineSegmentHandler(BusBar* busbar, const TerminalPtr termina
         std::cerr<<"Missing terminal seqNR" << std::endl;
     }
 
+    if(configManager.add_Vnom_to_PiLine == true){
+        try{
+            double vnom = ((TPNodePtr)tp_node)->BaseVoltage->nominalVoltage.value;
+            if(this->configManager.us.enable) {
+                if (this->configManager.us.voltage_unit == "V") {
+                    piline->set_Vnom(vnom);
+                } else if (this->configManager.us.voltage_unit == "kV") {
+                    piline->set_Vnom(vnom * 1000);
+                } else if (this->configManager.us.voltage_unit == "mV") {
+                    piline->set_Vnom(vnom * 0.001);
+                } else if (this->configManager.us.voltage_unit == "MV") {
+                    piline->set_Vnom(vnom * 1000000);
+                }
+                // TODO SET DISPLAY UNIT
+            }else{
+                piline->set_Vnom(vnom);
+            }
+
+            std::cout <<"Adding TPNode Voltage to PiLine: " << piline->name() << std::endl;
+        }catch(ReadingUninitializedField* e){
+            piline->set_Vnom(-1); // TODO find default value
+            std::cerr<<"No Base Voltage at corresponding TPNode for PiLine setting to default value " << piline->name() << std::endl;
+        }
+    }else{
+        piline->set_Vnom(-1);
+    }
+
+
+
   if (this->configManager.gs.create_distaix_format == true && !node1Name.empty() && !node2Name.empty()) {
     piline->set_node1(node1Name);
     piline->set_node2(node2Name);
@@ -1031,9 +1060,14 @@ CIMObjectHandler::ACLineSegmentHandler(BusBar* busbar, const TerminalPtr termina
       piline->annotation.placement.transformation.origin.y = 0;
       piline->annotation.placement.transformation.rotation = 0;
 
-          ctemplate::TemplateDictionary *piLine_dict = dict->AddIncludeDictionary("PILINE_DICT");
-          piLine_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/PiLine.tpl");
-          piline->set_template_values(piLine_dict);
+      ctemplate::TemplateDictionary *piLine_dict = dict->AddIncludeDictionary("PILINE_DICT");
+      piLine_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/PiLine.tpl");
+      if(configManager.add_Vnom_to_PiLine == true) {
+          piLine_dict->AddSectionDictionary("VNOM");
+      }else{
+          piLine_dict->AddSectionDictionary("NORMAL");
+      }
+      piline->set_template_values(piLine_dict);
   }else {
       int counter = 0;
       float currX = 0;
@@ -1056,6 +1090,11 @@ CIMObjectHandler::ACLineSegmentHandler(BusBar* busbar, const TerminalPtr termina
               ctemplate::TemplateDictionary *piLine_dict = dict->AddIncludeDictionary("PILINE_DICT");
               piLine_dict->SetFilename(
                       this->configManager.ts.directory_path + "resource/" + template_folder + "/PiLine.tpl");
+              if(configManager.add_Vnom_to_PiLine == true) {
+                  piLine_dict->AddSectionDictionary("VNOM");
+              }else{
+                  piLine_dict->AddSectionDictionary("NORMAL");
+              }
               piline->set_template_values(piLine_dict);
 
       }
@@ -1268,9 +1307,36 @@ PQLoad* CIMObjectHandler::EnergyConsumerHandler(BaseClass* tp_node, const Termin
 
     pqload->set_name(name_in_modelica(energy_consumer->name));
     if (baseVoltageMap.find(energy_consumer) != baseVoltageMap.end()){
-        pqload->set_Vnom(baseVoltageMap[energy_consumer]->nominalVoltage.value);
+        double vnom = baseVoltageMap[energy_consumer]->nominalVoltage.value;
+        if(this->configManager.us.enable) {
+            if (this->configManager.us.voltage_unit == "V") {
+                pqload->set_Vnom(vnom);
+            } else if (this->configManager.us.voltage_unit == "kV") {
+                pqload->set_Vnom(vnom * 1000);
+            } else if (this->configManager.us.voltage_unit == "mV") {
+                pqload->set_Vnom(vnom * 0.001);
+            } else if (this->configManager.us.voltage_unit == "MV") {
+                pqload->set_Vnom(vnom * 1000000);
+            }
+            // TODO SET DISPLAY UNIT
+        }else{
+            pqload->set_Vnom(vnom);
+        }
     }else{
-        pqload->set_Vnom(((TPNodePtr)tp_node)->BaseVoltage->nominalVoltage.value);
+        double vnom = (((TPNodePtr)tp_node)->BaseVoltage->nominalVoltage.value);
+        if(this->configManager.us.enable) {
+            if (this->configManager.us.voltage_unit == "V") {
+                pqload->set_Vnom(vnom);
+            } else if (this->configManager.us.voltage_unit == "kV") {
+                pqload->set_Vnom(vnom * 1000);
+            } else if (this->configManager.us.voltage_unit == "mV") {
+                pqload->set_Vnom(vnom * 0.001);
+            } else if (this->configManager.us.voltage_unit == "MV") {
+                pqload->set_Vnom(vnom * 1000000);
+            }
+        }else{
+            pqload->set_Vnom(vnom);
+        }
         std::cerr <<"No BaseVoltage for EnergyConsumer taking TPNode Voltage: " << std::endl;
     }
     if(this->configManager.us.enable){
@@ -1555,9 +1621,14 @@ Breaker* CIMObjectHandler::BreakerHandler(BusBar* busbar, const TerminalPtr term
             currX += _t_points.xPosition;
             currY += _t_points.yPosition;
             counter += 1;
-            breaker->annotation.placement.transformation.rotation = (*diagram_it)->rotation.value;
-        }
 
+        }
+        try{
+            breaker->annotation.placement.transformation.rotation = (*diagram_it)->rotation.value;
+        }catch(ReadingUninitializedField* e){
+            breaker->annotation.placement.transformation.rotation = 0;
+            std::cerr <<"Missing rotation for diagram obj" << breaker->name()<< std::endl;
+        }
         breaker->annotation.placement.transformation.origin.x = currX /counter;
          breaker->annotation.placement.transformation.origin.y = currY /counter;
 

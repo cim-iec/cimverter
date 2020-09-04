@@ -201,6 +201,7 @@ class ConfigManager {
   std::string tapStepPos;
   bool ignore_unconnected_components;
   bool make_unique_names;
+  bool add_Vnom_to_PiLine;
   ConnectionSettings cs;
   GlobalSettings  gs;
   UnitSettings us;
@@ -265,7 +266,11 @@ class ConfigManager {
   void getHouseholdSettings();
 
   void getTapChangerStep();
+
+  void getAdd_Vnom_to_PiLine();
+
   void getMake_unique_names();
+
   void getIgnore_unconnected_components();
 
 

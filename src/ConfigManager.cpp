@@ -39,6 +39,8 @@ void ConfigManager::getAllSettings() {
   this->getTapChangerStep();
   this->getMake_unique_names();
   this->getIgnore_unconnected_components();
+  this->getAdd_Vnom_to_PiLine();
+
 }
 
 void ConfigManager::getTapChangerStep(){
@@ -49,6 +51,15 @@ void ConfigManager::getTapChangerStep(){
         std::cerr << "No tapStepPosition in configuration file." << std::endl;
     }
 
+}
+
+void ConfigManager::getAdd_Vnom_to_PiLine(){
+    try {
+        this->add_Vnom_to_PiLine= this->cfg.lookup("add_Vnom_to_PiLine");
+        std::cout << "reading add_Vnom_to_PiLine!" << std::endl;
+    }catch (const SettingNotFoundException &nfex) {
+        std::cerr << "No add_Vnom_to_PiLine in configuration file." << std::endl;
+    }
 }
 
 void ConfigManager::getIgnore_unconnected_components(){

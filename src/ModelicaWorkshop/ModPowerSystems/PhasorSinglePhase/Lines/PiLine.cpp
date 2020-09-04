@@ -50,6 +50,7 @@ PiLine & PiLine::operator=(const PiLine &rhs) {
   this->_b_displayUnit = rhs._b_displayUnit;
   this->_r_displayUnit = rhs._r_displayUnit;
   this->_x_displayUnit = rhs._x_displayUnit;
+  this->_Vnom = rhs._Vnom;
 
   return *this;
 }
@@ -69,6 +70,10 @@ bool PiLine::set_template_values(ctemplate::TemplateDictionary *dictionary) {
   dictionary->SetFormattedValue("B", "%.10f", this->b());
   dictionary->SetFormattedValue("G", "%.6f", this->g());
   dictionary->SetFormattedValue("SR", "%.6f", this->Sr());
+  //if(this->Vnom() != -1){
+    dictionary->SetFormattedValue("VNOM", "%.3f", this->Vnom());
+    dictionary->SetValue("VNOM_DISPLAYUNIT", (ModelicaUnit[this->Vnom_displayUnit()]));
+
   dictionary->SetValue("IMAX_DISPLAYUNIT", (ModelicaUnit[this->Imax_displayUnit()]));
   dictionary->SetValue("SR_DISPLAYUNIT", (ModelicaUnit[this->Sr_displayUnit()]));
   dictionary->SetValue("NODE1", this->node1());

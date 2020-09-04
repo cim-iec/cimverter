@@ -96,6 +96,14 @@ class PiLine : public ModelicaWorkshop::ModBaseClass {
     return _Imax_displayUnit;
   };
 
+  modelicaUnit Vnom_displayUnit() const{
+      return _Vnom_displayUnit;
+  };
+
+  void set_Vnom_displayUnit(modelicaUnit Vnom_displayUnit) {
+    this->_Vnom_displayUnit = Vnom_displayUnit;
+  };
+
   void set_Sr_displayUnit(modelicaUnit Sr_displayUnit) {
     this->_Sr_displayUnit = Sr_displayUnit;
   };
@@ -160,6 +168,13 @@ class PiLine : public ModelicaWorkshop::ModBaseClass {
     }
   }
 
+  void set_Vnom(double Vnom) {
+    this->_Vnom = Vnom;
+  };
+  double Vnom() const {
+    return _Vnom;
+  };
+
  private:
 
   //Parameters
@@ -174,9 +189,11 @@ class PiLine : public ModelicaWorkshop::ModBaseClass {
   double _g = 0;  //Shunt Conductance per km
   double _Sr = 1;  //rated apparent power
   double _Imax = 100;  //maximal current
+  double _Vnom = 0;
   std::string _node1 = ""; //First connection point
   std::string _node2 = ""; //Second connection point
 
+  modelicaUnit _Vnom_displayUnit = modelicaUnit ::V;
   modelicaUnit _Imax_displayUnit = modelicaUnit::A;
   modelicaUnit _Sr_displayUnit = modelicaUnit::W;
   modelicaUnit _g_displayUnit = modelicaUnit::S;
