@@ -1063,9 +1063,9 @@ CIMObjectHandler::ACLineSegmentHandler(BaseClass* tp_node, BusBar* busbar, const
       ctemplate::TemplateDictionary *piLine_dict = dict->AddIncludeDictionary("PILINE_DICT");
       piLine_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/PiLine.tpl");
       if(configManager.add_Vnom_to_PiLine == true) {
-          piLine_dict->AddSectionDictionary("VNOM");
+          piLine_dict->AddSectionDictionary("PILINE_VNOM");
       }else{
-          piLine_dict->AddSectionDictionary("NORMAL");
+          piLine_dict->AddSectionDictionary("NO_PILINE_VNOM");
       }
       piline->set_template_values(piLine_dict);
   }else {
@@ -1091,9 +1091,9 @@ CIMObjectHandler::ACLineSegmentHandler(BaseClass* tp_node, BusBar* busbar, const
               piLine_dict->SetFilename(
                       this->configManager.ts.directory_path + "resource/" + template_folder + "/PiLine.tpl");
               if(configManager.add_Vnom_to_PiLine == true) {
-                  piLine_dict->AddSectionDictionary("VNOM");
+                  piLine_dict->AddSectionDictionary("PILINE_VNOM");
               }else{
-                  piLine_dict->AddSectionDictionary("NORMAL");
+                  piLine_dict->AddSectionDictionary("NO_PILINE_VNOM");
               }
               piline->set_template_values(piLine_dict);
 
