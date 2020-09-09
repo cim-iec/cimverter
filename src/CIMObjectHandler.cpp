@@ -259,16 +259,18 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::string output_file_name, int v
 
 
     // in case there are no connected terminals attached to the busbar don't create it
-    bool connected_terminal_exists = false;
-    if(this->configManager.ignore_unconnected_components == true)
-      for(auto terminal : terminals)
-        if(terminal->connected == true){
-            connected_terminal_exists = true;
-            break;
-        }
 
-    if(connected_terminal_exists == false)
-      continue;
+    if(this->configManager.ignore_unconnected_components == true){
+        bool connected_terminal_exists = false;
+        for(auto terminal : terminals)
+            if(terminal->connected == true){
+                connected_terminal_exists = true;
+                break;
+            }
+        if(connected_terminal_exists == false)
+            continue;
+    }
+
     if(this->configManager.ss.use_TPNodes == true){//useTP == true
         auto *tp_node = dynamic_cast<TPNodePtr>(Object) ;
             this->currBusbar = this->TopologicalNodeHandler(tp_node, dict);
