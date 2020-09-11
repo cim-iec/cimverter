@@ -149,8 +149,6 @@ bool CIMObjectHandler::pre_process() {
     ///pre searching loop
     std::list<TerminalPtr>::iterator terminal_it;
     std::list<ConductingPtr >::iterator conducting_it;
-    std::map<TPNodePtr , bool> TPNodeList;
-
     for (BaseClass *Object : this->_CIMObjects) {
 
         if(auto identified_obj = dynamic_cast<IdentifiedObjectPtr >(Object)){
@@ -211,7 +209,7 @@ bool CIMObjectHandler::pre_process() {
             if (auto *tp_node = dynamic_cast<TPNodePtr>(Object)) {
                 for (terminal_it = tp_node->Terminal.begin(); terminal_it != tp_node->Terminal.end(); ++terminal_it) {
                     terminalList[tp_node].push_back(*terminal_it);
-                    TPNodeList.insert({tp_node,false});
+
                 }
             }
         } else {
@@ -222,34 +220,31 @@ bool CIMObjectHandler::pre_process() {
     }
 
     if(configManager.ignore_unconnected_components == true){
-        if(configManager.ss.use_TPNodes == false){
-            std::cerr << " removal of unconnected components not implemented for branch breaker " << std::endl;
-        }
-
+        // TODO Code cleanup: create fct that returns tpNode of extNW
+        // TODO Create fct that for a given start node returns a list of connected tpNodes
         // find external NW tp Node
-        TPNodePtr externalNW_TPNode = nullptr;
-        std::unordered_map<BaseClass*, std::list<TPNodePtr> > obj2TPNodeMap;
+        std::map<BaseClass* , bool> TPNodeList;
+        BaseClass* externalNW_TPNode = nullptr;
+        std::unordered_map<BaseClass*, std::list<BaseClass*> > obj2TPNodeMap;
 
         for(auto object_it = terminalList.begin(); object_it!= terminalList.end(); object_it++){
-            TPNodePtr tp_node = dynamic_cast<TPNodePtr > ((*object_it).first);
+            BaseClass* tp_node = (*object_it).first;
             std::list<TerminalPtr> terminals = (*object_it).second;
 
+            TPNodeList.insert({tp_node,false});
             for(auto terminal : terminals){
                 if(terminal->connected == true)
                     obj2TPNodeMap[terminal->ConductingEquipment].push_back(tp_node);
                 if(auto * externalNetwork = dynamic_cast<ExNIPtr >((terminal)->ConductingEquipment)){
-                    std::cout << "external network is: " << externalNetwork << std::endl;
                     externalNW_TPNode = tp_node;
-                    break;
                 }
             }
         }
-        std::cout << "tp node for extNW " << externalNW_TPNode<<std::endl;
         // mark all tp nodes that are connected to external NW and remove others
 
-        std::queue<TPNodePtr > qq;
+        std::queue<BaseClass*> qq;
         qq.push(externalNW_TPNode);
-        TPNodePtr currTPNode;
+        BaseClass* currTPNode;
         while(!qq.empty()){
             currTPNode = qq.front();
             qq.pop();
@@ -267,17 +262,10 @@ bool CIMObjectHandler::pre_process() {
                 }
             }
         }
-        std::list<TPNodePtr > connectedTPNodes;
         for(auto el : TPNodeList){
-            if(el.second == true)
-                connectedTPNodes.push_back(el.first);
             if(el.second == false){
                 terminalList.erase(el.first);
             }
-        }
-        std::cout << "connected TP NOdes: " << std::endl;
-        for(auto el : connectedTPNodes){
-            std::cout << el->name << std::endl;
         }
 
     }
