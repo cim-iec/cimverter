@@ -179,16 +179,13 @@ bool CIMObjectHandler::pre_process() {
         if (this->configManager.svSettings.useSVforEnergyConsumer == true
             or this->configManager.svSettings.useSVforGeneratingUnit == true
             or this->configManager.svSettings.useSVforExternalNetworkInjection == true) {
-
             ///find terminal's svPowerFlow
             if (auto *sv_powerflow = dynamic_cast<SVPowerFlowPtr>(Object)) {
                 svPowerFlowMap.insert({sv_powerflow->Terminal, sv_powerflow}); //hashmap
             } else if (auto *sv_voltage = dynamic_cast<SVVoltagePtr>(Object)) {
                 svVoltageMap.insert({ (sv_voltage->TopologicalNode), sv_voltage});
             }
-
         }
-
         if (auto *generatingUnit = dynamic_cast<GeneratingUnitPtr > (Object)) {
             for (rotatingMachine_it = generatingUnit->RotatingMachine.begin();
                  rotatingMachine_it != generatingUnit->RotatingMachine.end();
@@ -202,8 +199,6 @@ bool CIMObjectHandler::pre_process() {
                     conducting_it ++){
                 baseVoltageMap.insert({*conducting_it, base_voltage});
             }
-
-
         }
         if (this->configManager.ss.use_TPNodes == true) {
             if (auto *tp_node = dynamic_cast<TPNodePtr>(Object)) {
@@ -218,62 +213,61 @@ bool CIMObjectHandler::pre_process() {
             }
         }
     }
-
     if(configManager.ignore_unconnected_components == true){
-        // TODO Code cleanup: create fct that returns tpNode of extNW
-        // TODO Create fct that for a given start node returns a list of connected tpNodes
-        // find external NW tp Node
-        std::map<BaseClass* , bool> TPNodeList;
-        BaseClass* externalNW_TPNode = nullptr;
-        std::unordered_map<BaseClass*, std::list<BaseClass*> > obj2TPNodeMap;
-
-        for(auto object_it = terminalList.begin(); object_it!= terminalList.end(); object_it++){
-            BaseClass* tp_node = (*object_it).first;
-            std::list<TerminalPtr> terminals = (*object_it).second;
-
-            TPNodeList.insert({tp_node,false});
-            for(auto terminal : terminals){
-                if(terminal->connected == true)
-                    obj2TPNodeMap[terminal->ConductingEquipment].push_back(tp_node);
-                if(auto * externalNetwork = dynamic_cast<ExNIPtr >((terminal)->ConductingEquipment)){
-                    externalNW_TPNode = tp_node;
-                }
-            }
-        }
-        // mark all tp nodes that are connected to external NW and remove others
-
-        std::queue<BaseClass*> qq;
-        qq.push(externalNW_TPNode);
-        BaseClass* currTPNode;
-        while(!qq.empty()){
-            currTPNode = qq.front();
-            qq.pop();
-            if(TPNodeList[currTPNode] == true)
-                continue;
-            else
-                (TPNodeList[currTPNode] = true);
-
-            for(auto terminal : terminalList[currTPNode]){
-                if(terminal->connected == true){
-                    for(auto tp_node : obj2TPNodeMap[terminal->ConductingEquipment]){
-                        if (tp_node != currTPNode)
-                            qq.push(tp_node);
-                    }
-                }
-            }
-        }
-        for(auto el : TPNodeList){
-            if(el.second == false){
-                terminalList.erase(el.first);
-            }
-        }
-
+        remove_unconnected_components();
     }
 
   return true;
 }
 
+void  CIMObjectHandler::remove_unconnected_components(){
+    // TODO Code cleanup: create fct that returns tpNode of extNW
+    // TODO Create fct that for a given start node returns a list of connected tpNodes
+    // find external network tpNode
+    std::map<BaseClass* , bool> tpNodeList;
+    BaseClass* externalNW_TPNode = nullptr;
+    std::unordered_map<BaseClass*, std::list<BaseClass*> > obj2TPNodeMap;
 
+    for(auto object_it = terminalList.begin(); object_it!= terminalList.end(); object_it++){
+        BaseClass* tp_node = (*object_it).first;
+        std::list<TerminalPtr> terminals = (*object_it).second;
+        tpNodeList.insert({tp_node,false});
+        for(auto terminal : terminals){
+            if(terminal->connected == true)
+                obj2TPNodeMap[terminal->ConductingEquipment].push_back(tp_node);
+            if(auto * externalNetwork = dynamic_cast<ExNIPtr >((terminal)->ConductingEquipment)){
+                externalNW_TPNode = tp_node;
+            }
+        }
+    }
+    // mark all tpNodes that are connected to external network
+    std::queue<BaseClass*> qq;
+    qq.push(externalNW_TPNode);
+    BaseClass* currTPNode;
+    while(!qq.empty()){
+        currTPNode = qq.front();
+        qq.pop();
+        if(tpNodeList[currTPNode] == true)
+            continue;
+        else
+            (tpNodeList[currTPNode] = true);
+        for(auto terminal : terminalList[currTPNode]){
+            if(terminal->connected == true){
+                for(auto tp_node : obj2TPNodeMap[terminal->ConductingEquipment]){
+                    if (tp_node != currTPNode)
+                        qq.push(tp_node);
+                }
+            }
+        }
+    }
+    // remove tpNodes that are not connected to external network
+    for(auto el : tpNodeList){
+        if(el.second == false){
+            terminalList.erase(el.first);
+        }
+    }
+
+}
 
 
 /**

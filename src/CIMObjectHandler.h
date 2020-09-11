@@ -100,6 +100,7 @@ class CIMObjectHandler {
   void remove_non_alnums(IdentifiedObjectPtr identified_obj);
   void add_mem_address(IdentifiedObjectPtr identified_obj);
   bool pre_process(); ///first loop
+  void remove_unconnected_components();
   void get_config(std::string templates);  /// Get congiurations from config.cfg
   void print_RTTI(BaseClass *Object);  /// Print component information
   static std::string name_in_modelica(std::string orginal_name);/// Modify illega modelica name
