@@ -1384,19 +1384,7 @@ PQLoad* CIMObjectHandler::EnergyConsumerHandler(BaseClass* tp_node, const Termin
         }
     }else{
         double vnom = (((TPNodePtr)tp_node)->BaseVoltage->nominalVoltage.value);
-        if(this->configManager.us.enable) {
-            if (this->configManager.us.voltage_unit == "V") {
-                pqload->set_Vnom(vnom);
-            } else if (this->configManager.us.voltage_unit == "kV") {
-                pqload->set_Vnom(vnom * 1000);
-            } else if (this->configManager.us.voltage_unit == "mV") {
-                pqload->set_Vnom(vnom * 0.001);
-            } else if (this->configManager.us.voltage_unit == "MV") {
-                pqload->set_Vnom(vnom * 1000000);
-            }
-        }else{
-            pqload->set_Vnom(vnom);
-        }
+        pqload->set_Vnom(vnom);
         std::cerr <<"No BaseVoltage for EnergyConsumer taking TPNode Voltage: " << std::endl;
     }
     if(this->configManager.us.enable){
