@@ -27,8 +27,6 @@ annotation(Placement(visible = {{VISIBLE}}, transformation(extent = {{TRANS_EXTE
 
 {{>PVNODE_DICT}}
 
-{{>SynchronousMachine4Windings_DICT}}
-
 {{>PQLOAD_DICT}}
 
 {{>PQLOAD_PROFILE_DICT}}
