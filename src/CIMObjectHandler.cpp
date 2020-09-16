@@ -1710,7 +1710,102 @@ SynMachineDyn * CIMObjectHandler::synMachineDynHandler(BaseClass* node, const Te
 
     SynMachineDyn * synMachineDyn = new SynMachineDyn();
     synMachineDyn->set_name(name_in_modelica(syn_machine->name));
+
+    try{
+        synMachineDyn->set_sequenceNumber(terminal->sequenceNumber);
+    }catch(ReadingUninitializedField* e){
+        synMachineDyn->set_sequenceNumber(0);
+        std::cerr <<"Missing sequence number in terminal sequence number " << terminal->name << std::endl;
+    }
+    try{
+        synMachineDyn->set_connected(terminal->connected);
+    }catch(ReadingUninitializedField* e){
+        synMachineDyn->set_connected(1);
+        std::cerr <<"Missing connected property in terminal " << terminal->name << std::endl;
+    }
+    synMachineDyn->annotation.placement.visible = true;
+
+
     synMachineDyn->set_raPu((syn_machine)->statorResistance.value);
+    synMachineDyn->set_xdPU(syn_machine->xDirectSync.value);
+    synMachineDyn->set_xIPu(syn_machine->xDirectSync.value);
+    synMachineDyn->set_xpdPu(syn_machine->xDirectTrans.value);
+    synMachineDyn->set_xppdPu(syn_machine->xDirectSubtrans.value);
+    synMachineDyn->set_xppqPu(syn_machine->xDirectSubtrans.value);
+    synMachineDyn->set_xpqPu(syn_machine->xDirectSubtrans.value);
+    synMachineDyn->set_xqPu(syn_machine->xQuadTrans.value);
+    synMachineDyn->set_Tpd0(syn_machine->tpdo.value);
+    synMachineDyn->set_Tppd0(syn_machine->tppdo.value);
+    synMachineDyn->set_Tppq0(syn_machine->tppqo.value);
+    synMachineDyn->set_Tpq0(syn_machine->tpqo.value);
+    synMachineDyn->set_SNom((synMachineDyn->get_PStart() * 10) );
+
+    // TODO MBY NEW SVVOLTAGE/PWRFLOW OPTION
+    if(this->configManager.svSettings.useSVforGeneratingUnit == true ) {//&& svPowerFlowMap[terminal] && svVoltageMap[tp_node]){
+        try {
+            // TODO CONVERSION TO RADIANS
+            synMachineDyn->set_UPhaseStart( svVoltageMap[node]->angle.value);
+        } catch (ReadingUninitializedField *e) {
+            std::cerr << "No SVVoltage at tp node for SynMachineDyn" << terminal->name << std::endl;
+        }
+        try {
+
+            synMachineDyn->set_UStart(svVoltageMap[node]->v.value);
+        } catch (ReadingUninitializedField *e) {
+            std::cerr << "No SVVoltage at tp node for SynMachineDyn" << terminal->name << std::endl;
+        }
+
+        try {
+            synMachineDyn->set_QStart(svPowerFlowMap[terminal]->q.value);
+        } catch (ReadingUninitializedField *e) {
+            std::cerr << "No SVPowerFlow at tp node for SynMachineDyn" << terminal->name << std::endl;
+        }
+        try {
+            synMachineDyn->set_PStart(svPowerFlowMap[terminal]->p.value);
+        } catch (ReadingUninitializedField *e) {
+            std::cerr << "No SVPowerFlow at tp node for SynMachineDyn" << terminal->name << std::endl;
+        }
+
+    }
+
+    if(syn_machine->DiagramObjects.begin() == syn_machine->DiagramObjects.end()){
+        std::cerr << "Missing Diagram Object for SynchronousMachine: " << syn_machine->name << " Default Position 0,0 \n";
+        synMachineDyn->annotation.placement.transformation.origin.x = 0;
+        synMachineDyn->annotation.placement.transformation.origin.y = 0;
+        synMachineDyn->annotation.placement.transformation.rotation = 0;
+
+        ctemplate::TemplateDictionary *synMachineDyn_dict = dict->AddIncludeDictionary("SynchronousMachine4Windings_DICT");
+        synMachineDyn_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/SynchronousMachine4Windings.tpl");
+        synMachineDyn->set_template_values(synMachineDyn_dict);
+    }else{
+        int counter = 0;
+        float currX = 0;
+        float currY = 0;
+        for (diagram_it = syn_machine->DiagramObjects.begin();
+             diagram_it!= syn_machine->DiagramObjects.end();
+             ++diagram_it) {            _t_points = this->calculate_average_position();
+            currX += _t_points.xPosition;
+            currY += _t_points.yPosition;
+            counter += 1;
+
+            try{
+                synMachineDyn->annotation.placement.transformation.rotation = (*diagram_it)->rotation.value;
+            }catch(ReadingUninitializedField* e){
+                synMachineDyn->annotation.placement.transformation.rotation = 0;
+                std::cerr <<"Missing rotation for diagram obj" << synMachineDyn->name()<< std::endl;
+
+            }
+        }
+
+        synMachineDyn->annotation.placement.transformation.origin.x = currX /counter;
+        synMachineDyn->annotation.placement.transformation.origin.y = currY /counter;
+
+
+        ctemplate::TemplateDictionary *synMachineDyn_dict = dict->AddIncludeDictionary("SynchronousMachine4Windings_DICT");
+        synMachineDyn_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/SynchronousMachine4Windings.tpl");
+        synMachineDyn->set_template_values(synMachineDyn_dict);
+
+    }
 
     return synMachineDyn;
 
