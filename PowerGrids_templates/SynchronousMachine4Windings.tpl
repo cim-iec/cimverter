@@ -9,7 +9,7 @@ PowerGrids.Electrical.Machines.SynchronousMachine4Windings {{NAME}}(
     Tpq0 = {{TPQO}}, 
     UNom = {{VNOM}}, 
     UPhaseStart = {{VANGLE}}, 
-    UStart = {{VNOM}} * {{VABS}}, 
+    UStart = {{VSTART}}, 
     portVariablesPhases = true, 
     raPu = {{RAPU}}, 
     xdPu = {{XDPU}}, 
