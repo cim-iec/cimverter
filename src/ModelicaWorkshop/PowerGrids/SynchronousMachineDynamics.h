@@ -10,28 +10,44 @@ namespace PowerGrids {
             SynchronousMachineDynamics();
             virtual ~SynchronousMachineDynamics();
             bool set_template_values(ctemplate::TemplateDictionary *dictionary) override;
+
             void set_raPu(double rapu){
-                this->raPu = rapu;
+                this->_raPu = rapu;
             }
-            double get_raPu(){ return this->raPu;};
+            double get_raPu(){ return this->_raPu;};
+
+            void set_xdPU(double xdPU){
+                this->_xdPu= xdPU;
+            }
+            double get_xdPu(){ return this->_xdPu;};
+
+            void set_xpdPu(double xpdPu){
+                this->_xpdPu= xpdPu;
+            }
+            double get_xpdPu(){ return this->_xpdPu;};
+
+            void set_xppdPu(double xppdPu){
+                this->_xppdPu= xppdPu;
+            }
+            double get_xppdPu(){ return this->_xppdPu;};
 
         private:
-            double raPu;
-            double xdPu;
-            double xpdPu;
-            double xppdPu;
-            double xppqPu;
-            double xpqPu;
-            double xqPu;
-            double Tpd0;
-            double Tppd0;
-            double Tppq0;
-            double Tpq0;
-            double UPhaseStart;
-            double QStart;
-            double PStart;
-            double UStart;
-            double SNom;
+            double _raPu = 0;
+            double _xdPu = 0;
+            double _xpdPu = 0;
+            double _xppdPu = 0;
+            double _xppqPu = 0;
+            double _xpqPu = 0;
+            double _xqPu = 0;
+            double _Tpd0 = 0;
+            double _Tppd0 = 0;
+            double _Tppq0 = 0;
+            double _Tpq0 = 0;
+            double _UPhaseStart = 0;
+            double _QStart = 0;
+            double _PStart = 0;
+            double _UStart = 0;
+            double _SNom = 0;
         };
 
 

@@ -1710,7 +1710,9 @@ SynMachineDyn * CIMObjectHandler::synMachineDynHandler(BaseClass* node, const Te
 
     SynMachineDyn * synMachineDyn = new SynMachineDyn();
     synMachineDyn->set_name(name_in_modelica(syn_machine->name));
-//    synMachineDyn->set_raPu((syn_machine)->statorResistance.value);
+    synMachineDyn->set_raPu((syn_machine)->statorResistance.value);
+
+    return synMachineDyn;
 
 
 
