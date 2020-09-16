@@ -51,6 +51,8 @@ file(COPY ${PROJECT_SOURCE_DIR}/ModPowerSystems_templates/ DESTINATION
 ${PROJECT_BINARY_DIR}/bin/resource/ModPowerSystems_templates)
 file(COPY ${PROJECT_SOURCE_DIR}/PowerSystems_templates/ DESTINATION 
 ${PROJECT_BINARY_DIR}/bin/resource/PowerSystems_templates)
+file(COPY ${PROJECT_SOURCE_DIR}/PowerGrids_templates/ DESTINATION 
+${PROJECT_BINARY_DIR}/bin/resource/PowerSystems_templates)
 file(COPY ${PROJECT_SOURCE_DIR}/DistAIX_templates/ DESTINATION
 ${PROJECT_BINARY_DIR}/bin/resource/DistAIX_templates)
 file(COPY ${PROJECT_SOURCE_DIR}/src/config.cfg DESTINATION ${PROJECT_BINARY_DIR}/bin)
