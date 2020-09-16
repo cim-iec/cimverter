@@ -200,6 +200,9 @@ bool CIMObjectHandler::pre_process() {
                 baseVoltageMap.insert({*conducting_it, base_voltage});
             }
         }
+        if(auto *syn_machine_dyn = dynamic_cast<SynMachineDynPtr> (Object)){
+            SynMachineMap.insert({syn_machine_dyn->SynchronousMachine, syn_machine_dyn});
+        }
         if (this->configManager.ss.use_TPNodes == true) {
             if (auto *tp_node = dynamic_cast<TPNodePtr>(Object)) {
                 for (terminal_it = tp_node->Terminal.begin(); terminal_it != tp_node->Terminal.end(); ++terminal_it) {
@@ -417,16 +420,27 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::string output_file_name, int v
               if(_UsedObjects.find(synchronous_machine) != _UsedObjects.end()) {
 
               }else {
+                  if(SynMachineMap.find(synchronous_machine) != SynMachineMap.end()){
+                      SynMachineDyn *synMachineDyn = this->synMachineDynHandler(tp_node, terminal,
+                                                                                SynMachineMap[synchronous_machine], dict);
+                      _UsedObjects.insert({synchronous_machine, synMachineDyn});
 
-                  if (this->configManager.household_parameters.use_households == false) {
-                      PVNode * pv_node = this->SynchronousMachineHandlerType0(tp_node, (terminal),
-                                                                              synchronous_machine, dict);
-                      _UsedObjects.insert({synchronous_machine,pv_node});
+                  }else{
+                      if (this->configManager.household_parameters.use_households == false) {
+                          PVNode * pv_node = this->SynchronousMachineHandlerType0(tp_node, (terminal),
+                                                                                  synchronous_machine, dict);
+                          _UsedObjects.insert({synchronous_machine,pv_node});
 
+                      }
                   }
-                  Connection conn(busbar, (PVNode* )_UsedObjects[synchronous_machine]);
-                  connectionQueue.push(conn);
               }
+              Connection conn(busbar, (PVNode* )_UsedObjects[synchronous_machine]);
+              connectionQueue.push(conn);
+
+              // THIS IS WRONG SYNMACHINEDYNAMICS IS NO CONDUCTING EQUIPMENT
+              // TODO ADD THE CONNECTION CONSTRUCTOR
+              // Connection conn(busbar, (SynMachineDyn *) _UsedObjects[synchronous_machine]);
+              // connectionQueue.push(conn);
           }else if (auto *cim_breaker = dynamic_cast<BreakerPtr> ((terminal)->ConductingEquipment)){
               if(_UsedObjects.find(cim_breaker) != _UsedObjects.end()) {
                   Breaker* someBreaker = ((Breaker* )_UsedObjects[cim_breaker]);
@@ -786,8 +800,6 @@ bool CIMObjectHandler::HouseholdComponetsHandler(BaseClass* tp_node, ctemplate::
 
 
       }
-
-
 
       if (this->pqloadQueue.size()==1 && this->solarGeneratorQueue.size()==1) {
 
@@ -1685,6 +1697,26 @@ Breaker* CIMObjectHandler::BreakerHandler(BusBar* busbar, const TerminalPtr term
     return breaker;
 }
 
+
+/**
+ * ConductingEquipment of Terminal
+ * ConductingEquipment cast to SynchronousMachineDynamic
+ * Convert to synchMachineDynamic in Modelica
+ */
+
+SynMachineDyn * CIMObjectHandler::synMachineDynHandler(BaseClass* node, const TerminalPtr terminal,
+                                                       const SynMachineDynPtr syn_machine,
+                                                       ctemplate::TemplateDictionary* dict){
+
+    SynMachineDyn * synMachineDyn = new SynMachineDyn();
+    synMachineDyn->set_name(name_in_modelica(syn_machine->name));
+//    synMachineDyn->set_raPu((syn_machine)->statorResistance.value);
+
+
+
+}
+
+
 /**
  * ConductingEquipment of Terminal
  * ConductingEquipment cast to SynchronousMachine
@@ -1696,7 +1728,6 @@ PVNode * CIMObjectHandler::SynchronousMachineHandlerType0(BaseClass* tp_node, co
                                                                ctemplate::TemplateDictionary *dict) {
     PVNode* pv_node = new PVNode();
     pv_node->set_name(name_in_modelica(syn_machine->name));
-    std::cout <<syn_machine->name<< std::endl;
     try{
         pv_node->set_sequenceNumber(terminal->sequenceNumber);
     }catch(ReadingUninitializedField* e){

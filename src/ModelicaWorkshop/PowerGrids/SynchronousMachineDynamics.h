@@ -10,6 +10,10 @@ namespace PowerGrids {
             SynchronousMachineDynamics();
             virtual ~SynchronousMachineDynamics();
             bool set_template_values(ctemplate::TemplateDictionary *dictionary) override;
+            void set_raPu(double rapu){
+                this->raPu = rapu;
+            }
+            double get_raPu(){ return this->raPu;};
 
         private:
             double raPu;

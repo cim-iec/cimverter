@@ -46,6 +46,7 @@ typedef IEC61970::Base::OperationalLimits::OperationalLimitSet* OpLimitSetPtr;
 typedef IEC61970::Base::OperationalLimits::CurrentLimit* CurrentLimitPtr;
 typedef IEC61970::Base::OperationalLimits::OperationalLimit* OpLimitPtr;
 typedef IEC61970::Base::Core::IdentifiedObject* IdentifiedObjectPtr;
+typedef IEC61970::Dynamics::StandardModels::SynchronousMachineDynamics::SynchronousMachineTimeConstantReactance * SynMachineDynPtr;
 typedef ModPowerSystems::PhasorSinglePhase::Connections::BusBar BusBar;
 typedef ModPowerSystems::PhasorSinglePhase::Connections::ConnectivityNode ConnectivityNode;
 #ifdef SINERGIEN
@@ -81,6 +82,7 @@ class CIMObjectHandler {
   Slack* ExternalNIHandler( BaseClass* tp_node, const TerminalPtr terminal, const ExNIPtr externalNI, ctemplate::TemplateDictionary* dict);
   PQLoad* EnergyConsumerHandler(BaseClass* tp_node, const TerminalPtr terminal, const EnergyConsumerPtr energy_consumer, ctemplate::TemplateDictionary* dict);
   PVNode * SynchronousMachineHandlerType0(BaseClass* node, const TerminalPtr terminal, const SynMachinePtr syn_machine, ctemplate::TemplateDictionary* dict);
+  SynMachineDyn *   synMachineDynHandler  (BaseClass* node, const TerminalPtr terminal, const SynMachineDynPtr syn_machine, ctemplate::TemplateDictionary* dict);
   BusBar* ConnectivityNodeHandler(const ConnectivityNodePtr connectivity_node, ctemplate::TemplateDictionary* dict);
   bool HouseholdComponetsHandler( BaseClass* node, ctemplate::TemplateDictionary* dict);  //to find household Componets
 
@@ -126,6 +128,7 @@ class CIMObjectHandler {
   std::unordered_map<BaseClass*,SVVoltagePtr> svVoltageMap;
   std::unordered_map<AcLinePtr,OpLimitSetPtr> OpLimitMap;
   std::unordered_map<BaseClass*, std::list<TerminalPtr> > terminalList;
+  std::unordered_map<SynMachinePtr, SynMachineDynPtr> SynMachineMap;
 
 
   std::list<DiagramObjectPtr>::iterator diagram_it;
