@@ -17,11 +17,9 @@ namespace PowerGrids {
                 dictionary->SetValue("NAME", this->name());
 
                 //UNom = {{VNOM}},
-                 //       UStart = {{VNOM}} * {{VABS}},
 
-                //dictionary->SetFormattedValue("VNOM", "%.3f", this->());
-
-
+                dictionary->SetFormattedValue("VNOM", "%.3f", this->get_VNom());
+                dictionary->SetFormattedValue("VSTART", "%.3f", this->get_UStart());
                 dictionary->SetFormattedValue("PGEN", "%.3f", this->get_PStart());
                 dictionary->SetFormattedValue("QGEN", "%.3f", this->get_QStart());
                 dictionary->SetFormattedValue("SNOM", "%.3f", this->get_SNom());

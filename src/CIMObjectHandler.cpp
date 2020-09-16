@@ -1739,6 +1739,7 @@ SynMachineDyn * CIMObjectHandler::synMachineDynHandler(BaseClass* node, const Te
     synMachineDyn->set_Tppq0(syn_machine->tppqo.value);
     synMachineDyn->set_Tpq0(syn_machine->tpqo.value);
     synMachineDyn->set_SNom((synMachineDyn->get_PStart() * 10) );
+    synMachineDyn->set_VNom(syn_machine->SynchronousMachine->ratedU.value);
 
     // TODO MBY NEW SVVOLTAGE/PWRFLOW OPTION
     if(this->configManager.svSettings.useSVforGeneratingUnit == true ) {//&& svPowerFlowMap[terminal] && svVoltageMap[tp_node]){

@@ -20,3 +20,4 @@ PowerGrids.Electrical.Machines.SynchronousMachine4Windings {{NAME}}(
     xpqPu = {{XPQPU}}, 
     xqPu = {{XQPU}}) 
 annotation (Placement(visible = {{VISIBLE}}, transformation(extent = {{TRANS_EXTENT_POINTS}}, rotation = {{ROTATION}}, origin = {{ORIGIN_POINT}})));
+
