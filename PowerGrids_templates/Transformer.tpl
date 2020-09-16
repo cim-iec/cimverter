@@ -8,7 +8,7 @@ PowerGrids.Electrical.Branches.TransformerFixedRatio.Transformer {{NAME}}(
     B = {{B}},
     portVariablesPhases = true, 
     portVariablesPu = true, 
-    rFixed = {{UNomB}} / {{UNomA}})
+    rFixed = {{VNOM2}} / {{VNOM1}})
 annotation (Placement(visible = {{VISIBLE}}, transformation(extent = {{TRANS_EXTENT_POINTS}}, rotation = {{ROTATION}}, origin = {{ORIGIN_POINT}})));
 
 
