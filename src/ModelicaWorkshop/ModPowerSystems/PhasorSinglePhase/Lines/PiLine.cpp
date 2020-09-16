@@ -70,9 +70,10 @@ bool PiLine::set_template_values(ctemplate::TemplateDictionary *dictionary) {
   dictionary->SetFormattedValue("B", "%.10f", this->b());
   dictionary->SetFormattedValue("G", "%.6f", this->g());
   dictionary->SetFormattedValue("SR", "%.6f", this->Sr());
-  //if(this->Vnom() != -1){
+  if(this->Vnom() != -1) {
     dictionary->SetFormattedValue("VNOM", "%.3f", this->Vnom());
     dictionary->SetValue("VNOM_DISPLAYUNIT", (ModelicaUnit[this->Vnom_displayUnit()]));
+  }
 
   dictionary->SetValue("IMAX_DISPLAYUNIT", (ModelicaUnit[this->Imax_displayUnit()]));
   dictionary->SetValue("SR_DISPLAYUNIT", (ModelicaUnit[this->Sr_displayUnit()]));
