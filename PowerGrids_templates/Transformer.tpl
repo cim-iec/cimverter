@@ -3,7 +3,9 @@ PowerGrids.Electrical.Branches.TransformerFixedRatio.Transformer {{NAME}}(
     UNomB = {{VNOM2}}, 
     SNom = {{SR}}, 
     R = {{R}}, 
-    X = {{X}}, T
+    X = {{X}},
+    G = {{G}},
+    B = {{B}},
     portVariablesPhases = true, 
     portVariablesPu = true, 
     rFixed = {{UNomB}} / {{UNomA}})
