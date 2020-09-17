@@ -1,4 +1,4 @@
-PowerGrids.Electrical.Branches.TransformerFixedRatio.Transformer {{NAME}}(
+PowerGrids.Electrical.Branches.TransformerFixedRatio {{NAME}}(
     UNomA = {{VNOM1}}, 
     UNomB = {{VNOM2}}, 
     SNom = {{SR}}, 

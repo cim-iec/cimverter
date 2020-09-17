@@ -4,12 +4,14 @@
 
 {{#SYSTEM_SETTINGS_SECTION}}
 
-inner ModPowerSystems.Base.System {{NAME}}(freq_nom(displayUnit = "{{FNOM_DISPLAYUNIT}}") = {{FNOM}}) 
-annotation(Placement(visible = {{VISIBLE}}, transformation(extent = {{TRANS_EXTENT_POINTS}}, rotation = {{ROTATION}})));
+  inner PowerGrids.Electrical.System systemPowerGrids(
+      initOpt = PowerGrids.Types.Choices.InitializationOption.globalSteadyStateFixedPowerFlow, 
+      referenceFrequency = PowerGrids.Types.Choices.ReferenceFrequency.fixedReferenceGenerator)
+  annotation(Placement(visible = {{VISIBLE}}, transformation(extent = {{TRANS_EXTENT_POINTS}}, rotation = {{ROTATION}})));
 
 {{/SYSTEM_SETTINGS_SECTION}}
 
-{{!----ModPowerSystems Components-------}}
+{{!----PowerGrids Components-------}}
 
 {{>BUSBAR_DICT}}
 
