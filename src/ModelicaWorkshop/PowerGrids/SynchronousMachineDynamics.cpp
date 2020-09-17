@@ -28,6 +28,7 @@ namespace PowerGrids {
                 dictionary->SetFormattedValue("TPPQO", "%.3f", this->get_Tppq0());
                 dictionary->SetFormattedValue("TPQO", "%.3f", this->get_Tpq0());
 
+                dictionary->SetFormattedValue("INERTIA", "%.3f", this->get_inertia());
                 dictionary->SetFormattedValue("VANGLE", "%.3f", this->get_UPhaseStart());
                 dictionary->SetFormattedValue("RAPU", "%.3f", this->get_raPu());
                 dictionary->SetFormattedValue("XDPU", "%.3f", this->get_xdPu());

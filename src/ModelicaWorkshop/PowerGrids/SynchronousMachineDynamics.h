@@ -11,6 +11,11 @@ namespace PowerGrids {
             virtual ~SynchronousMachineDynamics();
             bool set_template_values(ctemplate::TemplateDictionary *dictionary) override;
 
+            void set_inertia(double inertia){
+                this->_inertia = inertia;
+            }
+            double get_inertia(){return this->_inertia;};
+            
             void set_raPu(double rapu){
                 this->_raPu = rapu;
             }
@@ -106,6 +111,7 @@ namespace PowerGrids {
 
 
         private:
+            double _inertia = 0;
             double _raPu = 0;
             double _xdPu = 0;
             double _xIPu = 0;

@@ -1725,6 +1725,26 @@ SynMachineDyn * CIMObjectHandler::synMachineDynHandler(BaseClass* node, const Te
     }
     synMachineDyn->annotation.placement.visible = true;
 
+    double v_unit_conversion=1;
+    double s_unit_conversion=1;
+        if(this->configManager.us.active_power_unit == "W"){
+                s_unit_conversion = 1;
+            } else if(this->configManager.us.active_power_unit == "kW"){
+                s_unit_conversion =  1000;
+            } else if(this->configManager.us.active_power_unit == "mW"){
+                s_unit_conversion =  0.001;
+            } else if(this->configManager.us.active_power_unit == "MW"){
+                s_unit_conversion =  1000000;
+            }
+        if(this->configManager.us.voltage_unit == "V"){
+                v_unit_conversion = 1;
+            } else if(this->configManager.us.voltage_unit == "kV"){
+                v_unit_conversion =  1000;
+            } else if(this->configManager.us.voltage_unit == "mV"){
+                v_unit_conversion =  0.001;
+            } else if(this->configManager.us.voltage_unit == "MV"){
+                v_unit_conversion =  1000000;
+            }
 
     synMachineDyn->set_raPu((syn_machine)->statorResistance.value);
     synMachineDyn->set_xdPU(syn_machine->xDirectSync.value);
@@ -1738,38 +1758,44 @@ SynMachineDyn * CIMObjectHandler::synMachineDynHandler(BaseClass* node, const Te
     synMachineDyn->set_Tppd0(syn_machine->tppdo.value);
     synMachineDyn->set_Tppq0(syn_machine->tppqo.value);
     synMachineDyn->set_Tpq0(syn_machine->tpqo.value);
-    synMachineDyn->set_SNom((synMachineDyn->get_PStart() * 10) );
+    // TODO: change hard-coded unit conversion
+    synMachineDyn->set_SNom(syn_machine->SynchronousMachine->ratedS.value * s_unit_conversion);
     synMachineDyn->set_VNom(syn_machine->SynchronousMachine->ratedU.value);
+    synMachineDyn->set_inertia(syn_machine->inertia.value);
 
     // TODO MBY NEW SVVOLTAGE/PWRFLOW OPTION
     if(this->configManager.svSettings.useSVforGeneratingUnit == true ) {//&& svPowerFlowMap[terminal] && svVoltageMap[tp_node]){
+
+        
         try {
             // TODO CONVERSION TO RADIANS
+            // Junjie: No need, I updated conversion inside templates
             synMachineDyn->set_UPhaseStart( svVoltageMap[node]->angle.value);
         } catch (ReadingUninitializedField *e) {
             std::cerr << "No SVVoltage at tp node for SynMachineDyn" << terminal->name << std::endl;
         }
         try {
-
-            synMachineDyn->set_UStart(svVoltageMap[node]->v.value);
-        } catch (ReadingUninitializedField *e) {
+            synMachineDyn->set_UStart(svVoltageMap[node]->v.value * v_unit_conversion);
+        }
+        catch (ReadingUninitializedField *e)
+        {
             std::cerr << "No SVVoltage at tp node for SynMachineDyn" << terminal->name << std::endl;
         }
 
         try {
-            synMachineDyn->set_QStart(svPowerFlowMap[terminal]->q.value);
+            synMachineDyn->set_QStart(svPowerFlowMap[terminal]->q.value * s_unit_conversion);
         } catch (ReadingUninitializedField *e) {
             std::cerr << "No SVPowerFlow at tp node for SynMachineDyn" << terminal->name << std::endl;
         }
         try {
-            synMachineDyn->set_PStart(svPowerFlowMap[terminal]->p.value);
+            synMachineDyn->set_PStart(svPowerFlowMap[terminal]->p.value * s_unit_conversion);
         } catch (ReadingUninitializedField *e) {
             std::cerr << "No SVPowerFlow at tp node for SynMachineDyn" << terminal->name << std::endl;
         }
 
     }
-
-    if(syn_machine->DiagramObjects.begin() == syn_machine->DiagramObjects.end()){
+    auto syn_machine_stat=syn_machine->SynchronousMachine;
+    if(syn_machine_stat->DiagramObjects.begin() == syn_machine_stat->DiagramObjects.end()){
         std::cerr << "Missing Diagram Object for SynchronousMachine: " << syn_machine->name << " Default Position 0,0 \n";
         synMachineDyn->annotation.placement.transformation.origin.x = 0;
         synMachineDyn->annotation.placement.transformation.origin.y = 0;
@@ -1782,8 +1808,8 @@ SynMachineDyn * CIMObjectHandler::synMachineDynHandler(BaseClass* node, const Te
         int counter = 0;
         float currX = 0;
         float currY = 0;
-        for (diagram_it = syn_machine->DiagramObjects.begin();
-             diagram_it!= syn_machine->DiagramObjects.end();
+        for (diagram_it = syn_machine_stat->DiagramObjects.begin();
+             diagram_it!= syn_machine_stat->DiagramObjects.end();
              ++diagram_it) {            _t_points = this->calculate_average_position();
             currX += _t_points.xPosition;
             currY += _t_points.yPosition;
