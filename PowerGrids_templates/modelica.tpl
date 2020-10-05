@@ -29,7 +29,11 @@
 
 {{>PVNODE_DICT}}
 
-{{>SynchronousMachine4Windings_DICT}}
+{{>PILINE_DICT}}
+
+{{>RXLINE_DICT}}
+
+{{>TRANSFORMER_DICT}}
 
 {{>PQLOAD_DICT}}
 
@@ -39,11 +43,7 @@
 
 {{>ZLOAD_DICT}}
 
-{{>PILINE_DICT}}
-
-{{>RXLINE_DICT}}
-
-{{>TRANSFORMER_DICT}}
+{{>SynchronousMachine4Windings_DICT}}
 
 {{>BATTERY_TYPE0_DICT}}
 
