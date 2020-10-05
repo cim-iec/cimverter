@@ -26,10 +26,10 @@ namespace PowerGrids {
             }
             double get_xdPu(){ return this->_xdPu;};
 
-            void set_xIPu(double xIPu){
-                this->_xIPu = xIPu;
+            void set_xlPu(double xlPu){
+                this->_xlPu = xlPu;
             }
-            double get_xIPu(){ return this->_xIPu;};
+            double get_xlPu(){ return this->_xlPu;};
 
             void set_xpdPu(double xpdPu){
                 this->_xpdPu = xpdPu;
@@ -114,7 +114,7 @@ namespace PowerGrids {
             double _inertia = 0;
             double _raPu = 0;
             double _xdPu = 0;
-            double _xIPu = 0;
+            double _xlPu = 0;
             double _xpdPu = 0;
             double _xppdPu = 0;
             double _xppqPu = 0;

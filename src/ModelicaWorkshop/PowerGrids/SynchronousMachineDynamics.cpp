@@ -32,10 +32,9 @@ namespace PowerGrids {
                 dictionary->SetFormattedValue("VANGLE", "%.3f", this->get_UPhaseStart());
                 dictionary->SetFormattedValue("RAPU", "%.3f", this->get_raPu());
                 dictionary->SetFormattedValue("XDPU", "%.3f", this->get_xdPu());
-                dictionary->SetFormattedValue("XLPU", "%.3f", this->get_xIPu());
+                dictionary->SetFormattedValue("XLPU", "%.3f", this->get_xlPu());
                 dictionary->SetFormattedValue("XPDPU", "%.3f", this->get_xpdPu());
                 dictionary->SetFormattedValue("XPPDPU", "%.3f", this->get_xppdPu());
-                dictionary->SetFormattedValue("XPPQPU", "%.3f", this->get_xppqPu());
                 dictionary->SetFormattedValue("XPPQPU", "%.3f", this->get_xppqPu());
                 dictionary->SetFormattedValue("XPQPU", "%.3f", this->get_xpqPu());
                 dictionary->SetFormattedValue("XQPU", "%.3f", this->get_xqPu());

@@ -1,4 +1,5 @@
-PowerGrids.Electrical.Machines.SynchronousMachine4Windings {{NAME}}(
+PowerGrids.Examples.Tutorial.GridOperation.Controlled.ControlledGenerator {{NAME}}(
+    GEN(
     H = {{INERTIA}},
     PStart = {{PGEN}},
     QStart = {{QGEN}},
@@ -8,7 +9,7 @@ PowerGrids.Electrical.Machines.SynchronousMachine4Windings {{NAME}}(
     Tppq0 = {{TPPQO}}, 
     Tpq0 = {{TPQO}}, 
     UNom = {{VNOM}}, 
-    UPhaseStart = {{VANGLE}}, 
+    UPhaseStart = {{VANGLE}} / 180 * 3.14, 
     UStart = {{VSTART}}, 
     portVariablesPhases = true, 
     raPu = {{RAPU}}, 
@@ -18,5 +19,5 @@ PowerGrids.Electrical.Machines.SynchronousMachine4Windings {{NAME}}(
     xppdPu = {{XPPDPU}}, 
     xppqPu = {{XPPQPU}}, 
     xpqPu = {{XPQPU}}, 
-    xqPu = {{XQPU}}) 
+    xqPu = {{XQPU}}))
 annotation (Placement(visible = {{VISIBLE}}, transformation(extent = {{TRANS_EXTENT_POINTS}}, rotation = {{ROTATION}}, origin = {{ORIGIN_POINT}})));

@@ -1748,19 +1748,19 @@ SynMachineDyn * CIMObjectHandler::synMachineDynHandler(BaseClass* node, const Te
 
     synMachineDyn->set_raPu((syn_machine)->statorResistance.value);
     synMachineDyn->set_xdPU(syn_machine->xDirectSync.value);
-    synMachineDyn->set_xIPu(syn_machine->xDirectSync.value);
+    synMachineDyn->set_xlPu(syn_machine->statorLeakageReactance.value);
     synMachineDyn->set_xpdPu(syn_machine->xDirectTrans.value);
     synMachineDyn->set_xppdPu(syn_machine->xDirectSubtrans.value);
-    synMachineDyn->set_xppqPu(syn_machine->xDirectSubtrans.value);
-    synMachineDyn->set_xpqPu(syn_machine->xDirectSubtrans.value);
-    synMachineDyn->set_xqPu(syn_machine->xQuadTrans.value);
+    synMachineDyn->set_xppqPu(syn_machine->xQuadSubtrans.value);
+    synMachineDyn->set_xpqPu(syn_machine->xQuadTrans.value);
+    synMachineDyn->set_xqPu(syn_machine->xQuadSync.value);
     synMachineDyn->set_Tpd0(syn_machine->tpdo.value);
     synMachineDyn->set_Tppd0(syn_machine->tppdo.value);
     synMachineDyn->set_Tppq0(syn_machine->tppqo.value);
     synMachineDyn->set_Tpq0(syn_machine->tpqo.value);
     // TODO: change hard-coded unit conversion
     synMachineDyn->set_SNom(syn_machine->SynchronousMachine->ratedS.value * s_unit_conversion);
-    synMachineDyn->set_VNom(syn_machine->SynchronousMachine->ratedU.value);
+    synMachineDyn->set_VNom(syn_machine->SynchronousMachine->ratedU.value * v_unit_conversion);
     synMachineDyn->set_inertia(syn_machine->inertia.value);
 
     // TODO MBY NEW SVVOLTAGE/PWRFLOW OPTION
