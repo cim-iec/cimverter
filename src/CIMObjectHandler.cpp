@@ -213,6 +213,11 @@ bool CIMObjectHandler::pre_process() {
         } else {
             if (auto *terminal = dynamic_cast<TerminalPtr>(Object)) {
                 terminalList[terminal->ConnectivityNode].push_back(terminal);
+                if(terminal->ConnectivityNode != nullptr)
+                    std::cout << " added connectivity node" << terminal->ConnectivityNode->name << std::endl;
+                else
+                    std::cerr<< "Terminal " << terminal << " has no connectivity node connected. You might use the wrong topological model."
+                             << " Verify that the use_TPNodes option is set correctly." << std::endl;
             }
         }
     }
@@ -363,14 +368,19 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::string output_file_name, int v
             }
             this->currNode = tp_node;
         }else{
-            auto *conn_node = dynamic_cast<ConnectivityNodePtr>(Object);
+            if(auto *conn_node = dynamic_cast<ConnectivityNodePtr>(Object)){
                 this->currBusbar = this->ConnectivityNodeHandler(conn_node, dict);
 
                 if (this->configManager.household_parameters.use_households == true) {
                     this->HouseholdComponetsHandler(conn_node, dict);
                 }
                 this->currNode = conn_node;
+            }else{
+                std::cerr<< "The object is not a connectivity node. You might use the wrong topological model."
+                         << " Verify that the use_TPNodes option is set correctly." << std::endl;
+
             }
+        }
       BusBar* busbar = this->currBusbar;
       BaseClass* tp_node = this->currNode;
       // ignore terminals that are not connected
