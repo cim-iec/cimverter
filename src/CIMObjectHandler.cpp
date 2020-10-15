@@ -223,51 +223,86 @@ bool CIMObjectHandler::pre_process() {
   return true;
 }
 
-void  CIMObjectHandler::remove_unconnected_components(){
+void  CIMObjectHandler::remove_unconnected_components() {
     // TODO Code cleanup: create fct that returns tpNode of extNW
     // TODO Create fct that for a given start node returns a list of connected tpNodes
     // find external network tpNode
-    std::map<BaseClass* , bool> tpNodeList;
-    BaseClass* externalNW_TPNode = nullptr;
-    std::unordered_map<BaseClass*, std::list<BaseClass*> > obj2TPNodeMap;
+    std::vector<BaseClass *> tpNodeList;
+    BaseClass *externalNW_TPNode = nullptr;
+    std::unordered_map<BaseClass *, std::list<BaseClass *> > obj2TPNodeMap;
 
-    for(auto object_it = terminalList.begin(); object_it!= terminalList.end(); object_it++){
-        BaseClass* tp_node = (*object_it).first;
+    for (auto object_it = terminalList.begin(); object_it != terminalList.end(); object_it++) {
+        BaseClass *tp_node = (*object_it).first;
         std::list<TerminalPtr> terminals = (*object_it).second;
-        tpNodeList.insert({tp_node,false});
-        for(auto terminal : terminals){
-            if(terminal->connected == true)
+        tpNodeList.push_back(tp_node);
+        for (auto terminal : terminals) {
+            if (terminal->connected == true)
                 obj2TPNodeMap[terminal->ConductingEquipment].push_back(tp_node);
-            if(auto * externalNetwork = dynamic_cast<ExNIPtr >((terminal)->ConductingEquipment)){
+            if (auto *externalNetwork = dynamic_cast<ExNIPtr >((terminal)->ConductingEquipment)) {
                 externalNW_TPNode = tp_node;
             }
         }
     }
-    // mark all tpNodes that are connected to external network
-    std::queue<BaseClass*> qq;
-    qq.push(externalNW_TPNode);
-    BaseClass* currTPNode;
-    while(!qq.empty()){
-        currTPNode = qq.front();
-        qq.pop();
-        if(tpNodeList[currTPNode] == true)
-            continue;
-        else
-            (tpNodeList[currTPNode] = true);
-        for(auto terminal : terminalList[currTPNode]){
-            if(terminal->connected == true){
-                for(auto tp_node : obj2TPNodeMap[terminal->ConductingEquipment]){
-                    if (tp_node != currTPNode)
-                        qq.push(tp_node);
+
+    // helper fct that for a given start node gets all connected nodes
+    auto get_component = [this](std::unordered_map<BaseClass *, std::list<BaseClass *> > _obj2TPNodeMap,
+                       BaseClass *_start_node){
+        std::queue<BaseClass*> qq;
+        qq.push(_start_node);
+        BaseClass* currTPNode;
+        std::vector<BaseClass* > connected_component;
+        while(!qq.empty()){
+            currTPNode = qq.front();
+            qq.pop();
+            if(std::find(connected_component.begin(), connected_component.end(), currTPNode)
+               != connected_component.end())
+                continue;
+            else
+                connected_component.push_back(currTPNode);
+            for(auto terminal : this->terminalList[currTPNode]){
+                if(terminal->connected == true){
+                    for(auto tp_node : _obj2TPNodeMap[terminal->ConductingEquipment]){
+                        if (tp_node != currTPNode)
+                            qq.push(tp_node);
+                    }
                 }
             }
         }
-    }
-    // remove tpNodes that are not connected to external network
-    for(auto el : tpNodeList){
-        if(el.second == false){
-            terminalList.erase(el.first);
+        return connected_component;
+    };
+
+    // if there is no slack create largest connected component
+    // otherwise create component connected to the slack
+    std::vector<BaseClass*> component;
+    if (externalNW_TPNode == nullptr){
+        std::cerr << "The ignore_unconnected_components option in the options.cfg is set to true but there is no Slack in the given network. "
+                "Creating the largest connected component." << std::endl;
+        while(tpNodeList.size() > 0 ){
+            auto curr_component = get_component(obj2TPNodeMap, *(tpNodeList.begin()));
+            if(curr_component.size() > component.size()){
+                std::cout << "found new largest compnent of size: " << curr_component.size()
+                          <<" before "<<component.size() <<std::endl;
+                component = curr_component;
+            }
+            for(auto el : curr_component){
+                auto pos = std::find(tpNodeList.begin(), tpNodeList.end(), el);
+                if(pos != tpNodeList.end())
+                    tpNodeList.erase(pos);
+            }
         }
+    }else{
+        component = get_component(obj2TPNodeMap, externalNW_TPNode);
+    }
+
+
+    // remove tpNodes that are not connected to external network
+    std::vector<BaseClass * > removal_list;
+    for(auto el : terminalList){
+        if(std::find(component.begin(), component.end(), el.first) == component.end())
+            removal_list.push_back(el.first);
+    }
+    for(auto el : removal_list){
+        terminalList.erase(el);
     }
 
 }
