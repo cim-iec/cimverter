@@ -146,7 +146,7 @@ int main(int argc, char *argv[]) {
                 // Read folders with -a
                 case 'a':
                     if(!ends_with(optarg, "/")){
-                        char* dest;
+                        char dest[strlen(optarg)];
                         strcpy(dest, optarg);
                         files = search_folder(strcat(dest, "/"));
                     }
