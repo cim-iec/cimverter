@@ -213,9 +213,7 @@ bool CIMObjectHandler::pre_process() {
         } else {
             if (auto *terminal = dynamic_cast<TerminalPtr>(Object)) {
                 terminalList[terminal->ConnectivityNode].push_back(terminal);
-                if(terminal->ConnectivityNode != nullptr)
-                    std::cout << " added connectivity node" << terminal->ConnectivityNode->name << std::endl;
-                else
+                if(terminal->ConnectivityNode == nullptr)
                     std::cerr<< "Terminal " << terminal << " has no connectivity node connected. You might use the wrong topological model."
                              << " Verify that the use_TPNodes option is set correctly." << std::endl;
             }
@@ -1133,7 +1131,7 @@ CIMObjectHandler::ACLineSegmentHandler(BaseClass* tp_node, BusBar* busbar, const
         std::cerr<<"Missing terminal seqNR" << std::endl;
     }
 
-    if(configManager.add_Vnom_to_PiLine == true){
+    if(configManager.add_Vnom_to_PiLine == true && configManager.ss.use_TPNodes == true){
         try{
             double vnom = ((TPNodePtr)tp_node)->BaseVoltage->nominalVoltage.value;
             if(this->configManager.us.enable) {
@@ -1762,7 +1760,7 @@ Breaker* CIMObjectHandler::BreakerHandler(BusBar* busbar, const TerminalPtr term
 
         }
         try{
-            breaker->annotation.placement.transformation.rotation = (*diagram_it)->rotation.value;
+            breaker->annotation.placement.transformation.rotation = (*cim_breaker->DiagramObjects.begin())->rotation.value;
         }catch(ReadingUninitializedField* e){
             breaker->annotation.placement.transformation.rotation = 0;
             std::cerr <<"Missing rotation for diagram obj" << breaker->name()<< std::endl;
