@@ -236,17 +236,36 @@ void  CIMObjectHandler::remove_unconnected_components() {
     BaseClass *externalNW_TPNode = nullptr;
     std::unordered_map<BaseClass *, std::list<BaseClass *> > obj2TPNodeMap;
 
+    // check if the connected property of terminals is initalized somewhere
+    bool connected_terminal_exists = false;
     for (auto object_it = terminalList.begin(); object_it != terminalList.end(); object_it++) {
         BaseClass *tp_node = (*object_it).first;
         std::list<TerminalPtr> terminals = (*object_it).second;
         tpNodeList.push_back(tp_node);
         for (auto terminal : terminals) {
-            if (terminal->connected == true)
-                obj2TPNodeMap[terminal->ConductingEquipment].push_back(tp_node);
-            if (auto *externalNetwork = dynamic_cast<ExNIPtr >((terminal)->ConductingEquipment)) {
-                externalNW_TPNode = tp_node;
+            try{
+                bool connected = terminal->connected;
+                if (connected == true){
+                    obj2TPNodeMap[terminal->ConductingEquipment].push_back(tp_node);
+                    connected_terminal_exists = true;
+                }
+                if (auto *externalNetwork = dynamic_cast<ExNIPtr >((terminal)->ConductingEquipment)) {
+                    externalNW_TPNode = tp_node;
+                }
+            }catch(ReadingUninitializedField* e){
+                std::cout << "Uninitalized connected property for Terminal " << terminal->name << std::endl;
+                continue;
             }
+
         }
+    }
+    if( connected_terminal_exists == false){
+        std::cout << "There exists no terminal with the connected property set to true."
+                " This might be due to uninitalized values. \n"
+                << "We change the ignore_unconnected_components option to false." << std::endl;
+        this->configManager.ignore_unconnected_components = false;
+
+        return;
     }
 
     // helper fct that for a given start node gets all connected nodes
@@ -265,11 +284,18 @@ void  CIMObjectHandler::remove_unconnected_components() {
             else
                 connected_component.push_back(currTPNode);
             for(auto terminal : this->terminalList[currTPNode]){
-                if(terminal->connected == true){
-                    for(auto tp_node : _obj2TPNodeMap[terminal->ConductingEquipment]){
-                        if (tp_node != currTPNode)
-                            qq.push(tp_node);
+                try{
+                    bool connected = terminal->connected;
+
+                    if(connected == true){
+                        for(auto tp_node : _obj2TPNodeMap[terminal->ConductingEquipment]){
+                            if (tp_node != currTPNode)
+                                qq.push(tp_node);
+                        }
                     }
+                }catch(ReadingUninitializedField* e) {
+                    std::cout << "Uninitalized connected property for Terminal " << terminal->name << std::endl;
+                    continue;
                 }
             }
         }
@@ -351,12 +377,23 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::string output_file_name, int v
         // in case there are no connected terminals attached to the busbar don't create it
         bool connected_terminal_exists = false;
         for(auto terminal : terminals)
-            if(terminal->connected == true){
-                connected_terminal_exists = true;
-                break;
+            try {
+                bool connected = terminal->connected;
+                if(connected == true){
+                    connected_terminal_exists = true;
+                    break;
+                }
+            }catch(ReadingUninitializedField* e) {
+                std::cout << "Uninitalized connected property for Terminal " << terminal->name << std::endl;
+                continue;
             }
-        if(connected_terminal_exists == false)
+
+        if(connected_terminal_exists == false){
+            std::cout << "there exists no connected terminal!" << std::endl;
             continue;
+        }
+
+
     }
 
     if(this->configManager.ss.use_TPNodes == true){//useTP == true
