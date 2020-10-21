@@ -207,7 +207,9 @@ bool CIMObjectHandler::pre_process() {
             if (auto *tp_node = dynamic_cast<TPNodePtr>(Object)) {
                 for (terminal_it = tp_node->Terminal.begin(); terminal_it != tp_node->Terminal.end(); ++terminal_it) {
                     terminalList[tp_node].push_back(*terminal_it);
-
+                    if(auto *ac_line = dynamic_cast<AcLinePtr>((*terminal_it)->ConductingEquipment )){
+                        PiLineMap[ac_line].push_back(*terminal_it);
+                    }
                 }
             }
         } else {
@@ -218,6 +220,7 @@ bool CIMObjectHandler::pre_process() {
                              << " Verify that the use_TPNodes option is set correctly." << std::endl;
             }
         }
+
     }
     if(configManager.ignore_unconnected_components == true){
         remove_unconnected_components();
@@ -246,6 +249,9 @@ void  CIMObjectHandler::remove_unconnected_components() {
                 if (connected == true){
                     obj2TPNodeMap[terminal->ConductingEquipment].push_back(tp_node);
                     connected_terminal_exists = true;
+                }
+                else{
+                    std::cout << "the terminal is connected "<< terminal->name << std::endl;
                 }
                 if (auto *externalNetwork = dynamic_cast<ExNIPtr >((terminal)->ConductingEquipment)) {
                     externalNW_TPNode = tp_node;
@@ -452,10 +458,22 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::string output_file_name, int v
               connectionQueue.push(conn);
 
           } else if (auto *ac_line = dynamic_cast<AcLinePtr>((terminal)->ConductingEquipment)) {
+              if(configManager.ignore_unconnected_components == true){
+                  bool all_terminals_connected = true;
+                  for(auto piTerminal : PiLineMap[ac_line]){
+                      if(piTerminal->connected == false){
+                          std::cout << piTerminal->name << " is unconnected"<< std::endl;
+                          all_terminals_connected = false;
+                      }
+
+                  }
+                  if(all_terminals_connected != true)
+                      continue;
+              }
+
               if(_UsedObjects.find(ac_line) != _UsedObjects.end()) {
                   ((PiLine* )_UsedObjects[ac_line])->setBus(busbar);
               }else {
-
                   if (template_folder == "DistAIX_templates") {
                       /* Changed implementation to enable creation of lossy cables for DistAIX format.
                       * Instead of creating "connections", the name of the busbar is stored when visited for the first time.
@@ -514,6 +532,8 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::string output_file_name, int v
                       }
                   }
               }
+              std::cout << "push to connection qq " << busbar->name() << " "
+                        << ((PVNode* )_UsedObjects[synchronous_machine])->name()<< std::endl;
               Connection conn(busbar, (PVNode* )_UsedObjects[synchronous_machine]);
               connectionQueue.push(conn);
 
@@ -2079,7 +2099,6 @@ PVNode * CIMObjectHandler::SynchronousMachineHandlerType0(BaseClass* tp_node, co
 
         pv_node->annotation.placement.transformation.origin.x = currX /counter;
         pv_node->annotation.placement.transformation.origin.y = currY /counter;
-
 
         ctemplate::TemplateDictionary *pv_node_dict = dict->AddIncludeDictionary("PVNODE_DICT");
         pv_node_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/PVNode.tpl");

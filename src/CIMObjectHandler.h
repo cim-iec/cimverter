@@ -129,7 +129,7 @@ class CIMObjectHandler {
   std::unordered_map<AcLinePtr,OpLimitSetPtr> OpLimitMap;
   std::unordered_map<BaseClass*, std::list<TerminalPtr> > terminalList;
   std::unordered_map<SynMachinePtr, SynMachineDynPtr> SynMachineMap;
-
+  std::unordered_map<AcLinePtr, std::vector<TerminalPtr> > PiLineMap;
 
   std::list<DiagramObjectPtr>::iterator diagram_it;
   std::list<RotatingMachinePtr>::iterator rotatingMachine_it;
