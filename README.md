@@ -5,8 +5,8 @@ For further project information, as well as a documentation of the CIM standard,
 
 ## Licensing
 
-For **non-commercial** use, this software is licensed under the terms in the included [LICENSE](LICENSE) file.
-In case of **commercial** use, you are required to negotiate a proper license model with the *Institute for Automation of Complex Power Systems* at *RWTH Aachen University*. Therefore please write to [acs-sek@eonerc.rwth-aachen.de](mailto:acs-sek@eonerc.rwth-aachen.de).
+For **non-commercial** use this software is licensed under the terms in the included [LICENSE](LICENSE) file.
+In case of **commercial** use you are required to negotiate a proper license model with the *Institute for Automation of Complex Power Systems* at *RWTH Aachen University*. Therefore please write to [acs-sek@eonerc.rwth-aachen.de](mailto:acs-sek@eonerc.rwth-aachen.de).
 
 ## Dependencies:
 * cmake >=3.5
@@ -17,12 +17,7 @@ In case of **commercial** use, you are required to negotiate a proper license mo
 * as submodule: libcimpp with arabica
 * (Doxygen)
 
-<<<<<<< HEAD
 ## Installation
-=======
-
-## Getting started
->>>>>>> release
 
 ### Installation of depenencies
 ```bash
@@ -47,26 +42,19 @@ make -j4
 make document
 ```
 
-<<<<<<< HEAD
 ### Usage
+There are two possibilitys to execute CIMverter. 
+First:
 ```bash
 cd bin
-=======
-
-## Usage
-
-### Sample grid conversion
-This will generate a Modelica system model file `CIGRE.mo` which can be simulated based on the [ModPowerSystems](https://git.rwth-aachen.de/acs/public/simulation/modpowersystems) library.
-```bash
-cd bin
-./CIMverter -a ../../samples/CIGRE_MV_Rudion_With_LoadFlow_Results/ -o CIGRE
-```
-
-### Help
-```bash
->>>>>>> release
 ./CIMverter --help
 ``` 
+Second: 
+```bash
+export CIMVERTER_HOME=your/path/to/build/bin/
+./bin/CIMverter --help
+``` 
+
 
 ***
 
