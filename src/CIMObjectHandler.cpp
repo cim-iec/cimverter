@@ -46,38 +46,51 @@ CIMObjectHandler::CIMObjectHandler(std::vector<BaseClass *> &&CIMObjects)
 
 CIMObjectHandler::~CIMObjectHandler() {
 
-  auto sv_it = svPowerFlowMap.begin();
-  auto Opl_it = OpLimitMap.begin();
-  auto svVolt_it = svVoltageMap.begin();
-  auto used_it = _UsedObjects.begin();
-  auto generator_it = generatorMap.begin();
+    auto sv_it = svPowerFlowMap.begin();
+    auto Opl_it = OpLimitMap.begin();
+    auto svVolt_it = svVoltageMap.begin();
+    auto used_it = _UsedObjects.begin();
+    auto generator_it = generatorMap.begin();
+    auto terminalList_it = terminalList.begin();
+    auto SynMachineMap_it = SynMachineMap.begin();
+    auto PiLineMap_it = PiLineMap.begin();
 
-
-  while (used_it != _UsedObjects.end())
+    while (used_it != _UsedObjects.end())
     {
         delete used_it->second;
         _UsedObjects.erase(used_it++);
     }
-  while (generator_it != generatorMap.end())
+    while (generator_it != generatorMap.end())
     {
         generatorMap.erase(generator_it++);
     }
 
-  while (sv_it != svPowerFlowMap.end())
-  {
+    while (sv_it != svPowerFlowMap.end())
+    {
     svPowerFlowMap.erase(sv_it++);
-  }
+    }
 
-  while (svVolt_it != svVoltageMap.end())
-  {
+    while (svVolt_it != svVoltageMap.end())
+    {
     svVoltageMap.erase(svVolt_it++);
-  }
+    }
 
-  while (Opl_it != OpLimitMap.end())
-  {
+    while (Opl_it != OpLimitMap.end())
+    {
     OpLimitMap.erase(Opl_it++);
-  }
-
+    }
+    while (terminalList_it != terminalList.end())
+    {
+        terminalList.erase(terminalList_it++);
+    }
+    while (SynMachineMap_it != SynMachineMap.end())
+    {
+        SynMachineMap.erase(SynMachineMap_it++);
+    }
+    while (PiLineMap_it != PiLineMap.end())
+    {
+        PiLineMap.erase(PiLineMap_it++);
+    }
 }
 
 /**
@@ -111,6 +124,7 @@ void CIMObjectHandler::print_RTTI(BaseClass *Object) {
   std::cout << std::endl;
 }
 
+
 void CIMObjectHandler::remove_non_alnums(IdentifiedObjectPtr identified_obj){
     auto name = identified_obj->name;
     IEC61970::Base::Domain::String new_name;
@@ -129,10 +143,11 @@ void CIMObjectHandler::remove_non_alnums(IdentifiedObjectPtr identified_obj){
         }
     }
     identified_obj->name = new_name;
-
-
 }
 
+/**
+ * Add mem address to object to achieve unique naming
+ */
 void CIMObjectHandler::add_mem_address(IdentifiedObjectPtr identified_obj){
     std::stringstream ss;
     ss << static_cast<const void*>(identified_obj);
@@ -229,6 +244,11 @@ bool CIMObjectHandler::pre_process() {
   return true;
 }
 
+
+/**
+ *  Function that removes all components that are not connected to a Slack,
+ *  or in case that there is no Slack only creates the larges component
+ */
 void  CIMObjectHandler::remove_unconnected_components() {
     // TODO Code cleanup: create fct that returns tpNode of extNW
     // TODO Create fct that for a given start node returns a list of connected tpNodes
@@ -272,21 +292,21 @@ void  CIMObjectHandler::remove_unconnected_components() {
         return;
     }
 
-    // helper fct that for a given start node gets all connected nodes
+    // helper fct that for a given start node returns all connected nodes (the component)
     auto get_component = [this](std::unordered_map<BaseClass *, std::list<BaseClass *> > _obj2TPNodeMap,
                        BaseClass *_start_node){
         std::queue<BaseClass*> qq;
         qq.push(_start_node);
         BaseClass* currTPNode;
-        std::vector<BaseClass* > connected_component;
+        std::vector<BaseClass* > component;
         while(!qq.empty()){
             currTPNode = qq.front();
             qq.pop();
-            if(std::find(connected_component.begin(), connected_component.end(), currTPNode)
-               != connected_component.end())
+            if(std::find(component.begin(), component.end(), currTPNode)
+               != component.end())
                 continue;
             else
-                connected_component.push_back(currTPNode);
+                component.push_back(currTPNode);
             for(auto terminal : this->terminalList[currTPNode]){
                 try{
                     bool connected = terminal->connected;
@@ -303,7 +323,7 @@ void  CIMObjectHandler::remove_unconnected_components() {
                 }
             }
         }
-        return connected_component;
+        return component;
     };
 
     // if there is no slack create largest connected component
@@ -363,7 +383,7 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::string output_file_name, int v
 
   this->SystemSettingsHandler(filename, dict);
 
-  ///frist searching loop, to find I_max of ACLineSegment, SvPowerFlow of Terminal for PQLoad
+  ///first searching loop, to find I_max of ACLineSegment, SvPowerFlow of Terminal for PQLoad
   this->pre_process();
   std::unordered_map<BaseClass*, ModBaseClass*> copy;
 
@@ -461,16 +481,12 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::string output_file_name, int v
               if(configManager.ignore_unconnected_components == true){
                   bool all_terminals_connected = true;
                   for(auto piTerminal : PiLineMap[ac_line]){
-                      if(piTerminal->connected == false){
-                          std::cout << piTerminal->name << " is unconnected"<< std::endl;
+                      if(piTerminal->connected == false)
                           all_terminals_connected = false;
-                      }
-
                   }
                   if(all_terminals_connected != true)
                       continue;
               }
-
               if(_UsedObjects.find(ac_line) != _UsedObjects.end()) {
                   ((PiLine* )_UsedObjects[ac_line])->setBus(busbar);
               }else {
