@@ -18,6 +18,9 @@ if not (os.path.isdir("outputs/")):
     process = subprocess.call(bashCommand.split(), stdout=subprocess.PIPE)
 # In case of dirs, pass -a to CIMverter
 for dir in dirs:
+    print ("-------------------------------------------")
+    print ("Create output for folder " + dir)
+    print ("-------------------------------------------")
     bashCommand = "./create_output.bash a " + dir + " " + dir
     process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
     output, error = process.communicate()
@@ -25,6 +28,9 @@ for dir in dirs:
 
 # In case of files, pass -f to CIMverter
 for file in files:
+    print ("-------------------------------------------")
+    print ("Create output for file " +file[0:len(file) - 4] + " " + file[0:len(file) - 4])
+    print ("-------------------------------------------")
     bashCommand = "./create_output.bash f " + file[0:len(file) - 4] + " " + file[0:len(file) - 4]
     process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
     output, error = process.communicate()
@@ -37,7 +43,7 @@ for file in testedFiles:
     out, err = process.communicate()
     print ("-------------------------------------------")
     print ("Results of " + file)
-
+    print ("-------------------------------------------")
     if out and not out.isspace():
         print out
         diffs += 1
