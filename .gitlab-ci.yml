@@ -30,7 +30,10 @@ docker-omc:
     - docker images
   tags:
     - shell
-
+  only:
+    - rse 
+    - release
+    - master
 # clone libcimpp in our projekt. compile and run the tests.
 test: 
   stage: test
