@@ -35,6 +35,8 @@ for file in testedFiles:
     bashCommand = "diff --suppress-common-lines --side-by-side " + "outputs/" + file + " modelica/" + file
     process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     out, err = process.communicate()
+    print ("-------------------------------------------")
+    print ("Results of " + file)
 
     if out and not out.isspace():
         print out
@@ -42,6 +44,8 @@ for file in testedFiles:
     elif err and not err.isspace():
         errors += 1
         print err
+    else:        
+	print ("File is okay")
 
 if diffs == 0 and errors == 0:
     print "Everything fine"

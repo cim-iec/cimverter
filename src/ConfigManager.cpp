@@ -78,6 +78,7 @@ void ConfigManager::getMake_unique_names(){
         std::cout << "reading make_unique_names!" << std::endl;
     }catch (const SettingNotFoundException &nfex) {
         std::cerr << "No make_unique_names in configuration file." << std::endl;
+        this->make_unique_names = false;
     }
 }
 
