@@ -38,16 +38,18 @@ for file in files:
 
 # For all files check if they match the expected output. Otherwise print the diffs
 for file in testedFiles:
-    bashCommand = "diff --suppress-common-lines --side-by-side " + "outputs/" + file + " modelica/" + file
+    bashCommand = "./diff.bash " + file
     process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     out, err = process.communicate()
     print ("-------------------------------------------")
     print ("Results of " + file)
     print ("-------------------------------------------")
     if out and not out.isspace():
+ 	print("diff")
         print out
         diffs += 1
     elif err and not err.isspace():
+	print ("err")
         errors += 1
         print err
     else:        

@@ -45,7 +45,7 @@ void ConfigManager::getAllSettings() {
 
 void ConfigManager::getTapChangerStep(){
     try {
-        this->tapStepPos= this->cfg.lookup("tapStepPosition").c_str();
+        this->tapStepPos = this->cfg.lookup("tapStepPosition").c_str();
         std::cout << "reading tapStepPosition!" << std::endl;
     }catch (const SettingNotFoundException &nfex) {
         std::cerr << "No tapStepPosition in configuration file." << std::endl;
@@ -55,10 +55,11 @@ void ConfigManager::getTapChangerStep(){
 
 void ConfigManager::getAdd_Vnom_to_PiLine(){
     try {
-        this->add_Vnom_to_PiLine= this->cfg.lookup("add_Vnom_to_PiLine");
+        this->add_Vnom_to_PiLine = this->cfg.lookup("add_Vnom_to_PiLine");
         std::cout << "reading add_Vnom_to_PiLine!" << std::endl;
     }catch (const SettingNotFoundException &nfex) {
         std::cerr << "No add_Vnom_to_PiLine in configuration file." << std::endl;
+        this->add_Vnom_to_PiLine = false;
     }
 }
 
