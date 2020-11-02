@@ -20,6 +20,7 @@ docker-cimverter:
     - rse
     - release
     - master
+    - powerfactory
   tags:
     - shell
 
@@ -34,6 +35,7 @@ docker-omc:
     - rse 
     - release
     - master
+    - powerfactory
 # clone libcimpp in our projekt. compile and run the tests.
 test: 
   stage: test
@@ -61,6 +63,7 @@ test:
     - master 
     - release
     - rse
+    - powerfactory
 
 checkmodel:
   stage: modelica
@@ -80,3 +83,4 @@ checkmodel:
     - rse
     - master
     - release
+    - powerfactory
