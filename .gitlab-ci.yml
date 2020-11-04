@@ -3,7 +3,6 @@ variables:
   DOCKER_IMAGE_DEV: cimverter-dev
   DOCKER_TAG_OMC: ${CI_COMMIT_REF_NAME}
   DOCKER_IMAGE_OMC: omc-dev-rse
-  LIBCIMPP_HASH: a00d674b04d3b67e5fec1da2730ff42b345f6d6b
 
 stages:
   - prepare
@@ -49,7 +48,6 @@ test:
     - rm -rf libcimpp/
     - git clone --recursive https://${GITLAB_USERLIBCIMPP}:${GITLAB_TOKENLIBCIMPP}@git.rwth-aachen.de/acs/public/cim/cimpp/libcimpp.git/ libcimpp/   
     - cd libcimpp
-    - git checkout ${LIBCIMPP_HASH}
     - git rev-parse HEAD
     - cd ..
     - mkdir -p build && cd build
