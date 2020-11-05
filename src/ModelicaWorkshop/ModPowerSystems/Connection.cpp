@@ -13,7 +13,7 @@ namespace ModelicaWorkshop {
  *
  * All model components connect BusBar(TopologyNode)!
 */
-Connection::Connection(const BusBar* busbar):_port1(busbar->name()),_terminalId1(configManager->cs.BusBarName),_p1(Point{busbar->annotation.placement.transformation.origin.x,
+Connection::Connection(const ModBusBar* busbar):_port1(busbar->name()),_terminalId1(configManager->cs.BusBarName),_p1(Point{busbar->annotation.placement.transformation.origin.x,
                                                                                            busbar->annotation.placement.transformation.origin.y}) ,_p2(Point{0,0}){
   _port1Short = _port1;
   _port1.append(".");
@@ -24,7 +24,7 @@ Connection::Connection(const BusBar* busbar):_port1(busbar->name()),_terminalId1
  *
  * Delegate BusBar constructors
 */
-Connection::Connection(const BusBar* busbar, const Slack* slack): Connection(busbar) {
+Connection::Connection(const ModBusBar* busbar, const ModSlack* slack): Connection(busbar) {
 
   this->set_connected(slack->is_connected());//electrical connected?
 
@@ -44,7 +44,7 @@ Connection::Connection(const BusBar* busbar, const Slack* slack): Connection(bus
  *
  * Delegate BusBar constructors
 */
-Connection::Connection(const BusBar* busbar, const PQLoad* pq_load): Connection(busbar) {
+Connection::Connection(const ModBusBar* busbar, const ModPQLoad* pq_load): Connection(busbar) {
 
   this->set_connected(pq_load->is_connected());//electrical connected?
 
@@ -75,7 +75,7 @@ Connection::Connection(const BusBar* busbar, const PQLoad* pq_load): Connection(
 }
 
 
-Connection::Connection(const BusBar* busbar, const Breaker* breaker): Connection(busbar) {
+Connection::Connection(const ModBusBar* busbar, const ModBreaker* breaker): Connection(busbar) {
     this->set_connected(breaker->is_connected());//electrical connected?
     _port2 = breaker->name();
     _terminalId2 = this->configManager->cs.BreakerName;
@@ -98,7 +98,7 @@ Connection::Connection(const BusBar* busbar, const Breaker* breaker): Connection
  *
  * Delegate BusBar constructors
 */
-Connection::Connection(const BusBar* busbar, const Household* household): Connection(busbar) {
+Connection::Connection(const ModBusBar* busbar, const ModHousehold* household): Connection(busbar) {
 
   this->set_connected(household->is_connected());//electrical connected?
 
@@ -133,7 +133,7 @@ Connection::Connection(const BusBar* busbar, const Household* household): Connec
  *
  * Delegate BusBar constructors
 */
-Connection::Connection(const BusBar* busbar, const ConnectivityNode* connectivity_node): Connection(busbar) {
+Connection::Connection(const ModBusBar* busbar, const ModConnectivityNode* connectivity_node): Connection(busbar) {
 
   this->set_connected(connectivity_node->is_connected());//electrical connected?
 
@@ -152,7 +152,7 @@ Connection::Connection(const BusBar* busbar, const ConnectivityNode* connectivit
  *
  * Delegate BusBar constructors
 */
-Connection::Connection(const BusBar* busbar, const PiLine* pi_line): Connection(busbar) {
+Connection::Connection(const ModBusBar* busbar, const ModPiLine* pi_line): Connection(busbar) {
 
   this->set_connected(pi_line->is_connected());//electrical connected?
   if (pi_line->getBus1()== busbar) {
@@ -188,7 +188,7 @@ Connection::Connection(const BusBar* busbar, const PiLine* pi_line): Connection(
  *
  * Delegate BusBar constructors
 */
-Connection::Connection(const BusBar* busbar, const Transformer* transformer): Connection(busbar) {
+Connection::Connection(const ModBusBar* busbar, const ModTransformer* transformer): Connection(busbar) {
 
   this->set_connected(transformer->is_connected());//electrical connected?
   if (transformer->getBus1() == busbar) {
@@ -224,7 +224,7 @@ Connection::Connection(const BusBar* busbar, const Transformer* transformer): Co
  *
  * Delegate BusBar constructors
 */
-Connection::Connection(const BusBar* busbar, const WindGenerator* wind_generator): Connection(busbar) {
+Connection::Connection(const ModBusBar* busbar, const ModWindGenerator* wind_generator): Connection(busbar) {
 
   this->set_connected(wind_generator->is_connected());//electrical connected?
 
@@ -244,7 +244,7 @@ Connection::Connection(const BusBar* busbar, const WindGenerator* wind_generator
  *
  * Delegate BusBar constructors
 */
-Connection::Connection(const BusBar* busbar, const SolarGenerator* solar_generator): Connection(busbar) {
+Connection::Connection(const ModBusBar* busbar, const ModSolarGenerator* solar_generator): Connection(busbar) {
 
   this->set_connected(solar_generator->is_connected());//electrical connected?
 
@@ -264,7 +264,7 @@ Connection::Connection(const BusBar* busbar, const SolarGenerator* solar_generat
  *
  * Delegate BusBar constructors
 */
-Connection::Connection(const BusBar* busbar, const PVNode* pv_node): Connection(busbar) {
+Connection::Connection(const ModBusBar* busbar, const ModPVNode* pv_node): Connection(busbar) {
 
   this->set_connected(pv_node->is_connected());//electrical connected?
   _port2 = pv_node->name();
@@ -283,7 +283,7 @@ Connection::Connection(const BusBar* busbar, const PVNode* pv_node): Connection(
  *
  * Delegate BusBar constructors
 */
-Connection::Connection(const BusBar* busbar, const Battery* battery): Connection(busbar) {
+Connection::Connection(const ModBusBar* busbar, const ModBattery* battery): Connection(busbar) {
 
   this->set_connected(battery->is_connected());//electrical connected?
 
