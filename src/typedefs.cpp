@@ -1,4 +1,3 @@
-#include "IEC61970.hpp"
 #include "ModelicaWorkshop/ModelicaClass.h"
 #ifdef LIB_CGMES
 typedef CIMPP::IdentifiedObject* IdentifiedObjectPtr;
@@ -33,6 +32,7 @@ typedef ModPowerSystems::PhasorSinglePhase::Connections::BusBar BusBar;
 typedef ModPowerSystems::PhasorSinglePhase::Connections::ConnectivityNode ConnectivityNode;
 typedef CIMPP::String String;
 #else
+#include "IEC61970.hpp"
 typedef IEC61970::Base::Core::IdentifiedObject* IdentifiedObjectPtr;
 typedef IEC61970::Base::Wires::BusbarSection* BusBarSectionPtr;
 typedef IEC61970::Base::Topology::TopologicalNode* TPNodePtr;
