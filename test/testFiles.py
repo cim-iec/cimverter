@@ -48,7 +48,7 @@ def main(argv):
 
     # For all files check if they match the expected output. Otherwise print the diffs
     for file in testedFiles:
-        bashCommand = "./diff.bash " + file
+        bashCommand = "./diff.bash " + file + " " + cim_version
         process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         out, err = process.communicate()
         print ("-------------------------------------------")
