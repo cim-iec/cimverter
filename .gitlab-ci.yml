@@ -20,6 +20,7 @@ docker-cimverter:
     - release
     - master
     - powerfactory
+    - cgmes
   tags:
     - shell
 
@@ -35,6 +36,7 @@ docker-omc:
     - release
     - master
     - powerfactory
+    - cgmes
 # clone libcimpp in our projekt. compile and run the tests.
 test: 
   stage: test
@@ -51,7 +53,7 @@ test:
     - git rev-parse HEAD
     - cd ..
     - mkdir -p build && cd build
-    - cmake .. -DUSE_CIM_VERSION:STRING=IEC61970_17v23_IEC61968_13v11
+    - cmake .. -DUSE_CIM_VERSION:STRING=CGMES_2.4.15_27JAN2020
     - make -j8
 
   script:
@@ -66,6 +68,7 @@ test:
     - release
     - rse
     - powerfactory
+    - cgmes
 
 checkmodel:
   stage: modelica
@@ -86,3 +89,4 @@ checkmodel:
     - master
     - release
     - powerfactory
+    - cgmes
