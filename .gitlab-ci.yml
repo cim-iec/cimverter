@@ -7,7 +7,7 @@ variables:
 stages:
   - prepare
   - test
-  - modelica
+  - checkmodel
 
 # build the docker img in which we want to test. normally we want a dockerfile with all dependencies which we just include
 docker-cimverter:
