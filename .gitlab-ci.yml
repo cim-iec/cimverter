@@ -84,7 +84,7 @@ test-17v23:
 
 
 .checkmodel: &checkmodel
-  stage: modelica
+  stage: checkmodel
   image: ${DOCKER_IMAGE_OMC}:${DOCKER_TAG_OMC}
   dependencies:
     - test
@@ -105,3 +105,12 @@ test-17v23:
     - cgmes
 
 
+checkmodel-CGMES:
+  <<: *checkmodel
+  variables:
+    CIM_VERSION: CGMES_2.4.15_27JAN2020
+
+checkmodel-17v23:
+  <<: *checkmodel
+  variables:
+    CIM_VERSION: IEC61970_17v23_IEC61968_13v11
