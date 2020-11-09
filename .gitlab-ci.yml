@@ -87,7 +87,7 @@ test-17v23:
   stage: checkmodel
   image: ${DOCKER_IMAGE_OMC}:${DOCKER_TAG_OMC}
   dependencies:
-    - test
+    - test-${CIM_SHORT}
   script:
     - pwd
     - cp test/outputs/${CIM_VERSION}/*.mo .
@@ -108,3 +108,4 @@ checkmodel-17v23:
   <<: *checkmodel
   variables:
     CIM_VERSION: IEC61970_17v23_IEC61968_13v11
+    CIM_SHORT: 17v23
