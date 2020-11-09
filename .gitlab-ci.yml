@@ -59,7 +59,7 @@ docker-omc:
     - make -j8
   script:
     - cd ../test/
-    - ./testFiles.py
+    - ./testFiles.py ${CIM_VERSION}
     - ls -l
   artifacts:
     paths:
@@ -73,23 +73,24 @@ docker-omc:
 
 
 test-CGMES:
-  <<: *build-src
+  <<: *test
   variables:
     CIM_VERSION: CGMES_2.4.15_27JAN2020
 
-test-src-17v23:
-  <<: *build-src
+test-17v23:
+  <<: *test
   variables:
     CIM_VERSION: IEC61970_17v23_IEC61968_13v11
 
-checkmodel:
+
+.checkmodel: &checkmodel
   stage: modelica
   image: ${DOCKER_IMAGE_OMC}:${DOCKER_TAG_OMC}
   dependencies:
     - test
   script:
     - pwd
-    - cp test/outputs/*.mo .
+    - cp test/outputs/${CIM_VERSION}/*.mo .
     - ls -l
     - git clone --recursive https://${GITLAB_USERMODPOWERSYSTEMS}:${GITLAB_TOKENMODPOWERSYSTEMS}@git.rwth-aachen.de/acs/core/simulation/modpowersystems
     - omc test/scripts/test_cigre.mos
@@ -102,3 +103,15 @@ checkmodel:
     - release
     - powerfactory
     - cgmes
+
+
+checkmodel-CGMES:
+  <<: *checkmodel
+  variables:
+    CIM_VERSION: CGMES_2.4.15_27JAN2020
+
+checkmodel-17v23:
+  <<: *test
+  variables:
+    CIM_VERSION: IEC61970_17v23_IEC61968_13v11
+
