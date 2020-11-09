@@ -36,7 +36,9 @@ docker-omc:
     - master
     - powerfactory
 # clone libcimpp in our projekt. compile and run the tests.
-test: 
+
+# Template
+.test: &test
   stage: test
   image: ${DOCKER_IMAGE_DEV}:${DOCKER_TAG_DEV}
   tags:
@@ -51,21 +53,22 @@ test:
     - git rev-parse HEAD
     - cd ..
     - mkdir -p build && cd build
-    - cmake .. -DUSE_CIM_VERSION:STRING=IEC61970_17v23_IEC61968_13v11
+    - cmake .. -DUSE_CIM_VERSION:STRING=${CIM_VERSION}
     - make -j8
-
   script:
     - cd ../test/
     - ./testFiles.py
     - ls -l
   artifacts:
     paths:
-      - test/outputs/
+      - test/outputs/${CIM_VERSION}
   only:
     - master 
     - release
     - rse
     - powerfactory
+
+    
 
 checkmodel:
   stage: modelica
