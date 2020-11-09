@@ -87,7 +87,7 @@ test-17v23:
   stage: checkmodel
   image: ${DOCKER_IMAGE_OMC}:${DOCKER_TAG_OMC}
   dependencies:
-    - .test
+    - test-17v23
   script:
     - pwd
     - cp test/outputs/${CIM_VERSION}/*.mo .
