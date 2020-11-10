@@ -11,8 +11,8 @@ You can run the executable from the command-line, specifying a xml file and cert
 	-a		path to a folder which contains one or multiple xml files  
 	-o		name of the output file  
 	-t		specify the template that should be used. The default template is ModPowerSystems
-	--help	show usage options
-	--verbose display additional information
+	--help		show usage options
+	--verbose	display additional information
 
 You can run CIMverter from outside 'build/bin' by exporting the path to the executable. For instance:  
 ```bash
