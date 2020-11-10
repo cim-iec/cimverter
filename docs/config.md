@@ -68,7 +68,7 @@ States if lengths are given in m or km in the input.xml. The unit used in modeli
 
 ### input_directory_path No CLUE WHAT THIS IS USED FOR?
 
-### output_directory_path (string:path)="./../path/to/my/CIMverter/output/directory"
+### output_directory_path (string:path)="../path/to/my/CIMverter/output/directory"
 Specifies the path to which the modelica files are generated starting from "build/bin"
 
 ### template_directory_path (string:path)="./path/to/templates"
