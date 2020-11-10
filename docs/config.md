@@ -10,24 +10,24 @@ At the top level, the configuration file consists of these sections:
 - Single Phase WHAT IS THIS?
 
 ## General 
-### useSVforEnergyConsumer
+### useSVforEnergyConsumer (bool)
 specify if the PNom of PQLoads is specified via a SVPowerFlow (true) or directly in the pfixed property (false).
 
-### useSVforGeneratingUnit
+### useSVforGeneratingUnit (bool)
 specify if the PGen of GeneratingUnits is specified via a SVPowerFlow (true) or directly in the initialP property (false).
 
 
-### useSVforExternalNetworkInjection
+### useSVforExternalNetworkInjection (bool)
 specify if the phiV value of the Slack is read from a SVVoltage
 
 
-### default_baseKV
+### default_baseKV (float)
 defines the base Voltage which is used for Busbars in case there is no specific  BaseVoltage connected.
 
 ### tapStepPosition
 If set to "original" the tapStepPosition of power transformers is directly read from the xml. Otherwise the tapStepPosition is computed as the xml (value - 1) * 1000.
 
-### make_unique_names
+### make_unique_names (bool)
 Append memmory addresses to the component names to guarantee unique names. 
 This might be needed when the xml file has no unique names for the components.
 
@@ -68,22 +68,31 @@ States if lengths are given in m or km in the input.xml. The unit used in modeli
 
 ### input_directory_path No CLUE WHAT THIS IS USED FOR?
 
-### output_directory_path
-Specifies the path to which the modelica file should be generated starting from "build/bin"
+### output_directory_path (string:path)="./../path/to/my/CIMverter/output/directory"
+Specifies the path to which the modelica files are generated starting from "build/bin"
 
-### template_directory_path
+### template_directory_path (string:path)="./path/to/templates"
 Specifies the path to the templates that should be used. Starting from "build/bin"
 
 ## System Configuration
 
 ### enable (bool)
 
-### topology_trans_parameter
+### topology_trans_parameter [a, b, c, d]
+defines the parameters for coordinate system conversion.
 
 ### coordinate [a, b, c, d]
 Specifies the dimensions of the modelica coordinate system.
 
 ### label 
+```
+simMode = "steady";
+        init = "steady";
+        annotation = {
+            extent = [0.0, -30.0, 30.0, 0.0];       //label icon size
+            visible = true;
+        };
+```
 
 ### annotation 
 Position of the label in the modelica file
