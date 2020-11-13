@@ -19,12 +19,18 @@ typedef ModPowerSystems::PhasorSinglePhase::Loads::PQLoad PQLoad;
 typedef ModPowerSystems::PhasorSinglePhase::Loads::ZLoad ZLoad;
 typedef ModPowerSystems::PhasorSinglePhase::Lines::PiLine PiLine;
 typedef ModPowerSystems::PhasorSinglePhase::Lines::RxLine RxLine;
+typedef ModPowerSystems::PhasorSinglePhase::Lines::Breaker Breaker;
 typedef ModPowerSystems::PhasorSinglePhase::Transformers::Transformer Transformer;
 typedef ModPowerSystems::PhasorSinglePhase::Generations::GenericGenerator GenericGenerator;
 typedef ModPowerSystems::PhasorSinglePhase::Generations::WindGenerator WindGenerator;
+typedef ModPowerSystems::PhasorSinglePhase::Generations::PVNode PVNode;
 typedef ModPowerSystems::PhasorSinglePhase::Generations::SolarGenerator SolarGenerator;
 typedef ModPowerSystems::PhasorSinglePhase::Storage::Battery Battery;
 typedef ModPowerSystems::PhasorSinglePhase::Households::Household Household;
+typedef PowerGrids::SynchronousMachineDynamics SynMachineDyn;
+
+
+
 
 namespace ModelicaWorkshop {
 
@@ -38,7 +44,9 @@ class Connection : public ModBaseClass {
   Connection(const BusBar* busbar, const ConnectivityNode* connectivity_node);
   Connection(const BusBar* busbar, const Slack* slack);
   Connection(const BusBar* busbar, const PQLoad* pq_load);
+  Connection(const BusBar* busbar, const Breaker* breaker);
   Connection(const BusBar* busbar, const Household* household);
+  Connection(const BusBar* busbar, const PVNode* pvNode);
   Connection(const BusBar* busbar, const PiLine* pi_line);
   Connection(const BusBar* busbar, const Transformer* transformer);
   Connection(const BusBar* busbar, const WindGenerator* wind_generator);

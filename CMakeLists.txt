@@ -6,7 +6,7 @@ set(CIMverter_MINOR_VERSION 3)
 set(CIMverter_PATCH_VERSION 1)
 set(CIMverter_VERSION ${CIMverter_MAJOR_VERSION}.${CIMverter_MINOR_VERSION}.${CIMverter_PATCH_VERSION})
 
-set(USE_CIM_VERSION "IEC61970_16v29a_IEC61968_12v08" CACHE STRING "Define CIM Version")
+set(USE_CIM_VERSION "IEC61970_17v23_IEC61968_13v11" CACHE STRING "Define CIM Version")
 message(STATUS "Building ${PROJECT_NAME} with USE_CIM_VERSION=${USE_CIM_VERSION}")
 if(USE_CIM_VERSION STREQUAL "IEC61970_16v29a_SINERGIEN")
  add_definitions(-DSINERGIEN)
@@ -49,6 +49,8 @@ set(CMAKE_CXX_FLAGS_RELEASE  "${CMAKE_CXX_FLAGS_RELEASE} -Wall -Wno-inconsistent
 file(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/bin/resource)
 file(COPY ${PROJECT_SOURCE_DIR}/ModPowerSystems_templates/ DESTINATION 
 ${PROJECT_BINARY_DIR}/bin/resource/ModPowerSystems_templates)
+file(COPY ${PROJECT_SOURCE_DIR}/PowerGrids_templates/ DESTINATION 
+${PROJECT_BINARY_DIR}/bin/resource/PowerGrids_templates)
 file(COPY ${PROJECT_SOURCE_DIR}/PowerSystems_templates/ DESTINATION 
 ${PROJECT_BINARY_DIR}/bin/resource/PowerSystems_templates)
 file(COPY ${PROJECT_SOURCE_DIR}/DistAIX_templates/ DESTINATION

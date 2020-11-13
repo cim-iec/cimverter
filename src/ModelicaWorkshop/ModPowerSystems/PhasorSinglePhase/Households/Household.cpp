@@ -66,6 +66,7 @@ Household::Household(const Loads::PQLoad pq_load,const Generations::SolarGenerat
   this->annotation.placement.transformation.rotation = 0;
 }
 
+
 Household::Household(enum HouseholdType Type, std::string load_profileFileName, std::string load_profileName): _Type(Type),
     _Load_ProfileFileName(load_profileFileName), _Load_ProfileName(load_profileName) {
 

@@ -9,6 +9,7 @@
 #include "../../../ModBaseClass.h"
 #include "../Loads/PQLoad.h"
 #include "../Generations/SolarGenerator.h"
+#include "../Generations/PVNode.h"
 #include <string>
 
 using namespace ModelicaWorkshop;
@@ -46,6 +47,7 @@ class Household : public ModBaseClass {
   Household(enum HouseholdType Type, std::string load_profileFileName, std::string load_profileName);
   ///HouseHoldType2 Constructor
   Household(const Loads::PQLoad pq_load, const Generations::SolarGenerator solar_generator);
+  //Household(const Loads::PQLoad pq_load, const Generations::PVNode pv_node);
   Household(enum HouseholdType Type, std::string load_profileFileName, std::string load_profileName, std::string pv_profileFileName, std::string pv_profileName);
   Household(const Household &);
   Household& operator=(const Household &);

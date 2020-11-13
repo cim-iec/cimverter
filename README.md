@@ -43,10 +43,18 @@ make document
 ```
 
 ### Usage
+There are two possibilitys to execute CIMverter. 
+First:
 ```bash
 cd bin
 ./CIMverter --help
 ``` 
+Second: 
+```bash
+export CIMVERTER_HOME=your/path/to/build/bin/
+./bin/CIMverter --help
+``` 
+
 
 ***
 

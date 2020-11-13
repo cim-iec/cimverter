@@ -3,6 +3,7 @@
  *
  */
 
+#include <cstring>
 #include "ConfigManager.h"
 
 ConfigManager::ConfigManager() {
@@ -33,6 +34,61 @@ void ConfigManager::getAllSettings() {
   this->getSolarGeneratorSettings();
   this->getBatterySettings();
   this->getHouseholdSettings();
+  this->getSVSettings();
+  this->getDefault_baseKV();
+  this->getTapChangerStep();
+  this->getMake_unique_names();
+  this->getIgnore_unconnected_components();
+  this->getAdd_Vnom_to_PiLine();
+
+}
+
+void ConfigManager::getTapChangerStep(){
+    try {
+        this->tapStepPos = this->cfg.lookup("tapStepPosition").c_str();
+        std::cout << "reading tapStepPosition!" << std::endl;
+    }catch (const SettingNotFoundException &nfex) {
+        std::cerr << "No tapStepPosition in configuration file." << std::endl;
+    }
+
+}
+
+void ConfigManager::getAdd_Vnom_to_PiLine(){
+    try {
+        this->add_Vnom_to_PiLine = this->cfg.lookup("add_Vnom_to_PiLine");
+        std::cout << "reading add_Vnom_to_PiLine!" << std::endl;
+    }catch (const SettingNotFoundException &nfex) {
+        std::cerr << "No add_Vnom_to_PiLine in configuration file." << std::endl;
+        this->add_Vnom_to_PiLine = false;
+    }
+}
+
+void ConfigManager::getIgnore_unconnected_components(){
+    try {
+        this->ignore_unconnected_components = this->cfg.lookup("ignore_unconnected_components");
+        std::cout << "reading ignore_unconnected_components!" << std::endl;
+    }catch (const SettingNotFoundException &nfex) {
+        std::cerr << "No ignore_unconnected_components in configuration file." << std::endl;
+    }
+
+}
+
+void ConfigManager::getMake_unique_names(){
+    try {
+        this->make_unique_names = this->cfg.lookup("make_unique_names");
+        std::cout << "reading make_unique_names!" << std::endl;
+    }catch (const SettingNotFoundException &nfex) {
+        std::cerr << "No make_unique_names in configuration file." << std::endl;
+        this->make_unique_names = false;
+    }
+}
+
+void ConfigManager::getDefault_baseKV() {
+    try {
+        this->cfg.lookupValue("default_baseKV", this->default_baseKV);
+    }catch (const SettingNotFoundException &nfex) {
+        std::cerr << "No default base_KV in configuration file." << std::endl;
+    }
 }
 
 
@@ -153,11 +209,47 @@ void ConfigManager::getConnectionNames(){
     catch (const SettingNotFoundException &nfex) {
         std::cerr << "No system enable settings in configuration file." << std::endl;
     }
+    try {
+        this->cs.PVNodeName = this->conCfg.lookup("connections.PVNode.name").c_str();
+
+    }
+    catch (const SettingNotFoundException &nfex) {
+        std::cerr << "No system enable settings in configuration file." << std::endl;
+    }
+    try {
+        this->cs.BreakerName = this->conCfg.lookup("connections.Breaker.name").c_str();
+
+    }
+    catch (const SettingNotFoundException &nfex) {
+        std::cerr << "No system enable settings in configuration file." << std::endl;
+    }
+    try {
+        this->cs.BreakerSuffix1 = this->conCfg.lookup("connections.Breaker.suffix1").c_str();
+
+    }
+    catch (const SettingNotFoundException &nfex) {
+        std::cerr << "No system enable settings in configuration file." << std::endl;
+    }
+    try {
+        this->cs.BreakerSuffix2 = this->conCfg.lookup("connections.Breaker.suffix2").c_str();
+
+    }
+    catch (const SettingNotFoundException &nfex) {
+        std::cerr << "No system enable settings in configuration file." << std::endl;
+    }
 }
 
 void ConfigManager::getConfigFiles() {
   try {
-    this->cfg.readFile("config.cfg");         ///for release using CMake
+      std::string cfgName = "config.cfg";
+      if (std::getenv("CIMVERTER_HOME") != NULL){
+
+          const char* CIMVERTER_HOME = std::getenv("CIMVERTER_HOME");
+          std::cout << "cfg path"<< CIMVERTER_HOME + cfgName << std::endl;
+          cfgName = CIMVERTER_HOME + cfgName;
+          this->cfg.readFile(cfgName.c_str());         ///for release using CMake
+      }
+      this->cfg.readFile(cfgName.c_str());         ///for release using CMake
     //this->cfg.readFile("build/bin/config.cfg"); ///for developing using makefile
   }
   catch (const FileIOException &fioex) {
@@ -180,6 +272,7 @@ void ConfigManager::getGlobalSettings(){
     std::cerr << "No source_tool_name in configuration file." << std::endl;
   }
   try {
+
     this->gs.apply_Neplan_fix = this->cfg.lookup("apply_Neplan_fix");
     if(this->gs.apply_Neplan_fix == true){
       std::cout << "Apply Neplan Fix: true" << std::endl;
@@ -242,34 +335,70 @@ void ConfigManager::getUnitSettings() {
   catch (const SettingNotFoundException &nfex) {
     std::cerr << "No reactive_power_unit settings in configuration file." << std::endl;
   }
+  try {
+    this->us.length_unit = this->cfg.lookup("apply_unit_fix.length_unit").c_str();
+    std::cout << "reactive_power_unit:" << this->us.reactive_power_unit << std::endl;
+  }
+  catch (const SettingNotFoundException &nfex) {
+    std::cerr << "No length_unit settings in configuration file." << std::endl;
+  }
 }
 
 ///
 /// Get files' path from config.cfg
 ///
 void ConfigManager::getFilesSettings() {
-  std::cout << "----------------FilesSettings-------------------" << std::endl;
-  try {
-    this->fs.input_path = this->cfg.lookup("files.input_directory_path").c_str();
-    std::cout << "input_directory_path: " << fs.input_path << std::endl;
-  }
-  catch (const SettingNotFoundException &nfex) {
-    std::cerr << "No input_directory_path settings in configuration file." << std::endl;
-  }
-  try {
-    this->fs.output_path = this->cfg.lookup("files.output_directory_path").c_str();
-    std::cout << "output_directory_path: " << fs.output_path << std::endl;
-  }
-  catch (const SettingNotFoundException &nfex) {
-    std::cerr << "No output_directory_path settings in configuration file." << std::endl;
-  }
-  try {
-    this->ts.directory_path = this->cfg.lookup("files.template_directory_path").c_str();
-    std::cout << "template_directory_path: " << ts.directory_path << std::endl;
-  }
-  catch (const SettingNotFoundException &nfex) {
-    std::cerr << "No template_directory_path settings in configuration file." << std::endl;
-  }
+
+    if (std::getenv("CIMVERTER_HOME") != NULL){
+        const char* CIMVERTER_HOME = std::getenv("CIMVERTER_HOME");
+        std::cout << "----------------FilesSettings-------------------" << std::endl;
+        try {
+            this->fs.input_path = this->cfg.lookup("files.input_directory_path").c_str();
+            std::cout << "input_directory_path: " << fs.input_path << std::endl;
+        }
+        catch (const SettingNotFoundException &nfex) {
+            std::cerr << "No input_directory_path settings in configuration file." << std::endl;
+        }
+        try {
+            std::string outputPath = this->cfg.lookup("files.output_directory_path").c_str();
+            this->fs.output_path = CIMVERTER_HOME + outputPath;
+            std::cout << "output_directory_path: " << fs.output_path << std::endl;
+        }
+        catch (const SettingNotFoundException &nfex) {
+            std::cerr << "No output_directory_path settings in configuration file." << std::endl;
+        }
+        try {
+            std::string directoryPath = this->cfg.lookup("files.template_directory_path").c_str();
+            this->ts.directory_path = CIMVERTER_HOME + directoryPath;
+            std::cout << "template_directory_path: " << ts.directory_path << std::endl;
+        }
+        catch (const SettingNotFoundException &nfex) {
+            std::cerr << "No template_directory_path settings in configuration file." << std::endl;
+        }
+    }else{
+        std::cout << "----------------FilesSettings-------------------" << std::endl;
+        try {
+            this->fs.input_path = this->cfg.lookup("files.input_directory_path").c_str();
+            std::cout << "input_directory_path: " << fs.input_path << std::endl;
+        }
+        catch (const SettingNotFoundException &nfex) {
+            std::cerr << "No input_directory_path settings in configuration file." << std::endl;
+        }
+        try {
+            this->fs.output_path = this->cfg.lookup("files.output_directory_path").c_str();
+            std::cout << "output_directory_path: " << fs.output_path << std::endl;
+        }
+        catch (const SettingNotFoundException &nfex) {
+            std::cerr << "No output_directory_path settings in configuration file." << std::endl;
+        }
+        try {
+            this->ts.directory_path = this->cfg.lookup("files.template_directory_path").c_str();
+            std::cout << "template_directory_path: " << ts.directory_path << std::endl;
+        }
+        catch (const SettingNotFoundException &nfex) {
+            std::cerr << "No template_directory_path settings in configuration file." << std::endl;
+        }
+    }
 }
 
 ///
@@ -353,6 +482,12 @@ void ConfigManager::getSystemSettings() {
   catch (const SettingNotFoundException &nfex) {
     std::cerr << "No annotation_extent settings in configuration file." << std::endl;
   }
+  try {
+      this->ss.use_TPNodes = this->cfg.lookup(("system.use_TPNodes"));
+  }catch(const SettingNotFoundException &nfex){
+      std::cerr << "No use_TPNode Setting configuration file." << std::endl;
+  }
+
 }
 
 ///
@@ -756,4 +891,30 @@ void ConfigManager::getHouseholdSettings() {
   catch (const SettingNotFoundException &nfex) {
     std::cerr << "UseHouseholds setting mistake in configuration file." << std::endl;
   }
+}
+
+void ConfigManager::getSVSettings(){
+    std::cout << "-------------SVSettings-------------" << std::endl;
+    try {
+        this->svSettings.useSVforEnergyConsumer= this->cfg.lookup("useSVforEnergyConsumer");
+        std::cout << "reading SV for Energy Consumer!" << std::endl;
+    }
+    catch (const SettingNotFoundException &nfex) {
+        std::cerr << "Missing SV for Energyconsumer in config file." << std::endl;
+    }
+    try {
+        this->svSettings.useSVforExternalNetworkInjection= this->cfg.lookup("useSVforExternalNetworkInjection");
+        std::cout << "reading SV for useSVforExternalNetworkInjection!" << std::endl;
+    }
+    catch (const SettingNotFoundException &nfex) {
+        std::cerr << "Missing useSVforExternalNetworkInjection in config file." << std::endl;
+    }
+    try {
+        this->svSettings.useSVforGeneratingUnit= this->cfg.lookup("useSVforGeneratingUnit");
+        std::cout << "reading useSVforGeneratingUnit!" << std::endl;
+    }
+    catch (const SettingNotFoundException &nfex) {
+        std::cerr << "Missing useSVforGeneratingUnit in config file." << std::endl;
+    }
+
 }

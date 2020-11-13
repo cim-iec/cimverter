@@ -34,9 +34,13 @@ std::vector<std::string> search_folder(const char *path) {
   DIR *pDir;
   pDir = opendir(path);
   std::vector<std::string> files;
-  
-  while (NULL != (ent = readdir(pDir))) {
+  if(NULL == pDir){
+      std::cerr << "The specified directory does not exist. "
+              "Maybe you want to use the option -f to read a single File" << std::endl;
+      return files;
+  }
 
+  while (NULL != (ent = readdir(pDir))) {
     std::string _path(path);
     std::string _dirName(ent->d_name);
     if(strcmp(ent->d_name,".") == 0 || strcmp(ent->d_name,"..") == 0 )
@@ -76,6 +80,7 @@ void print_argument_help(){
 }
 
 int main(int argc, char *argv[]) {
+    //const char* CIMVERTER_HOME = std::getenv("CIMVERTER_HOME");
     std::string output_file_name;// Arguments for the ObjectHandler
     std::string template_folder = "ModPowerSystems_templates";
 
@@ -93,7 +98,7 @@ int main(int argc, char *argv[]) {
         print_argument_help();
     }else{
 
-        output_file_name = "default_output_name";// Push output modelica filesname
+        output_file_name = "default_output_name";// Push output modelica filename
         int c;
 
 
@@ -112,20 +117,21 @@ int main(int argc, char *argv[]) {
             int option_index = 0;
 
             //c = getopt (argc, argv, "abc");
-            c = getopt_long(argc, argv, "a:f:o:t:",long_options, &option_index);
+            c = getopt_long(argc, argv, "o:a:f:t:",long_options, &option_index);
 
             std::vector<std::string> files;
             if (c == -1)
                 break;
-            std::regex mat(".*xml$");
+            std::regex match(".*xml$");
+
             switch (c)
             {
                 // Read files with -f
                 case 'f':
                     optind--;
                     for( ;optind < argc && *argv[optind] != '-'; optind++){
-                        if(!std::regex_match(argv[optind], mat) ){
-                            std::cout << "is not a .xml file" << ( argv[optind] ) << std::endl;
+                        if(!std::regex_match(argv[optind], match) ){
+                            std::cerr << "is not a .xml file" << ( argv[optind] ) << std::endl;
                         }else{
                             std::cout << "CIM-XML file is:" << ( argv[optind] ) << std::endl;
                             file_size += filesize(( argv[optind] ));
@@ -140,7 +146,9 @@ int main(int argc, char *argv[]) {
                 // Read folders with -a
                 case 'a':
                     if(!ends_with(optarg, "/")){
-                        files = search_folder(strcat(optarg, "/"));
+                        char dest[strlen(optarg)];
+                        strcpy(dest, optarg);
+                        files = search_folder(strcat(dest, "/"));
                     }
                     else{
                         files = search_folder(optarg);
@@ -148,7 +156,7 @@ int main(int argc, char *argv[]) {
 
                     for (auto f : files)
                     {
-                        if(!std::regex_match(f, mat) ){
+                        if(!std::regex_match(f, match) ){
                             std::cout << "is not a .xml file" << ( f )<< " skipping" << std::endl;
                         }else{
                             std::cout << "CIM-XML file is:" << f << std::endl;
@@ -158,7 +166,7 @@ int main(int argc, char *argv[]) {
                     }
                     break;
                 case 't':
-                    template_folder = optarg;
+                        template_folder = optarg;
                     break;
                 case '?':
                     std::cerr << "unknown argument " << c << "\n";
@@ -181,7 +189,7 @@ int main(int argc, char *argv[]) {
   {
         std::cout << "verbose activated \n";
   }
-
+    std::cout << "template : "<< template_folder<< std::endl;
 
   // Timer start
   std::chrono::time_point<std::chrono::high_resolution_clock> start, stop;

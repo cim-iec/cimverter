@@ -33,6 +33,17 @@ typedef  struct ConnectionSettings{
    std::string SolarGeneratorName;
    std::string BatteryName;
    std::string HouseholdName;
+   std::string PVNodeName;
+   std::string BreakerName;
+   std::string BreakerSuffix1;
+   std::string BreakerSuffix2;
+};
+
+// use SV settings
+typedef struct UseSVSettings{
+    bool useSVforEnergyConsumer;
+    bool useSVforGeneratingUnit;
+    bool useSVforExternalNetworkInjection;
 };
 
 /// global settings in Config.cfg
@@ -68,6 +79,7 @@ typedef struct SystemSettings {
   double label_extent[4];               /// label size
   bool label_visible;                   /// label visible
   double annotation_extent[4];          /// system size
+  bool use_TPNodes;                     /// Use TPNode or ConnectivityNodes
 } SystemSettings;
 
 /// base annotation settings in Config.cfg
@@ -83,6 +95,8 @@ typedef struct UnitSettings {
   std::string current_unit;         /// Default unit of current
   std::string active_power_unit;    /// Default unit of active power
   std::string reactive_power_unit;  /// Default unit of reactive power
+  std::string length_unit;  /// Default unit of length of ACLine
+
 } UnitSettings;
 
 /// slack settings in Config.cfg
@@ -182,7 +196,12 @@ class ConfigManager {
   ConfigManager();
 
   virtual ~ConfigManager();
-
+  double default_baseKV;
+  UseSVSettings svSettings;
+  std::string tapStepPos;
+  bool ignore_unconnected_components;
+  bool make_unique_names;
+  bool add_Vnom_to_PiLine;
   ConnectionSettings cs;
   GlobalSettings  gs;
   UnitSettings us;
@@ -209,6 +228,10 @@ class ConfigManager {
   void getConnectionConfigFiles();
 
   void getAllSettings();
+
+  void getDefault_baseKV();
+
+  void getSVSettings();
 
   void getGlobalSettings();
 
@@ -241,6 +264,15 @@ class ConfigManager {
   void getBatterySettings();
 
   void getHouseholdSettings();
+
+  void getTapChangerStep();
+
+  void getAdd_Vnom_to_PiLine();
+
+  void getMake_unique_names();
+
+  void getIgnore_unconnected_components();
+
 
  private:
   Config conCfg;

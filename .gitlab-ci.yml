@@ -1,22 +1,40 @@
 variables:
   DOCKER_TAG_DEV: ${CI_COMMIT_REF_NAME}
   DOCKER_IMAGE_DEV: cimverter-dev
+  DOCKER_TAG_OMC: ${CI_COMMIT_REF_NAME}
+  DOCKER_IMAGE_OMC: omc-dev-rse
 
 stages:
   - prepare
   - test
+  - modelica
 
 # build the docker img in which we want to test. normally we want a dockerfile with all dependencies which we just include
-docker:
+docker-cimverter:
   stage: prepare
   script:
-    - docker build -t ${DOCKER_IMAGE_DEV}:${DOCKER_TAG_DEV} .
+    - docker build -t ${DOCKER_IMAGE_DEV}:${DOCKER_TAG_DEV} -f ./Docker/Dockerfile.cimverter .
     - docker images
   only: 
+    - rse
     - release
     - master
+    - powerfactory
   tags:
     - shell
+
+docker-omc:
+  stage: prepare
+  script:
+    - docker build -t ${DOCKER_IMAGE_OMC}:${DOCKER_TAG_OMC} -f ./Docker/Dockerfile.omc .
+    - docker images
+  tags:
+    - shell
+  only:
+    - rse 
+    - release
+    - master
+    - powerfactory
 # clone libcimpp in our projekt. compile and run the tests.
 test: 
   stage: test
@@ -28,14 +46,43 @@ test:
     - apt-get update -qq && apt-get install -y -qq git 
     - git --version
     - rm -rf libcimpp/
-    - git clone --recursive https://${GITLAB_USERLIBCIMPP}:${GITLAB_TOKENLIBCIMPP}@git.rwth-aachen.de/acs/core/cim/cimpp/libcimpp.git/ libcimpp/
+    - git clone --recursive https://${GITLAB_USERLIBCIMPP}:${GITLAB_TOKENLIBCIMPP}@git.rwth-aachen.de/acs/public/cim/cimpp/libcimpp.git/ libcimpp/   
+    - cd libcimpp
+    - git rev-parse HEAD
+    - cd ..
     - mkdir -p build && cd build
-    - cmake .. -DUSE_CIM_VERSION:STRING=IEC61970_16v29a_SINERGIEN
+    - cmake .. -DUSE_CIM_VERSION:STRING=IEC61970_17v23_IEC61968_13v11
     - make -j8
 
   script:
     - cd ../test/
     - ./testFiles.py
+    - ls -l
+  artifacts:
+    paths:
+      - test/outputs/
   only:
     - master 
     - release
+    - rse
+    - powerfactory
+
+checkmodel:
+  stage: modelica
+  image: ${DOCKER_IMAGE_OMC}:${DOCKER_TAG_OMC}
+  dependencies:
+    - test
+  script:
+    - pwd
+    - cp test/outputs/*.mo .
+    - ls -l
+    - git clone --recursive https://${GITLAB_USERMODPOWERSYSTEMS}:${GITLAB_TOKENMODPOWERSYSTEMS}@git.rwth-aachen.de/acs/core/simulation/modpowersystems
+    - omc test/scripts/test_cigre.mos
+    - omc test/scripts/test_slack.mos
+  tags:
+    - docker
+  only:
+    - rse
+    - master
+    - release
+    - powerfactory

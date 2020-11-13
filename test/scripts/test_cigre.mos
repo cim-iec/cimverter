@@ -1,0 +1,5 @@
+loadModel(Modelica); getErrorString();
+loadFile("./modpowersystems/ModPowerSystems/package.mo"); getErrorString();
+loadFile("./CIGRE_MV_RightFeeder_NEPLAN.mo"); getErrorString();
+checkModel(CIGRE_MV_RightFeeder_NEPLAN); getErrorString(); 
+
