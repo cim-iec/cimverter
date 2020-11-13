@@ -87,7 +87,8 @@ test-17v23:
   stage: checkmodel
   image: ${DOCKER_IMAGE_OMC}:${DOCKER_TAG_OMC}
   dependencies:
-    - test
+    - test-17v23
+    - test-CGMES
   script:
     - pwd
     - cp test/outputs/${CIM_VERSION}/*.mo .
@@ -103,6 +104,11 @@ test-17v23:
     - release
     - powerfactory
     - cgmes
+
+checkmodel-CGMES:
+  <<: *checkmodel
+  variables:
+    CIM_VERSION: CGMES_2.4.15_27JAN2020    
 
 checkmodel-17v23:
   <<: *checkmodel
