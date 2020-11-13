@@ -61,11 +61,27 @@ file(COPY ${PROJECT_SOURCE_DIR}/src/task_alias.csv ${PROJECT_SOURCE_DIR}/src/ass
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
 
 # include_directories
+#file(GLOB_RECURSE SRC_LIST ${PROJECT_SOURCE_DIR}/src/ModelicaWorkshop/*.cpp)
 file(GLOB_RECURSE SRC_LIST ${PROJECT_SOURCE_DIR}/src/*.cpp)
+#list(APPEND SRC_LIST src/ConfigManager.cpp src/DistAIXPostprocessor.cpp src/main.cpp)
 
+if(USE_CIM_VERSION STREQUAL "CGMES_2.4.15_27JAN2020" OR USE_CIM_VERSION STREQUAL "CGMES_2.4.15_16FEB2016" OR USE_CIM_VERSION STREQUAL "CGMES_2.4.13_18DEC2013")
+  message(STATUS "BUILD WITH CGMES")
+#  file(GLOB_RECURSE VERSION_LIST ${PROJECT_SOURCE_DIR}/src/cgmes/*.cpp)  
+  add_compile_definitions(LIB_CGMES)
+else()
+  message(STATUS "BUILD WITH CLASSIC")
+ # file(GLOB_RECURSE VERSION_LIST ${PROJECT_SOURCE_DIR}/src/classic/*.cpp)  
+  #SET(LIBVERSION "CLASSIC" CACHE INTEGER "Version of libcimpp")
+endif()
+
+
+configure_file(src/main.cpp src/main.cpp)
+
+add_definitions(-DVERSION=${LIBVERSION})
 # compile and link
 set(CMAKE_CXX_COMPILER "clang++")
-add_executable(${PROJECT_NAME} ${SRC_LIST} src/main.cpp)
+add_executable(${PROJECT_NAME} ${SRC_LIST} ${VERSION_LIST} src/main.cpp)
 target_link_libraries(CIMverter libcimpp ${Boost_LIBRARIES} ${CTEMPLATE_LIBRARIES} ${CONFIG++_LIBRARY})
 target_compile_features(CIMverter PUBLIC cxx_range_for)
 

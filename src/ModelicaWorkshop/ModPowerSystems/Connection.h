@@ -12,21 +12,21 @@
 
 #include <cmath>
 
-typedef ModPowerSystems::PhasorSinglePhase::Connections::BusBar BusBar;
-typedef ModPowerSystems::PhasorSinglePhase::Connections::ConnectivityNode ConnectivityNode;
-typedef ModPowerSystems::PhasorSinglePhase::Sources::Slack Slack;
-typedef ModPowerSystems::PhasorSinglePhase::Loads::PQLoad PQLoad;
-typedef ModPowerSystems::PhasorSinglePhase::Loads::ZLoad ZLoad;
-typedef ModPowerSystems::PhasorSinglePhase::Lines::PiLine PiLine;
-typedef ModPowerSystems::PhasorSinglePhase::Lines::RxLine RxLine;
-typedef ModPowerSystems::PhasorSinglePhase::Lines::Breaker Breaker;
-typedef ModPowerSystems::PhasorSinglePhase::Transformers::Transformer Transformer;
-typedef ModPowerSystems::PhasorSinglePhase::Generations::GenericGenerator GenericGenerator;
-typedef ModPowerSystems::PhasorSinglePhase::Generations::WindGenerator WindGenerator;
-typedef ModPowerSystems::PhasorSinglePhase::Generations::PVNode PVNode;
-typedef ModPowerSystems::PhasorSinglePhase::Generations::SolarGenerator SolarGenerator;
-typedef ModPowerSystems::PhasorSinglePhase::Storage::Battery Battery;
-typedef ModPowerSystems::PhasorSinglePhase::Households::Household Household;
+typedef ModPowerSystems::PhasorSinglePhase::Connections::BusBar ModBusBar;
+typedef ModPowerSystems::PhasorSinglePhase::Connections::ConnectivityNode ModConnectivityNode;
+typedef ModPowerSystems::PhasorSinglePhase::Sources::Slack ModSlack;
+typedef ModPowerSystems::PhasorSinglePhase::Loads::PQLoad ModPQLoad;
+typedef ModPowerSystems::PhasorSinglePhase::Loads::ZLoad ModZLoad;
+typedef ModPowerSystems::PhasorSinglePhase::Lines::PiLine ModPiLine;
+typedef ModPowerSystems::PhasorSinglePhase::Lines::RxLine ModRxLine;
+typedef ModPowerSystems::PhasorSinglePhase::Lines::Breaker ModBreaker;
+typedef ModPowerSystems::PhasorSinglePhase::Transformers::Transformer ModTransformer;
+typedef ModPowerSystems::PhasorSinglePhase::Generations::GenericGenerator ModGenericGenerator;
+typedef ModPowerSystems::PhasorSinglePhase::Generations::WindGenerator ModWindGenerator;
+typedef ModPowerSystems::PhasorSinglePhase::Generations::PVNode ModPVNode;
+typedef ModPowerSystems::PhasorSinglePhase::Generations::SolarGenerator ModSolarGenerator;
+typedef ModPowerSystems::PhasorSinglePhase::Storage::Battery ModBattery;
+typedef ModPowerSystems::PhasorSinglePhase::Households::Household ModHousehold;
 typedef PowerGrids::SynchronousMachineDynamics SynMachineDyn;
 
 
@@ -41,17 +41,17 @@ typedef struct color {
 class Connection : public ModBaseClass {
  public:
   Connection(const BusBar* busbar);  //Delegate Constructor
-  Connection(const BusBar* busbar, const ConnectivityNode* connectivity_node);
-  Connection(const BusBar* busbar, const Slack* slack);
-  Connection(const BusBar* busbar, const PQLoad* pq_load);
-  Connection(const BusBar* busbar, const Breaker* breaker);
-  Connection(const BusBar* busbar, const Household* household);
-  Connection(const BusBar* busbar, const PVNode* pvNode);
-  Connection(const BusBar* busbar, const PiLine* pi_line);
-  Connection(const BusBar* busbar, const Transformer* transformer);
-  Connection(const BusBar* busbar, const WindGenerator* wind_generator);
-  Connection(const BusBar* busbar, const SolarGenerator* solar_generator);
-  Connection(const BusBar* busbar, const Battery* battery);
+  Connection(const BusBar* busbar, const ModConnectivityNode* connectivity_node);
+  Connection(const BusBar* busbar, const ModSlack* slack);
+  Connection(const BusBar* busbar, const ModPQLoad* pq_load);
+  Connection(const BusBar* busbar, const ModBreaker* breaker);
+  Connection(const BusBar* busbar, const ModHousehold* household);
+  Connection(const BusBar* busbar, const ModPVNode* pvNode);
+  Connection(const BusBar* busbar, const ModPiLine* pi_line);
+  Connection(const BusBar* busbar, const ModTransformer* transformer);
+  Connection(const BusBar* busbar, const ModWindGenerator* wind_generator);
+  Connection(const BusBar* busbar, const ModSolarGenerator* solar_generator);
+  Connection(const BusBar* busbar, const ModBattery* battery);
 
   virtual ~Connection();
 
