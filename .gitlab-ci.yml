@@ -4,7 +4,6 @@ variables:
   DOCKER_TAG_OMC: ${CI_COMMIT_REF_NAME}
   DOCKER_IMAGE_OMC: omc-dev-rse
 
-
 stages:
   - prepare
   - test
@@ -20,6 +19,7 @@ docker-cimverter:
     - rse
     - release
     - master
+    - powerfactory
   tags:
     - shell
 
@@ -34,7 +34,6 @@ docker-omc:
     - rse
     - release
     - master
-
 # clone libcimpp in our projekt. compile and run the tests.
 test: 
   stage: test
@@ -46,7 +45,10 @@ test:
     - apt-get update -qq && apt-get install -y -qq git 
     - git --version
     - rm -rf libcimpp/
-    - git clone --recursive https://${GITLAB_USERLIBCIMPP}:${GITLAB_TOKENLIBCIMPP}@git.rwth-aachen.de/acs/core/cim/cimpp/libcimpp.git/ libcimpp/
+    - git clone --recursive https://${GITLAB_USERLIBCIMPP}:${GITLAB_TOKENLIBCIMPP}@git.rwth-aachen.de/acs/public/cim/cimpp/libcimpp.git/ libcimpp/   
+    - cd libcimpp
+    - git rev-parse HEAD
+    - cd ..
     - mkdir -p build && cd build
     - cmake .. -DUSE_CIM_VERSION:STRING=IEC61970_17v23_IEC61968_13v11
     - make -j8
@@ -62,7 +64,8 @@ test:
     - master 
     - release
     - rse
-    
+    - powerfactory
+
 checkmodel:
   stage: modelica
   image: ${DOCKER_IMAGE_OMC}:${DOCKER_TAG_OMC}
@@ -81,3 +84,4 @@ checkmodel:
     - rse
     - master
     - release
+    - powerfactory

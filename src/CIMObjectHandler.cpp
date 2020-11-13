@@ -46,38 +46,51 @@ CIMObjectHandler::CIMObjectHandler(std::vector<BaseClass *> &&CIMObjects)
 
 CIMObjectHandler::~CIMObjectHandler() {
 
-  auto sv_it = svPowerFlowMap.begin();
-  auto Opl_it = OpLimitMap.begin();
-  auto svVolt_it = svVoltageMap.begin();
-  auto used_it = _UsedObjects.begin();
-  auto generator_it = generatorMap.begin();
+    auto sv_it = svPowerFlowMap.begin();
+    auto Opl_it = OpLimitMap.begin();
+    auto svVolt_it = svVoltageMap.begin();
+    auto used_it = _UsedObjects.begin();
+    auto generator_it = generatorMap.begin();
+    auto terminalList_it = terminalList.begin();
+    auto SynMachineMap_it = SynMachineMap.begin();
+    auto PiLineMap_it = PiLineMap.begin();
 
-
-  while (used_it != _UsedObjects.end())
+    while (used_it != _UsedObjects.end())
     {
         delete used_it->second;
         _UsedObjects.erase(used_it++);
     }
-  while (generator_it != generatorMap.end())
+    while (generator_it != generatorMap.end())
     {
         generatorMap.erase(generator_it++);
     }
 
-  while (sv_it != svPowerFlowMap.end())
-  {
+    while (sv_it != svPowerFlowMap.end())
+    {
     svPowerFlowMap.erase(sv_it++);
-  }
+    }
 
-  while (svVolt_it != svVoltageMap.end())
-  {
+    while (svVolt_it != svVoltageMap.end())
+    {
     svVoltageMap.erase(svVolt_it++);
-  }
+    }
 
-  while (Opl_it != OpLimitMap.end())
-  {
+    while (Opl_it != OpLimitMap.end())
+    {
     OpLimitMap.erase(Opl_it++);
-  }
-
+    }
+    while (terminalList_it != terminalList.end())
+    {
+        terminalList.erase(terminalList_it++);
+    }
+    while (SynMachineMap_it != SynMachineMap.end())
+    {
+        SynMachineMap.erase(SynMachineMap_it++);
+    }
+    while (PiLineMap_it != PiLineMap.end())
+    {
+        PiLineMap.erase(PiLineMap_it++);
+    }
 }
 
 /**
@@ -111,6 +124,37 @@ void CIMObjectHandler::print_RTTI(BaseClass *Object) {
   std::cout << std::endl;
 }
 
+
+void CIMObjectHandler::remove_non_alnums(IdentifiedObjectPtr identified_obj){
+    auto name = identified_obj->name;
+    IEC61970::Base::Domain::String new_name;
+    for(auto el : name){
+        if( !(std::isalnum(el) || el == '_' || el == '-')){
+            char output[2];
+            sprintf((char*)(output),"%02X", el);
+            if(el == name[-1]){
+                new_name = new_name + '_'+ output[0] + output[1];
+            }else{
+                new_name = new_name + '_'+ output[0] + output[1] + '_';
+            }
+
+        }else{
+            new_name = new_name + el;
+        }
+    }
+    identified_obj->name = new_name;
+}
+
+/**
+ * Add mem address to object to achieve unique naming
+ */
+void CIMObjectHandler::add_mem_address(IdentifiedObjectPtr identified_obj){
+    std::stringstream ss;
+    ss << static_cast<const void*>(identified_obj);
+    std::string addrStr = ss.str();
+    identified_obj->name = identified_obj->name + '_' + addrStr;
+}
+
 /**
  * frist searching loop
  * to find I_max of ACLineSegment, SvPowerFlow of Terminal for PQLoad
@@ -121,27 +165,42 @@ bool CIMObjectHandler::pre_process() {
     std::list<TerminalPtr>::iterator terminal_it;
     std::list<ConductingPtr >::iterator conducting_it;
     for (BaseClass *Object : this->_CIMObjects) {
+
+        if(auto identified_obj = dynamic_cast<IdentifiedObjectPtr >(Object)){
+            this->remove_non_alnums(identified_obj);
+            if(this->configManager.make_unique_names == true)
+                this->add_mem_address(identified_obj);
+        }
         if (this->configManager.gs.apply_Neplan_fix == true) {
             ///find OperationLimitSet for AClineSegment, stored in hashmap
             if (auto *op_limitset = dynamic_cast<OpLimitSetPtr>(Object)) {
                 if (auto *ac_line = dynamic_cast<AcLinePtr>(op_limitset->Equipment)) {
                     OpLimitMap.insert({ac_line, op_limitset}); //hashmap
+                }else{
+                    for (BaseClass *Object1 : this->_CIMObjects) {
+                        if(auto *terminal = dynamic_cast<TerminalPtr> (Object1)){
+                            if(terminal->mRID == op_limitset->Terminal->mRID){
+                                if (auto *ac_line = dynamic_cast<AcLinePtr>(terminal->ConductingEquipment)) {
+                                    OpLimitMap.insert({ac_line, op_limitset});
+                                            break;
+                                }
+                            }
+
+                        }
+                    }
                 }
             }
         }
         if (this->configManager.svSettings.useSVforEnergyConsumer == true
             or this->configManager.svSettings.useSVforGeneratingUnit == true
             or this->configManager.svSettings.useSVforExternalNetworkInjection == true) {
-
             ///find terminal's svPowerFlow
             if (auto *sv_powerflow = dynamic_cast<SVPowerFlowPtr>(Object)) {
                 svPowerFlowMap.insert({sv_powerflow->Terminal, sv_powerflow}); //hashmap
             } else if (auto *sv_voltage = dynamic_cast<SVVoltagePtr>(Object)) {
                 svVoltageMap.insert({ (sv_voltage->TopologicalNode), sv_voltage});
             }
-
         }
-
         if (auto *generatingUnit = dynamic_cast<GeneratingUnitPtr > (Object)) {
             for (rotatingMachine_it = generatingUnit->RotatingMachine.begin();
                  rotatingMachine_it != generatingUnit->RotatingMachine.end();
@@ -155,26 +214,153 @@ bool CIMObjectHandler::pre_process() {
                     conducting_it ++){
                 baseVoltageMap.insert({*conducting_it, base_voltage});
             }
-
-
+        }
+        if(auto *syn_machine_dyn = dynamic_cast<SynMachineDynPtr> (Object)){
+            SynMachineMap.insert({syn_machine_dyn->SynchronousMachine, syn_machine_dyn});
         }
         if (this->configManager.ss.use_TPNodes == true) {
             if (auto *tp_node = dynamic_cast<TPNodePtr>(Object)) {
                 for (terminal_it = tp_node->Terminal.begin(); terminal_it != tp_node->Terminal.end(); ++terminal_it) {
                     terminalList[tp_node].push_back(*terminal_it);
+                    if(auto *ac_line = dynamic_cast<AcLinePtr>((*terminal_it)->ConductingEquipment )){
+                        PiLineMap[ac_line].push_back(*terminal_it);
+                    }
                 }
             }
         } else {
             if (auto *terminal = dynamic_cast<TerminalPtr>(Object)) {
                 terminalList[terminal->ConnectivityNode].push_back(terminal);
+                if(terminal->ConnectivityNode == nullptr)
+                    std::cerr<< "Terminal " << terminal << " has no connectivity node connected. You might use the wrong topological model."
+                             << " Verify that the use_TPNodes option is set correctly." << std::endl;
             }
         }
 
     }
+    if(configManager.ignore_unconnected_components == true){
+        remove_unconnected_components();
+    }
+
   return true;
 }
 
 
+/**
+ *  Function that removes all components that are not connected to a Slack,
+ *  or in case that there is no Slack only creates the larges component
+ */
+void  CIMObjectHandler::remove_unconnected_components() {
+    // TODO Code cleanup: create fct that returns tpNode of extNW
+    // TODO Create fct that for a given start node returns a list of connected tpNodes
+    // find external network tpNode
+    std::vector<BaseClass *> tpNodeList;
+    BaseClass *externalNW_TPNode = nullptr;
+    std::unordered_map<BaseClass *, std::list<BaseClass *> > obj2TPNodeMap;
+
+    // check if the connected property of terminals is initalized somewhere
+    bool connected_terminal_exists = false;
+    for (auto object_it = terminalList.begin(); object_it != terminalList.end(); object_it++) {
+        BaseClass *tp_node = (*object_it).first;
+        std::list<TerminalPtr> terminals = (*object_it).second;
+        tpNodeList.push_back(tp_node);
+        for (auto terminal : terminals) {
+            try{
+                bool connected = terminal->connected;
+                if (connected == true){
+                    obj2TPNodeMap[terminal->ConductingEquipment].push_back(tp_node);
+                    connected_terminal_exists = true;
+                }
+                else{
+                    std::cout << "the terminal is connected "<< terminal->name << std::endl;
+                }
+                if (auto *externalNetwork = dynamic_cast<ExNIPtr >((terminal)->ConductingEquipment)) {
+                    externalNW_TPNode = tp_node;
+                }
+            }catch(ReadingUninitializedField* e){
+                std::cout << "Uninitalized connected property for Terminal " << terminal->name << std::endl;
+                continue;
+            }
+
+        }
+    }
+    if( connected_terminal_exists == false){
+        std::cout << "There exists no terminal with the connected property set to true."
+                " This might be due to uninitalized values. \n"
+                << "We change the ignore_unconnected_components option to false." << std::endl;
+        this->configManager.ignore_unconnected_components = false;
+
+        return;
+    }
+
+    // helper fct that for a given start node returns all connected nodes (the component)
+    auto get_component = [this](std::unordered_map<BaseClass *, std::list<BaseClass *> > _obj2TPNodeMap,
+                       BaseClass *_start_node){
+        std::queue<BaseClass*> qq;
+        qq.push(_start_node);
+        BaseClass* currTPNode;
+        std::vector<BaseClass* > component;
+        while(!qq.empty()){
+            currTPNode = qq.front();
+            qq.pop();
+            if(std::find(component.begin(), component.end(), currTPNode)
+               != component.end())
+                continue;
+            else
+                component.push_back(currTPNode);
+            for(auto terminal : this->terminalList[currTPNode]){
+                try{
+                    bool connected = terminal->connected;
+
+                    if(connected == true){
+                        for(auto tp_node : _obj2TPNodeMap[terminal->ConductingEquipment]){
+                            if (tp_node != currTPNode)
+                                qq.push(tp_node);
+                        }
+                    }
+                }catch(ReadingUninitializedField* e) {
+                    std::cout << "Uninitalized connected property for Terminal " << terminal->name << std::endl;
+                    continue;
+                }
+            }
+        }
+        return component;
+    };
+
+    // if there is no slack create largest connected component
+    // otherwise create component connected to the slack
+    std::vector<BaseClass*> component;
+    if (externalNW_TPNode == nullptr){
+        std::cerr << "The ignore_unconnected_components option in the options.cfg is set to true but there is no Slack in the given network. "
+                "Creating the largest connected component." << std::endl;
+        while(tpNodeList.size() > 0 ){
+            auto curr_component = get_component(obj2TPNodeMap, *(tpNodeList.begin()));
+            if(curr_component.size() > component.size()){
+                std::cout << "found new largest compnent of size: " << curr_component.size()
+                          <<" before "<<component.size() <<std::endl;
+                component = curr_component;
+            }
+            for(auto el : curr_component){
+                auto pos = std::find(tpNodeList.begin(), tpNodeList.end(), el);
+                if(pos != tpNodeList.end())
+                    tpNodeList.erase(pos);
+            }
+        }
+    }else{
+        component = get_component(obj2TPNodeMap, externalNW_TPNode);
+    }
+
+
+    // remove tpNodes that are not connected to external network
+    std::vector<BaseClass * > removal_list;
+    for(auto el : terminalList){
+        if(std::find(component.begin(), component.end(), el.first) == component.end())
+            removal_list.push_back(el.first);
+    }
+    for(auto el : removal_list){
+        terminalList.erase(el);
+    }
+
+}
 
 
 /**
@@ -197,7 +383,7 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::string output_file_name, int v
 
   this->SystemSettingsHandler(filename, dict);
 
-  ///frist searching loop, to find I_max of ACLineSegment, SvPowerFlow of Terminal for PQLoad
+  ///first searching loop, to find I_max of ACLineSegment, SvPowerFlow of Terminal for PQLoad
   this->pre_process();
   std::unordered_map<BaseClass*, ModBaseClass*> copy;
 
@@ -211,6 +397,29 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::string output_file_name, int v
     BaseClass * Object = (*object_it).first;
     std::list<TerminalPtr> terminals = (*object_it).second;
 
+    if(this->configManager.ignore_unconnected_components == true){
+        // in case there are no connected terminals attached to the busbar don't create it
+        bool connected_terminal_exists = false;
+        for(auto terminal : terminals)
+            try {
+                bool connected = terminal->connected;
+                if(connected == true){
+                    connected_terminal_exists = true;
+                    break;
+                }
+            }catch(ReadingUninitializedField* e) {
+                std::cout << "Uninitalized connected property for Terminal " << terminal->name << std::endl;
+                continue;
+            }
+
+        if(connected_terminal_exists == false){
+            std::cout << "there exists no connected terminal!" << std::endl;
+            continue;
+        }
+
+
+    }
+
     if(this->configManager.ss.use_TPNodes == true){//useTP == true
         auto *tp_node = dynamic_cast<TPNodePtr>(Object) ;
             this->currBusbar = this->TopologicalNodeHandler(tp_node, dict);
@@ -220,18 +429,26 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::string output_file_name, int v
             }
             this->currNode = tp_node;
         }else{
-            auto *conn_node = dynamic_cast<ConnectivityNodePtr>(Object);
+            if(auto *conn_node = dynamic_cast<ConnectivityNodePtr>(Object)){
                 this->currBusbar = this->ConnectivityNodeHandler(conn_node, dict);
 
                 if (this->configManager.household_parameters.use_households == true) {
                     this->HouseholdComponetsHandler(conn_node, dict);
                 }
                 this->currNode = conn_node;
+            }else{
+                std::cerr<< "The object is not a connectivity node. You might use the wrong topological model."
+                         << " Verify that the use_TPNodes option is set correctly." << std::endl;
+
             }
+        }
       BusBar* busbar = this->currBusbar;
       BaseClass* tp_node = this->currNode;
+      // ignore terminals that are not connected
       for (TerminalPtr terminal : terminals ) {
-
+          if(this->configManager.ignore_unconnected_components == true)
+            if(terminal->connected == false)
+                continue;
           //ConnectivityNode no use for NEPLAN
           /*if (auto *connectivity_node = dynamic_cast<ConnectivityNodePtr>((*terminal_it)->ConnectivityNode)) {
 
@@ -261,10 +478,18 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::string output_file_name, int v
               connectionQueue.push(conn);
 
           } else if (auto *ac_line = dynamic_cast<AcLinePtr>((terminal)->ConductingEquipment)) {
+              if(configManager.ignore_unconnected_components == true){
+                  bool all_terminals_connected = true;
+                  for(auto piTerminal : PiLineMap[ac_line]){
+                      if(piTerminal->connected == false)
+                          all_terminals_connected = false;
+                  }
+                  if(all_terminals_connected != true)
+                      continue;
+              }
               if(_UsedObjects.find(ac_line) != _UsedObjects.end()) {
                   ((PiLine* )_UsedObjects[ac_line])->setBus(busbar);
               }else {
-
                   if (template_folder == "DistAIX_templates") {
                       /* Changed implementation to enable creation of lossy cables for DistAIX format.
                       * Instead of creating "connections", the name of the busbar is stored when visited for the first time.
@@ -277,7 +502,7 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::string output_file_name, int v
                       auto searchIt = piLineIdMap.find(ac_line);
                       if (searchIt != piLineIdMap.end()) {
 
-                          PiLine* pi_line = this->ACLineSegmentHandler(busbar, (terminal), ac_line, dict,
+                          PiLine* pi_line = this->ACLineSegmentHandler(tp_node, busbar, (terminal), ac_line, dict,
                                                                        piLineIdMap[ac_line], busbar->name());
                           _UsedObjects.insert({ac_line, pi_line});
                       } else {
@@ -287,7 +512,7 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::string output_file_name, int v
                       }
                   } else {
 
-                      PiLine* pi_line = this->ACLineSegmentHandler(busbar, (terminal), ac_line, dict);
+                      PiLine* pi_line = this->ACLineSegmentHandler(tp_node, busbar, (terminal), ac_line, dict);
                       _UsedObjects.insert({ac_line, pi_line});
                   }
               }
@@ -309,16 +534,29 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::string output_file_name, int v
               if(_UsedObjects.find(synchronous_machine) != _UsedObjects.end()) {
 
               }else {
+                  if(SynMachineMap.find(synchronous_machine) != SynMachineMap.end()){
+                      SynMachineDyn *synMachineDyn = this->synMachineDynHandler(tp_node, terminal,
+                                                                                SynMachineMap[synchronous_machine], dict);
+                      _UsedObjects.insert({synchronous_machine, synMachineDyn});
 
-                  if (this->configManager.household_parameters.use_households == false) {
-                      PVNode * pv_node = this->SynchronousMachineHandlerType0(tp_node, (terminal),
-                                                                              synchronous_machine, dict);
-                      _UsedObjects.insert({synchronous_machine,pv_node});
+                  }else{
+                      if (this->configManager.household_parameters.use_households == false) {
+                          PVNode * pv_node = this->SynchronousMachineHandlerType0(tp_node, (terminal),
+                                                                                  synchronous_machine, dict);
+                          _UsedObjects.insert({synchronous_machine,pv_node});
 
+                      }
                   }
-                  Connection conn(busbar, (PVNode* )_UsedObjects[synchronous_machine]);
-                  connectionQueue.push(conn);
               }
+              std::cout << "push to connection qq " << busbar->name() << " "
+                        << ((PVNode* )_UsedObjects[synchronous_machine])->name()<< std::endl;
+              Connection conn(busbar, (PVNode* )_UsedObjects[synchronous_machine]);
+              connectionQueue.push(conn);
+
+              // THIS IS WRONG SYNMACHINEDYNAMICS IS NO CONDUCTING EQUIPMENT
+              // TODO ADD THE CONNECTION CONSTRUCTOR
+              // Connection conn(busbar, (SynMachineDyn *) _UsedObjects[synchronous_machine]);
+              // connectionQueue.push(conn);
           }else if (auto *cim_breaker = dynamic_cast<BreakerPtr> ((terminal)->ConductingEquipment)){
               if(_UsedObjects.find(cim_breaker) != _UsedObjects.end()) {
                   Breaker* someBreaker = ((Breaker* )_UsedObjects[cim_breaker]);
@@ -540,7 +778,7 @@ BusBar* CIMObjectHandler::TopologicalNodeHandler(const TPNodePtr tp_node, ctempl
             try{
                 busbar->annotation.placement.transformation.rotation = (*diagram_it)->rotation.value;
             }catch(ReadingUninitializedField* e){
-                busbar->annotation.placement.transformation.rotation = 1;
+                busbar->annotation.placement.transformation.rotation = 0;
             std::cerr <<"Missing rotation for diagram obj"<< std::endl;
 
             }
@@ -679,8 +917,6 @@ bool CIMObjectHandler::HouseholdComponetsHandler(BaseClass* tp_node, ctemplate::
 
       }
 
-
-
       if (this->pqloadQueue.size()==1 && this->solarGeneratorQueue.size()==1) {
 
         Household* household = new Household(this->pqloadQueue.front(), this->solarGeneratorQueue.front());  //type2
@@ -804,10 +1040,15 @@ Slack* CIMObjectHandler::ExternalNIHandler(BaseClass* tp_node, const TerminalPtr
     slack->set_sequenceNumber(terminal->sequenceNumber);
   }catch(ReadingUninitializedField* e){
     slack->set_sequenceNumber(0);
-    std::cerr <<"Missing sequence number in terminal sequence number " << terminal << std::endl;
+    std::cerr <<"Missing sequence number in terminal sequence number " << terminal->name << std::endl;
   }
   slack->set_sequenceNumber(terminal->sequenceNumber);
-  slack->set_connected(terminal->connected);
+  try{
+      slack->set_connected(terminal->connected);
+  }catch(ReadingUninitializedField* e){
+      slack->set_connected(1);
+      std::cerr <<"Missing connected property for terminal  " << terminal->name << std::endl;
+  }
   slack->annotation.placement.visible = true;
   if (baseVoltageMap.find(externalNI) != baseVoltageMap.end()){
       slack->set_Vnom(baseVoltageMap[externalNI]->nominalVoltage.value);
@@ -870,7 +1111,7 @@ Slack* CIMObjectHandler::ExternalNIHandler(BaseClass* tp_node, const TerminalPtr
  * Convert to Pi_line in Modelica
  */
 PiLine *
-CIMObjectHandler::ACLineSegmentHandler(BusBar* busbar, const TerminalPtr terminal, const AcLinePtr ac_line,
+CIMObjectHandler::ACLineSegmentHandler(BaseClass* tp_node, BusBar* busbar, const TerminalPtr terminal, const AcLinePtr ac_line,
                                        ctemplate::TemplateDictionary *dict, std::string node1Name /* = "" */, std::string node2Name /* = "" */) {
 
   PiLine * piline = new PiLine();
@@ -926,6 +1167,35 @@ CIMObjectHandler::ACLineSegmentHandler(BusBar* busbar, const TerminalPtr termina
         std::cerr<<"Missing terminal seqNR" << std::endl;
     }
 
+    if(configManager.add_Vnom_to_PiLine == true && configManager.ss.use_TPNodes == true){
+        try{
+            double vnom = ((TPNodePtr)tp_node)->BaseVoltage->nominalVoltage.value;
+            if(this->configManager.us.enable) {
+                if (this->configManager.us.voltage_unit == "V") {
+                    piline->set_Vnom(vnom);
+                } else if (this->configManager.us.voltage_unit == "kV") {
+                    piline->set_Vnom(vnom * 1000);
+                } else if (this->configManager.us.voltage_unit == "mV") {
+                    piline->set_Vnom(vnom * 0.001);
+                } else if (this->configManager.us.voltage_unit == "MV") {
+                    piline->set_Vnom(vnom * 1000000);
+                }
+                // TODO SET DISPLAY UNIT
+            }else{
+                piline->set_Vnom(vnom);
+            }
+
+            //std::cout <<"Adding TPNode Voltage to PiLine: " << piline->name() << std::endl;
+        }catch(ReadingUninitializedField* e){
+            piline->set_Vnom(-1); // TODO find default value
+            std::cerr<<"No Base Voltage at corresponding TPNode for PiLine setting to default value " << piline->name() << std::endl;
+        }
+    }else{
+        piline->set_Vnom(-1);
+    }
+
+
+
   if (this->configManager.gs.create_distaix_format == true && !node1Name.empty() && !node2Name.empty()) {
     piline->set_node1(node1Name);
     piline->set_node2(node2Name);
@@ -935,8 +1205,13 @@ CIMObjectHandler::ACLineSegmentHandler(BusBar* busbar, const TerminalPtr termina
   if(OpLimitMap[ac_line]){
     for(OpLimitPtr op_limit: OpLimitMap[ac_line]->OperationalLimitValue){
       if(auto current_limit = dynamic_cast<CurrentLimitPtr>(op_limit)){
-        if(current_limit->name == "Normal")
+        //if(current_limit->name == "Normal")
           piline->set_Imax(current_limit->value.value);
+        /*else{
+            std::cout << "name of Current Limit is not Normal "<<piline->name() << std::endl;
+        }*/
+      }else{
+          std::cout << "missing current Limit for PiLine "<<piline->name() << std::endl;
       }
     }
   }
@@ -973,9 +1248,12 @@ CIMObjectHandler::ACLineSegmentHandler(BusBar* busbar, const TerminalPtr termina
       piline->annotation.placement.transformation.origin.y = 0;
       piline->annotation.placement.transformation.rotation = 0;
 
-          ctemplate::TemplateDictionary *piLine_dict = dict->AddIncludeDictionary("PILINE_DICT");
-          piLine_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/PiLine.tpl");
-          piline->set_template_values(piLine_dict);
+      ctemplate::TemplateDictionary *piLine_dict = dict->AddIncludeDictionary("PILINE_DICT");
+      piLine_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/PiLine.tpl");
+      if(configManager.add_Vnom_to_PiLine == true) {
+          piLine_dict->AddSectionDictionary("PILINE_VNOM");
+      }
+      piline->set_template_values(piLine_dict);
   }else {
       int counter = 0;
       float currX = 0;
@@ -985,7 +1263,12 @@ CIMObjectHandler::ACLineSegmentHandler(BusBar* busbar, const TerminalPtr termina
           currX += _t_points.xPosition;
           currY += _t_points.yPosition;
           counter += 1;
-          piline->annotation.placement.transformation.rotation = (*diagram_it)->rotation.value - 90;
+          try{
+              piline->annotation.placement.transformation.rotation = (*diagram_it)->rotation.value - 90;
+          }catch(ReadingUninitializedField* e){
+              piline->annotation.placement.transformation.rotation = 0;
+              std::cerr <<"Missing rotation for diagram object" << piline->name() << std::endl;
+          }
       }
       piline->annotation.placement.transformation.origin.x = currX/counter;
       piline->annotation.placement.transformation.origin.y = currY/counter;
@@ -993,6 +1276,9 @@ CIMObjectHandler::ACLineSegmentHandler(BusBar* busbar, const TerminalPtr termina
               ctemplate::TemplateDictionary *piLine_dict = dict->AddIncludeDictionary("PILINE_DICT");
               piLine_dict->SetFilename(
                       this->configManager.ts.directory_path + "resource/" + template_folder + "/PiLine.tpl");
+              if(configManager.add_Vnom_to_PiLine == true) {
+                  piLine_dict->AddSectionDictionary("PILINE_VNOM");
+              }
               piline->set_template_values(piLine_dict);
 
       }
@@ -1018,10 +1304,16 @@ Transformer* CIMObjectHandler::PowerTransformerHandler(BusBar* busbar, const Ter
     }
   }catch(ReadingUninitializedField* e){
     trafo->setBus1(busbar);
-    std::cerr <<"Missing sequence number in terminal sequence number " << terminal << std::endl;
+    std::cerr <<"Missing sequence number in terminal sequence number " << terminal->name << std::endl;
   }
 
-  trafo->set_connected(terminal->connected);
+  try{
+      trafo->set_connected(terminal->connected);
+  }catch(ReadingUninitializedField* e){
+    trafo->set_connected(1);
+    std::cerr <<"Missing connected property in terminal " << terminal->name << std::endl;
+  }
+
   trafo->annotation.placement.visible = true;
 
   std::list<PowerTransformerEndPtr>::iterator transformer_end_it;
@@ -1036,7 +1328,12 @@ Transformer* CIMObjectHandler::PowerTransformerHandler(BusBar* busbar, const Ter
       trafo->set_b((*transformer_end_it)->b.value);
 
       if((*transformer_end_it)->RatioTapChanger != nullptr){
-          trafo->set_tap_pos( ((*transformer_end_it)->RatioTapChanger->step - 1) * 1000);
+          if(configManager.tapStepPos == "original"){
+              trafo->set_tap_pos( (*transformer_end_it)->RatioTapChanger->step);
+          }else{
+              trafo->set_tap_pos( ((*transformer_end_it)->RatioTapChanger->step - 1) * 1000);
+          }
+
       }
 
       if(this->configManager.us.enable) {
@@ -1108,7 +1405,15 @@ Transformer* CIMObjectHandler::PowerTransformerHandler(BusBar* busbar, const Ter
           currX += _t_points.xPosition;
           currY += _t_points.yPosition;
           counter += 1;
-          trafo->annotation.placement.transformation.rotation = (*diagram_it)->rotation.value - 90;
+          try{
+              trafo->annotation.placement.transformation.rotation = (*diagram_it)->rotation.value - 90;
+          }catch(ReadingUninitializedField* e){
+              trafo->annotation.placement.transformation.rotation = 0;
+              std::cerr <<"Missing rotation for diagram obj" << trafo->name() << std::endl;
+
+          }
+
+
       }
       trafo->annotation.placement.transformation.origin.x = currX/counter;
       trafo->annotation.placement.transformation.origin.y = currY/counter;
@@ -1186,9 +1491,24 @@ PQLoad* CIMObjectHandler::EnergyConsumerHandler(BaseClass* tp_node, const Termin
 
     pqload->set_name(name_in_modelica(energy_consumer->name));
     if (baseVoltageMap.find(energy_consumer) != baseVoltageMap.end()){
-        pqload->set_Vnom(baseVoltageMap[energy_consumer]->nominalVoltage.value);
+        double vnom = baseVoltageMap[energy_consumer]->nominalVoltage.value;
+        if(this->configManager.us.enable) {
+            if (this->configManager.us.voltage_unit == "V") {
+                pqload->set_Vnom(vnom);
+            } else if (this->configManager.us.voltage_unit == "kV") {
+                pqload->set_Vnom(vnom * 1000);
+            } else if (this->configManager.us.voltage_unit == "mV") {
+                pqload->set_Vnom(vnom * 0.001);
+            } else if (this->configManager.us.voltage_unit == "MV") {
+                pqload->set_Vnom(vnom * 1000000);
+            }
+            // TODO SET DISPLAY UNIT
+        }else{
+            pqload->set_Vnom(vnom);
+        }
     }else{
-        pqload->set_Vnom(((TPNodePtr)tp_node)->BaseVoltage->nominalVoltage.value);
+        double vnom = (((TPNodePtr)tp_node)->BaseVoltage->nominalVoltage.value);
+        pqload->set_Vnom(vnom);
         std::cerr <<"No BaseVoltage for EnergyConsumer taking TPNode Voltage: " << std::endl;
     }
     if(this->configManager.us.enable){
@@ -1220,7 +1540,7 @@ PQLoad* CIMObjectHandler::EnergyConsumerHandler(BaseClass* tp_node, const Termin
         pqload->set_sequenceNumber(terminal->sequenceNumber);
     }catch(ReadingUninitializedField* e){
         pqload->set_sequenceNumber(0);
-        std::cerr <<"Missing sequence number in terminal sequence number " << terminal << std::endl;
+        std::cerr <<"Missing sequence number in terminal sequence number " << terminal->name << std::endl;
     }
     pqload->set_connected(terminal->connected);
     pqload->annotation.placement.visible = true;
@@ -1273,7 +1593,7 @@ PQLoad* CIMObjectHandler::EnergyConsumerHandler(BaseClass* tp_node, const Termin
             try{
                 pqload->annotation.placement.transformation.rotation = (*diagram_it)->rotation.value;
             }catch(ReadingUninitializedField* e){
-                pqload->annotation.placement.transformation.rotation = 1;
+                pqload->annotation.placement.transformation.rotation = 0;
                 std::cerr <<"Missing rotation for diagram obj of pq load"<< energy_consumer->name << std::endl;
             }
 
@@ -1473,9 +1793,14 @@ Breaker* CIMObjectHandler::BreakerHandler(BusBar* busbar, const TerminalPtr term
             currX += _t_points.xPosition;
             currY += _t_points.yPosition;
             counter += 1;
-            breaker->annotation.placement.transformation.rotation = (*diagram_it)->rotation.value;
-        }
 
+        }
+        try{
+            breaker->annotation.placement.transformation.rotation = (*cim_breaker->DiagramObjects.begin())->rotation.value;
+        }catch(ReadingUninitializedField* e){
+            breaker->annotation.placement.transformation.rotation = 0;
+            std::cerr <<"Missing rotation for diagram obj" << breaker->name()<< std::endl;
+        }
         breaker->annotation.placement.transformation.origin.x = currX /counter;
          breaker->annotation.placement.transformation.origin.y = currY /counter;
 
@@ -1488,6 +1813,150 @@ Breaker* CIMObjectHandler::BreakerHandler(BusBar* busbar, const TerminalPtr term
     return breaker;
 }
 
+
+/**
+ * ConductingEquipment of Terminal
+ * ConductingEquipment cast to SynchronousMachineDynamic
+ * Convert to synchMachineDynamic in Modelica
+ */
+
+SynMachineDyn * CIMObjectHandler::synMachineDynHandler(BaseClass* node, const TerminalPtr terminal,
+                                                       const SynMachineDynPtr syn_machine,
+                                                       ctemplate::TemplateDictionary* dict){
+
+    SynMachineDyn * synMachineDyn = new SynMachineDyn();
+    synMachineDyn->set_name(name_in_modelica(syn_machine->name));
+
+    try{
+        synMachineDyn->set_sequenceNumber(terminal->sequenceNumber);
+    }catch(ReadingUninitializedField* e){
+        synMachineDyn->set_sequenceNumber(0);
+        std::cerr <<"Missing sequence number in terminal sequence number " << terminal->name << std::endl;
+    }
+    try{
+        synMachineDyn->set_connected(terminal->connected);
+    }catch(ReadingUninitializedField* e){
+        synMachineDyn->set_connected(1);
+        std::cerr <<"Missing connected property in terminal " << terminal->name << std::endl;
+    }
+    synMachineDyn->annotation.placement.visible = true;
+
+    double v_unit_conversion=1;
+    double s_unit_conversion=1;
+        if(this->configManager.us.active_power_unit == "W"){
+                s_unit_conversion = 1;
+            } else if(this->configManager.us.active_power_unit == "kW"){
+                s_unit_conversion =  1000;
+            } else if(this->configManager.us.active_power_unit == "mW"){
+                s_unit_conversion =  0.001;
+            } else if(this->configManager.us.active_power_unit == "MW"){
+                s_unit_conversion =  1000000;
+            }
+        if(this->configManager.us.voltage_unit == "V"){
+                v_unit_conversion = 1;
+            } else if(this->configManager.us.voltage_unit == "kV"){
+                v_unit_conversion =  1000;
+            } else if(this->configManager.us.voltage_unit == "mV"){
+                v_unit_conversion =  0.001;
+            } else if(this->configManager.us.voltage_unit == "MV"){
+                v_unit_conversion =  1000000;
+            }
+
+    synMachineDyn->set_raPu((syn_machine)->statorResistance.value);
+    synMachineDyn->set_xdPU(syn_machine->xDirectSync.value);
+    synMachineDyn->set_xlPu(syn_machine->statorLeakageReactance.value);
+    synMachineDyn->set_xpdPu(syn_machine->xDirectTrans.value);
+    synMachineDyn->set_xppdPu(syn_machine->xDirectSubtrans.value);
+    synMachineDyn->set_xppqPu(syn_machine->xQuadSubtrans.value);
+    synMachineDyn->set_xpqPu(syn_machine->xQuadTrans.value);
+    synMachineDyn->set_xqPu(syn_machine->xQuadSync.value);
+    synMachineDyn->set_Tpd0(syn_machine->tpdo.value);
+    synMachineDyn->set_Tppd0(syn_machine->tppdo.value);
+    synMachineDyn->set_Tppq0(syn_machine->tppqo.value);
+    synMachineDyn->set_Tpq0(syn_machine->tpqo.value);
+    // TODO: change hard-coded unit conversion
+    synMachineDyn->set_SNom(syn_machine->SynchronousMachine->ratedS.value * s_unit_conversion);
+    synMachineDyn->set_VNom(syn_machine->SynchronousMachine->ratedU.value * v_unit_conversion);
+    synMachineDyn->set_inertia(syn_machine->inertia.value);
+
+    // TODO MBY NEW SVVOLTAGE/PWRFLOW OPTION
+    if(this->configManager.svSettings.useSVforGeneratingUnit == true ) {//&& svPowerFlowMap[terminal] && svVoltageMap[tp_node]){
+
+        
+        try {
+            // TODO CONVERSION TO RADIANS
+            // Junjie: No need, I updated conversion inside templates
+            synMachineDyn->set_UPhaseStart( svVoltageMap[node]->angle.value);
+        } catch (ReadingUninitializedField *e) {
+            std::cerr << "No SVVoltage at tp node for SynMachineDyn" << terminal->name << std::endl;
+        }
+        try {
+            synMachineDyn->set_UStart(svVoltageMap[node]->v.value * v_unit_conversion);
+        }
+        catch (ReadingUninitializedField *e)
+        {
+            std::cerr << "No SVVoltage at tp node for SynMachineDyn" << terminal->name << std::endl;
+        }
+
+        try {
+            synMachineDyn->set_QStart(svPowerFlowMap[terminal]->q.value * s_unit_conversion);
+        } catch (ReadingUninitializedField *e) {
+            std::cerr << "No SVPowerFlow at tp node for SynMachineDyn" << terminal->name << std::endl;
+        }
+        try {
+            synMachineDyn->set_PStart(svPowerFlowMap[terminal]->p.value * s_unit_conversion);
+        } catch (ReadingUninitializedField *e) {
+            std::cerr << "No SVPowerFlow at tp node for SynMachineDyn" << terminal->name << std::endl;
+        }
+
+    }
+    auto syn_machine_stat=syn_machine->SynchronousMachine;
+    if(syn_machine_stat->DiagramObjects.begin() == syn_machine_stat->DiagramObjects.end()){
+        std::cerr << "Missing Diagram Object for SynchronousMachine: " << syn_machine->name << " Default Position 0,0 \n";
+        synMachineDyn->annotation.placement.transformation.origin.x = 0;
+        synMachineDyn->annotation.placement.transformation.origin.y = 0;
+        synMachineDyn->annotation.placement.transformation.rotation = 0;
+
+        ctemplate::TemplateDictionary *synMachineDyn_dict = dict->AddIncludeDictionary("SynchronousMachine4Windings_DICT");
+        synMachineDyn_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/SynchronousMachine4Windings.tpl");
+        synMachineDyn->set_template_values(synMachineDyn_dict);
+    }else{
+        int counter = 0;
+        float currX = 0;
+        float currY = 0;
+        for (diagram_it = syn_machine_stat->DiagramObjects.begin();
+             diagram_it!= syn_machine_stat->DiagramObjects.end();
+             ++diagram_it) {            _t_points = this->calculate_average_position();
+            currX += _t_points.xPosition;
+            currY += _t_points.yPosition;
+            counter += 1;
+
+            try{
+                synMachineDyn->annotation.placement.transformation.rotation = (*diagram_it)->rotation.value;
+            }catch(ReadingUninitializedField* e){
+                synMachineDyn->annotation.placement.transformation.rotation = 0;
+                std::cerr <<"Missing rotation for diagram obj" << synMachineDyn->name()<< std::endl;
+
+            }
+        }
+
+        synMachineDyn->annotation.placement.transformation.origin.x = currX /counter;
+        synMachineDyn->annotation.placement.transformation.origin.y = currY /counter;
+
+
+        ctemplate::TemplateDictionary *synMachineDyn_dict = dict->AddIncludeDictionary("SynchronousMachine4Windings_DICT");
+        synMachineDyn_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/SynchronousMachine4Windings.tpl");
+        synMachineDyn->set_template_values(synMachineDyn_dict);
+
+    }
+
+    return synMachineDyn;
+
+
+
+}
+
+
 /**
  * ConductingEquipment of Terminal
  * ConductingEquipment cast to SynchronousMachine
@@ -1499,14 +1968,18 @@ PVNode * CIMObjectHandler::SynchronousMachineHandlerType0(BaseClass* tp_node, co
                                                                ctemplate::TemplateDictionary *dict) {
     PVNode* pv_node = new PVNode();
     pv_node->set_name(name_in_modelica(syn_machine->name));
-    std::cout <<syn_machine->name<< std::endl;
     try{
         pv_node->set_sequenceNumber(terminal->sequenceNumber);
     }catch(ReadingUninitializedField* e){
         pv_node->set_sequenceNumber(0);
-        std::cerr <<"Missing sequence number in terminal sequence number " << terminal << std::endl;
+        std::cerr <<"Missing sequence number in terminal sequence number " << terminal->name << std::endl;
     }
-    pv_node->set_connected(terminal->connected);
+    try{
+        pv_node->set_connected(terminal->connected);
+    }catch(ReadingUninitializedField* e){
+        pv_node->set_connected(1);
+        std::cerr <<"Missing connected property in terminal " << terminal->name << std::endl;
+    }
     pv_node->annotation.placement.visible = true;
 
     if(this->configManager.us.enable){
@@ -1630,12 +2103,18 @@ PVNode * CIMObjectHandler::SynchronousMachineHandlerType0(BaseClass* tp_node, co
             currX += _t_points.xPosition;
             currY += _t_points.yPosition;
             counter += 1;
-            pv_node->annotation.placement.transformation.rotation = (*diagram_it)->rotation.value;
+
+            try{
+                pv_node->annotation.placement.transformation.rotation = (*diagram_it)->rotation.value;
+            }catch(ReadingUninitializedField* e){
+                pv_node->annotation.placement.transformation.rotation = 0;
+                std::cerr <<"Missing rotation for diagram obj" << pv_node->name()<< std::endl;
+
+            }
         }
 
         pv_node->annotation.placement.transformation.origin.x = currX /counter;
         pv_node->annotation.placement.transformation.origin.y = currY /counter;
-
 
         ctemplate::TemplateDictionary *pv_node_dict = dict->AddIncludeDictionary("PVNODE_DICT");
         pv_node_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/PVNode.tpl");
@@ -1728,7 +2207,6 @@ bool CIMObjectHandler::ConnectionHandler(ctemplate::TemplateDictionary *dict) {
   while (!connectionQueue.empty()) {
     ctemplate::TemplateDictionary *connection_dict = dict->AddIncludeDictionary("CONNECTIONS_DICT");
     connection_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/Connections.tpl");
-
     if (connectionQueue.front().is_connected()) {
       connection_dict->AddSectionDictionary("CONNECTED_SECTION");
     } else {

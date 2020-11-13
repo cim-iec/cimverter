@@ -36,8 +36,52 @@ void ConfigManager::getAllSettings() {
   this->getHouseholdSettings();
   this->getSVSettings();
   this->getDefault_baseKV();
+  this->getTapChangerStep();
+  this->getMake_unique_names();
+  this->getIgnore_unconnected_components();
+  this->getAdd_Vnom_to_PiLine();
+
 }
 
+void ConfigManager::getTapChangerStep(){
+    try {
+        this->tapStepPos = this->cfg.lookup("tapStepPosition").c_str();
+        std::cout << "reading tapStepPosition!" << std::endl;
+    }catch (const SettingNotFoundException &nfex) {
+        std::cerr << "No tapStepPosition in configuration file." << std::endl;
+    }
+
+}
+
+void ConfigManager::getAdd_Vnom_to_PiLine(){
+    try {
+        this->add_Vnom_to_PiLine = this->cfg.lookup("add_Vnom_to_PiLine");
+        std::cout << "reading add_Vnom_to_PiLine!" << std::endl;
+    }catch (const SettingNotFoundException &nfex) {
+        std::cerr << "No add_Vnom_to_PiLine in configuration file." << std::endl;
+        this->add_Vnom_to_PiLine = false;
+    }
+}
+
+void ConfigManager::getIgnore_unconnected_components(){
+    try {
+        this->ignore_unconnected_components = this->cfg.lookup("ignore_unconnected_components");
+        std::cout << "reading ignore_unconnected_components!" << std::endl;
+    }catch (const SettingNotFoundException &nfex) {
+        std::cerr << "No ignore_unconnected_components in configuration file." << std::endl;
+    }
+
+}
+
+void ConfigManager::getMake_unique_names(){
+    try {
+        this->make_unique_names = this->cfg.lookup("make_unique_names");
+        std::cout << "reading make_unique_names!" << std::endl;
+    }catch (const SettingNotFoundException &nfex) {
+        std::cerr << "No make_unique_names in configuration file." << std::endl;
+        this->make_unique_names = false;
+    }
+}
 
 void ConfigManager::getDefault_baseKV() {
     try {

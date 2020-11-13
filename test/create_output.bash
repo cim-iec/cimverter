@@ -9,7 +9,7 @@ cd ../build/bin
 
 if [ $type == 'a' ]
     then
-    mv $currDir/xml/$target_directory/config.cfg config.cfg
+    cp $currDir/xml/$target_directory/config.cfg config.cfg
     ./CIMverter -a $currDir/xml/$target_directory/ -o $fileName
     mv $fileName.mo $currDir/outputs/$fileName.mo
 elif [ $type == 'f' ]

@@ -1,0 +1,65 @@
+{{#HEADER_FOOTER_SECTION}}model {{GRID_NAME}} {{/HEADER_FOOTER_SECTION}}
+
+{{!-----Global Grid Settings-------}}
+
+{{#SYSTEM_SETTINGS_SECTION}}
+
+  inner PowerGrids.Electrical.System systemPowerGrids(
+      initOpt = PowerGrids.Types.Choices.InitializationOption.globalSteadyStateFixedPowerFlow, 
+      referenceFrequency = PowerGrids.Types.Choices.ReferenceFrequency.fixedReferenceGenerator)
+  annotation(Placement(visible = {{VISIBLE}}, transformation(extent = {{TRANS_EXTENT_POINTS}}, rotation = {{ROTATION}})));
+
+{{/SYSTEM_SETTINGS_SECTION}}
+
+{{!----PowerGrids Components-------}}
+
+{{>BUSBAR_DICT}}
+
+{{>CONNECTIVITYNODE_DICT}}
+
+{{>SLACK_DICT}}
+
+{{>GENERICGENERATOR_DICT}}
+
+{{>WINDGENERATOR_DICT}}
+
+{{>SOLARGENERATOR_DICT}}
+
+{{>BREAKER_DICT}}
+
+{{>PVNODE_DICT}}
+
+{{>PILINE_DICT}}
+
+{{>RXLINE_DICT}}
+
+{{>TRANSFORMER_DICT}}
+
+{{>PQLOAD_DICT}}
+
+{{>PQLOAD_PROFILE_DICT}}
+
+{{>PQLOAD_NORM_PROFILE_DICT}}
+
+{{>ZLOAD_DICT}}
+
+{{>SynchronousMachine4Windings_DICT}}
+
+{{>BATTERY_TYPE0_DICT}}
+
+{{>BATTERY_TYPE1_DICT}}
+
+{{>HOUSEHOLD_TYPE1_DICT}}
+
+{{>HOUSEHOLD_TYPE2_DICT}}
+
+equation
+
+{{!----Connections-------}}
+
+{{>CONNECTIONS_DICT}}
+
+{{#HEADER_FOOTER_SECTION}}
+annotation(Diagram(coordinateSystem(extent = {{DIAGRAM_EXTENT_POINTS}})), Icon(coordinateSystem(extent = {{ICON_EXTENT_POINTS}})));  
+
+end {{GRID_NAME}}; {{/HEADER_FOOTER_SECTION}}

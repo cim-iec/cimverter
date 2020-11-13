@@ -83,7 +83,7 @@ int main(int argc, char *argv[]) {
     //const char* CIMVERTER_HOME = std::getenv("CIMVERTER_HOME");
     std::string output_file_name;// Arguments for the ObjectHandler
     std::string template_folder = "ModPowerSystems_templates";
-    std::cout << "template : "<< template_folder<< std::endl;
+
     static int verbose_flag = 0;
 
     long file_size;// File size
@@ -122,7 +122,7 @@ int main(int argc, char *argv[]) {
             std::vector<std::string> files;
             if (c == -1)
                 break;
-            std::regex mat(".*xml$");
+            std::regex match(".*xml$");
 
             switch (c)
             {
@@ -130,7 +130,7 @@ int main(int argc, char *argv[]) {
                 case 'f':
                     optind--;
                     for( ;optind < argc && *argv[optind] != '-'; optind++){
-                        if(!std::regex_match(argv[optind], mat) ){
+                        if(!std::regex_match(argv[optind], match) ){
                             std::cerr << "is not a .xml file" << ( argv[optind] ) << std::endl;
                         }else{
                             std::cout << "CIM-XML file is:" << ( argv[optind] ) << std::endl;
@@ -146,7 +146,7 @@ int main(int argc, char *argv[]) {
                 // Read folders with -a
                 case 'a':
                     if(!ends_with(optarg, "/")){
-                        char* dest;
+                        char dest[strlen(optarg)];
                         strcpy(dest, optarg);
                         files = search_folder(strcat(dest, "/"));
                     }
@@ -156,7 +156,7 @@ int main(int argc, char *argv[]) {
 
                     for (auto f : files)
                     {
-                        if(!std::regex_match(f, mat) ){
+                        if(!std::regex_match(f, match) ){
                             std::cout << "is not a .xml file" << ( f )<< " skipping" << std::endl;
                         }else{
                             std::cout << "CIM-XML file is:" << f << std::endl;
@@ -189,7 +189,7 @@ int main(int argc, char *argv[]) {
   {
         std::cout << "verbose activated \n";
   }
-
+    std::cout << "template : "<< template_folder<< std::endl;
 
   // Timer start
   std::chrono::time_point<std::chrono::high_resolution_clock> start, stop;

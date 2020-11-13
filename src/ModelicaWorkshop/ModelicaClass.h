@@ -15,3 +15,4 @@
 #include "ModPowerSystems/PhasorSinglePhase/Generations/SolarGenerator.h"
 #include "ModPowerSystems/PhasorSinglePhase/Households/Household.h"
 #include "ModPowerSystems/PhasorSinglePhase/Storage/Battery.h"
+#include "PowerGrids/SynchronousMachineDynamics.h"

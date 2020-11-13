@@ -27,6 +27,10 @@ typedef ModPowerSystems::PhasorSinglePhase::Generations::PVNode PVNode;
 typedef ModPowerSystems::PhasorSinglePhase::Generations::SolarGenerator SolarGenerator;
 typedef ModPowerSystems::PhasorSinglePhase::Storage::Battery Battery;
 typedef ModPowerSystems::PhasorSinglePhase::Households::Household Household;
+typedef PowerGrids::SynchronousMachineDynamics SynMachineDyn;
+
+
+
 
 namespace ModelicaWorkshop {
 
