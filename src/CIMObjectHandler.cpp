@@ -119,6 +119,10 @@ void CIMObjectHandler::print_RTTI(BaseClass *Object) {
 }
 
 
+/*
+ * Funtion that removes non alphabetic or numeric characters and replaces them by their hex value
+ * Terminal(1) will be converted to Terminal_xy_1_yx
+ */
 void CIMObjectHandler::remove_non_alnums(IdentifiedObjectPtr identified_obj){
     auto name = identified_obj->name;
     String new_name;
@@ -140,7 +144,7 @@ void CIMObjectHandler::remove_non_alnums(IdentifiedObjectPtr identified_obj){
 }
 
 /**
- * Add mem address to object to achieve unique naming
+ * Add mem address to object name to achieve unique naming
  */
 void CIMObjectHandler::add_mem_address(IdentifiedObjectPtr identified_obj){
     std::stringstream ss;
@@ -383,7 +387,8 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::string output_file_name, int v
 
 
     std::list<TerminalPtr>::iterator terminal_it;
-    ///main searching loopfor (BaseClass Object : this->terminalList) {
+    /// Each iteration takes one TopologicalNode creates a Busbar for it and creates and connects all objects
+    /// that are connected to the TopologicalNode to the Busbar
 
     for(auto object_it = terminalList.begin(); object_it!= terminalList.end(); object_it++) {
 
@@ -438,6 +443,8 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::string output_file_name, int v
         BusBar* busbar = this->currBusbar;
         BaseClass* tp_node = this->currNode;
         // ignore terminals that are not connected
+
+        // create all objects that are connected to the TopologicalNode and connect it to the BusBar
         for (TerminalPtr terminal : terminals ) {
             if(this->configManager.ignore_unconnected_components == true)
                 if(terminal->connected == false)
