@@ -3,9 +3,9 @@
 #define POWERGRIDS_SynchronousMachineDynamics
 #include "../ModBaseClass.h"
 
-using namespace ModelicaWorkshop;
+//using namespace ModelicaWorkshop;
 namespace PowerGrids {
-        class SynchronousMachineDynamics: public ModBaseClass {
+        class SynchronousMachineDynamics: public ModelicaWorkshop::ModBaseClass {
         public:
             SynchronousMachineDynamics();
             virtual ~SynchronousMachineDynamics();

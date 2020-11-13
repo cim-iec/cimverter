@@ -7,7 +7,7 @@ variables:
 stages:
   - prepare
   - test
-  - modelica
+  - checkmodel
 
 # build the docker img in which we want to test. normally we want a dockerfile with all dependencies which we just include
 docker-cimverter:
@@ -16,10 +16,8 @@ docker-cimverter:
     - docker build -t ${DOCKER_IMAGE_DEV}:${DOCKER_TAG_DEV} -f ./Docker/Dockerfile.cimverter .
     - docker images
   only: 
-    - rse
     - release
     - master
-    - powerfactory
   tags:
     - shell
 
@@ -31,11 +29,12 @@ docker-omc:
   tags:
     - shell
   only:
-    - rse
     - release
     - master
 # clone libcimpp in our projekt. compile and run the tests.
-test: 
+
+# Template
+.test: &test
   stage: test
   image: ${DOCKER_IMAGE_DEV}:${DOCKER_TAG_DEV}
   tags:
@@ -50,30 +49,39 @@ test:
     - git rev-parse HEAD
     - cd ..
     - mkdir -p build && cd build
-    - cmake .. -DUSE_CIM_VERSION:STRING=IEC61970_17v23_IEC61968_13v11
+    - cmake .. -DUSE_CIM_VERSION:STRING=${CIM_VERSION}
     - make -j8
-
   script:
     - cd ../test/
-    - ./testFiles.py
+    - ./testFiles.py ${CIM_VERSION}
     - ls -l
   artifacts:
     paths:
-      - test/outputs/
+      - test/outputs/${CIM_VERSION}
   only:
     - master 
     - release
-    - rse
-    - powerfactory
 
-checkmodel:
-  stage: modelica
+test-CGMES:
+  <<: *test
+  variables:
+    CIM_VERSION: CGMES_2.4.15_27JAN2020
+
+test-17v23:
+  <<: *test
+  variables:
+    CIM_VERSION: IEC61970_17v23_IEC61968_13v11
+
+
+.checkmodel: &checkmodel
+  stage: checkmodel
   image: ${DOCKER_IMAGE_OMC}:${DOCKER_TAG_OMC}
   dependencies:
-    - test
+    - test-17v23
+    - test-CGMES
   script:
     - pwd
-    - cp test/outputs/*.mo .
+    - cp test/outputs/${CIM_VERSION}/*.mo .
     - ls -l
     - git clone --recursive https://${GITLAB_USERMODPOWERSYSTEMS}:${GITLAB_TOKENMODPOWERSYSTEMS}@git.rwth-aachen.de/acs/core/simulation/modpowersystems
     - omc test/scripts/test_cigre.mos
@@ -81,7 +89,15 @@ checkmodel:
   tags:
     - docker
   only:
-    - rse
     - master
     - release
-    - powerfactory
+
+checkmodel-CGMES:
+  <<: *checkmodel
+  variables:
+    CIM_VERSION: CGMES_2.4.15_27JAN2020    
+
+checkmodel-17v23:
+  <<: *checkmodel
+  variables:
+    CIM_VERSION: IEC61970_17v23_IEC61968_13v11
