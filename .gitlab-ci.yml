@@ -16,11 +16,8 @@ docker-cimverter:
     - docker build -t ${DOCKER_IMAGE_DEV}:${DOCKER_TAG_DEV} -f ./Docker/Dockerfile.cimverter .
     - docker images
   only: 
-    - rse
     - release
     - master
-    - powerfactory
-    - cgmes
   tags:
     - shell
 
@@ -32,11 +29,8 @@ docker-omc:
   tags:
     - shell
   only:
-    - rse 
     - release
     - master
-    - powerfactory
-    - cgmes
 # clone libcimpp in our projekt. compile and run the tests.
 
 # Template
@@ -67,10 +61,6 @@ docker-omc:
   only:
     - master 
     - release
-    - rse
-    - powerfactory
-    - cgmes
-
 
 test-CGMES:
   <<: *test
@@ -99,11 +89,8 @@ test-17v23:
   tags:
     - docker
   only:
-    - rse
     - master
     - release
-    - powerfactory
-    - cgmes
 
 checkmodel-CGMES:
   <<: *checkmodel
