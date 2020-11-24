@@ -18,6 +18,7 @@ docker-cimverter:
   only: 
     - release
     - master
+    - merge_requests
   tags:
     - shell
 
@@ -31,6 +32,7 @@ docker-omc:
   only:
     - release
     - master
+    - merge_requests
 # clone libcimpp in our projekt. compile and run the tests.
 
 # Template
@@ -61,6 +63,7 @@ docker-omc:
   only:
     - master 
     - release
+    - merge_requests
 
 test-CGMES:
   <<: *test
@@ -91,6 +94,7 @@ test-17v23:
   only:
     - master
     - release
+    - merge_requests
 
 checkmodel-CGMES:
   <<: *checkmodel
