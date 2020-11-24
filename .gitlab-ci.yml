@@ -84,8 +84,8 @@ test-17v23:
     - cp test/outputs/${CIM_VERSION}/*.mo .
     - ls -l
     - git clone --recursive https://${GITLAB_USERMODPOWERSYSTEMS}:${GITLAB_TOKENMODPOWERSYSTEMS}@git.rwth-aachen.de/acs/core/simulation/modpowersystems
-    - omc test/scripts/test_cigre.mos
-    - omc test/scripts/test_slack.mos
+    - test/scripts/test_script.bash test/scripts/test_cigre.mos
+    - test/scripts/test_script.bash test/scripts/test_slack.mos    
   tags:
     - docker
   only:

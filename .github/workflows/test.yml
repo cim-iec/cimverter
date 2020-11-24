@@ -39,11 +39,82 @@ jobs:
 
 
 
-  checkmodel-17v23:
+  checkmodel-IEC61970_17v23_IEC61968_13v11:
     needs: test-IEC61970_17v23_IEC61968_13v11
     runs-on: ubuntu-latest
     env:
       USE_CIM_VERSION: IEC61970_17v23_IEC61968_13v11
+    steps:
+    - uses: actions/checkout@v2     
+    - name: Install libs
+      run: |
+          sudo apt-get install -y wget lsb-release gnupg
+          for deb in deb deb-src; do echo "$deb http://build.openmodelica.org/apt `lsb_release -cs` stable"; done | sudo tee /etc/apt/sources.list.d/openmodelica.list
+          wget -q http://build.openmodelica.org/apt/openmodelica.asc -O- | sudo apt-key add - 
+          sudo apt-get update
+          sudo apt-get install -y openmodelica
+          sudo apt-get update
+
+    - name: Install libs
+      run: |
+          sudo apt-get install omlib-modelica-3.2.3 omlib-complex-3.2.3 omlib-modelicaservices-3.2.3
+
+    - name: Install modpowersystems
+      shell: bash
+      run: git clone --recursive https://${{secrets.GITLAB_USERMODPOWERSYSTEMS}}:${{secrets.GITLAB_TOKENMODPOWERSYSTEMS}}@git.rwth-aachen.de/acs/core/simulation/modpowersystems #git clone --recursive https://github.com/ModPowerSystems/ModPowerSystems # 
+    - uses: actions/download-artifact@master
+      with:
+        name: test_results_${{env.USE_CIM_VERSION}}
+        path: ./
+
+    - name: Run tests
+      shell: bash
+      run: |
+          test/scripts/test_script.bash test/scripts/test_cigre.mos
+          test/scripts/test_script.bash test/scripts/test_slack.mos
+
+
+
+  test-CGMES_2-4-15_27JAN2020:
+    runs-on: ubuntu-latest
+    env:
+      USE_CIM_VERSION: CGMES_2.4.15_27JAN2020
+    steps:
+    - uses: actions/checkout@v2    
+    - name: Install libs
+      run: sudo apt-get install -y git cmake clang build-essential g++ python-dev autotools-dev libicu-dev build-essential libbz2-dev libboost-all-dev libctemplate-dev libconfig++-dev doxygen libxml2 libxml2-dev
+
+    - name: Checkout submodules
+      run: git submodule update --init --recursive
+  
+    - name: Create Build Environment
+      run: cmake -E make_directory ${{runner.workspace}}/cimverter/build
+      
+    - name: Configure CMake and compile
+      shell: bash
+      working-directory: ${{runner.workspace}}/cimverter/build
+      run: |
+          cd ${{runner.workspace}}/cimverter/build
+          cmake .. -DUSE_CIM_VERSION=$USE_CIM_VERSION
+          make -j8
+
+    - name: Run tests
+      shell: bash
+      working-directory: ${{runner.workspace}}/cimverter/test
+      run: |
+          ./testFiles.py $USE_CIM_VERSION
+    - uses: actions/upload-artifact@master
+      with:
+        name: test_results_${{env.USE_CIM_VERSION}}
+        path: ${{runner.workspace}}/cimverter/test/outputs/${{env.USE_CIM_VERSION}}
+
+
+
+  checkmodel-CGMES_2-4-15_27JAN2020:
+    needs: test-CGMES_2-4-15_27JAN2020
+    runs-on: ubuntu-latest
+    env:
+      USE_CIM_VERSION: CGMES_2.4.15_27JAN2020
     steps:
     - uses: actions/checkout@v2     
     - name: Install libs
