@@ -10,6 +10,7 @@ RUN wget -q http://build.openmodelica.org/apt/openmodelica.asc -O- | apt-key add
 # Install openmodelica
 RUN apt-get update
 RUN apt-get install -y openmodelica
+RUN apt-get install omlib-modelica-3.2.3 omlib-complex-3.2.3 omlib-modelicaservices-3.2.3
 
 # Install git
 RUN apt-get install -y git
