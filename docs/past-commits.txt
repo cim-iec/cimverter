@@ -1,3 +1,57 @@
 I, Sonja Happ hereby sign-off-by all of my past commits to this repo subject to the Developer Certificate of Origin (DCO), Version 1.1. In the past I have used emails: sonja.happ@eonerc.rwth-aachen.de
 
 11810904b4337f4e0c8a77decea71837cff289c5 test
+
+I, Felix Wege hereby sign-off-by all of my past commits to this repo subject to the Developer Certificate of Origin (DCO), Version 1.1. In the past I have used emails: felix.wege@rwth-aachen.de
+
+9c22bf62e37fe3ae500abf017abb5ed70ba9aa52 Added readme
+c5c39665b839e6af5ecbd61f0ee30b471ff6feba Nodes now have additional parameter indicating corresponding transformer
+5c65868a7afc4e7b609dac68c92e6cca372776d9 Changed location of default subtpes file + template changes
+40f38b57a504082ea8022fa0ee8b3c4b01b76e77 Added structure of default_parameters.csv into comments
+52ad70245d6e2454114d0c35fc7777243c58305b Debug message only shown in debug mode
+8745c60899aefb630ecf939a18479efe297f18d1 Comments
+453a83891351e8ccb9f5390a43bbe7a4453f0acf Bugfix
+35753c0667ef3e05d9a9ba2274344c9f2bc21623 Break from loop when component found during ordering --> reduces average runtime
+843e1e56af6cba5ef1c2ea5474db3c2e970434d2 Reworked ordering of components before id conversion
+65bde44135a2e0b4dc9a972dae255ad9c1fb2af8 Started new ordering to achieve correct ids
+e658623f50319fc20d0002509e089617f79ac43c Comments + Cosmetics
+59b93197c6c929a3a64aea8121ff44e9104dde94 Added default parameter replacement for lossy cables
+f67c5024c2858b8e910711256eeadc913252c258 Bugfix due to new template folder name
+b58bb4606204d3f9038cb465518cd8bc212d4ee3 More cosmetics
+40daa32645ecb0d41b5b766f623b491db096a4a8 Cosmetics
+c5f8a5c0038fd9e6ffad08f1cf60c2e03cd94f4f Added parameter replacement in postprocessing
+f9930ff78467585f1c578da26be9537643d1fc07 Template fix
+4a5ab63641a25e8fe0dedea9bc760f63668c1d47 Cables are now sorted before writing into csv file
+da8faeb535fc7455939fdc11443aaae2124101f7 Removed unused templates
+a0b6f76c2e6e17dc67d3c415407cc279179ba6c7 Avoid additional processing of lossy cables for non-distaix templates
+6081a1ae9c6a7de77d5804e86111c90550d4d9df Changed type of map key for lossy cables
+f1253f30a11211e218a01aff586824c41ef949c9 Only one public function now
+2c3b4f7d74e9e962bf9b619b64754b2c6a5454a1 Finished ID conversion in DistaixPostprocessor
+9f1b9fac5e34516af0f54c9f1fd364750792dc8b Migrated parts of postprocessing from python scripts into c++ code
+fd480f0ce4c4361db2826e2128d885c66708d5b4 Removed config flag for distaix --> now realized over chosen template
+0aedfbf78a8e4e04753a66c13ca5fbc00cb931a4 Remworked ObjectHandler to match new template structure
+e8b9f7fc0859349f00771351dda12c9b0edc3d52 Make now adds distaix templates to resource
+b9c1b3fdaf8ddf5888ce52dd6ba4d35724b2812a Conflict cleanup
+0021e9e62490f07008970d4d2526c1b0c5e28adc Commenting + whitespace removement
+54aef808fc05679696aa623cb91dc2eecc029e86 Changed default parameter naming
+4d5ec72090a0997abfa05f35bf237323a907a8ee Added replacement of default parameters to postprocessing
+f3c221eebd8f2aa6111c850fb4e88392b0cfea77 Changed naming of private functions
+566910c825150b42f664cf9f0f68ad76ed0bd35f Structural changes of postprocessing
+85f4e221685d6b259fa7b1ab130b2a46ae8c1203 Realized id conversion in postprocessing script
+c02e98d5f2f36d405759d93760ce2beb393c41dd Added first version of postprocessing script
+dde16ff0188e623e4c8a3f20dc27405eebfe39b4 Removed additional debug messages
+6569aef797f2879df95ea9873f557b2d12a7179e Removed debug output from template
+541b7b9477ae46a0674485bf3a0c13b2780e344d Changed name and structure of main template
+986f198360c16a3f0299920237f44dc9d5a07f18 Checks if distaix format is set in config before replacing arguments for lossy cables
+746f95dbea18bcfc5c02e62ae271edac7de2a3c8 Added config parameter to enable distaix format creation
+8a6214f54b38a4522219c94ee690ff229ad66818 Added short node ids for lossless connections
+ff9b95dd126b650fb3410ea70f36dd38d05808a4 Changed variable naming for lossy lines
+3a9ac5403bdcf654cb72fa07f6281dbdff67d228 Reworked processing of pi_lines for distaix format represenation
+dba712d71851aa6f8851af67f9a5582af5aac082 Added SolarGenerator and WindGenerator templates
+8aff20b31ebaf7d2efacebee86a5aa9009d7364d Reworked PiLine template
+d3ab8a6884ec438698597768bc4d0772ddcb448e Implemented creation of lossy cables
+9c2ce714973aad0bf7c0b90673f52cc12848d771 Started development of connection parsing
+722583f5e8d2e8920976b7eb59010f1f7e06dd6c Changed implementation of Snom calculation
+a2f80d0740dc37b0df9dbf0ddc7b2ce345ccdc5f Added Snom to PQLoad dictionary
+09264d4e2fea5b658a4e7c5d9a09f72898352bc5 Modified distaix templates
+b4f763a02c35a3c8033061525cd13fcfe866c684 Added new folders for distaix templates and samples
