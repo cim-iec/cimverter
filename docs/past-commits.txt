@@ -1,3 +1,49 @@
+I, Lukas Razik hereby sign-off-by all of my past commits to this repo subject to the Developer Certificate of Origin (DCO), Version 1.1. In the past I have used emails: lrazik@eonerc.rwth-aachen.de
+
+a95bc3031450192e6870089020318bf020d080bf Updated .gitmodules .
+352beb0aa93e04e587a6169f162d79abd69f082e Added CIGRE_MV_Rudion_With_LoadFlow_Results to samples.
+79a35e4f05a851b8493fc6f8e9e314df5b1fa2e0 Little doc correction.
+4c8b210395dbfd965f75da5d6154b3529267acf8 Changes on docs and submodules needed for GitHub.
+c610abf7315c3bf9a545ffa425973deb2e1929a5 Revert "add evaluation subfolder and first models and results for basic grids"
+This reverts commit a630f5f0aff450563a160a7c0288e856d751ec33.
+57abb20abcd40f728c3f4bb3e385582780e69bba Revert "update evaluation script for results of basic grids"
+This reverts commit e190505035ae345f9eced309eb594ab6a705ce68.
+68f9b0eb6caa047233438655a60fcb2c1d182b32 Refactoring: CIMParser -> libcimpp
+a4883bdcadb298e00b19401908f54f99552d9f0a Changed multipliers in default donfig to ENTSO-E (kV, A, MW, Mvar).
+7f5b1b0faf52254c9fa55b86e55a51f39edfe3c6 Debug of URr and UKr computations in PowerTransformerHandler().
+4f0a929394379de52e94a7ac112fed3c5aa1b32a Workaround for += issue on Float variables.
+bf1fca2b5324944b76c530c87058199349ac9015 Update README.md
+c1866922a185e940f7108dd78b24b4dc50b3f405 Update README.md
+14971b9da952198249cc1e5b56f6d33c9b6144de Update README.md
+d3d044f2e492e689de7844dec61130d0f87f2e24 Update README.md
+0a39e3c5c1979e96aa8a8b7de099e8a9d5b1f617 Update README.md
+322b70f184295adbde6a369b1de5451465b9043b Update README.md
+b2c5993fcc8c79bf06e50672ac5ac3f3c0d5496d Update README.md
+1eb21b1524b4b38f74b836fd2a19286bf2e744f4 Update README.md
+2918727497cc9e650f5cce3b0f7e218256dc7170 Update README.md
+f9349d2ba8f73ae12d18f80abc532d0a5e13c58b Update README.md
+677e2019fbbda7c54efc21a63fbce39e57d7cb7f Update README.md
+e5d8d518e116b7bf43ee18262168209f0fba6b21 Update README.md
+1dc85400d9a4b781f4fe8007b3c5429c8bf0ac7c Update README.md
+67ac9eaefac675415bb25cc2a05e6a015fd32daf Update README.md
+af837181d6e3ee6514f021b6e44e8b24854ad4cb Update README.md
+650acb4213c0197b4e4f0f4bbd20a255ee516c68 Update README.md
+288219873ecde4a80cf52b85503afc85e3e1db85 Update README.md
+3ce696c7b52e0736bfb0ad6e0e43e0a2a57b4445 Update .gitlab-ci.yml
+d43cd33bf64f65c30b8488cd8c1ac3f163bda08f Update .gitlab-ci.yml
+58f1be86247a62b5c8bfc607e8497121e1cf9fbc Update Connection.cpp
+a35375e0561937c84c95de5b27d1ed63eb4f1207 Update CIMObjectHandler.cpp
+69931c6cf1e44c9f371920fdfda6a51894a492a9 Update README.md
+fb1b5a09f0bb4ee08c03a68cd7d64e3e1110c09f Update .gitmodules
+0ebb1afce77a4eb65e3269438a8d9b9ee2519775 Add license
+6dc6cc49e00354ab60032ce6c582c61413031145 Update README.md
+6fcdde94bed92d2ecea3cb9a0535c8f7c4f47467 Update README.md
+5396117a4bc26422af803a5fca5f7607f6131966 Update README.md
+3b2ad69df1de3c039cbe98ddddf4cd1eddf0cdf8 Update README.md
+07a6c39b642e1c6f586ae0844ea702448edd5f0c Update README.md
+fa624afce382a6fa8e4b73f70bb0cb36382c3dff Update README.md
+501d46ce37c4c30027667439e71fbe859aee0b66 Update TODO.md
+
 I, Sonja Happ hereby sign-off-by all of my past commits to this repo subject to the Developer Certificate of Origin (DCO), Version 1.1. In the past I have used emails: sonja.happ@eonerc.rwth-aachen.de
 
 11810904b4337f4e0c8a77decea71837cff289c5 test
