@@ -31,6 +31,7 @@ void static print_separator() {
 */
 class CIMObjectHandler {
 
+
 public:
     CIMObjectHandler() = delete;
     CIMObjectHandler(std::vector<BaseClass*>&& CIMObjects);
@@ -70,8 +71,10 @@ public:
     void print_RTTI(BaseClass *Object);  /// Print component information
     static std::string name_in_modelica(std::string orginal_name);/// Modify illega modelica name
     static DiagramObjectPoint convert_coordinate(double x, double y, const ConfigManager & configManager);/// Tranfer the modelica components' coordinate
-
+    int get_exit_code(){return exit_code;};
+    void set_exit_code(int i){this->exit_code = i;};
 private:
+    int exit_code = 0;
     std::string template_folder;
     BusBar* currBusbar;
     BaseClass* currNode;

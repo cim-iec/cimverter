@@ -6,7 +6,6 @@
 #include <getopt.h>
 #include <unistd.h>
 
-
 /**
  * Get File size
  * @param filename
@@ -221,4 +220,5 @@ int main(int argc, char *argv[]) {
 
   std::cout << 1000*file_size/secs << "KByte/s" << std::endl;
   print_separator();
+  return ObjectHandler.get_exit_code();
 }

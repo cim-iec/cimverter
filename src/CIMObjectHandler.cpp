@@ -778,6 +778,7 @@ BusBar* CIMObjectHandler::TopologicalNodeHandler(const TPNodePtr tp_node, ctempl
             }catch(ReadingUninitializedField* e){
                 busbar->annotation.placement.transformation.rotation = 0;
                 std::cerr <<"Missing rotation for diagram obj "<< busbar->name()<< std::endl;
+                this->set_exit_code(1);
 
             }
 
@@ -1038,6 +1039,7 @@ ModSlack* CIMObjectHandler::ExternalNIHandler(BaseClass* tp_node, const Terminal
         slack->set_sequenceNumber(terminal->sequenceNumber);
     }catch(ReadingUninitializedField* e){
         slack->set_sequenceNumber(0);
+        this->set_exit_code(1);
         std::cerr <<"Missing sequence number in terminal sequence number " << terminal->name << std::endl;
     }
     slack->set_sequenceNumber(terminal->sequenceNumber);
@@ -1129,6 +1131,7 @@ CIMObjectHandler::ACLineSegmentHandler(BaseClass* tp_node, BusBar* busbar, const
         piline->set_r(ac_line->r.value/length);
     }catch(ReadingUninitializedField* e){
         piline->set_length(length);
+        this->set_exit_code(1);
         std::cerr<<"Missing r value " << ac_line->name<< std::endl;
     }
 
@@ -1137,6 +1140,7 @@ CIMObjectHandler::ACLineSegmentHandler(BaseClass* tp_node, BusBar* busbar, const
         piline->set_x(ac_line->x.value/length);
     }catch(ReadingUninitializedField* e){
         piline->set_x(length);
+        this->set_exit_code(1);
         std::cerr<<"Missing x value "<<ac_line->name << std::endl;
     }
 
@@ -1144,6 +1148,7 @@ CIMObjectHandler::ACLineSegmentHandler(BaseClass* tp_node, BusBar* busbar, const
         piline->set_b(ac_line->bch.value/length);
     }catch(ReadingUninitializedField* e){
         piline->set_b(length);
+        this->set_exit_code(1);
         std::cerr<<"Missing bch value"<<ac_line->name  << std::endl;
     }
 
@@ -1152,6 +1157,7 @@ CIMObjectHandler::ACLineSegmentHandler(BaseClass* tp_node, BusBar* busbar, const
         piline->set_g(ac_line->gch.value);///ac_line->length.value);
     }catch(ReadingUninitializedField* e){
         piline->set_g(0);
+        this->set_exit_code(1);
         std::cerr<<"Missing gch value"<<ac_line->name  << std::endl;
     }
     try{
@@ -1162,6 +1168,7 @@ CIMObjectHandler::ACLineSegmentHandler(BaseClass* tp_node, BusBar* busbar, const
         }
     }catch(ReadingUninitializedField* e){
         piline->setBus1(busbar);
+        this->set_exit_code(1);
         std::cerr<<"Missing terminal seqNR" << terminal->name<< std::endl;
     }
 
@@ -1186,6 +1193,7 @@ CIMObjectHandler::ACLineSegmentHandler(BaseClass* tp_node, BusBar* busbar, const
             //std::cout <<"Adding TPNode Voltage to PiLine: " << piline->name() << std::endl;
         }catch(ReadingUninitializedField* e){
             piline->set_Vnom(-1); // TODO find default value
+            this->set_exit_code(1);
             std::cerr<<"No Base Voltage at corresponding TPNode for PiLine " << piline->name() << std::endl;
         }
     }else{
@@ -1230,6 +1238,7 @@ CIMObjectHandler::ACLineSegmentHandler(BaseClass* tp_node, BusBar* busbar, const
         piline->set_connected(terminal->connected);
     }catch(ReadingUninitializedField* e){
         piline->set_connected(1);
+        this->set_exit_code(1);
         std::cerr<<"Missing connection info in terminal " << terminal << std::endl;
     }
     piline->annotation.placement.visible = true;
@@ -1265,6 +1274,7 @@ CIMObjectHandler::ACLineSegmentHandler(BaseClass* tp_node, BusBar* busbar, const
                 piline->annotation.placement.transformation.rotation = (*diagram_it)->rotation.value - 90;
             }catch(ReadingUninitializedField* e){
                 piline->annotation.placement.transformation.rotation = 0;
+                this->set_exit_code(1);
                 std::cerr <<"Missing rotation for diagram object " << piline->name() << std::endl;
             }
         }
@@ -1302,6 +1312,7 @@ ModTransformer* CIMObjectHandler::PowerTransformerHandler(BusBar* busbar, const 
         }
     }catch(ReadingUninitializedField* e){
         trafo->setBus1(busbar);
+        this->set_exit_code(1);
         std::cerr <<"Missing sequence number in terminal sequence number " << terminal->name << std::endl;
     }
 
@@ -1309,6 +1320,7 @@ ModTransformer* CIMObjectHandler::PowerTransformerHandler(BusBar* busbar, const 
         trafo->set_connected(terminal->connected);
     }catch(ReadingUninitializedField* e){
         trafo->set_connected(1);
+        this->set_exit_code(1);
         std::cerr <<"Missing connected property in terminal " << terminal->name << std::endl;
     }
 
@@ -1397,6 +1409,7 @@ ModTransformer* CIMObjectHandler::PowerTransformerHandler(BusBar* busbar, const 
                 trafo->annotation.placement.transformation.rotation = (*diagram_it)->rotation.value - 90;
             }catch(ReadingUninitializedField* e){
                 trafo->annotation.placement.transformation.rotation = 0;
+                this->set_exit_code(1);
                 std::cerr <<"Missing rotation for diagram obj" << trafo->name() << std::endl;
 
             }
@@ -1444,12 +1457,14 @@ ModPQLoad* CIMObjectHandler::EnergyConsumerHandler(BaseClass* tp_node, const Ter
             pqload->set_Pnom(svPowerFlowMap[terminal]->p.value);
         }catch(ReadingUninitializedField* e1){
             std::cerr <<"Missing entry in PowerFlow Map for terminal: " << terminal->name << std::endl;
+            this->set_exit_code(1);
             pqload->set_Pnom(1);
         }
         try{
             pqload->set_Qnom(svPowerFlowMap[terminal]->q.value);
         }catch(ReadingUninitializedField* e1){
             std::cerr <<"Missing entry in PowerFlow Map for terminal: " << terminal->name << std::endl;
+            this->set_exit_code(1);
             pqload->set_Qnom(1);
         }
 
@@ -1461,6 +1476,7 @@ ModPQLoad* CIMObjectHandler::EnergyConsumerHandler(BaseClass* tp_node, const Ter
                 pqload->set_Pnom(energy_consumer->p.value);
             }catch(ReadingUninitializedField* e1){
                 std::cerr <<"Reading unititalized Pnom for PQLoad: " << std::endl;
+                this->set_exit_code(1);
                 pqload->set_Pnom(1);
             }
         }
@@ -1472,6 +1488,7 @@ ModPQLoad* CIMObjectHandler::EnergyConsumerHandler(BaseClass* tp_node, const Ter
                 pqload->set_Qnom(energy_consumer->q.value);
             }catch(ReadingUninitializedField* e1){
                 std::cerr <<"Reading unititalized Qnom for PQLoad: " << std::endl;
+                this->set_exit_code(1);
                 pqload->set_Qnom(1);
             }
         }
@@ -1497,7 +1514,7 @@ ModPQLoad* CIMObjectHandler::EnergyConsumerHandler(BaseClass* tp_node, const Ter
     }else{
         double vnom = (((TPNodePtr)tp_node)->BaseVoltage->nominalVoltage.value);
         pqload->set_Vnom(vnom);
-        std::cerr <<"No BaseVoltage for EnergyConsumer taking TPNode Voltage: " << std::endl;
+        std::cout <<"No BaseVoltage for EnergyConsumer taking TPNode Voltage: " << std::endl;
     }
     if(this->configManager.us.enable){
         FIX_NEPLAN_VOLTAGE(pqload);
@@ -1528,12 +1545,14 @@ ModPQLoad* CIMObjectHandler::EnergyConsumerHandler(BaseClass* tp_node, const Ter
         pqload->set_sequenceNumber(terminal->sequenceNumber);
     }catch(ReadingUninitializedField* e){
         pqload->set_sequenceNumber(0);
+        this->set_exit_code(1);
         std::cerr <<"Missing sequence number in terminal sequence number " << terminal->name << std::endl;
     }
     try{
         pqload->set_connected(terminal->connected);
     }catch(ReadingUninitializedField* e){
         pqload->set_connected(0);
+        this->set_exit_code(1);
         std::cerr <<"Missing connection info in terminal sequence number " << terminal->name << std::endl;
     }
     pqload->annotation.placement.visible = true;
@@ -1587,6 +1606,7 @@ ModPQLoad* CIMObjectHandler::EnergyConsumerHandler(BaseClass* tp_node, const Ter
                 pqload->annotation.placement.transformation.rotation = (*diagram_it)->rotation.value;
             }catch(ReadingUninitializedField* e){
                 pqload->annotation.placement.transformation.rotation = 0;
+                this->set_exit_code(1);
                 std::cerr <<"Missing rotation for diagram obj of pq load"<< energy_consumer->name << std::endl;
             }
 
@@ -1638,6 +1658,7 @@ ModSolarGenerator* CIMObjectHandler::SynchronousMachineHandlerType2(const Termin
         solar_generator->set_sequenceNumber(terminal->sequenceNumber);
     }catch(ReadingUninitializedField* e){
         solar_generator->set_sequenceNumber(0);
+        this->set_exit_code(1);
         std::cerr <<"Missing sequence number in terminal sequence number " << terminal << std::endl;
     }
 
@@ -1754,6 +1775,7 @@ ModBreaker* CIMObjectHandler::BreakerHandler(BusBar* busbar, const TerminalPtr t
         breaker->set_connected(terminal->connected);
     }catch(ReadingUninitializedField* e){
         breaker->set_connected(0);
+        this->set_exit_code(1);
         std::cerr <<"Missing connected state in terminal sequence number " << terminal << std::endl;
     }
     try{
@@ -1764,6 +1786,7 @@ ModBreaker* CIMObjectHandler::BreakerHandler(BusBar* busbar, const TerminalPtr t
         }
     }catch(ReadingUninitializedField* e){
         breaker->setBus1(busbar);
+        this->set_exit_code(1);
         std::cerr <<"Missing sequence number in terminal sequence number " << terminal << std::endl;
     }
 
@@ -1792,6 +1815,7 @@ ModBreaker* CIMObjectHandler::BreakerHandler(BusBar* busbar, const TerminalPtr t
             breaker->annotation.placement.transformation.rotation = (*cim_breaker->DiagramObjects.begin())->rotation.value;
         }catch(ReadingUninitializedField* e){
             breaker->annotation.placement.transformation.rotation = 0;
+            this->set_exit_code(1);
             std::cerr <<"Missing rotation for diagram obj" << breaker->name()<< std::endl;
         }
         breaker->annotation.placement.transformation.origin.x = currX /counter;
@@ -1824,12 +1848,14 @@ SynMachineDyn * CIMObjectHandler::synMachineDynHandler(BaseClass* node, const Te
         synMachineDyn->set_sequenceNumber(terminal->sequenceNumber);
     }catch(ReadingUninitializedField* e){
         synMachineDyn->set_sequenceNumber(0);
+        this->set_exit_code(1);
         std::cerr <<"Missing sequence number in terminal sequence number " << terminal->name << std::endl;
     }
     try{
         synMachineDyn->set_connected(terminal->connected);
     }catch(ReadingUninitializedField* e){
         synMachineDyn->set_connected(1);
+        this->set_exit_code(1);
         std::cerr <<"Missing connected property in terminal " << terminal->name << std::endl;
     }
     synMachineDyn->annotation.placement.visible = true;
@@ -1881,6 +1907,7 @@ SynMachineDyn * CIMObjectHandler::synMachineDynHandler(BaseClass* node, const Te
             // Junjie: No need, I updated conversion inside templates
             synMachineDyn->set_UPhaseStart( svVoltageMap[node]->angle.value);
         } catch (ReadingUninitializedField *e) {
+            this->set_exit_code(1);
             std::cerr << "No SVVoltage at TPNode for SynMachineDyn " << syn_machine->name << std::endl;
         }
         try {
@@ -1888,17 +1915,20 @@ SynMachineDyn * CIMObjectHandler::synMachineDynHandler(BaseClass* node, const Te
         }
         catch (ReadingUninitializedField *e)
         {
+            this->set_exit_code(1);
             std::cerr << "No SVVoltage at TPNode for SynMachineDyn " << syn_machine->name << std::endl;
         }
 
         try {
             synMachineDyn->set_QStart(svPowerFlowMap[terminal]->q.value * s_unit_conversion);
         } catch (ReadingUninitializedField *e) {
+            this->set_exit_code(1);
             std::cerr << "No SVPowerFlow at terminal for SynMachineDyn " << syn_machine->name << std::endl;
         }
         try {
             synMachineDyn->set_PStart(svPowerFlowMap[terminal]->p.value * s_unit_conversion);
         } catch (ReadingUninitializedField *e) {
+            this->set_exit_code(1);
             std::cerr << "No SVPowerFlow at terminal for SynMachineDyn " << syn_machine->name << std::endl;
         }
 
@@ -1928,6 +1958,7 @@ SynMachineDyn * CIMObjectHandler::synMachineDynHandler(BaseClass* node, const Te
                 synMachineDyn->annotation.placement.transformation.rotation = (*diagram_it)->rotation.value;
             }catch(ReadingUninitializedField* e){
                 synMachineDyn->annotation.placement.transformation.rotation = 0;
+                this->set_exit_code(1);
                 std::cerr <<"Missing rotation for diagram obj" << synMachineDyn->name()<< std::endl;
 
             }
@@ -1965,12 +1996,14 @@ ModPVNode * CIMObjectHandler::SynchronousMachineHandlerType0(BaseClass* tp_node,
         pv_node->set_sequenceNumber(terminal->sequenceNumber);
     }catch(ReadingUninitializedField* e){
         pv_node->set_sequenceNumber(0);
+        this->set_exit_code(1);
         std::cerr <<"Missing sequence number in terminal sequence number " << terminal->name << std::endl;
     }
     try{
         pv_node->set_connected(terminal->connected);
     }catch(ReadingUninitializedField* e){
         pv_node->set_connected(1);
+        this->set_exit_code(1);
         std::cerr <<"Missing connected property in terminal " << terminal->name << std::endl;
     }
     pv_node->annotation.placement.visible = true;
@@ -1997,10 +2030,12 @@ ModPVNode * CIMObjectHandler::SynchronousMachineHandlerType0(BaseClass* tp_node,
                 } else if (this->configManager.us.voltage_unit == "MV") {
                     pv_node->setVnom(baseVoltageMap[syn_machine]->nominalVoltage.value * 1000000);
                 }
+                this->set_exit_code(1);
                 std::cerr << "Unitialized ratedU for Synchronous Machine taking TopologicalNode BaseVoltage " << syn_machine->name
                           << std::endl;
             }
             else{
+                this->set_exit_code(1);
                 std::cerr << "Synchronous Machine without ratedU and without BaseVoltage at corresponding TPNode" << syn_machine->name
                           << std::endl;
             }
@@ -2101,6 +2136,7 @@ ModPVNode * CIMObjectHandler::SynchronousMachineHandlerType0(BaseClass* tp_node,
                 pv_node->annotation.placement.transformation.rotation = (*diagram_it)->rotation.value;
             }catch(ReadingUninitializedField* e){
                 pv_node->annotation.placement.transformation.rotation = 0;
+                this->set_exit_code(1);
                 std::cerr <<"Missing rotation for diagram obj" << pv_node->name()<< std::endl;
 
             }
