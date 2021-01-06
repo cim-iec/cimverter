@@ -1,3 +1,245 @@
+I, Achim Völker hereby sign-off-by all of my past commits to this repo subject to the Developer Certificate of Origin (DCO), Version 1.1. In the past I have used emails: achim.voelker@rwth-aachen.de
+
+0248e51657c94cad6b607fa52e86329acd6c2d55 install omlibs in dockerfile
+f3f88fc92c2e93cf232cf35a888deca0d1e994cc run docker withouth interactive dialogue
+6dd73881c2c5d3bcb43f17764206b118074ff897 run ci on merge_requests
+083013269ea77598c77993fdd0bc2e941c4216a2 run bash script which executes omc script in gitlab ci
+f066feb210ba63ffc77f3cd710457f1a9567ef2b added test.yml
+a74c29cecd087c05ebdd001277e8d491bf8be0c6 added some comments
+a71ec120985243bfce13c2d786eefdb90678579c added some documentation
+292befb157efbabf16effc2484b29cea1e42dcff fixed diff in ci
+0623047a0d5b6fee4fc2a0c0c0856918bc34d36c use multiple cim_versions in ci
+a03d5fa910e657ff33fc57b2f899c35881614342 .
+7ae8c4bdd2c46863a59f81551580b0c762a32691 test if ci passes with cgmes
+269da168c4025bd441f02deee3b58dc81a494744 IEC components no longer included in case of cgmes
+88d33fba916b0c2e0358762af0fc0fa36be238cb update libcimpp version
+3fb8368d94a91f0280aa8e522479f98f03705a2b support libcimpp cgmes
+0bb176a134bdd512aff39e69dbe67f501b3c6c8b removed empty batteryStorage.xml and use newest libcimpp version in CI
+24bd5feb3e96c5f08a11764d6a9d1daa30585c94 fix CI
+d9725e747383c747eee679ad96b10d4fdfb07df0 show libcimpp commit hash in CI
+eb8ce383111c341d4398809a31b140e5c88bb335 changed diff to comm
+d959aa477aa66da78c3c31affc6f90a9bd6a1990 updated test scripts
+b9249c273df5477a61460fbecd96548a2302432a fix ci
+19770951394791b921cce07f871e4974fbbc6a84 better readibility of CI test_script
+626c5d53f35878a4f8b4979f0dcb8e438d13697d test ci on powerfactory
+81661445a1ffd69fe4499f171e7d984076011706 default value for make_unique_names is false now, test script output is better readable now
+34c1686b5877786b60eed4d78c9f727f48432d21 CI: prepare stage of docker omc is no longer executed on all branches
+1264add2b2d74726dfb2bd5dab7a3a4c486a3eb0 added some comments
+6217f77bca068e88bb474086cb65dce7822c51f8 piLine's where only one of the two terminals is connected are no longer created
+426db478643af731023a3a88bc2fcbdb59c88789 removed merge conflict chars
+ad6f49547f0ae770ff9d032dbfc9b647d8290b22 initalize dest array with correct size to prevent segfault after termination in case the program is runned with -a some/location instead of some/location/
+f9230be606893a2dad8ff1970d793d0daeaed6bf updated config.cfg
+392cbe7b00d79ab1483b3d4f6629709ccb5563e3 added some Exception Handles
+0b9941c1b51fceac19a856c53b7e9c8f151c061e when connected property of terminals is uninitalized change ignore_unconnected_component option to false
+bd992584655c21aaaed4e9ca9d8593fe2ce5f8bb changed mv to cp for local testing outside of ci
+70c531dc6688e46e2c4e89d447959b31c99d15c4 fixup! fix ci and extend it to cover powerfactory
+98198e87c5f8d47b4f22369c2324aa3b10e77d56 fix ci and extend it to cover powerfactory
+dccd7dd3f2cbcd8c88f4e6e218c0fd9deeb5367b added warnings when Breaker model is probably unintended used
+7f0ff4c2cd3e1f5900c097c8ddbc30cb649be5a0 throw warning when using ignore_unconnected_components option without an slack in the read in file. In this case, the largest connected component is created instead of ignoring all elements
+6fbde7b00a455baeee2026f3b04e101a208b3abf added missing Semicolon
+93d7e676242564c978e3219a6bec7787e9f2314b  addedSynchronousMachine4Windings_DICT to modelica.tpl
+3e7338c3957debf052711fb8830a1e63889aef24 added Vnom to synMachineDyn
+1095a2bcba65d1478e892611ef06679018e98f0f added synMachineDyn
+48f0bdedfce251b1704399816483255ca8594e5c added few getter/setter
+3528f4c063cc5ba8bcc9acfeac0caadacd8eab18 added map synMachine, synDynMachine
+9324696229b68dc67db7826707f0c34b56923cdd added imports for SynMachDyn
+fea0c3a268f1e10337a2e59548df80f40a084f8d add basic synMachineDyn
+cca7746a8a892f83452c776868d91db7bee9b1bb fixed CMake
+b88bd63c900dca08f66bf08cf4ef2eb4e5497c86 add copy of PowerGrids_templates to CMake
+7da33e57fd3ec6aeab1c0258822ca109c4419239 rename busbar.tpl
+882fe2847f74f0dbbbe7121a134d5e0a076ad4f8 some tpl renaming and extending
+76c48aee310bc1a3e1c682cf9dfb3253f579f9b5 fixed compability issues between different tpls due to VNOM in PiLine
+70aa3796fdc3154c3bdbf4a2a10ad43d21323e29 outsource removal of unconnected components to fct
+173a8f9b8151ddbd1442517072948aeb84d611ea ignore components not connected to slack for branch,breaker model
+be32850aa11ff211434ad0683279dfa69087b89e enable removal of components that are not connected to slack
+648b08ebf7e1b260bb2baa7324435427d218683b fixed busbar creation for unconnected terminals
+45ca4c2963ff8208a6088b9339c6cea222793316 prevent busbar creation when no connected terminal is attached
+b8b8faab010cc11fecf129e352cda17244134335 rename tpl sections of PiLine
+25a3f7dccf703399779f1bf91f7f8ff0b5333280 removed debug msg
+ca62f73d57480709aa9dc5dd1deac110c0708506 fixed tpl mistake
+857fca0d09dfab2582fbaf5f2ab780b1ddf58ef0 added option to write Vnom for PiLine into the generated modelica file
+727c7a824616b0aebaf1bec234e8a51b2cecaf2b added exception handler for rotation
+ad70d77fbebe85d0550d84c5818d1993732b00ba added ignore_unconnected_components
+ab69efe0f36d6a89be2db10dca3a916c10ec9e40 modified remove_alnums to end with _x instead of _x_
+99b67f2a7db9f4b1e42b6195f25fd73e836a8b08 added option to append mem_addr to object names
+fa12307657a81f6d0c26c0558ad70342a04ebe54 added exceptionHandler for missing connected property
+54280dade4072447bad278f95cdc8ce5d14e1c6f replace sonderzeichen with _hex_
+808730127929d36e2a6626e8850460720331513d added tapStapPosition option
+13491efea50643e2bfc045861284b74e333f633b removed check if CurrentLimit.Name is NORMAL
+6f27582280a500a8204b79c886c7a4cad54de323 added exception handler for trafo rotation
+5b0989a7a8ad49b6fa4bed738fc169867f449052 added exception handler for trafo rotation
+30ca5b00f136eeede9068258234f81138aa3a271 add OPLimitMap entries over Terminal in case there is no Equipment linked
+cc37dc869e8d0b76f8b5027a0d47d7e9a6789889 removed modpower submodule
+565bff3d83a4719d8584f396253e8385c16508ae added powerfactory.cfg
+2e908d161779a1166d7835b81e68c1d9622e3feb added rse.cfg
+2e20960e78523d4bbaa6737ef964731750a8ac83 modified default values in cfg
+95bb329bbe68a2c6c551f5698c5d3c30ae521d0c added exception handler for pvNode Vnom
+673e012200d19f8e89934d20f6f9ba520a508ce7 added some exception handler
+196617c09da47e2dee38e40b648cf129b20a5e9e .
+aae0059b6da290e35615ebeaa1039fb641c7d479 test
+a0f9a18dac549e0e05cd06a63f3cd14dbb6516d2 test
+544bafa9df4a424a49bf36840434501cb2b2feea test
+820846b69f336ffaca405fa9412bef97ca396694 test
+37806a1e3552fb072a844055027d508254b35d53 .
+6040dbc9ae4d744433a7dcc2f22c6bf9cf5e7b27 .mo test file corrected
+93ff1f7a6f8d7db30982938d9f121e44ce852525 .
+1966d72c4af1f26dc4e14257d5816fdd44a019af changed test .mo files
+8231f487cb3ce5fcfbec1a28c0e649a3917c8ca0 changed .mos script
+63a5231f4940c04d4ce7cf9f327df7e33cf93274 .
+cbe4a4143dbbd4fd87ff9bb9d4ab85af2f80910f changed libcimpp version in ci
+600babf8eb46af6e61145aee655f595aa3b7f85d test stage for rse
+592c3664bf141e0ab4994679739426877265e77a ci for rse with different configs
+33469343244859b761d4594dfaf509b1c5f446b9 added config for test cases, fixed old cases
+821ab6081edc17adbd1f5f490d0ab17d516da895 changed libcimpp version
+1f46123c64376dd85dc7b61037e53a7c64447777 updated libcimpp
+8526b4bfbc7f8e9e59d7bd34e99de617e982ef28 cout to cerr in case -f is used instead of -a
+20c4119c833cbcdb759a2f57616704c70fabe83f added error msg and segfault prevention in case -a is used instead of -f
+a312a2d504b9e33b622bd9e08243a36e4961db8c added unit_lenth option
+f513cce836c234e7388a9c273faaba2b240073bb changed defualt baseKV type to float
+641cfaa5462c0f25caea66c3c26eadcf49e0b3fb fixed connection creation by adding references to the busses, fixed VNOM of connectivityNodes
+e38951dce9b8dc8660412305eac4805f6b03825b removed debug output
+eed51c0658383cd9776bad9b2ce042dbb8a28834  added option to decide if topological nodes or connectivity nodes are used
+f400b60469cf408a773e1ade28231d6e6b9e2770 added Breaker to tpl and cfg
+3c87d502d0d13d3b1d939b5f9cbbd0333bf81af4 added Breaker
+cc2a0543239123c6302ce76a6f7fb7eab3c6121e modified task aliases, fixed tpnode average position bug
+d0104616a1cf2c7a366c71cf48f1273d61e8258d use averaged terminal pos for tp_node if no diagram object exists
+f6f39b95bf521e93591fee98abe48d407700f5a5 handlers now return ptrs instead of objects, connections are now correct created
+9b12bd5d7acf252de3b00688b812c9ca8bc71469 minor fixes
+1c5a1c677941a76cea70e31cb5751f6a8aef9c1f added exception handling, usage of pfixed/qfixed, usage of list of already created components
+f1da6fdec775845a36e40479e475965c61063c91  added exception handling
+16e7204fafcdc0496bd4176fb90fa67c0c09d36d commentout connectivityNode
+a6b16839afb5065d70c1d712609b3385952129e6 before rse
+c75d7b169c7783868be904d8c1cad0b9b9ac133a pv node annotation line break added
+bd9084d391cc1e4052243c8cc41231cb2c87ea21 pv nodes are now serialized
+99335870b13a0ae1b09e97821f7ab44e7ddc796d more efficient pv node handle
+f95c7a68ec79cbf0e2489c393e1161bd42cb6d5a generators are now finally written to .mo
+cd6c417d78063b10e9618c776d60617a700b8b18 use pvnode instead of solar generating unit
+0b6547b89f31a93081009a6c9ffaae3336a49a22 added default names for PVNODe in cfg
+6abf477d62876ceb0f7215745fbdf6a233d527d2 added flags for useSV
+e162835e8e065ea43fc46c2ecd8ae806e7a59913 pv node modified
+ab1edf07d8d8bb07538568e9f045ea293ff6bb73 added basic pvnode
+9cafb005e3f81350a5ee593fffc60d56193f9ccb  added tap_pos, tap_step to power trafo
+954a52bf5cb57a594a934ee3c553f6ef1c07904f envSupp added
+6cd733ba4f7ba87d0dfacde217d0450d558609b8 added enviroment Variable support
+c5fd82c46a256b1239c1976c3d975b3c15f1f79d .
+4f8f174d831cb3fd4921ce5a5894e61fc57f873c fixed strcat which overrided next option
+4ec37f0c0df5f6690f8003e0fda496c10393e3a8 fixed flag ordering
+91035f78a7b26036d758bf53a9dee55c80be9ded libcimpp dependency changed to github
+00190623817d73d7f3ab34c33c730ad6443ad7fa Revert "updated submodule libcimpp version"
+This reverts commit 7ab28d6356a975afd86884dfc9ddf33cc41ed0cc.
+1b48b2f61f7aaa7e3a58316afffb0d456ed855bc regex match for .xml added
+7ab28d6356a975afd86884dfc9ddf33cc41ed0cc updated submodule libcimpp version
+d7e132f684b621ede6190d1c32fb2b0b92ff62a0 added libcimpp 17v23
+01b8eeaf534158d31a725e80a17305f81eea0a3a sinergien components are only compiled if sinergien version is used
+276f775e77f5e09a1b7a05c33196f136b37be8d5 renamed to cimverter
+af8ddaae07e153bec2808ee9f3c649a7789df36e renamed to cimverter
+0c7e89f7dec8f777dc0f41fe2b1b6f2c3b877d8e  removed testing branch from ci
+6edfd038a2fb44e99b03956b7a8ae6c6e20ad426 outputs dir in gitignore
+c6fc1d9fbc7c563e9762dda06070b981e4f16074 .
+ebd43e8db0fb96f7b5f969863d123e52e53ff292 comments added to files
+0b0b931bafc07ecb63f5ce47e28ca78eb9a64e82 rootdir switched
+970ea4409de83b0a9c7d293146f54bd7815551f4 .
+9a7fa6d48619f1d52a31949a78f07aa720f40535 .
+3bd10a7772ab266a45fb7a93da9324297133dfcd added use cim version sinergien
+5ea18adb2c3899decaaa98473119d0e5bf8a8528 added libxml2-dev
+fc7e3cea597c5a91b50ff2af738dedf820d49044 added libxml2 to docker image
+6025a8f25ee4ee2c7316ef30ffe6ea02a1cc8069 .
+f33e107b481521b798f8c8c834fa917dd6c59cfe reduced stages
+da0f162cd29122d59f1aa2da5ff1c5461c2740f2 libcimpp cloned recursive
+51298e63bbe10d64b21b1770530b30e74b616e97 build stage added
+50f2696c8c837c502ae606f5823f49200c64f543 clone libcimpp manually
+ef3969450128bd16e7f4c2638ebea02b3f874072 submodule strategy changed to recursive
+72a98551b6a25bb50ec7a37f14e9cbfdc9328ae8 changed dependencies
+625643d6a7b20488b506e15d2a3ea39318194541 libaries added
+788aaf8b32b64b959a6b66597b13a321a79f9173 .
+cbb003a77ed8b2465eefff32399f160de8f4025d dockerfile added, .gitlab-ci.yaml added
+5a8ac378d5609ae30db03decf6ccc69120a8bbbc connectors changed
+e30326d2d9634780edd96895fdfd8696f23ca2a9 renamed LENGTH to LENGTH_KM
+ced50659eac58c5b40e41a3202b58f763a7781cc connectors.cfg added for PowerSystems, DYNTYPE Attribute introduced to Systems.*, Added LENGHT_M for PiLines
+01484f2e10012bdf4847a10f652589b46689deb9 readme updated
+42d921bfb0306c6bdfc0fdef7412563a1e974a0b readme updated
+88ab7772654cb379fac51bbc693cbd399322de6b readme updated
+617c3c02b0b9b724627085b6a38470f645715421 config modified
+5123bb248a35b732320422221fa0797fad8206da Pins now named Pin1 or Pin2
+de91182ad389cf224d04869eb3a25bd9978ee9d1 read of Connection config Files moved
+a3e6a1a9c532b23ff3830d85caaeca2a52157bd7 Connection Names taken from config File in template Folder
+d4f42f840bb2181c2cff05c7929af1e7a8a0a19b template folders added
+7e8c87561571af9d85f6fc094779b1ac362d55c2 template folder can be switched by command -t template_folder_name Cmake has to be edited for each template
+6798ca2a1c12086881529652e5cce2f2dbb21a40 .
+efad294e8ac8331f7dc0745b2053b2d395c2f08f .
+7d814ca2fde65743feea0b4a9f93d0727a3406a6 template_folder argument is passed to objectHandler
+ece3bbc9d1761e1b3b3329f1d0c476a3bf07da13 option -a now accepts paths without / at the end
+74caf351e8be59959e11b2325614dcedb8a5f7b5 Cmake builds with different templates
+e8095b9fd2d4417cbd74dd0be7d20fe392e224c0 some comments added in main
+5b3287771eca0ee44150ce55c76c6dfdee522f2e help messages updated
+782a88ed2a70e03778013b61a0a43407f4c50e74 old code deleted
+22bcdab0ed09884dd5c8d81e49844b222bb3e802 basic argument switch added
+838e53a72a765b1613402bef2703f7a8663d601c added error msgs for missing diagramobjects
+ddac3d6c093ebd1ff922e26f194ded26b9331c63 added error msgs if Objects have no DiagramObject. Objects will be placed in default location 0,0
+fb5f53bdcc15ab3e125975c3c950f1649e28bbbd .
+13c06d6a04e0058b525bebc621a858f3860fbdb7 batterystorage handler wieder eingefügt
+6b6eaf8874688d2ebf973c735517cf8fbc19cd67 Update config.md
+a6370cae3449973a8120e2ea0514dfeebc363e7a Update config.md
+ba664769f7822abffa41e3503ebed704d3c943b7 Update usage.md
+d066cd129d5adccbfe713fffeb165a3b9948c8f5 Update .gitlab-ci.yml
+93a10210c3a06d72c47a2c82bebff371251e56e6 Update .gitlab-ci.yml
+8b6d7156c3e97a035cca3d931a5b7f8747ab237b Update .gitlab-ci.yml
+604a2d9df4e197a2540e9544208bdf896fa593ac Update .gitlab-ci.yml
+a7c99557be819322d7ba2a7876a7c1d2e8d6e5e4 Update .gitlab-ci.yml
+fb77c2930fc14ec7026795eea936dac034e088f7 Update .gitlab-ci.yml
+f06c8e8e94c25db6ecc3a2890a33628aab17ec22 Update .gitlab-ci.yml
+e0ef015b9ad5b60c0844df208a03572704dd9ac2 Update .gitlab-ci.yml
+00ae09174c547a8b4bf7d77e80efaa770a2d7655 Update .gitlab-ci.yml
+4fa368912583edcc6c74b239987f55b4b546e9a5 Update .gitlab-ci.yml
+a5efdc5f57e0d66c054a666824edb9173c799082 Update .gitlab-ci.yml
+767768bc590c89a5cdcec641779fa0f438687bd1 Update .gitlab-ci.yml
+607c24367cc366caffd0f7b00f93a044d2a1b9f2 Update .gitlab-ci.yml
+d9ddce460750d25db41ac190e0515deb4b5f22ed Update .gitlab-ci.yml
+9ec51b8f2321316e237351120445495c91103376 Update .gitlab-ci.yml
+95046877c09ac492eae3c712be19f56c283e20ab Update .gitlab-ci.yml
+bb836e0b7d0bf628975251373b5977b17ec0600c Update .gitlab-ci.yml
+b8cb4508a36e9a9998de24ddf1431bf7ba51f565 Update .gitlab-ci.yml
+9b4caa8ef8b64c200cf81a925c0a172d167599c2 Update .gitlab-ci.yml
+a058e441a7714944cac24785a5ccae9306e9e1fd Update .gitlab-ci.yml
+0d05856e5f0ed0c83c789025096a5a39b5b72a7d Update .gitlab-ci.yml
+c1c5c1ea543da0e5e9bdf440e32affab7dcb8d77 Update .gitlab-ci.yml
+86d61bc447916f869c91df8ededce810b3a9bf48 Update README.md
+e3e5da436522265e6abe43ef6f51b3fb207d30c3 Update README.md
+edea94e215e102950e76e1d6b0d504068218f5da Update README.md
+0521b7bc17c50dc686e92e50c5b099796e903b2c Update README.md
+69ab995f8b2e0ab2de9de1cb5faff3cf3bcddc4b Update README.md
+31dda667aa006480a160826de67eab78aa5d3c9e Update README.md
+24248a9e3f867f6c7f62a15457ca870d67d0fc88 Update README.md
+2a8fdeed4e51fab666c27ad3d954cf8584a331a8 Update .gitlab-ci.yml
+f534c81b396b61e4d4253f9fced46953c18e83ca Update .gitlab-ci.yml
+3cb507f1466501abb031b42f8ccb7df9c8986fac Update .gitlab-ci.yml
+b071d7d06789ccaacc7f0d512c4e843684cb973d Update .gitlab-ci.yml
+b9c89f167ac74b1358940f8c75786654e76bea20 Update .gitlab-ci.yml
+3cc83647f1fd098f046dc5a4fb7b08d1b404236b Update .gitlab-ci.yml
+3bb46a186d6d87ed60159df59d0f18f5ec265ba5 Update .gitlab-ci.yml
+d1fad2d8140cc0d410219d90f6b0f47da2ee9742 Update .gitlab-ci.yml
+4284fd23fb4302779601bb837b7a1a52b8b7c426 Update Dockerfile
+3ac5aa5893b78b9a57680dedbf3a7b9353ac0c2f Update .gitlab-ci.yml
+76f460874d1b5f01ff3ab04246b9871103b4d1e8 Update .gitlab-ci.yml
+5d37294469c4c3e254cb8d174e7a606e27aa67f3 Update .gitlab-ci.yml
+4d415e2da2ef05c1f63ace64e6f97d6b12ee7218 Update .gitlab-ci.yml
+9bd577fb152a1062b516f6a96d0b790fd1c5103f Update .gitlab-ci.yml
+1c0e1eb65650b59d56b5dc00c3d3050b39fc9de2 Update .gitlab-ci.yml
+49e8461f4fcc8fdd630c270ba6f416a47b0f08bf Update .gitlab-ci.yml
+d0a3aa7f8092b71a036426ad640dfa5173309347 Update .gitlab-ci.yml
+3a47a8241b6dd96abc10fb814e7142927f6fe9b2 Update .gitlab-ci.yml
+796d67733263aa33f9beb29a93c81fb4a81e6f8d Update .gitlab-ci.yml
+dc8dff6c4365d8b48a35e1bd80da8ba10ac44f12 Update .gitlab-ci.yml
+076a35558864932cb3c5763cf6b835997b7e9ba1 Update .gitlab-ci.yml
+31bf2ac47c3e738629f66078e1a8ba9e4d7d56d1 Update .gitlab-ci.yml
+96cc65060fa76151a89c36d4713a85f4ddf76727 Update .gitlab-ci.yml
+831eb3bc293e1f61796c6f2d1f996e90a6f04b9a Update .gitlab-ci.yml
+1f355ac1202a4e9ff43eef4230f5ab4700432d1e Update README.md
+242b72a8c4b6031abdb845b9340f4040c87a4b38 Update README.md
+21503bc1799f65a0ea1220ce85cf482e1e0a4c52 Update README.md
+27ebb1b225985a9f97b6e5ce36df69c3e2861474 Update README.md
+
+
 I, Lukas Razik hereby sign-off-by all of my past commits to this repo subject to the Developer Certificate of Origin (DCO), Version 1.1. In the past I have used emails: lrazik@eonerc.rwth-aachen.de
 
 a95bc3031450192e6870089020318bf020d080bf Updated .gitmodules .
