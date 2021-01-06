@@ -101,3 +101,16 @@ d3ab8a6884ec438698597768bc4d0772ddcb448e Implemented creation of lossy cables
 a2f80d0740dc37b0df9dbf0ddc7b2ce345ccdc5f Added Snom to PQLoad dictionary
 09264d4e2fea5b658a4e7c5d9a09f72898352bc5 Modified distaix templates
 b4f763a02c35a3c8033061525cd13fcfe866c684 Added new folders for distaix templates and samples
+
+I, Junjie Zhang hereby sign-off-by all of my past commits to this repo subject to the Developer Certificate of Origin (DCO), Version 1.1. In the past I have used emails: junjie.zhang1@rwth-aachen.de
+
+110740ced15d2d4d6dfcdd8829785efbab03f207 update connection order
+4cb575ad006b94d5615581e4bd929b935db2a114 update sychroMachine
+34035fbd0137d385f2ccf064b0cd5c9532275eb6 update and correction of PowerGrids tpls
+f023e741fe3e98e6c3945024bf3d2bd685115c0a update SynMachDyn and its utils in CIMObjHandler
+5c90627ea29397aee41586064a01668e7ad62c83 fix minor CMake error
+e83b5f7ba79f837e61711bb9033d62e0da8965cd correct transformer.tpl
+7eaf875174d17ede79ea1fe1442d6685ae1d9159 repaire PowerGrids templates
+7617a3aab7a84b762bd47d8c92d30d543e23806e correct the synMach4wd tpl
+48a7180ec0f506600949e44f0098911b4b972776 add tpl for PowerGrids lib
+75bf46506c7d538198016525d8c2e7b9d55c6cb2 remove additional unit conversion for pqload
