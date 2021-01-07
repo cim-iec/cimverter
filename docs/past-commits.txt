@@ -356,3 +356,9 @@ e83b5f7ba79f837e61711bb9033d62e0da8965cd correct transformer.tpl
 7617a3aab7a84b762bd47d8c92d30d543e23806e correct the synMach4wd tpl
 48a7180ec0f506600949e44f0098911b4b972776 add tpl for PowerGrids lib
 75bf46506c7d538198016525d8c2e7b9d55c6cb2 remove additional unit conversion for pqload
+
+I, Maximilian Kissgen hereby sign-off-by all of my past commits to this repo subject to the Developer Certificate of Origin (DCO), Version 1.1. In the past I have used emails: maximilian.kissgen@rwth-aachen.de
+
+fdc48b09c9de9ae6a4b10a5e41f3ac39ceb967e7 Fix Typo in SolarGenerator.tpl, formatting in modelica.tpl, and false usage of windgenerator attributes in CIMObjecthandler.cpp
+f685b67807b2241d14293a6d9e3711a9dcf82adc update libcimpp
+5b0918ea41ebdb1c8cce2b84b7086c320f2bcc4e update submodule libcimpp
