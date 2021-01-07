@@ -101,3 +101,9 @@ d3ab8a6884ec438698597768bc4d0772ddcb448e Implemented creation of lossy cables
 a2f80d0740dc37b0df9dbf0ddc7b2ce345ccdc5f Added Snom to PQLoad dictionary
 09264d4e2fea5b658a4e7c5d9a09f72898352bc5 Modified distaix templates
 b4f763a02c35a3c8033061525cd13fcfe866c684 Added new folders for distaix templates and samples
+
+I, Maximilian Kissgen hereby sign-off-by all of my past commits to this repo subject to the Developer Certificate of Origin (DCO), Version 1.1. In the past I have used emails: maximilian.kissgen@rwth-aachen.de
+
+fdc48b09c9de9ae6a4b10a5e41f3ac39ceb967e7 Fix Typo in SolarGenerator.tpl, formatting in modelica.tpl, and false usage of windgenerator attributes in CIMObjecthandler.cpp
+f685b67807b2241d14293a6d9e3711a9dcf82adc update libcimpp
+5b0918ea41ebdb1c8cce2b84b7086c320f2bcc4e update submodule libcimpp
