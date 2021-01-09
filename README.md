@@ -3,11 +3,6 @@ CIMverter is a tool to convert CIM-XML-RDF files into Modelica code.
 It was developed and is maintained by  the *Institute for Automation of Complex Power Systems* at *RWTH Aachen University*. 
 For further project information, as well as a documentation of the CIM standard, visit *https://www.fein-aachen.org/projects/*
 
-## Licensing
-
-For **non-commercial** use this software is licensed under the terms in the included [LICENSE](LICENSE) file.
-In case of **commercial** use you are required to negotiate a proper license model with the *Institute for Automation of Complex Power Systems* at *RWTH Aachen University*. Therefore please write to [acs-sek@eonerc.rwth-aachen.de](mailto:acs-sek@eonerc.rwth-aachen.de).
-
 ## Dependencies:
 * cmake >=3.5
 * clang
