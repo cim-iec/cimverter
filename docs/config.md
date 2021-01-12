@@ -3,13 +3,14 @@
 CIMverter can be configured using the config.cfg located in src/config.cfg (resp. build/bin/config.cfg).  
 
 At the top level, the configuration file consists of these sections:  
-- General MBY RESTRUCTURE THE CONFIG.CFG HERE so that there are no options without section
+- SV Settings
+- Global Settings
 - Unit Conversion Options
 - File Path Configuration
 - System Configuration
-- Single Phase WHAT IS THIS?
+- Single Phase 
 
-## General 
+## SV Settings
 ### useSVforEnergyConsumer (bool)
 specify if the PNom of PQLoads is specified via a SVPowerFlow (true) or directly in the pfixed property (false).
 
@@ -20,7 +21,7 @@ specify if the PGen of GeneratingUnits is specified via a SVPowerFlow (true) or 
 ### useSVforExternalNetworkInjection (bool)
 specify if the phiV value of the Slack is read from a SVVoltage
 
-
+## Global Settings
 ### default_baseKV (float)
 defines the base Voltage which is used for Busbars in case there is no specific  BaseVoltage connected.
 
@@ -28,7 +29,7 @@ defines the base Voltage which is used for Busbars in case there is no specific 
 If set to "original" the tapStepPosition of power transformers is directly read from the xml. Otherwise the tapStepPosition is computed as the xml (value - 1) * 1000.
 
 ### make_unique_names (bool)
-Append memmory addresses to the component names to guarantee unique names. 
+Append memory addresses to the component names to guarantee unique names. 
 This might be needed when the xml file has no unique names for the components.
 
 ### ignore_unconnected_components (bool)
@@ -38,7 +39,9 @@ Specify if all components should be generated regardless of their connection sta
 Specify if the VNOM should be added to the PiLine.
 
 ### source_tool_name = "NEPLAN";
-### apply_Neplan_fix = true; //for using values of svPowerFlow, CurrentLimit
+name of the source tool
+### apply_Neplan_fix = true; 
+specify if neplan fixe should be applied
 
 
 ## Unit Conversion Options

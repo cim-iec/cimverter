@@ -166,7 +166,7 @@ bool CIMObjectHandler::pre_process() {
 
         if(auto identified_obj = dynamic_cast<IdentifiedObjectPtr >(Object)){
             this->remove_non_alnums(identified_obj);
-            if(this->configManager.make_unique_names == true)
+            if(this->configManager.gs.make_unique_names == true)
                 this->add_mem_address(identified_obj);
         }
         if (this->configManager.gs.apply_Neplan_fix == true) {
@@ -229,13 +229,14 @@ bool CIMObjectHandler::pre_process() {
             if (auto *terminal = dynamic_cast<TerminalPtr>(Object)) {
                 terminalList[terminal->ConnectivityNode].push_back(terminal);
                 if(terminal->ConnectivityNode == nullptr)
+                    this->set_exit_code(3);
                     std::cerr<< "Terminal " << terminal << " has no connectivity node connected. You might use the wrong topological model."
                              << " Verify that the use_TPNodes option is set correctly." << std::endl;
             }
         }
 
     }
-    if(configManager.ignore_unconnected_components == true){
+    if(configManager.gs.ignore_unconnected_components == true){
         remove_unconnected_components();
     }
 
@@ -268,24 +269,24 @@ void  CIMObjectHandler::remove_unconnected_components() {
                     obj2TPNodeMap[terminal->ConductingEquipment].push_back(tp_node);
                     connected_terminal_exists = true;
                 }
-                else{
-                    std::cout << "the terminal is connected "<< terminal->name << std::endl;
-                }
+
                 if (auto *externalNetwork = dynamic_cast<ExNIPtr >((terminal)->ConductingEquipment)) {
                     externalNW_TPNode = tp_node;
                 }
             }catch(ReadingUninitializedField* e){
-                std::cout << "Uninitalized connected property for Terminal " << terminal->name << std::endl;
+                std::cerr << "Uninitalized connected property for Terminal " << terminal->name << std::endl;
+                this->set_exit_code(3);
                 continue;
             }
 
         }
     }
     if( connected_terminal_exists == false){
-        std::cout << "There exists no terminal with the connected property set to true."
+        this->set_exit_code(3);
+        std::cerr << "There exists no terminal with the connected property set to true."
                 " This might be due to uninitalized values. \n"
                   << "We change the ignore_unconnected_components option to false." << std::endl;
-        this->configManager.ignore_unconnected_components = false;
+        this->configManager.gs.ignore_unconnected_components = false;
 
         return;
     }
@@ -316,7 +317,8 @@ void  CIMObjectHandler::remove_unconnected_components() {
                         }
                     }
                 }catch(ReadingUninitializedField* e) {
-                    std::cout << "Uninitalized connected property for Terminal " << terminal->name << std::endl;
+                    this->set_exit_code(3);
+                    std::cerr << "Uninitalized connected property for Terminal " << terminal->name << std::endl;
                     continue;
                 }
             }
@@ -395,28 +397,6 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::string output_file_name, int v
         BaseClass * Object = (*object_it).first;
         std::list<TerminalPtr> terminals = (*object_it).second;
 
-        if(this->configManager.ignore_unconnected_components == true){
-            // in case there are no connected terminals attached to the busbar don't create it
-            bool connected_terminal_exists = false;
-            for(auto terminal : terminals)
-                try {
-                    bool connected = terminal->connected;
-                    if(connected == true){
-                        connected_terminal_exists = true;
-                        break;
-                    }
-                }catch(ReadingUninitializedField* e) {
-                    std::cout << "Uninitalized connected property for Terminal " << terminal->name << std::endl;
-                    continue;
-                }
-
-            if(connected_terminal_exists == false){
-                std::cout << "there exists no connected terminal!" << std::endl;
-                continue;
-            }
-
-
-        }
 
         if(this->configManager.ss.use_TPNodes == true){//useTP == true
             auto *tp_node = dynamic_cast<TPNodePtr>(Object) ;
@@ -446,7 +426,7 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::string output_file_name, int v
 
         // create all objects that are connected to the TopologicalNode and connect it to the BusBar
         for (TerminalPtr terminal : terminals ) {
-            if(this->configManager.ignore_unconnected_components == true)
+            if(this->configManager.gs.ignore_unconnected_components == true)
                 if(terminal->connected == false)
                     continue;
             //ConnectivityNode no use for NEPLAN
@@ -478,7 +458,7 @@ bool CIMObjectHandler::ModelicaCodeGenerator(std::string output_file_name, int v
                 connectionQueue.push(conn);
 
             } else if (auto *ac_line = dynamic_cast<AcLinePtr>((terminal)->ConductingEquipment)) {
-                if(configManager.ignore_unconnected_components == true){
+                if(configManager.gs.ignore_unconnected_components == true){
                     bool all_terminals_connected = true;
                     for(auto piTerminal : PiLineMap[ac_line]){
                         if(piTerminal->connected == false)
@@ -824,7 +804,7 @@ BusBar* CIMObjectHandler::ConnectivityNodeHandler(const ConnectivityNodePtr con_
         terminal_it ++;
         if(terminal_it == terminalList[con_node].end()){
             std::cerr << "No BaseVoltage connected to ConnectivityNode " << con_node->name << " using default value from cfg" <<std::endl;
-            busbar->set_Vnom(this->configManager.default_baseKV);
+            busbar->set_Vnom(this->configManager.gs.default_baseKV);
             break;
         }
     }
@@ -1172,7 +1152,7 @@ CIMObjectHandler::ACLineSegmentHandler(BaseClass* tp_node, BusBar* busbar, const
         std::cerr<<"Missing terminal seqNR" << terminal->name<< std::endl;
     }
 
-    if(configManager.add_Vnom_to_PiLine == true && configManager.ss.use_TPNodes == true){
+    if(configManager.gs.add_Vnom_to_PiLine == true && configManager.ss.use_TPNodes == true){
         try{
             double vnom = ((TPNodePtr)tp_node)->BaseVoltage->nominalVoltage.value;
             if(this->configManager.us.enable) {
@@ -1217,7 +1197,8 @@ CIMObjectHandler::ACLineSegmentHandler(BaseClass* tp_node, BusBar* busbar, const
                     std::cout << "name of Current Limit is not Normal "<<piline->name() << std::endl;
                 }*/
             }else{
-                std::cout << "missing current Limit for PiLine "<<piline->name() << std::endl;
+                std::cerr << "missing current Limit for PiLine "<<piline->name() << std::endl;
+                this->set_exit_code(3);
             }
         }
     }
@@ -1251,13 +1232,14 @@ CIMObjectHandler::ACLineSegmentHandler(BaseClass* tp_node, BusBar* busbar, const
 
     if (ac_line->DiagramObjects.begin() == ac_line->DiagramObjects.end()){
         std::cerr << "Missing Diagram Object for acLine: " << ac_line->name << " Default Position 0,0 \n";
+        this->set_exit_code(3);
         piline->annotation.placement.transformation.origin.x = 0;
         piline->annotation.placement.transformation.origin.y = 0;
         piline->annotation.placement.transformation.rotation = 0;
 
         ctemplate::TemplateDictionary *piLine_dict = dict->AddIncludeDictionary("PILINE_DICT");
         piLine_dict->SetFilename(this->configManager.ts.directory_path + "resource/" + template_folder + "/PiLine.tpl");
-        if(configManager.add_Vnom_to_PiLine == true) {
+        if(configManager.gs.add_Vnom_to_PiLine == true) {
             piLine_dict->AddSectionDictionary("PILINE_VNOM");
         }
         piline->set_template_values(piLine_dict);
@@ -1284,7 +1266,7 @@ CIMObjectHandler::ACLineSegmentHandler(BaseClass* tp_node, BusBar* busbar, const
         ctemplate::TemplateDictionary *piLine_dict = dict->AddIncludeDictionary("PILINE_DICT");
         piLine_dict->SetFilename(
                 this->configManager.ts.directory_path + "resource/" + template_folder + "/PiLine.tpl");
-        if(configManager.add_Vnom_to_PiLine == true) {
+        if(configManager.gs.add_Vnom_to_PiLine == true) {
             piLine_dict->AddSectionDictionary("PILINE_VNOM");
         }
         piline->set_template_values(piLine_dict);
@@ -1338,7 +1320,7 @@ ModTransformer* CIMObjectHandler::PowerTransformerHandler(BusBar* busbar, const 
             trafo->set_b((*transformer_end_it)->b.value);
 
             if((*transformer_end_it)->RatioTapChanger != nullptr){
-                if(configManager.tapStepPos == "original"){
+                if(configManager.gs.tapStepPos == "original"){
                     trafo->set_tap_pos( (*transformer_end_it)->RatioTapChanger->step);
                 }else{
                     trafo->set_tap_pos( ((*transformer_end_it)->RatioTapChanger->step - 1) * 1000);
@@ -1386,6 +1368,7 @@ ModTransformer* CIMObjectHandler::PowerTransformerHandler(BusBar* busbar, const 
 
     if(power_trafo->DiagramObjects.begin() == power_trafo->DiagramObjects.end()){
         std::cerr << "Missing Diagram Object for PowerTrafo: " << power_trafo->name << " Default Position 0,0 \n";
+        this->set_exit_code(3);
         trafo->annotation.placement.transformation.origin.x = 0;
         trafo->annotation.placement.transformation.origin.y = 0;
         trafo->annotation.placement.transformation.rotation = 0;
@@ -1514,7 +1497,7 @@ ModPQLoad* CIMObjectHandler::EnergyConsumerHandler(BaseClass* tp_node, const Ter
     }else{
         double vnom = (((TPNodePtr)tp_node)->BaseVoltage->nominalVoltage.value);
         pqload->set_Vnom(vnom);
-        std::cout <<"No BaseVoltage for EnergyConsumer taking TPNode Voltage: " << std::endl;
+        std::cerr <<"No BaseVoltage for EnergyConsumer taking TPNode Voltage: " << std::endl;
     }
     if(this->configManager.us.enable){
         FIX_NEPLAN_VOLTAGE(pqload);
@@ -1668,6 +1651,7 @@ ModSolarGenerator* CIMObjectHandler::SynchronousMachineHandlerType2(const Termin
     }
     if(syn_machine->DiagramObjects.begin() == syn_machine->DiagramObjects.end()){
         std::cerr << "Missing Diagram Object for SyncronousMachine2: " << syn_machine->name << " Default Position 0,0 \n";
+        this->set_exit_code(3);
         solar_generator->annotation.placement.transformation.origin.x = 0;
         solar_generator->annotation.placement.transformation.origin.y = 0;
         solar_generator->annotation.placement.transformation.rotation = 0;
@@ -1726,6 +1710,7 @@ ModWindGenerator* CIMObjectHandler::SynchronousMachineHandlerType1(const Termina
     }catch(ReadingUninitializedField* e){
         wind_generator->set_sequenceNumber(0);
         std::cerr <<"Missing sequence number in terminal sequence number " << terminal << std::endl;
+        this->set_exit_code(3);
     }
     wind_generator->set_connected(terminal->connected);
     wind_generator->annotation.placement.visible = true;
@@ -1737,6 +1722,7 @@ ModWindGenerator* CIMObjectHandler::SynchronousMachineHandlerType1(const Termina
 
     if(syn_machine->DiagramObjects.begin() == syn_machine->DiagramObjects.end()){
         std::cerr << "Missing Diagram Object for SynchronousMachine: " << syn_machine->name << " Default Position 0,0 \n";
+        this->set_exit_code(3);
         wind_generator->annotation.placement.transformation.origin.x = 0;
         wind_generator->annotation.placement.transformation.origin.y = 0;
         wind_generator->annotation.placement.transformation.rotation = 0;
@@ -1792,6 +1778,7 @@ ModBreaker* CIMObjectHandler::BreakerHandler(BusBar* busbar, const TerminalPtr t
 
     if(cim_breaker->DiagramObjects.begin() == cim_breaker->DiagramObjects.end()){
         std::cerr << "Missing Diagram Object for Switch: " << cim_breaker->name << " Default Position 0,0 \n";
+        this->set_exit_code(3);
         breaker->annotation.placement.transformation.origin.x = 0;
         breaker->annotation.placement.transformation.origin.y = 0;
         breaker->annotation.placement.transformation.rotation = 0;
@@ -1936,6 +1923,7 @@ SynMachineDyn * CIMObjectHandler::synMachineDynHandler(BaseClass* node, const Te
     auto syn_machine_stat=syn_machine->SynchronousMachine;
     if(syn_machine_stat->DiagramObjects.begin() == syn_machine_stat->DiagramObjects.end()){
         std::cerr << "Missing Diagram Object for SynchronousMachine: " << syn_machine->name << " Default Position 0,0 \n";
+        this->set_exit_code(3);
         synMachineDyn->annotation.placement.transformation.origin.x = 0;
         synMachineDyn->annotation.placement.transformation.origin.y = 0;
         synMachineDyn->annotation.placement.transformation.rotation = 0;
@@ -2114,6 +2102,7 @@ ModPVNode * CIMObjectHandler::SynchronousMachineHandlerType0(BaseClass* tp_node,
 
     if(syn_machine->DiagramObjects.begin() == syn_machine->DiagramObjects.end()){
         std::cerr << "Missing Diagram Object for SynchronousMachine: " << syn_machine->name << " Default Position 0,0 \n";
+        this->set_exit_code(3);
         pv_node->annotation.placement.transformation.origin.x = 0;
         pv_node->annotation.placement.transformation.origin.y = 0;
         pv_node->annotation.placement.transformation.rotation = 0;

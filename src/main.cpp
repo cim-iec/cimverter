@@ -9,7 +9,7 @@
 /**
  * Get File size
  * @param filename
- * @return
+ * @return size of the file
  */
 unsigned int filesize(const char *filename) {
   std::ifstream in(filename, std::ifstream::ate | std::ifstream::binary);
@@ -17,6 +17,12 @@ unsigned int filesize(const char *filename) {
   in.close();
   return size;
 }
+
+/**
+ * @param value string that should be checked
+ * @param ending sought end
+ * @return
+ */
 inline bool ends_with(std::string const & value, std::string const & ending)
 {
     if (ending.size() > value.size()) return false;
@@ -25,7 +31,7 @@ inline bool ends_with(std::string const & value, std::string const & ending)
 /**
  * Find all files in the folder
  * @param path
- * @return files
+ * @return vector of files that are located in the folder
  */
 std::vector<std::string> search_folder(const char *path) {
 
@@ -188,7 +194,6 @@ int main(int argc, char *argv[]) {
   {
         std::cout << "verbose activated \n";
   }
-    std::cout << "template : "<< template_folder<< std::endl;
 
   // Timer start
   std::chrono::time_point<std::chrono::high_resolution_clock> start, stop;
@@ -197,10 +202,13 @@ int main(int argc, char *argv[]) {
   //set off the Dependency check
   cimModel.setDependencyCheckOff();
 
-  cimModel.parseFiles();// Parser begin!
-  CIMObjectHandler ObjectHandler(std::move(cimModel.Objects));// r-value
+  // read the XML files using libcimpp
+  cimModel.parseFiles();
+  // create ObjectHandler who manages the CIMObjects and is able to convert them to modelica code
+  CIMObjectHandler ObjectHandler(std::move(cimModel.Objects));
+  // get the configuration option from the config.cfg
   ObjectHandler.get_config(template_folder);// Get configuration files
-
+  // convert modelica code from the CIM objects
   ObjectHandler.ModelicaCodeGenerator(output_file_name, verbose_flag);
   
   if(template_folder == "DistAIX_templates") {
@@ -220,5 +228,9 @@ int main(int argc, char *argv[]) {
 
   std::cout << 1000*file_size/secs << "KByte/s" << std::endl;
   print_separator();
-  return ObjectHandler.get_exit_code();
+  int exit_code = ObjectHandler.get_exit_code();
+  if( exit_code == 3)
+      std::cout << "The program terminated with exit Code 3. This is probably due to the usage of default values."
+              "For a list of excption handlers, their messages and the reasons look into docs/defaultValues." << std::endl;
+  return exit_code;
 }

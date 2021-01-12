@@ -48,10 +48,14 @@ typedef struct UseSVSettings{
 
 /// global settings in Config.cfg
 typedef struct GlobalSettings{
-  std::string source_tool_name;
-  bool apply_Neplan_fix;
-  bool create_distaix_format;
-
+    double default_baseKV;
+    bool make_unique_names;
+    bool ignore_unconnected_components;
+    bool add_Vnom_to_PiLine;
+    std::string tapStepPos;
+    std::string source_tool_name;
+    bool apply_Neplan_fix;
+    bool create_distaix_format;
 } GlobalSettings;
 
 /// template settings in Config.cfg
@@ -196,12 +200,7 @@ class ConfigManager {
   ConfigManager();
 
   virtual ~ConfigManager();
-  double default_baseKV;
-  UseSVSettings svSettings;
-  std::string tapStepPos;
-  bool ignore_unconnected_components;
-  bool make_unique_names;
-  bool add_Vnom_to_PiLine;
+  UseSVSettings     svSettings;
   ConnectionSettings cs;
   GlobalSettings  gs;
   UnitSettings us;
@@ -264,14 +263,6 @@ class ConfigManager {
   void getBatterySettings();
 
   void getHouseholdSettings();
-
-  void getTapChangerStep();
-
-  void getAdd_Vnom_to_PiLine();
-
-  void getMake_unique_names();
-
-  void getIgnore_unconnected_components();
 
 
  private:
