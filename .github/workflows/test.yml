@@ -61,7 +61,7 @@ jobs:
 
     - name: Install modpowersystems
       shell: bash
-      run: git clone --recursive https://${{secrets.GITLAB_USERMODPOWERSYSTEMS}}:${{secrets.GITLAB_TOKENMODPOWERSYSTEMS}}@git.rwth-aachen.de/acs/core/simulation/modpowersystems #git clone --recursive https://github.com/ModPowerSystems/ModPowerSystems # 
+      run: git clone --recursive https://github.com/ModPowerSystems/ModPowerSystems   
     - uses: actions/download-artifact@master
       with:
         name: test_results_${{env.USE_CIM_VERSION}}
@@ -132,7 +132,7 @@ jobs:
 
     - name: Install modpowersystems
       shell: bash
-      run: git clone --recursive https://${{secrets.GITLAB_USERMODPOWERSYSTEMS}}:${{secrets.GITLAB_TOKENMODPOWERSYSTEMS}}@git.rwth-aachen.de/acs/core/simulation/modpowersystems #git clone --recursive https://github.com/ModPowerSystems/ModPowerSystems # 
+      run: git clone --recursive https://github.com/ModPowerSystems/ModPowerSystems
     - uses: actions/download-artifact@master
       with:
         name: test_results_${{env.USE_CIM_VERSION}}

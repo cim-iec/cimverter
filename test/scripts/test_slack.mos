@@ -1,4 +1,4 @@
 loadModel(Modelica); getErrorString();
-loadFile("./modpowersystems/ModPowerSystems/package.mo"); getErrorString();
+loadFile("./ModPowerSystems/ModPowerSystems/package.mo"); getErrorString();
 loadFile("./Slack_Load_Line_Sample.mo"); getErrorString();
 checkModel(Slack_Load_Line_Sample); getErrorString(); 
