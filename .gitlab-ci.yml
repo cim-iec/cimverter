@@ -86,7 +86,7 @@ test-17v23:
     - pwd
     - cp test/outputs/${CIM_VERSION}/*.mo .
     - ls -l
-    - git clone --recursive https://${GITLAB_USERMODPOWERSYSTEMS}:${GITLAB_TOKENMODPOWERSYSTEMS}@git.rwth-aachen.de/acs/core/simulation/modpowersystems
+    - git clone --recursive https://github.com/ModPowerSystems/ModPowerSystems
     - test/scripts/test_script.bash test/scripts/test_cigre.mos
     - test/scripts/test_script.bash test/scripts/test_slack.mos    
   tags:
