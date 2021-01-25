@@ -12,10 +12,10 @@ At the top level, the configuration file consists of these sections:
 
 ## SV Settings
 ### useSVforEnergyConsumer (bool)
-specify if the PNom of PQLoads is specified via a SVPowerFlow (true) or directly in the pfixed property (false).
+specify if the PNom of PQLoads is read via a SVPowerFlow (true) or directly in the pfixed property (false).
 
 ### useSVforGeneratingUnit (bool)
-specify if the PGen of GeneratingUnits is specified via a SVPowerFlow (true) or directly in the initialP property (false).
+specify if the PGen of GeneratingUnits is read via a SVPowerFlow (true) or directly in the initialP property (false).
 
 
 ### useSVforExternalNetworkInjection (bool)
