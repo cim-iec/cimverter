@@ -21,7 +21,7 @@ sudo apt-get install cmake clang build-essential g++ python-dev autotools-dev li
 ```
 ### Get CIMverter
 ```bash
-git clone --recurse-submodules https://github.com/RWTH-ACS/CIMverter.git
+git clone --recurse-submodules <CIMverter's Git URL>
 ```
 
 ### Build CIMverter with all submodules
