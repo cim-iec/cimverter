@@ -1,3 +1,17 @@
+I, Jan Dinkelbach hereby sign-off-by all of my past commits to this repo subject to the Developer Certificate of Origin (DCO), Version 1.1. In the past I have used emails: jdinkelbach@eonerc.rwth-aachen.de
+
+7b3d616df68451209d95678f6655313e214612d6 update libcimpp
+5d7a4a65bc02aaef46ea395ddb566ed7251c79d6 add breaker template
+a88349b54dbf7587f5a4e01add1bea4f5f66a60f adapt transformer and add pvnode modelica template
+f327d8ca9abc2f584a8aca87298e41ba91434c25 update piline template for powersystems library
+e190505035ae345f9eced309eb594ab6a705ce68 update evaluation script for results of basic grids
+a630f5f0aff450563a160a7c0288e856d751ec33 add evaluation subfolder and first models and results for basic grids
+1c68816aa0539aedbb95033fd9e1309194e51fb8 support transformer of power systems library
+d913ab7a11a04b42876a8346b75006ec37d6e5a6 remove unused template folder
+dbbbe103c4cb904454ac4b875aec989dcd3f3b48 first adaption of PowerSystems templates using slack load line example grid
+d959f2c171b9eb939451b48f35410364c36dd246 template updates due to modifications in system and slack model
+8f920e9c81ed65d3d863278829e0c4c10e9dd495 updated ModPowerSystems templates
+
 I, Achim Völker hereby sign-off-by all of my past commits to this repo subject to the Developer Certificate of Origin (DCO), Version 1.1. In the past I have used emails: achim.voelker@rwth-aachen.de
 
 0248e51657c94cad6b607fa52e86329acd6c2d55 install omlibs in dockerfile
