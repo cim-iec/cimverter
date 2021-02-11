@@ -1,5 +1,5 @@
 # CIMverter
-CIMverter is a tool to convert CIM-XML-RDF files into Modelica code.
+CIMverter is a tool for converting power grid topology files based on CIM-XML-RDF into Modelica system models.
 
 ## Dependencies:
 * cmake >=3.5
