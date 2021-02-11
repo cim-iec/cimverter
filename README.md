@@ -1,7 +1,5 @@
 # CIMverter
-CIMverter is a tool to convert CIM-XML-RDF files into Modelica code.
-It was developed and is maintained by  the *Institute for Automation of Complex Power Systems* at *RWTH Aachen University*. 
-For further project information, as well as a documentation of the CIM standard, visit *https://www.fein-aachen.org/projects/*
+CIMverter is a tool for converting power grid topology files based on CIM-XML-RDF into Modelica system models.
 
 ## Licensing
 For **non-commercial** use, this software is licensed under the terms in the included [LICENSE](LICENSE) file.
