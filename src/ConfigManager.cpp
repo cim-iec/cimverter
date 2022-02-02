@@ -35,61 +35,72 @@ void ConfigManager::getAllSettings() {
   this->getBatterySettings();
   this->getHouseholdSettings();
   this->getSVSettings();
-  this->getDefault_baseKV();
-  this->getTapChangerStep();
-  this->getMake_unique_names();
-  this->getIgnore_unconnected_components();
-  this->getAdd_Vnom_to_PiLine();
-
 }
 
-void ConfigManager::getTapChangerStep(){
+
+
+
+
+///
+/// Get getGlobalSettings
+///
+void ConfigManager::getGlobalSettings(){
     try {
-        this->tapStepPos = this->cfg.lookup("tapStepPosition").c_str();
-        std::cout << "reading tapStepPosition!" << std::endl;
-    }catch (const SettingNotFoundException &nfex) {
-        std::cerr << "No tapStepPosition in configuration file." << std::endl;
+        this->gs.source_tool_name = this->cfg.lookup("global_settings.source_tool_name").c_str();
+        std::cout << "Source tool: " << this->gs.source_tool_name << std::endl;
     }
-
-}
-
-void ConfigManager::getAdd_Vnom_to_PiLine(){
-    try {
-        this->add_Vnom_to_PiLine = this->cfg.lookup("add_Vnom_to_PiLine");
-        std::cout << "reading add_Vnom_to_PiLine!" << std::endl;
-    }catch (const SettingNotFoundException &nfex) {
-        std::cerr << "No add_Vnom_to_PiLine in configuration file." << std::endl;
-        this->add_Vnom_to_PiLine = false;
+    catch (const SettingNotFoundException &nfex) {
+        std::cerr << "No source_tool_name in configuration file." << std::endl;
     }
-}
-
-void ConfigManager::getIgnore_unconnected_components(){
     try {
-        this->ignore_unconnected_components = this->cfg.lookup("ignore_unconnected_components");
+
+        this->gs.apply_Neplan_fix = this->cfg.lookup("global_settings.apply_Neplan_fix");
+        if(this->gs.apply_Neplan_fix == true){
+            std::cout << "Apply Neplan Fix: true" << std::endl;
+        } else {
+            std::cout << "Apply Neplan Fix: false" << std::endl;
+
+        }
+    }
+    catch (const SettingNotFoundException &nfex) {
+        std::cerr << "No apply_Neplan_fix settings in configuration file." << std::endl;
+    }
+    try {
+        this->cfg.lookupValue("global_settings.default_baseKV", this->gs.default_baseKV);
+    }catch (const SettingNotFoundException &nfex) {
+        std::cerr << "No default base_KV in configuration file." << std::endl;
+    }
+    try {
+        this->gs.make_unique_names = this->cfg.lookup("global_settings.make_unique_names");
+        std::cout << "reading make_unique_names!" << std::endl;
+    }catch (const SettingNotFoundException &nfex) {
+        std::cerr << "No make_unique_names in configuration file." << std::endl;
+        this->gs.make_unique_names = false;
+    }
+    try {
+        this->gs.ignore_unconnected_components = this->cfg.lookup("global_settings.ignore_unconnected_components");
         std::cout << "reading ignore_unconnected_components!" << std::endl;
     }catch (const SettingNotFoundException &nfex) {
         std::cerr << "No ignore_unconnected_components in configuration file." << std::endl;
     }
-
-}
-
-void ConfigManager::getMake_unique_names(){
     try {
-        this->make_unique_names = this->cfg.lookup("make_unique_names");
-        std::cout << "reading make_unique_names!" << std::endl;
+        this->gs.add_Vnom_to_PiLine = this->cfg.lookup("global_settings.add_Vnom_to_PiLine");
+        std::cout << "reading add_Vnom_to_PiLine!" << std::endl;
     }catch (const SettingNotFoundException &nfex) {
-        std::cerr << "No make_unique_names in configuration file." << std::endl;
-        this->make_unique_names = false;
+        std::cerr << "No add_Vnom_to_PiLine in configuration file." << std::endl;
+        this->gs.add_Vnom_to_PiLine = false;
+    }
+    try {
+        this->gs.tapStepPos = this->cfg.lookup("global_settings.tapStepPosition").c_str();
+        std::cout << "reading tapStepPosition!" << std::endl;
+    }catch (const SettingNotFoundException &nfex) {
+        std::cerr << "No tapStepPosition in configuration file." << std::endl;
     }
 }
 
-void ConfigManager::getDefault_baseKV() {
-    try {
-        this->cfg.lookupValue("default_baseKV", this->default_baseKV);
-    }catch (const SettingNotFoundException &nfex) {
-        std::cerr << "No default base_KV in configuration file." << std::endl;
-    }
-}
+
+
+
 
 
 /// \brief find config file.
@@ -260,43 +271,6 @@ void ConfigManager::getConfigFiles() {
   }
 }
 
-///
-/// Get getGlobalSettings
-///
-void ConfigManager::getGlobalSettings(){
-  try {
-    this->gs.source_tool_name = this->cfg.lookup("source_tool_name").c_str();
-    std::cout << "Source tool: " << this->gs.source_tool_name << std::endl;
-  }
-  catch (const SettingNotFoundException &nfex) {
-    std::cerr << "No source_tool_name in configuration file." << std::endl;
-  }
-  try {
-
-    this->gs.apply_Neplan_fix = this->cfg.lookup("apply_Neplan_fix");
-    if(this->gs.apply_Neplan_fix == true){
-      std::cout << "Apply Neplan Fix: true" << std::endl;
-    } else {
-      std::cout << "Apply Neplan Fix: false" << std::endl;
-
-    }
-  }
-  catch (const SettingNotFoundException &nfex) {
-    std::cerr << "No apply_Neplan_fix settings in configuration file." << std::endl;
-  }
-  // TODO: Remove if tested
-  // try {
-  //   this->gs.create_distaix_format = this->cfg.lookup("create_distaix_format");
-  //   if(this->gs.create_distaix_format == true){
-  //     std::cout << "Create distaix format: true" << std::endl;
-  //   } else {
-  //     std::cout << "Create distaix format: false" << std::endl;
-  //   }
-  // }
-  // catch (const SettingNotFoundException &nfex) {
-  //   std::cerr << "No create_distaix_format settings in configuration file." << std::endl;
-  // }
-}
 
 void ConfigManager::getUnitSettings() {
   std::cout << "----------------Apply MEPLAN Unit fix-------------------" << std::endl;
@@ -896,21 +870,21 @@ void ConfigManager::getHouseholdSettings() {
 void ConfigManager::getSVSettings(){
     std::cout << "-------------SVSettings-------------" << std::endl;
     try {
-        this->svSettings.useSVforEnergyConsumer= this->cfg.lookup("useSVforEnergyConsumer");
+        this->svSettings.useSVforEnergyConsumer= this->cfg.lookup("sv_settings.useSVforEnergyConsumer");
         std::cout << "reading SV for Energy Consumer!" << std::endl;
     }
     catch (const SettingNotFoundException &nfex) {
         std::cerr << "Missing SV for Energyconsumer in config file." << std::endl;
     }
     try {
-        this->svSettings.useSVforExternalNetworkInjection= this->cfg.lookup("useSVforExternalNetworkInjection");
+        this->svSettings.useSVforExternalNetworkInjection= this->cfg.lookup("sv_settings.useSVforExternalNetworkInjection");
         std::cout << "reading SV for useSVforExternalNetworkInjection!" << std::endl;
     }
     catch (const SettingNotFoundException &nfex) {
         std::cerr << "Missing useSVforExternalNetworkInjection in config file." << std::endl;
     }
     try {
-        this->svSettings.useSVforGeneratingUnit= this->cfg.lookup("useSVforGeneratingUnit");
+        this->svSettings.useSVforGeneratingUnit= this->cfg.lookup("sv_settings.useSVforGeneratingUnit");
         std::cout << "reading useSVforGeneratingUnit!" << std::endl;
     }
     catch (const SettingNotFoundException &nfex) {
